@@ -1,0 +1,37 @@
+npx create-nuxt-app <project-name>
+
+# https://github.com/moeddami/nuxt-material-admin
+$ vue init moeddami/nuxt-material-admin my-project
+$ cd my-project
+
+# install dependencies
+$ npm install
+
+# serve with hot reload at localhost:3000
+$ npm run dev
+
+# build for production and launch server
+$ npm run build
+
+# generate static project
+$ npm run generate
+
+*******************
+---
+npm install @nuxtjs/axios
+añadir em nuxt.config.js el modulo de axios y configurar el Url del api
+ modules: ["@nuxtjs/axios"],
+  axios: {
+    // proxyHeaders: false
+    baseURL: "http://gFactura.com/public/api"
+  },
+---
+npm install sweetalert
+npm install crypto-js
+copiar dentro de componentes la carpeta mkComponentes
+copiar el archivo roles.vue de pages
+copiar la carpeta roles dentro de pages
+copiar el archivo login.vue dentro de pages
+copiar el archivo menu.js de la carpeta api
+copiar los archivos auth.vue y authAccess.js de la carpeta middleware
+copiar el archivo auth.js de la carpeta store

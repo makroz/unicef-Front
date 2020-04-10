@@ -10,13 +10,13 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'Vue Material Admin Template',
+    title: "gSistema v.0.1",
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {
-        hid: 'description', name: 'description', content: 'Vue Material Admin Template is a \n' +
-          '    Google Material Design inspired admin dashboard template built with Vue and Vuetify.'
+        hid: 'description', name: 'description', content: 'gSistema v0.1 \n' +
+          '    Makroz@hotmail.com.'
       }
     ],
     link: [
@@ -58,7 +58,11 @@ module.exports = {
   /*
   ** Nuxt.js modules
   */
-  modules: [],
+  modules: ["@nuxtjs/axios"],
+  axios: {
+    // proxyHeaders: false
+    baseURL: "http://gFactura.com/public/api"
+  },
 
   /*
   ** Build configuration

@@ -1,7 +1,8 @@
 <template>
   <div id="appRoot">
     <template>
-      <v-app id="inspire" class="app">
+
+      <v-app id="inspire" class="app" data-app=''>
         <app-drawer class="app--drawer"></app-drawer>
         <app-toolbar class="app--toolbar"></app-toolbar>
         <v-content>
