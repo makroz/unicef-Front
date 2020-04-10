@@ -7,14 +7,6 @@ $ cd my-project
 # install dependencies
 $ npm install
 
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-
-# generate static project
-$ npm run generate
 
 *******************
 ---
@@ -35,3 +27,13 @@ copiar el archivo login.vue dentro de pages
 copiar el archivo menu.js de la carpeta api
 copiar los archivos auth.vue y authAccess.js de la carpeta middleware
 copiar el archivo auth.js de la carpeta store
+
+**************
+# serve with hot reload at localhost:3000
+$ npm run dev
+
+# build for production and launch server
+$ npm run build
+
+# generate static project
+$ npm run generate
