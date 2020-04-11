@@ -18,6 +18,13 @@ añadir em nuxt.config.js el modulo de axios y configurar el Url del api
     baseURL: "http://gFactura.com/public/api"
   },
 ---
+añadir la key en el env de nuxt.config.js
+env: {
+      mkAuth: {
+      key:'asasasa'
+    }
+  },
+
 npm install sweetalert
 npm install crypto-js
 copiar dentro de componentes la carpeta mkComponentes

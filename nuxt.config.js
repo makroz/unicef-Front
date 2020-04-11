@@ -6,6 +6,12 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
   mode: 'spa',
 
+  env: {
+      mkAuth: {
+      key:'asasasa'
+    }
+  },
+
   /*
   ** Headers of the page
   */

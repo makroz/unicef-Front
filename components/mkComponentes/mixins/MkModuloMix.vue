@@ -398,7 +398,6 @@ export default {
     //TODO: manejar roles para mostrar los registros borrados o papelera
     //TODO: ver el update que actualize en elf ront y no requiera pedir la lista, ver el manejo de cache de la lista con checlsum
     //crear el auth clase
-    //TODO: encryptar el localstore
   }
 };
 </script>

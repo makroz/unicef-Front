@@ -1,7 +1,7 @@
 import AES from 'crypto-js/aes';
-import enc from 'crypto-js/enc-utf8';
+import Utf8 from 'crypto-js/enc-utf8';
 //const _lap=Vue.config.mkAuth.key;
-const _lap='asasasdsasd';
+const _lap=process.env.mkAuth.key;
 
 export const state = () => ({
   authToken: null,
@@ -13,16 +13,16 @@ export const state = () => ({
              , edit: 2, editar:2, mod:2, modificar:2, update:2
              , del: 8, delete: 8, borrar:8, suprimir: 8, baja:8, destroy:8
             }
+
+
 });
 
 export const getters = {
   getUser: state => {
     return state.authUser;
-    //TODO: descifrar el AES o descomprimir
   },
   getToken: state => {
     return state.authToken;
-    //TODO: descifrar el AES o descomprimir
   },
 
   _getPermiso: state => permiso => {
@@ -42,10 +42,7 @@ export const getters = {
 export const mutations = {
   SET_USER(state, user) {
     if (user != null) {
-      //const parsed = JSON.stringify(user);
       localStorage.setItem("Auth", AES.encrypt( JSON.stringify(user), _lap).toString());
-
-      //TODO: crear el encriptador AES para le Auth
     } else {
       localStorage.removeItem("Auth");
     }
@@ -60,9 +57,7 @@ export const mutations = {
   },
   setAuthToken(state, val) {
     if (val != null) {
-      //const parsed = val;
       localStorage.setItem("AuthToken", AES.encrypt(JSON.stringify(val), _lap).toString());
-      //TODO: crear el encriptador AES para le Auth
     } else {
       localStorage.removeItem("AuthToken");
     }
@@ -79,7 +74,6 @@ export const actions = {
         commit("SET_USER", data.data);
         commit("setAuthToken", data._sid_);
         this.$axios.defaults.headers.common["Authorization"] = data._sid_;
-        //console.log("this2:", this.state.auth.rutaBack);
         if (this.state.auth.rutaBack == null) {
           commit("setRutaBack", "/");
         }
@@ -108,9 +102,10 @@ export const actions = {
   },
   reloadUser({ commit }) {
     if (localStorage.getItem("Auth")) {
+        console.log('reload',localStorage.getItem("Auth"));
       try {
-        let user =JSON.parse(AES.decrypt(localStorage.getItem("Auth"), _lap).toString(CryptoJS.enc.Utf8));
-        let token =JSON.parse(AES.decrypt(localStorage.getItem("AuthToken"), _lap).toString(CryptoJS.enc.Utf8));// localStorage.getItem("AuthToken");
+        let user =JSON.parse(AES.decrypt(localStorage.getItem("Auth"), _lap).toString(Utf8));
+        let token =JSON.parse(AES.decrypt(localStorage.getItem("AuthToken"), _lap).toString(Utf8));// localStorage.getItem("AuthToken");
         //TODO: crear el desencriptador AES para le Auth tal vez hacerle con await para que se cre en el mismo store;
         commit("SET_USER", user);
         commit("setAuthToken", token);
