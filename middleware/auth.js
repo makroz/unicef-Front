@@ -1,13 +1,9 @@
 export default function(context) {
   context.store.commit("auth/setRutaBack", context.route.fullPath);
-  let user = context.store.getters["auth/getUser"];
-  if (!user) {
+  if (!context.store.getters["auth/getUser"]) {
     context.store.dispatch("auth/reloadUser");
   }
-  // error({
-  //   message: "You are not connected",
-  //   statusCode: 403
-  // });
+  let user = context.store.getters["auth/getUser"];
 
   if (!user) {
     return context.redirect("/login");

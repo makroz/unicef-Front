@@ -1,6 +1,5 @@
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
-//const _lap=Vue.config.mkAuth.key;
 const _lap=process.env.mkAuth.key;
 
 export const state = () => ({
@@ -102,11 +101,9 @@ export const actions = {
   },
   reloadUser({ commit }) {
     if (localStorage.getItem("Auth")) {
-        console.log('reload',localStorage.getItem("Auth"));
       try {
         let user =JSON.parse(AES.decrypt(localStorage.getItem("Auth"), _lap).toString(Utf8));
-        let token =JSON.parse(AES.decrypt(localStorage.getItem("AuthToken"), _lap).toString(Utf8));// localStorage.getItem("AuthToken");
-        //TODO: crear el desencriptador AES para le Auth tal vez hacerle con await para que se cre en el mismo store;
+        let token =JSON.parse(AES.decrypt(localStorage.getItem("AuthToken"), _lap).toString(Utf8));
         commit("SET_USER", user);
         commit("setAuthToken", token);
       } catch (e) {
