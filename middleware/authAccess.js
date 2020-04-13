@@ -9,7 +9,7 @@
       } else {
 
       if (!ctx.store.getters["auth/tienePermiso"]('ver',access)) {
-          ctx.error({ statusCode: 403, message: 'No tiene Permisos a este Modulo' })
+          ctx.error({ statusCode: 403, message: 'No tiene Permisos a este Modulo'+access+':'+ ctx.store.getters["auth/tienePermiso"]('ver',access)})
         }
       }
       ctx.$axios.defaults.headers.common["Authorization"] =

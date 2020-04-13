@@ -425,7 +425,7 @@ export default {
   },
   created: function() {
     this.$store.dispatch('auth/getUser');
-    console.log("Crear");
+    //console.log("Crear");
     this.paramsExtra.buscar = "";
     this.created = 2;
   },
