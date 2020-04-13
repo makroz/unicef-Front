@@ -1,5 +1,5 @@
 <template>
-  <tr @dblclick="$emit('openDialog','edit', datos.item)">
+  <tr @dblclick="onEdit(datos.item)">
     <td width="50px">
       <v-checkbox primary hide-details v-model="datos.selected"></v-checkbox>
     </td>
@@ -9,8 +9,9 @@
     <td class="text-xs-center">
       <mk-status :status="datos.item.status" :id="datos.item.id" @onStatus="setStatus"></mk-status>
     </td>
-    <td class="text-xs-left">
+    <td class="text-xs-left" v-if="can('edit')||can('del')">
       <v-btn
+      v-if="can('edit')"
         depressed
         outline
         icon
@@ -23,6 +24,7 @@
         <v-icon>edit</v-icon>
       </v-btn>
       <v-btn
+      v-if="can('del')"
         depressed
         outline
         icon
@@ -46,10 +48,17 @@ export default {
   props: {
     datos: {}
   },
+  inject: ['authAccess','can','proteger'],
   methods: {
     setStatus(id, estado) {
       this.$emit("onStatus", id, estado);
+    },
+  onEdit(item){
+    if (this.can('edit')){
+      this.$emit('openDialog','edit', item)
     }
+  }
+
   }
 };
 </script>

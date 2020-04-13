@@ -1,10 +1,10 @@
 <template>
   <v-toolbar card color="white">
-    <v-btn round color="primary" @click="$emit('openDialog','add')">
+        <v-btn round color="primary" @click="$emit('openDialog','add')" v-if="can('edit')==true" >
       <v-icon>add</v-icon>Adicionar
     </v-btn>
     <v-btn
-      v-if="sel.length == 1"
+      v-if="(sel.length == 1)&&can('edit')"
       icon
       fab
       small
@@ -13,7 +13,7 @@
     >
       <v-icon>edit</v-icon>
     </v-btn>
-    <v-btn v-if="(sel.length > 0)" icon fab color="red" small @click="$emit('deleteItem')">
+    <v-btn v-if="(sel.length > 0)&&can('del')" icon fab color="red" small @click="$emit('deleteItem')">
       <v-icon>delete</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
@@ -49,15 +49,15 @@ export default {
   props: {
     sel: null,
     busquedas: null,
-    campos: null
+    campos: null,
   },
   data() {
     return {
       curPermisos: [],
-      lCond: []
+      lCond: [],
     };
   },
-  computed: {},
+  inject: ['authAccess','can','proteger'],
   methods: {
     onBuscar(datos, quitarbusqueda = false, lCond = []) {
       this.lCond = lCond;

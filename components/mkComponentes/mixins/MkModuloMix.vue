@@ -200,6 +200,7 @@ export default {
       return true;
     },
     setStatus(id, newStatus) {
+      if (!this.can('edit',true)){return false;}
       let me = this;
       me.$axios
         .post(me.urlModulo + "/setStatus", {
@@ -231,6 +232,7 @@ export default {
         me.item.paramsExtra = me.paramsExtra;
       }
       if (me.item.id !== null) {
+        if (!this.can('edit',true)){return false;}
         me.$axios
           .put(me.urlModulo + "/" + me.item.id, me.item)
           .then(function(response) {
@@ -239,7 +241,6 @@ export default {
               me.closeDialog();
               me.paramsExtra = {};
             } else {
-              //me.closeDialog("con Error Grabar");
               isError = 1;
             }
           })
@@ -248,6 +249,7 @@ export default {
             isError = 2;
           });
       } else {
+        if (!this.can('add',true)){return false;}
         me.$axios
           .post(me.urlModulo, me.item)
           .then(function(response) {
@@ -257,7 +259,6 @@ export default {
               me.closeDialog();
               me.paramsExtra = {};
             } else {
-              //me.closeDialog("con Error Grabar");
               isError = 1;
             }
           })
@@ -269,6 +270,7 @@ export default {
       }
     },
     deleteItem(id) {
+      if (!this.can('del',true)){return false;}
       let me = this;
       if (me.lista.selected.length > 0) {
         id = "";
@@ -302,15 +304,13 @@ export default {
     },
     beforeOpen(accion, data = {}) {},
     afterOpen(accion, data = {}) {},
-    closeDialog(msg = "") {
+    closeDialog() {
       this.tituloModal = "";
       this.errores = [];
       this.modal = false;
-      // if (msg != "") {
-      //   alert(msg);
-      // }
     },
     openDialog(accion, data = {}) {
+      if (!this.can('accion',true)){return false;}
       this.errores = [];
       this.modal = true;
       this.item = Object.assign({}, data);
@@ -329,14 +329,12 @@ export default {
       let params=this.paginator;
       params = JSON.stringify(params);
       localStorage.setItem(this.$options.name+".Params", params);
-      //console.log('Graba Params',params);
     },
 
     getParams(){
       if (localStorage.getItem(this.$options.name+".Params")){
         let params=JSON.parse(localStorage.getItem(this.$options.name+".Params"));
         return params;
-        //console.log('Recupera Params',params);
       }else{
         return false;
       }
@@ -356,6 +354,7 @@ export default {
           });
         }
       });
+
       h.push({
         text: "Estado",
         value: "status",
@@ -363,6 +362,7 @@ export default {
         width: "150px",
         sortable: false
       });
+    if (this.can('edit')||this.can('del')){
       h.push({
         text: "Acciones",
         value: "",
@@ -370,6 +370,7 @@ export default {
         width: "175px",
         sortable: false
       });
+    }
 
       return h;
     },
@@ -385,19 +386,55 @@ export default {
         }
       });
       return h;
+    },
+    can: function(){
+      return function (val,alertar=false) {
+        let guard=this.$options.middleware||this.proteger||'';
+        //console.log('perm',typeof(guard));
+        if (typeof(guard)=='string'){
+          if (guard!='authAccess'){
+            return true;
+          }
+        }else{
+          if (!guard.includes('authAccess')){
+            return true;
+          }
+        }
+
+      let passed=this.$store.getters["auth/tienePermiso"](val,this.authAccess||this.$options.authAccess||this.$options.name,);
+
+      if (!passed){
+      if (alertar){
+          if (alertar===true){
+            alertar='no tiene permisos';
+          }
+          alert(alertar);
+        }
+      }
+
+        return passed;
+     }
+    },
+  },
+  provide: function() {
+  	return {
+    	authAccess: this.$options.authAccess||this.$options.name,
+      can: this.can,
+      proteger:this.$options.middleware||''
     }
   },
   created: function() {
+    this.$store.dispatch('auth/getUser');
     console.log("Crear");
     this.paramsExtra.buscar = "";
     this.created = 2;
-    //this.getParams();
   },
   mounted() {
     //console.log("mounted");
     //TODO: manejar roles para mostrar los registros borrados o papelera
     //TODO: ver el update que actualize en elf ront y no requiera pedir la lista, ver el manejo de cache de la lista con checlsum
-    //crear el auth clase
+    //TODO: hacer la validacion de unico en la BD en el front y en el back
+    //TODO: ver el cache en las consultas del crud en back y en el front
   }
 };
 </script>

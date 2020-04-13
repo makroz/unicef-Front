@@ -5,7 +5,8 @@ const _lap=process.env.mkAuth.key;
 export const state = () => ({
   authToken: null,
   authUser: null,
-  authAccess: null,
+  //authAccess: null,
+  acceso:false,
   rutaBack: null,
   permisos: { view: 1, ver:1, show:1,leer:1,read:1
              , add: 4, crear: 4, alta:4, create:4, store:4
@@ -24,23 +25,27 @@ export const getters = {
     return state.authToken;
   },
 
-  _getPermiso: state => permiso => {
+  getPermiso: state => permiso => {
     permiso = permiso.toLowerCase().trim();
     return state.permisos[permiso];
   },
-  _tienePermiso: (state, getters) => (permiso, tipo) => {
-
+  tienePermiso: (state, getters) => (tipo,permiso) => {
     const tipos = state.permisos;
-    permiso = permiso.toLowerCase().trim();
-    let r = false;
-    let acceso = getters.getUser.permisos[permiso];
-    console.log("_permisos:",permiso,' Tipo:', tipo, " :", tipos[tipo], "/", acceso);
+    if (permiso){
+      permiso = permiso.toLowerCase().trim();
+    }
+    //console.log("antes tienePermisos:",getters.getUser);
+    const acceso = getters.getUser.permisos[permiso];
+    //console.log("_permisos:",'('+permiso+')',' Tipo:', tipo, " :", tipos[tipo], "/", acceso,'***',getters.getUser.permisos);
     return acceso && acceso & tipos[tipo];
   }
 };
 export const mutations = {
-  SET_USER(state, user) {
-    if (user != null) {
+  setAcceso(state,valor){
+    state.acceso=valor;
+  },
+  SET_USER(state, user,persist=true) {
+    if ((user != null)&&(persist)) {
       localStorage.setItem("Auth", AES.encrypt( JSON.stringify(user), _lap).toString());
     } else {
       localStorage.removeItem("Auth");
@@ -50,9 +55,6 @@ export const mutations = {
   },
   setRutaBack(state, val) {
     state.rutaBack = val;
-  },
-  setAuthAccess(state, val) {
-    state.authAccess = val;
   },
   setAuthToken(state, val) {
     if (val != null) {
@@ -65,6 +67,17 @@ export const mutations = {
 };
 
 export const actions = {
+
+  can({getters,commit},act){
+    let modulo = this.$router.currentRoute.matched.find(
+      v => v.path == this.$router.currentRoute.path
+    );
+    modulo=modulo.components.default.options.authAccess||modulo.components.default.options.name;
+    let per=getters.tienePermiso(act,modulo);
+    console.log('can:',modulo,':',act,'//',per) ;
+    commit("setAcceso", per);
+    return per;
+  },
   async login({ commit }, auth) {
     console.log("this:", this.state.auth.rutaBack);
     try {
@@ -91,21 +104,29 @@ export const actions = {
       throw error;
     }
   },
-
+  getUser({getters,commit,dispatch}){
+    if (!getters.getUser){
+      dispatch('reloadUser',false);
+    }
+    return getters.getUser;
+  },
   logout({ commit }) {
     //await this.$axios.post("logout");
     this.$axios.defaults.headers.common["Authorization"] = "";
     commit("SET_USER", null);
     commit("setAuthToken", null);
+    commit("setAcceso", false);
+
     this.$router.push("/login");
   },
-  reloadUser({ commit }) {
+  reloadUser({ commit },persist=true) {
     if (localStorage.getItem("Auth")) {
       try {
         let user =JSON.parse(AES.decrypt(localStorage.getItem("Auth"), _lap).toString(Utf8));
         let token =JSON.parse(AES.decrypt(localStorage.getItem("AuthToken"), _lap).toString(Utf8));
-        commit("SET_USER", user);
-        commit("setAuthToken", token);
+        commit("SET_USER", user,persist);
+        commit("setAuthToken", token,persist);
+        return user;
       } catch (e) {
         console.log("error", e);
         localStorage.removeItem("Auth");

@@ -19,9 +19,12 @@ export default {
   data() {
     return {};
   },
+  inject: ['authAccess','can','proteger'],
   methods: {
     setStatus(estado) {
-      this.$emit("onStatus", this.id, estado);
+      if (this.can('edit')) {
+        this.$emit("onStatus", this.id, estado);
+      }
     }
   }
 };

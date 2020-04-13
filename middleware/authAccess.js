@@ -1,36 +1,17 @@
-export default function(context) {
-  context.store.commit("auth/setRutaBack", context.route.fullPath);
-  let access = context.route.matched.find(
-    v => v.path == context.route.fullPath
-  );
+    export default async function(ctx) {
+      ctx.store.commit("auth/setRutaBack", ctx.route.fullPath);
+      let access = ctx.route.matched.find(
+         v => v.path == ctx.route.fullPath
+       );
+      access=access.components.default.options.authAccess||access.components.default.options.name;
+      if (!(await ctx.store.dispatch('auth/getUser')).id) {
+        return ctx.redirect("/login");
+      } else {
 
-  context.store.commit(
-    "auth/setAuthAccess",
-    access.components.default.options.authAccess
-  );
-
-  if (!context.store.getters["auth/getUser"]) {
-    context.store.dispatch("auth/reloadUser");
-  }
-  let user = context.store.getters["auth/getUser"];
-
-  if (!user) {
-    return context.redirect("/login");
-  } else {
-    const plug = context.store.state.auth.authAccess;
-    console.log(
-      "Verificar permiso del componente:",
-      context.store.state.auth.rutaBack,
-      " que debe ser:",
-      plug
-    );
-
-    if (context.store.getters["auth/_tienePermiso"](plug, "view")) {
-      console.log("Si Tiene permiso a", plug);
-    } else {
-      console.log("No Tiene permiso a", plug);
+      if (!ctx.store.getters["auth/tienePermiso"]('ver',access)) {
+          ctx.error({ statusCode: 403, message: 'No tiene Permisos a este Modulo' })
+        }
+      }
+      ctx.$axios.defaults.headers.common["Authorization"] =
+      ctx.store.getters["auth/getToken"];
     }
-  }
-  context.$axios.defaults.headers.common["Authorization"] =
-    context.store.getters["auth/getToken"];
-}

@@ -1,13 +1,8 @@
-export default function(context) {
-  context.store.commit("auth/setRutaBack", context.route.fullPath);
-  if (!context.store.getters["auth/getUser"]) {
-    context.store.dispatch("auth/reloadUser");
+export default async function(ctx) {
+  ctx.store.commit("auth/setRutaBack", ctx.route.fullPath);
+  if (!(await ctx.store.dispatch('auth/getUser')).id) {
+    return ctx.redirect("/login");
   }
-  let user = context.store.getters["auth/getUser"];
-
-  if (!user) {
-    return context.redirect("/login");
-  }
-  context.$axios.defaults.headers.common["Authorization"] =
-    context.store.getters["auth/getToken"];
+  ctx.$axios.defaults.headers.common["Authorization"] =
+  ctx.store.getters["auth/getToken"];
 }
