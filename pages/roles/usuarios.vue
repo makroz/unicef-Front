@@ -98,7 +98,6 @@
               label="Rol"
             ></v-select>
           </v-tab-item>
-
           <v-tab-item>
             <v-select
               v-model="paramsExtra.grupos"
@@ -121,6 +120,7 @@
             ></mk-permisos>
           </v-tab-item>
         </v-tabs-items>
+
       </mk-form>
     </v-container>
   </div>

@@ -310,7 +310,7 @@ export default {
       this.modal = false;
     },
     openDialog(accion, data = {}) {
-      if (!this.can('accion',true)){return false;}
+      if (!this.can(accion,true)){return false;}
       this.errores = [];
       this.modal = true;
       this.item = Object.assign({}, data);
@@ -390,7 +390,6 @@ export default {
     can: function(){
       return function (val,alertar=false) {
         let guard=this.$options.middleware||this.proteger||'';
-        //console.log('perm',typeof(guard));
         if (typeof(guard)=='string'){
           if (guard!='authAccess'){
             return true;
@@ -400,7 +399,7 @@ export default {
             return true;
           }
         }
-
+      //console.error('Can mix:',val,':',this.authAccess||this.$options.authAccess||this.$options.name);
       let passed=this.$store.getters["auth/tienePermiso"](val,this.authAccess||this.$options.authAccess||this.$options.name,);
 
       if (!passed){
@@ -432,9 +431,9 @@ export default {
   mounted() {
     //console.log("mounted");
     //TODO: manejar roles para mostrar los registros borrados o papelera
-    //TODO: ver el update que actualize en elf ront y no requiera pedir la lista, ver el manejo de cache de la lista con checlsum
     //TODO: hacer la validacion de unico en la BD en el front y en el back
-    //TODO: ver el cache en las consultas del crud en back y en el front
+    //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
+    //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can
   }
 };
 </script>

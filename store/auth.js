@@ -29,7 +29,18 @@ export const getters = {
     permiso = permiso.toLowerCase().trim();
     return state.permisos[permiso];
   },
-  tienePermiso: (state, getters) => (tipo,permiso) => {
+  tienePermiso: (state, getters) => {
+    const cache ={};
+    return   (tipo,permiso) => {
+      const key = tipo + permiso;
+      if (!cache[key]){
+        cache[key]= getters._tienePermiso(tipo, permiso);
+      }
+      return cache[key];
+    }
+  },
+
+  _tienePermiso: (state, getters) => (tipo,permiso) => {
     const tipos = state.permisos;
     if (permiso){
       permiso = permiso.toLowerCase().trim();
