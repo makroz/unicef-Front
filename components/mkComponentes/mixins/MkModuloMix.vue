@@ -33,7 +33,7 @@ export default {
         num: value => !isNaN(value) || "Debe ser un Numerico",
         min(minNum) {
           return v =>
-            { console.log('min',v); return (v || "").length > minNum || "Minimo " + minNum + " caracteres"};
+            {  return (v || "").length > minNum || "Minimo " + minNum + " caracteres"};
         },
         max(maxNum) {
           return v =>
@@ -48,12 +48,13 @@ export default {
         unique: campo => {
           let me=this;
           return v =>
-            { console.log('unique',v,campo,me);
+            {
+              //console.log('unique',v,campo,me);
             if (!v){
               return true;
             }
             if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
-              console.log('correindo:',v,'/',me.rulesUnico.old);
+              //console.log('correindo:',v,'/',me.rulesUnico.old);
               //me._ruleUnique(campo,v);
 
               me.rulesUnico.processing=true;
