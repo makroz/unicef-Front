@@ -21,7 +21,7 @@
                 :headers="headers"
                 :items="lista.items"
                 class="elevation-1"
-                item-key="id"
+                item-key="'s'+id"
                 select-all
                 v-model="lista.selected"
                 :loading="loading"
@@ -76,7 +76,7 @@
             <v-text-field
               label="eMail"
               v-model="item.email"
-              :rules="[rules.required,rules.email]"
+              :rules="[rules.required,rules.email,rules.unique('email')]"
               validate-on-blur
             ></v-text-field>
             <v-text-field

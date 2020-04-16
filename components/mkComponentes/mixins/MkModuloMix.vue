@@ -33,7 +33,7 @@ export default {
         num: value => !isNaN(value) || "Debe ser un Numerico",
         min(minNum) {
           return v =>
-            (v || "").length > minNum || "Minimo " + minNum + " caracteres";
+            { console.log('min',v); return (v || "").length > minNum || "Minimo " + minNum + " caracteres"};
         },
         max(maxNum) {
           return v =>
@@ -43,12 +43,31 @@ export default {
         email: value => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || "e-mail no válido";
-        }
+        },
+        //unique:this.ruleUnique
+        unique: minNum => {
+          let me=this;
+          return v =>
+            { console.log('unique',v,minNum,me);
+            if (!v){
+              return true;
+            }
+            if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
+              console.log('correindo:',v,'/',me.rulesUnico.old);
+              me._ruleUnique(minNum,v);
+            }
+            return me.rulesUnico.valid;};
+        },
       },
       errores: [],
       //filtros y busqueda
       busquedas: [],
       //modal
+      rulesUnico:{
+        valid:true,
+        old:'',
+        processing:false
+      },
       modal: false,
       tituloModal: "",
       loading: false,
@@ -65,6 +84,34 @@ export default {
     };
   },
   methods: {
+    async _ruleUnique(campo,v){
+      let me=this;
+          me.rulesUnico.processing=true;
+        let {data}= await me.$axios.get(me.urlModulo + '/' + me.item.id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v });
+          if (data.ok>0){
+                me.rulesUnico.valid= 'Ese dato ya existe';
+              }else{
+                me.rulesUnico.valid= true;
+              }
+              me.$refs.mkForm.$refs.form.validate();
+          me.rulesUnico.old=v;
+          me.rulesUnico.processing=false;
+    },
+    ruleUnique(campo){
+      console.log('campo:',campo);
+          let me=this;
+          return v=>{
+          if (!v){
+              return true;
+            }
+            if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
+              console.log('v:',v,'/',me.rulesUnico.old);
+              me._ruleUnique(campo,v);
+            }
+            console.error('Valido:',me.rulesUnico.valid);
+            return me.rulesUnico.valid;
+          }
+        },
     onBuscar(datos, quitarbuscar = false) {
       //console.log("onBuscar");
       this.paginator.page = 1;
@@ -113,13 +160,6 @@ export default {
       if (typeof d !== "object" || isNull(d)) {
         d = { sortBy: null, descending: null };
       } else {
-        // if (!isNull(d)) {
-        //   if (d.totalItems !== undefined) {
-        //     //console.log("listar0", d.totalItems);
-        //     return true;
-        //   }
-        // }
-        //console.log("listar1", d);
         this.busquedas.forEach(function(item) {
           if (item.criterio != "") {
             bus.push({
@@ -433,7 +473,7 @@ export default {
     //TODO: manejar roles para mostrar los registros borrados o papelera
     //TODO: hacer la validacion de unico en la BD en el front y en el back
     //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
-    //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can
+    //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
   }
 };
 </script>

@@ -70,11 +70,6 @@ export default {
       }
     }
   },
-  computed: {
-    full: function() {
-      return this.$store.state.auth.authUser;
-    }
-  },
   mounted() {}
 };
 </script>
