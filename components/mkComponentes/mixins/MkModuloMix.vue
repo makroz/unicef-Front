@@ -45,18 +45,33 @@ export default {
           return pattern.test(value) || "e-mail no válido";
         },
         //unique:this.ruleUnique
-        unique: minNum => {
+        unique: campo => {
           let me=this;
           return v =>
-            { console.log('unique',v,minNum,me);
+            { console.log('unique',v,campo,me);
             if (!v){
               return true;
             }
             if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
               console.log('correindo:',v,'/',me.rulesUnico.old);
-              me._ruleUnique(minNum,v);
+              //me._ruleUnique(campo,v);
+
+              me.rulesUnico.processing=true;
+              me.$axios.get(me.urlModulo + '/' + me.item.id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v }).then(
+                ({data}) => {
+                    if (data.ok>0){
+                      me.rulesUnico.valid= 'Ese dato ya existe';
+                    }else{
+                      me.rulesUnico.valid= true;
+                    }
+                    me.$refs.mkForm.$refs.form.validate();
+                    me.rulesUnico.old=v;
+                    me.rulesUnico.processing=false;
+                }
+              );
             }
-            return me.rulesUnico.valid;};
+            return me.rulesUnico.valid;
+            };
         },
       },
       errores: [],
@@ -84,34 +99,6 @@ export default {
     };
   },
   methods: {
-    async _ruleUnique(campo,v){
-      let me=this;
-          me.rulesUnico.processing=true;
-        let {data}= await me.$axios.get(me.urlModulo + '/' + me.item.id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v });
-          if (data.ok>0){
-                me.rulesUnico.valid= 'Ese dato ya existe';
-              }else{
-                me.rulesUnico.valid= true;
-              }
-              me.$refs.mkForm.$refs.form.validate();
-          me.rulesUnico.old=v;
-          me.rulesUnico.processing=false;
-    },
-    ruleUnique(campo){
-      console.log('campo:',campo);
-          let me=this;
-          return v=>{
-          if (!v){
-              return true;
-            }
-            if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
-              console.log('v:',v,'/',me.rulesUnico.old);
-              me._ruleUnique(campo,v);
-            }
-            console.error('Valido:',me.rulesUnico.valid);
-            return me.rulesUnico.valid;
-          }
-        },
     onBuscar(datos, quitarbuscar = false) {
       //console.log("onBuscar");
       this.paginator.page = 1;
