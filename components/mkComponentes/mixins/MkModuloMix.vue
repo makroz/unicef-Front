@@ -45,19 +45,20 @@ export default {
           return pattern.test(value) || "e-mail no válido";
         },
         //unique:this.ruleUnique
-        unique: campo => {
+        unique: (campo,obj) => {
           let me=this;
           return v =>
             {
-              //console.log('unique',v,campo,me);
+              console.log('unique',v,campo,':',me.rulesUnico.old);
             if (!v){
               return true;
             }
             if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
-              //console.log('correindo:',v,'/',me.rulesUnico.old);
+              console.log('corriendo Unique:',v,'/',me.rulesUnico.old,'::',obj);
               //me._ruleUnique(campo,v);
 
               me.rulesUnico.processing=true;
+              try {
               me.$axios.get(me.urlModulo + '/' + me.item.id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v }).then(
                 ({data}) => {
                     if (data.ok>0){
@@ -65,11 +66,15 @@ export default {
                     }else{
                       me.rulesUnico.valid= true;
                     }
-                    me.$refs.mkForm.$refs.form.validate();
                     me.rulesUnico.old=v;
                     me.rulesUnico.processing=false;
+                    me.$refs[campo].validate();
                 }
               );
+
+              } catch (error) {
+                  me.rulesUnico.processing=false;
+              }
             }
             return me.rulesUnico.valid;
             };

@@ -77,6 +77,7 @@
               label="eMail"
               v-model="item.email"
               :rules="[rules.required,rules.email,rules.unique('email')]"
+              ref='email'
               validate-on-blur
             ></v-text-field>
             <v-text-field
