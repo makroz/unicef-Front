@@ -34,13 +34,13 @@ export default {
         min(minNum) {
           return v =>
             {
-              console.error('min',minNum);
+            //console.error('min',minNum);
              return (v || "").length > minNum || "Minimo " + minNum + " caracteres"
              };
         },
         max(maxNum) {
           return v =>{
-            console.error('max',maxNum);
+            //console.error('max',maxNum);
             (v || "").length <= maxNum || "Maximo " + maxNum + " caracteres";
             }
         },
@@ -49,16 +49,16 @@ export default {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || "e-mail no válido";
         },
-        unique: (campo,obj) => {
+        unique: (campo) => {
           let me=this;
-          return v =>
+          return (v) =>
             {
-              console.error('unique',v,campo,':',me.rulesUnico.old);
+              //console.error('unique',v,campo,':',me.rulesUnico.old);
             if (!v){
               return true;
             }
             if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
-              console.log('corriendo Unique:',v,'/',me.rulesUnico.old,'::',obj);
+              //console.log('corriendo Unique:',v,'/',me.rulesUnico.old);
               me.rulesUnico.processing=true;
               try {
               me.$axios.get(me.urlModulo + '/' + me.item.id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v }).then(
