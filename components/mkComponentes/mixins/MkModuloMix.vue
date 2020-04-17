@@ -103,7 +103,14 @@ export default {
       lista: {
         items: [],
         selected: []
+      },
+      cacheCan:{
+        '1':false,
+        '2':false,
+        '4':false,
+        '8':false
       }
+
     };
   },
   methods: {
@@ -373,6 +380,10 @@ export default {
       }else{
         return false;
       }
+    },
+    can(act='view'){
+      console.log('buscando permisos para:',act);
+      return this.cacheCan[this.$store.state.auth.permisos[act]];
     }
   },
   computed: {
@@ -422,7 +433,7 @@ export default {
       });
       return h;
     },
-    can: function(){
+    _can: function(){
       return function (val,alertar=false) {
         let guard=this.$options.middleware||this.proteger||'';
         if (typeof(guard)=='string'){
@@ -464,11 +475,18 @@ export default {
     this.created = 2;
   },
   mounted() {
+    const p=this.$store.state.auth.permisos;
+    this.cacheCan[p['view']]=this._can('view');
+    this.cacheCan[p['edit']]=this._can('edit');
+    this.cacheCan[p['add']]=this._can('add');
+    this.cacheCan[p['del']]=this._can('del');
     //console.log("mounted");
     //TODO: manejar roles para mostrar los registros borrados o papelera
-    //TODO: hacer la validacion de unico en la BD en el front y en el back
     //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
+    //TODO: ver de como sacar en console con colores los mensajes
+    //TODO: ver de configigurar parametros para el modulo auth, ademas de mejorar los mensajes con un snackber, ver de hacerlo un modulo
+
   }
 };
 </script>
