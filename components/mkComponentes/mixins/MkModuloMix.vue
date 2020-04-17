@@ -33,30 +33,32 @@ export default {
         num: value => !isNaN(value) || "Debe ser un Numerico",
         min(minNum) {
           return v =>
-            {  return (v || "").length > minNum || "Minimo " + minNum + " caracteres"};
+            {
+              console.error('min',minNum);
+             return (v || "").length > minNum || "Minimo " + minNum + " caracteres"
+             };
         },
         max(maxNum) {
-          return v =>
+          return v =>{
+            console.error('max',maxNum);
             (v || "").length <= maxNum || "Maximo " + maxNum + " caracteres";
+            }
         },
         noSpaces: v => (v || "").indexOf(" ") < 0 || "No se admite espacios",
         email: value => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || "e-mail no válido";
         },
-        //unique:this.ruleUnique
         unique: (campo,obj) => {
           let me=this;
           return v =>
             {
-              console.log('unique',v,campo,':',me.rulesUnico.old);
+              console.error('unique',v,campo,':',me.rulesUnico.old);
             if (!v){
               return true;
             }
             if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
               console.log('corriendo Unique:',v,'/',me.rulesUnico.old,'::',obj);
-              //me._ruleUnique(campo,v);
-
               me.rulesUnico.processing=true;
               try {
               me.$axios.get(me.urlModulo + '/' + me.item.id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v }).then(
@@ -80,7 +82,7 @@ export default {
             };
         },
       },
-      errores: [],
+//      errores: [],
       //filtros y busqueda
       busquedas: [],
       //modal
@@ -339,12 +341,12 @@ export default {
     afterOpen(accion, data = {}) {},
     closeDialog() {
       this.tituloModal = "";
-      this.errores = [];
+      //this.errores = [];
       this.modal = false;
     },
     openDialog(accion, data = {}) {
       if (!this.can(accion,true)){return false;}
-      this.errores = [];
+      //this.errores = [];
       this.modal = true;
       this.item = Object.assign({}, data);
       this.$refs.mkForm.$refs.form.resetValidation();

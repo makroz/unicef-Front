@@ -21,7 +21,7 @@
                 :headers="headers"
                 :items="lista.items"
                 class="elevation-1"
-                item-key="'s'+id"
+                item-key="name"
                 select-all
                 v-model="lista.selected"
                 :loading="loading"
@@ -68,7 +68,6 @@
               label="Nombre"
               v-model="item.name"
               :rules="[rules.required]"
-              autofocus
               validate-on-blur
               ref="focus"
             ></v-text-field>

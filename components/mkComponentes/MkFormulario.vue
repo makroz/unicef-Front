@@ -2,7 +2,7 @@
   <div>
     <v-dialog v-model="modal" scrollable persistent max-width="70%">
       <v-card>
-        <v-card-title v-text="tit"></v-card-title>
+        <v-card-title ><span class="headline">{{ tit }}</span></v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-form ref="form" v-model="formValid" lazy-validation>

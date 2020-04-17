@@ -45,12 +45,12 @@ export const getters = {
     if (permiso){
       permiso = permiso.toLowerCase().trim();
     }
-    //console.log("antes tienePermisos:",getters.getUser);
+//    console.log("antes tienePermisos:",getters.getUser);
     let acceso=0;
     if (getters.getUser.permisos){
       acceso = getters.getUser.permisos[permiso];
     }
-    //console.log("_permisos:",'('+permiso+')',' Tipo:', tipo, " :", tipos[tipo], "/", acceso,'***',acceso && acceso & tipos[tipo],getters.getUser.permisos);
+  //console.log("_permisos:",'('+permiso+')',' Tipo:', tipo, " :", tipos[tipo], "/", acceso,'***',acceso && acceso & tipos[tipo],getters.getUser.permisos);
     return acceso && acceso & tipos[tipo]==tipos[tipo];
   }
 };
