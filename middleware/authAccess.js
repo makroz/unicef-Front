@@ -4,12 +4,13 @@
          v => v.path == ctx.route.fullPath
        );
       access=access.components.default.options.authAccess||access.components.default.options.name;
-      if (!(await ctx.store.dispatch('auth/getUser')).id) {
+      const user=await ctx.store.dispatch('auth/getUser');
+      if (!user || !user.id) {
         return ctx.redirect("/login");
       } else {
 
       if (!ctx.store.getters["auth/tienePermiso"]('ver',access)) {
-          ctx.error({ statusCode: 403, message: 'No tiene Permisos a este Modulo'+access+':'+ ctx.store.getters["auth/tienePermiso"]('ver',access)})
+          ctx.error({ statusCode: 403, message: 'No tiene Permisos a este Modulo '+access});
         }
       }
       ctx.$axios.defaults.headers.common["Authorization"] =

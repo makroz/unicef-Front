@@ -359,14 +359,11 @@ export default {
     beforeOpen(accion, data = {}) {},
     afterOpen(accion, data = {}) {},
     closeDialog() {
-      console.error('closeDialog');
       this.tituloModal = "";
-      //this.errores = [];
       this.modal = false;
     },
     openDialog(accion, data = {}) {
       if (!this.can(accion,true)){return false;}
-      //this.errores = [];
       this.modal = true;
       this.item = Object.assign({}, data);
       this.$refs.mkForm.$refs.form.resetValidation();

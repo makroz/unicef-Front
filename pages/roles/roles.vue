@@ -79,7 +79,7 @@ import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
 
 export default {
   middleware: ["authAccess"],
-  authAccess: "Roles",
+
   mixins: [MkModuloMix],
   name: "Roles",
   data() {

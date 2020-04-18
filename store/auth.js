@@ -1,5 +1,6 @@
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
+import Swal from "sweetalert2";
 const _lap=process.env.mkAuth.key;
 
 export const state = () => ({
@@ -63,8 +64,8 @@ export const mutations = {
       localStorage.setItem("Auth", AES.encrypt( JSON.stringify(user), _lap).toString());
     } else {
       localStorage.removeItem("Auth");
+      localStorage.removeItem("AuthToken");
     }
-
     state.authUser = user;
   },
   setRutaBack(state, val) {
@@ -118,9 +119,9 @@ export const actions = {
       throw error;
     }
   },
-  getUser({getters,commit,dispatch}){
+  async getUser({getters,commit,dispatch}){
     if (!getters.getUser){
-      dispatch('reloadUser',false);
+      return await dispatch('reloadUser',false);
     }
     return getters.getUser;
   },
@@ -128,7 +129,6 @@ export const actions = {
     //await this.$axios.post("logout");
     this.$axios.defaults.headers.common["Authorization"] = "";
     commit("SET_USER", null);
-    commit("setAuthToken", null);
     commit("setAcceso", false);
 
     this.$router.push("/login");
@@ -143,8 +143,7 @@ export const actions = {
         return user;
       } catch (e) {
         console.log("error", e);
-        localStorage.removeItem("Auth");
-        localStorage.removeItem("AuthToken");
+        commit("SET_USER", null);
       }
     }
   }
