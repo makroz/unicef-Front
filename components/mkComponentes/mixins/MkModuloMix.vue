@@ -4,7 +4,7 @@ import MkTableHead from "@/components/mkComponentes/MkTableHead";
 import MkTableRow from "@/components/mkComponentes/MkTableRow";
 import MkPaginator from "@/components/mkComponentes/MkPaginator";
 //import MkStatus from "@/components/mkComponentes/MkStatus";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { isNull, log } from "util";
 export default {
   name: "MkModuloMix",
@@ -321,20 +321,32 @@ export default {
         });
         id = id + "0";
       }
-      swal("Seguro de querer Eliminar?", {
-        buttons: ["No", true]
-      }).then(willDelete => {
-        if (willDelete) {
+
+
+
+      Swal.fire({
+        title: 'Seguro de querer Eliminar?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: 'red',
+        //cancelButtonColor: '#d33',
+        reverseButtons:true,
+        confirmButtonText: 'Si, seguro!!!'
+      }).then((willDelete) => {
+        console.log('willdelete:',willDelete);
+        if (willDelete.value===true) {
+          console.log('entro');
           me.$axios
             .post(me.urlModulo + "/delete", {
               id: id
-            })
-            .then(function(response) {
-              if (me.isOk(response.data)) {
-                me.fillTable(response.data.data);
-                swal("Elemento(s) eliminados!", {
+            }).then(({data}) => {
+              if (me.isOk(data)) {
+                me.fillTable(data.data);
+                Swal.fire(
+                  'Elemento(s) eliminados!',{
                   icon: "success"
-                });
+                  }
+                )
                 me.paramsExtra = {};
               }
             })
