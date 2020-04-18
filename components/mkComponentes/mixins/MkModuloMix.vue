@@ -342,8 +342,8 @@ export default {
             }).then(({data}) => {
               if (me.isOk(data)) {
                 me.fillTable(data.data);
-                Swal.fire(
-                  'Elemento(s) eliminados!',{
+                Swal.fire({
+                  title: 'Elemento(s) eliminados!',
                   icon: "success"
                   }
                 )
