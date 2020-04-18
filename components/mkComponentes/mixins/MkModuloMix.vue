@@ -347,6 +347,7 @@ export default {
     beforeOpen(accion, data = {}) {},
     afterOpen(accion, data = {}) {},
     closeDialog() {
+      console.error('closeDialog');
       this.tituloModal = "";
       //this.errores = [];
       this.modal = false;
@@ -381,10 +382,36 @@ export default {
         return false;
       }
     },
-    can(act='view'){
-      console.log('buscando permisos para:',act);
-      return this.cacheCan[this.$store.state.auth.permisos[act]];
-    }
+    can(val,alertar=false) {
+        //console.info('entro a can!!! :'+val);
+        let guard=this.$options.middleware||this.proteger||'';
+        if (typeof(guard)=='string'){
+          if (guard!='authAccess'){
+            return true;
+          }
+        }else{
+          if (!guard.includes('authAccess')){
+            return true;
+          }
+        }
+      //console.error('Can mix:',val,':',this.authAccess||this.$options.authAccess||this.$options.name);
+      let passed=this.$store.getters["auth/tienePermiso"](val,this.authAccess||this.$options.authAccess||this.$options.name,);
+
+      if (!passed){
+      if (alertar){
+          if (alertar===true){
+            alertar='no tiene permisos';
+          }
+          alert(alertar);
+        }
+      }
+
+        return passed;
+     },
+    // can(act='view'){
+    //   console.log('buscando permisos para:',act);
+    //   return this.cacheCan[this.$store.state.auth.permisos[act]];
+    // }
   },
   computed: {
     headers: function() {
@@ -433,33 +460,6 @@ export default {
       });
       return h;
     },
-    _can: function(){
-      return function (val,alertar=false) {
-        let guard=this.$options.middleware||this.proteger||'';
-        if (typeof(guard)=='string'){
-          if (guard!='authAccess'){
-            return true;
-          }
-        }else{
-          if (!guard.includes('authAccess')){
-            return true;
-          }
-        }
-      //console.error('Can mix:',val,':',this.authAccess||this.$options.authAccess||this.$options.name);
-      let passed=this.$store.getters["auth/tienePermiso"](val,this.authAccess||this.$options.authAccess||this.$options.name,);
-
-      if (!passed){
-      if (alertar){
-          if (alertar===true){
-            alertar='no tiene permisos';
-          }
-          alert(alertar);
-        }
-      }
-
-        return passed;
-     }
-    },
   },
   provide: function() {
   	return {
@@ -475,11 +475,6 @@ export default {
     this.created = 2;
   },
   mounted() {
-    const p=this.$store.state.auth.permisos;
-    this.cacheCan[p['view']]=this._can('view');
-    this.cacheCan[p['edit']]=this._can('edit');
-    this.cacheCan[p['add']]=this._can('add');
-    this.cacheCan[p['del']]=this._can('del');
     //console.log("mounted");
     //TODO: manejar roles para mostrar los registros borrados o papelera
     //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum

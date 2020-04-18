@@ -58,13 +58,15 @@ module.exports = {
   */
   plugins: [
     '@/plugins/vuetify',
-    '@/plugins/vee-validate'
+    '@/plugins/vee-validate',
+
   ],
 
   /*
   ** Nuxt.js modules
   */
-  modules: ["@nuxtjs/axios"],
+  modules: ["@nuxtjs/axios"
+],
   axios: {
     // proxyHeaders: false
     baseURL: "http://gFactura.com/public/api"

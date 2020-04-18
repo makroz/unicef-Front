@@ -1,5 +1,5 @@
 <template>
-  <tr class="text-xs-center">
+  <tr >
     <td
       class="text-xs-left"
       @dblclick="selPermiso()"

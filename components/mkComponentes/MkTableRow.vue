@@ -1,5 +1,5 @@
 <template>
-  <tr @dblclick="onEdit(datos.item)">
+  <tr @dblclick="onEdit(datos.item)"  >
     <td width="50px">
       <v-checkbox primary hide-details v-model="datos.selected"></v-checkbox>
     </td>

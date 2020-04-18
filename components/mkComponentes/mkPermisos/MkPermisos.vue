@@ -13,11 +13,10 @@
       <mk-permiso
         v-for="(permiso, index) in permisos"
         :permisoGrupos="permisoGrupos?permisoGrupos[index]:null"
-        :key="index"
+        :key="permiso.name"
         :permiso="permiso"
         :index="index"
         @onChangePermiso="onChangePermiso"
-        class
       ></mk-permiso>
     </table>
   </div>

@@ -21,7 +21,7 @@
                 :headers="headers"
                 :items="lista.items"
                 class="elevation-1"
-                item-key="name"
+                item-key="datos.item.name"
                 select-all
                 v-model="lista.selected"
                 :loading="loading"
@@ -32,7 +32,6 @@
               >
                 <template slot="items" slot-scope="props">
                   <mk-table-row
-                    :item="props.item"
                     :datos="props"
                     @openDialog="openDialog"
                     @deleteItem="deleteItem"
