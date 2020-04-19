@@ -69,8 +69,9 @@
         <v-text-field
           label="Slug"
           v-model="item.slug"
-          :rules="[rules.required, rules.noSpaces]"
+          :rules="[rules.required, rules.noSpaces,rules.unique('slug')]"
           validate-on-blur
+          ref='slug'
           counter
           maxlength="20"
         ></v-text-field>
