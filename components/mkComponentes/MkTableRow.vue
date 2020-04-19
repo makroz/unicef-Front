@@ -11,7 +11,7 @@
     </td>
     <td class="text-xs-left" v-if="can('edit')||can('del')">
       <v-btn
-      v-if="can('edit')"
+      v-if="(!Auth.recycled) && can('edit')"
         depressed
         outline
         icon
@@ -46,9 +46,9 @@ export default {
   name: "mkTableRow",
   components: { MkStatus },
   props: {
-    datos: {}
+    datos: {},
   },
-  inject: ['authAccess','can','proteger'],
+  inject: {Auth:{ default: {} },can:{default:()=>true}},
   methods: {
     setStatus(id, estado) {
       this.$emit("onStatus", id, estado);

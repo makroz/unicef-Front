@@ -64,11 +64,12 @@ export default {
       recycled:false
     };
   },
-  inject: ['authAccess','can','proteger'],
+  inject: {Auth:{ default: {} },can:{default:()=>true}},
   methods: {
     onRecycled(){
         this.recycled=!this.recycled;
-        this.$emit('reclycled:clic',this.recycled);
+        //this.$emit('recycled:clic',this.recycled);
+        this.Auth.recycled=this.recycled;
     },
     onBuscar(datos, quitarbusqueda = false, lCond = []) {
       this.lCond = lCond;

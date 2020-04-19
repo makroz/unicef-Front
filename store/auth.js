@@ -32,29 +32,18 @@ export const getters = {
       const rolUser=state.authUser.rol.toLowerCase().trim();
       return rolUser==rol;
     },
-    tienePermiso: (state, getters) => {
-      const cache ={};
-      return   (tipo,permiso) => {
-        const key = tipo + permiso;
-        if (!cache[key]){
-          cache[key]= getters._tienePermiso(tipo, permiso);
-        }
-        return cache[key];
-      }
-    },
-
   getPermiso: state => permiso => {
     permiso = permiso.toLowerCase().trim();
     return state.permisos[permiso];
   },
   tienePermiso: (state, getters) => {
-    const cache ={};
+    const cacheMkAuth ={};
     return   (tipo,permiso) => {
       const key = tipo + permiso;
-      if (!cache[key]){
-        cache[key]= getters._tienePermiso(tipo, permiso);
+      if (!cacheMkAuth[key]){
+        cacheMkAuth[key]= getters._tienePermiso(tipo, permiso);
       }
-      return cache[key];
+      return cacheMkAuth[key];
     }
   },
 

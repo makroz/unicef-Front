@@ -19,7 +19,7 @@ export default {
   data() {
     return {};
   },
-  inject: ['authAccess','can','proteger'],
+  inject: {Auth:{ default: {} },can:{default:()=>true}},
   methods: {
     setStatus(estado) {
       if (this.can('edit')) {

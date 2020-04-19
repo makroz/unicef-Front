@@ -3,7 +3,7 @@
     <v-container grid-list-xl fluid>
       <v-layout row wrap>
         <v-flex sm12>
-          <h3>tit: {{ titModulo }}</h3>
+          <h3>{{ titModulo }}</h3>
         </v-flex>
         <v-flex lg12>
           <v-card>
@@ -11,6 +11,7 @@
               @openDialog="openDialog"
               @deleteItem="deleteItem"
               @busqueda:avanzada="onBuscar"
+
               :sel="lista.selected"
               :busquedas="busquedas"
               :campos="search_campos"

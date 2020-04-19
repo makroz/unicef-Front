@@ -101,7 +101,6 @@ export default {
         name: ""
       },
       lista: {
-        recycled:false,
         items: [],
         selected: []
       },
@@ -110,29 +109,27 @@ export default {
         '2':false,
         '4':false,
         '8':false
+      },
+      Auth:{
+        recycled:false,
+        authAccess: this.$options.authAccess||this.$options.name,
+        proteger:this.$options.middleware||'',
+
       }
 
     };
   },
   methods: {
-    viewRecicled(recycled){
-      this.recycled=recycled;
-      this.listar(datos, quitarbuscar);
-    },
     onBuscar(datos, quitarbuscar = false) {
-      //console.log("onBuscar");
       this.paginator.page = 1;
       this.busquedas = datos;
       this.listar(datos, quitarbuscar);
-      //this.$nextTick(this.listar(data));
     },
     onPerPageChange(page) {
-      //console.log("onPerPageChange");
       this.paginator.page = 1;
       this.listar();
     },
     fillTable(data) {
-      //console.log("filltavble");
       this.lista.items = data.data;
       this.paginator.total = data.ok;
       this.oldBuscar = this.buscar;
@@ -210,7 +207,7 @@ export default {
       }
       me.paginator.page = page;
 
-      const url =
+      let url =
         me.urlModulo +
         "?page=" +
         page +
@@ -218,7 +215,7 @@ export default {
         perPage +
         buscar +
         sortBy;
-        if (this.recycled){
+        if (this.Auth.recycled){
           url=url+'&recycled=1';
         }
       me.$axios
@@ -400,35 +397,62 @@ export default {
     },
     can(val,alertar=false) {
         //console.info('entro a can!!! :'+val);
-        let guard=this.$options.middleware||this.proteger||'';
-        if (typeof(guard)=='string'){
-          if (guard!='authAccess'){
-            return true;
-          }
-        }else{
-          if (!guard.includes('authAccess')){
-            return true;
-          }
-        }
-      //console.error('Can mix:',val,':',this.authAccess||this.$options.authAccess||this.$options.name);
-      let passed=this.$store.getters["auth/tienePermiso"](val,this.authAccess||this.$options.authAccess||this.$options.name,);
+      let acceso='';
+      let guard='';
+      if (this.Auth){
+        acceso=this.Auth.authAccess||this.$options.name;
+        guard=this.$options.middleware||this.Auth.proteger||'';
+      }else{
+         acceso=this.authAccess||this.$options.authAccess||this.$options.name;
+         guard=this.$options.middleware||'';
+      }
 
+
+      if (typeof(guard)=='string'){
+        if (guard!='authAccess'){
+          return true;
+        }
+      }else{
+        if (!guard.includes('authAccess')){
+          return true;
+        }
+      }
+
+
+      let passed=this.$store.getters["auth/tienePermiso"](val,acceso);
+      //console.error('Can mix:',val,':',acceso,'=',passed);
       if (!passed){
       if (alertar){
           if (alertar===true){
             alertar='no tiene permisos';
           }
-          alert(alertar);
+          //alert(alertar);
+          Swal.fire({
+            position: 'top-end',
+            title: alertar,
+            showConfirmButton: false,
+            timer: 1500
+          })
         }
       }
 
         return passed;
      },
-    // can(act='view'){
-    //   console.log('buscando permisos para:',act);
-    //   return this.cacheCan[this.$store.state.auth.permisos[act]];
-    // }
   },
+  watch: {
+    Auth: {
+		  deep: true,
+		  handler: function (v, old)  {
+      if (v.recycled){
+        this.titModulo='Papelera de '+this.titModulo;
+      }else{
+        this.titModulo=this.titModulo.replace('Papelera de ','');
+      }
+      this.listar();
+		}
+	  }
+  },
+
   computed: {
     headers: function() {
       let h = [];
@@ -479,9 +503,8 @@ export default {
   },
   provide: function() {
   	return {
-    	authAccess: this.$options.authAccess||this.$options.name,
       can: this.can,
-      proteger:this.$options.middleware||''
+      Auth:this.Auth,
     }
   },
   created: function() {
