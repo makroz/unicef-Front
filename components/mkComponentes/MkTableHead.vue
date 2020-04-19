@@ -36,6 +36,12 @@
       </v-chip>
     </div>
     <mk-busquedas :busquedas="busquedas" @busqueda:avanzada="onBuscar" :campos="campos"></mk-busquedas>
+
+    <v-btn icon fab color="blue" small @click="onRecycled" title="Papelera">
+      <v-icon v-if="recycled">undo</v-icon>
+      <v-icon v-else>delete_sweep</v-icon>
+    </v-btn>
+
   </v-toolbar>
 </template>
 
@@ -55,10 +61,15 @@ export default {
     return {
       curPermisos: [],
       lCond: [],
+      recycled:false
     };
   },
   inject: ['authAccess','can','proteger'],
   methods: {
+    onRecycled(){
+        this.recycled=!this.recycled;
+        this.$emit('reclycled:clic',this.recycled);
+    },
     onBuscar(datos, quitarbusqueda = false, lCond = []) {
       this.lCond = lCond;
       this.$emit("busqueda:avanzada", datos, quitarbusqueda);

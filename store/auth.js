@@ -6,7 +6,6 @@ const _lap=process.env.mkAuth.key;
 export const state = () => ({
   authToken: null,
   authUser: null,
-  //authAccess: null,
   acceso:false,
   rutaBack: null,
   permisos: { view: 1, ver:1, show:1,leer:1,read:1
@@ -25,6 +24,24 @@ export const getters = {
   getToken: state => {
     return state.authToken;
   },
+  rolIs: (state,getters) => rol => {
+      if ((!rol)||(!state.authUser)||!state.authUser.rol){
+        return false;
+      }
+      rol=rol.toUpperCase().trim();
+      const rolUser=state.authUser.rol.toLowerCase().trim();
+      return rolUser==rol;
+    },
+    tienePermiso: (state, getters) => {
+      const cache ={};
+      return   (tipo,permiso) => {
+        const key = tipo + permiso;
+        if (!cache[key]){
+          cache[key]= getters._tienePermiso(tipo, permiso);
+        }
+        return cache[key];
+      }
+    },
 
   getPermiso: state => permiso => {
     permiso = permiso.toLowerCase().trim();
@@ -46,7 +63,7 @@ export const getters = {
     if (permiso){
       permiso = permiso.toLowerCase().trim();
     }
-//    console.log("antes tienePermisos:",getters.getUser);
+        //console.log("antes tienePermisos No:",getters.getUser);
     let acceso=0;
     if (getters.getUser.permisos){
       acceso = getters.getUser.permisos[permiso];

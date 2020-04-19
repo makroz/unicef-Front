@@ -101,6 +101,7 @@ export default {
         name: ""
       },
       lista: {
+        recycled:false,
         items: [],
         selected: []
       },
@@ -114,6 +115,10 @@ export default {
     };
   },
   methods: {
+    viewRecicled(recycled){
+      this.recycled=recycled;
+      this.listar(datos, quitarbuscar);
+    },
     onBuscar(datos, quitarbuscar = false) {
       //console.log("onBuscar");
       this.paginator.page = 1;
@@ -213,7 +218,9 @@ export default {
         perPage +
         buscar +
         sortBy;
-
+        if (this.recycled){
+          url=url+'&recycled=1';
+        }
       me.$axios
         .get(url)
         .then(function(response) {
@@ -485,11 +492,14 @@ export default {
   },
   mounted() {
     //console.log("mounted");
-    //TODO: manejar roles para mostrar los registros borrados o papelera
+    //TODO: manejar papelera
     //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de como sacar en console con colores los mensajes
     //TODO: ver de configigurar parametros para el modulo auth, ademas de mejorar los mensajes con un snackber, ver de hacerlo un modulo
+    //TODO: revisar en los inject si es que existe o poner un valor por default,  tamnbien ver de crer un objeto auth para injectar de una sola
+    //TODO: hacver en el login la opcion de manetner logfueado que en ve4z de pedir logueo renovara el token
+    //TODO: ver el error de permiso de archivos en el cache de laravel en lo posible usar memoria
 
   }
 };
