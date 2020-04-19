@@ -199,16 +199,18 @@ export default {
       this.permisos = Object.assign({}, newPermisos);
     },
     beforeSave(me) {
-      delete me.item.gruposid;
+      delete me.item.grupos;
       if (me.item.id > 0) {
         delete me.item.pass;
       }
       let permiso = [];
       for (const obj in me.permisos) {
-        permiso[obj] = {
+        if (me.permisos[obj].valor>0){
+          permiso.push({
           id: me.permisos[obj].id,
           valor: me.permisos[obj].valor
-        };
+        });
+        }
       }
 
       me.paramsExtra.permisos = permiso;
@@ -219,8 +221,8 @@ export default {
 
       me.item.pass = "";
       me.paramsExtra.grupos = [];
-      if (me.item.gruposid) {
-        me.paramsExtra.grupos = me.item.gruposid;
+      if (me.item.grupos) {
+        me.paramsExtra.grupos = me.item.grupos;
       }
       me.$axios
         .post(me.urlModulo + "/permisos/" + me.item.id, me.paramsExtra)
