@@ -37,9 +37,10 @@ export const getters = {
     return state.permisos[permiso];
   },
   tienePermiso: (state, getters) => {
-    const cacheMkAuth =[];
-    return   (tipo,permiso) => {
+    var cacheMkAuth =[];
+    return   (tipo,permiso,clear) => {
       const key = tipo + permiso;
+      if (clear){cacheMkAuth =[];}
       if ((!cacheMkAuth[key])&&(cacheMkAuth[key]!==false)){
         cacheMkAuth[key]= getters._tienePermiso(tipo, permiso);
       }
@@ -49,6 +50,9 @@ export const getters = {
 
   _tienePermiso: (state, getters) => (tipo,permiso) => {
     const tipos = state.permisos;
+    if (!getters.getUser){
+      return false;
+    }
     if (permiso){
       permiso = permiso.toLowerCase().trim();
     }
@@ -101,9 +105,11 @@ export const actions = {
     commit("setAcceso", per);
     return per;
   },
-  async login({ commit }, auth) {
+  async login({ commit, getters }, auth) {
     console.log("this:", this.state.auth.rutaBack);
     try {
+      getters.tienePermiso('view','usuarios',true);
+
       const { data } = await this.$axios.post("login", auth);
       if (data.ok > 0) {
         commit("SET_USER", data.data);

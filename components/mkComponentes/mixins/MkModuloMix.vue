@@ -61,8 +61,12 @@ export default {
             if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
               //console.log('corriendo Unique:',v,'/',me.rulesUnico.old);
               me.rulesUnico.processing=true;
+              let id=me.item.id;
+              if (!id){
+                id=0;
+              }
               try {
-              me.$axios.get(me.urlModulo + '/' + me.item.id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v }).then(
+              me.$axios.get(me.urlModulo + '/' + id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v }).then(
                 ({data}) => {
                     if (data.ok>0){
                       me.rulesUnico.valid= 'Ese dato ya existe';
@@ -533,21 +537,18 @@ export default {
   },
   created: function() {
     this.$store.dispatch('auth/getUser');
-    console.log("Crear");
+    //console.log("Crear");
     this.paramsExtra.buscar = "";
     this.created = 2;
   },
   mounted() {
 
-    console.log("mounted");
-    //TODO: manejar papelera
+    //console.log("mounted");
     //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de como sacar en console con colores los mensajes
-    //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo
-    //TODO: hacver en el login la opcion de manetner logfueado que en ve4z de pedir logueo renovara el token
-    //TODO: ver el error de permiso de archivos en el cache de laravel en lo posible usar memoria
-    //TODO: al hacer login asegurars de limpiar el Cahe de permisos para que recargue los permisos
+    //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
+
 
   }
 };
