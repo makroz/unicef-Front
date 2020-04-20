@@ -9,11 +9,11 @@
     </v-breadcrumbs>
     <v-spacer></v-spacer>
     <div class="page-header-right">
-      <v-btn icon>
+      <v-btn icon onClick="alert('dañino')">
         <v-icon class="text--secondary">refresh</v-icon>
       </v-btn>
     </div>
-  </v-layout>  
+  </v-layout>
 </template>
 
 <script>
@@ -45,7 +45,7 @@ export default {
         }
       });
       return breadcrumbs;
-    },    
+    },
   }
 };
 </script>

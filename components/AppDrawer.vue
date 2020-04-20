@@ -9,9 +9,9 @@
     width="260"
   >
     <v-toolbar color="primary darken-1" dark>
-      <img src="../static/m.png" height="36" alt="Vue Material Admin Template">
+      <img src="../static/m.png" height="36" alt="Sistema de Marcacion Horaria">
       <v-toolbar-title class="ml-0 pl-3">
-        <span class="hidden-sm-and-down">Vue Material</span>
+        <span class="hidden-sm-and-down">eMarcador</span>
       </v-toolbar-title>
     </v-toolbar>
     <vue-perfect-scrollbar class="drawer-menu--scroll" :settings="scrollSettings">
@@ -84,11 +84,11 @@
     props: {
       expanded: {
         type: Boolean,
-        default: true
+        default: false
       },
     },
     data: () => ({
-      mini: false,
+      mini: true,
       menus: menu,
       scrollSettings: {
         maxScrollbarLength: 160
