@@ -11,7 +11,7 @@ export const state = () => ({
   permisos: { view: 1, ver:1, show:1,leer:1,read:1
              , add: 4, crear: 4, alta:4, create:4, store:4
              , edit: 2, editar:2, mod:2, modificar:2, update:2
-             , del: 8, delete: 8, borrar:8, suprimir: 8, baja:8, destroy:8
+             , del: 8, delete: 8, borrar:8, suprimir: 8, baja:8, destroy:8,restore:8,recycled:8, restaurar:8,recyclar:8,
             }
 
 

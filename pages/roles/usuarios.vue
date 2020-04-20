@@ -9,7 +9,6 @@
               @openDialog="openDialog"
               @deleteItem="deleteItem"
               @busqueda:avanzada="onBuscar"
-
               :sel="lista.selected"
               :busquedas="busquedas"
               :campos="search_campos"
@@ -20,7 +19,7 @@
                 :headers="headers"
                 :items="lista.items"
                 class="elevation-1"
-                item-key="datos.item.name"
+                item-key="id"
                 select-all
                 v-model="lista.selected"
                 :loading="loading"

@@ -45,7 +45,7 @@
         dark
         color="green"
         small
-        @click="$emit('restoredItem',datos.item.id)"
+        @click="$emit('deleteItem',datos.item.id,true)"
       >
         <v-icon>restore</v-icon>
       </v-btn>

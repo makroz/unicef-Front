@@ -4,7 +4,6 @@ import MkForm from "@/components/mkComponentes/MkFormulario";
 import MkTableHead from "@/components/mkComponentes/MkTableHead";
 import MkTableRow from "@/components/mkComponentes/MkTableRow";
 import MkPaginator from "@/components/mkComponentes/MkPaginator";
-//import MkStatus from "@/components/mkComponentes/MkStatus";
 import Swal from "sweetalert2";
 import { isNull, log } from "util";
 export default {
@@ -84,7 +83,6 @@ export default {
             };
         },
       },
-//      errores: [],
       //filtros y busqueda
       busquedas: [],
       //modal
@@ -325,7 +323,7 @@ export default {
         this.afterSave(me, isError);
       }
     },
-    deleteItem(id) {
+    deleteItem(id,restore=false) {
       if (!this.can('del',true)){return false;}
       let me = this;
       if (me.lista.selected.length > 0) {
@@ -336,28 +334,42 @@ export default {
         id = id + "0";
       }
 
-
-
+      let title='Seguro de querer Eliminar?';
+      let titleOk='Elemento(s) eliminado(s)!';
+      let icon ='warning';
+      let color ='red';
+      let boton=  'Si, BORROR!!!';
+      let url=me.urlModulo + "/delete";
+      if (restore){
+        title= 'Seguro de querer Restaurar este Item?';
+        titleOk='Elemento(s) restaurado(s)!';
+        icon ='info';
+        color ='green';
+        boton=  'Si, Restaurar';
+        url=me.urlModulo + "/restore";
+      }
       Swal.fire({
-        title: 'Seguro de querer Eliminar?',
-        icon: 'warning',
+        title: title,
+        icon: icon,
         showCancelButton: true,
-        confirmButtonColor: 'red',
-        //cancelButtonColor: '#d33',
+        confirmButtonColor: color,
         reverseButtons:true,
-        confirmButtonText: 'Si, seguro!!!'
+        confirmButtonText: boton
       }).then((willDelete) => {
-        console.log('willdelete:',willDelete);
+        //console.log('willdelete:',willDelete);
         if (willDelete.value===true) {
-          console.log('entro');
+          //let url=me.urlModulo + "/delete";
+          if (this.Auth.recycled){
+          url=url+'?recycled=1';
+          }
           me.$axios
-            .post(me.urlModulo + "/delete", {
+            .post(url, {
               id: id
             }).then(({data}) => {
               if (me.isOk(data)) {
                 me.fillTable(data.data);
                 Swal.fire({
-                  title: 'Elemento(s) eliminados!',
+                  title: titleOk,
                   icon: "success"
                   }
                 )
@@ -532,10 +544,10 @@ export default {
     //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de como sacar en console con colores los mensajes
-    //TODO: ver de configigurar parametros para el modulo auth, ademas de mejorar los mensajes con un snackber, ver de hacerlo un modulo
-    //TODO: revisar en los inject si es que existe o poner un valor por default,  tamnbien ver de crer un objeto auth para injectar de una sola
+    //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo
     //TODO: hacver en el login la opcion de manetner logfueado que en ve4z de pedir logueo renovara el token
     //TODO: ver el error de permiso de archivos en el cache de laravel en lo posible usar memoria
+    //TODO: al hacer login asegurars de limpiar el Cahe de permisos para que recargue los permisos
 
   }
 };

@@ -16,7 +16,7 @@
     <v-btn v-if="(sel.length > 0)&&can('del')" icon fab color="red" small @click.prevent="$emit('deleteItem')">
       <v-icon>delete</v-icon>
     </v-btn>
-    <v-btn v-if="(sel.length > 0)&&can('del')&&(Auth.recycled)" icon fab color="green" small @click.prevent="$emit('restoreItem')">
+    <v-btn v-if="(sel.length > 0)&&can('del')&&(Auth.recycled)" icon fab color="green" small @click.prevent="$emit('deleteItem',null,true)">
       <v-icon>restore</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
