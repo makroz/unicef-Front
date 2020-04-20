@@ -1,4 +1,5 @@
 <script>
+import MkHead from "@/components/mkComponentes/MkHead";
 import MkForm from "@/components/mkComponentes/MkFormulario";
 import MkTableHead from "@/components/mkComponentes/MkTableHead";
 import MkTableRow from "@/components/mkComponentes/MkTableRow";
@@ -9,6 +10,7 @@ import { isNull, log } from "util";
 export default {
   name: "MkModuloMix",
   components: {
+    MkHead,
     MkForm,
     MkTableHead,
     MkTableRow,
@@ -114,7 +116,7 @@ export default {
         recycled:false,
         authAccess: this.$options.authAccess||this.$options.name,
         proteger:this.$options.middleware||'',
-
+        _updateData:this._updateData,
       }
 
     };
@@ -237,7 +239,15 @@ export default {
     isOk(data) {
       if (data.ok < 0) {
         console.error(data.msg);
-        alert(data.msg);
+          Swal.fire({
+            position: 'top-end',
+            title: data.msg,
+            icon:'warning',
+            showConfirmButton: false,
+            timer: 1500
+          })
+
+//        alert(data.msg);
         if (data.ok==-1001){
           this.$store.dispatch('auth/logout');
         }
@@ -406,7 +416,11 @@ export default {
          acceso=this.authAccess||this.$options.authAccess||this.$options.name;
          guard=this.$options.middleware||'';
       }
-
+      val=val.toLowerCase().trim();
+      const permisos=this.$store.state.auth.permisos;
+      if (([permisos['edit'],permisos["add"]].includes(permisos[val]))&&(this.Auth.recycled)){
+        return false;
+      }
 
       if (typeof(guard)=='string'){
         if (guard!='authAccess'){
@@ -430,6 +444,7 @@ export default {
           Swal.fire({
             position: 'top-end',
             title: alertar,
+            icon:'warning',
             showConfirmButton: false,
             timer: 1500
           })
@@ -438,23 +453,20 @@ export default {
 
         return passed;
      },
+     _updateData(data,val){
+       this.Auth[data]=val;
+     }
   },
   watch: {
     Auth: {
 		  deep: true,
 		  handler: function (v, old)  {
-      if (v.recycled){
-        this.titModulo='Papelera de '+this.titModulo;
-      }else{
-        this.titModulo=this.titModulo.replace('Papelera de ','');
-      }
       this.listar();
 		}
 	  }
   },
-
   computed: {
-    headers: function() {
+     headers: function() {
       let h = [];
       this.campos.forEach(el => {
         if (el.headers) {
@@ -509,12 +521,13 @@ export default {
   },
   created: function() {
     this.$store.dispatch('auth/getUser');
-    //console.log("Crear");
+    console.log("Crear");
     this.paramsExtra.buscar = "";
     this.created = 2;
   },
   mounted() {
-    //console.log("mounted");
+
+    console.log("mounted");
     //TODO: manejar papelera
     //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez

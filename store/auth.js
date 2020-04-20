@@ -37,10 +37,10 @@ export const getters = {
     return state.permisos[permiso];
   },
   tienePermiso: (state, getters) => {
-    const cacheMkAuth ={};
+    const cacheMkAuth =[];
     return   (tipo,permiso) => {
       const key = tipo + permiso;
-      if (!cacheMkAuth[key]){
+      if ((!cacheMkAuth[key])&&(cacheMkAuth[key]!==false)){
         cacheMkAuth[key]= getters._tienePermiso(tipo, permiso);
       }
       return cacheMkAuth[key];
@@ -57,8 +57,10 @@ export const getters = {
     if (getters.getUser.permisos){
       acceso = getters.getUser.permisos[permiso];
     }
-  //console.log("_permisos:",'('+permiso+')',' Tipo:', tipo, " :", tipos[tipo], "/", acceso,'***',acceso && acceso & tipos[tipo],getters.getUser.permisos);
-    return acceso && acceso & tipos[tipo]==tipos[tipo];
+    //const permitido=(acceso && (acceso & tipos[tipo]))==tipos[tipo];
+    const permitido=(acceso && (acceso & tipos[tipo]))==tipos[tipo];
+    //console.log("_permisos:",'('+permiso+')',' Tipo:', tipo, " :", tipos[tipo], "/", acceso,'***',permitido,getters.getUser.permisos);
+    return permitido;
   }
 };
 export const mutations = {

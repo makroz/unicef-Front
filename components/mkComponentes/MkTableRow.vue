@@ -11,7 +11,7 @@
     </td>
     <td class="text-xs-left" v-if="can('edit')||can('del')">
       <v-btn
-      v-if="(!Auth.recycled) && can('edit')"
+      v-if="can('edit')"
         depressed
         outline
         icon
@@ -36,6 +36,20 @@
       >
         <v-icon>delete</v-icon>
       </v-btn>
+            <v-btn
+      v-if="Auth.recycled"
+        depressed
+        outline
+        icon
+        fab
+        dark
+        color="green"
+        small
+        @click="$emit('restoredItem',datos.item.id)"
+      >
+        <v-icon>restore</v-icon>
+      </v-btn>
+
     </td>
   </tr>
 </template>
@@ -48,7 +62,7 @@ export default {
   props: {
     datos: {},
   },
-  inject: {Auth:{ default: {} },can:{default:()=>true}},
+  inject: ['Auth','can'],
   methods: {
     setStatus(id, estado) {
       this.$emit("onStatus", id, estado);

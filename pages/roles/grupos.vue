@@ -2,9 +2,7 @@
   <div id="pageTable">
     <v-container grid-list-xl fluid>
       <v-layout row wrap>
-        <v-flex sm12>
-          <h3>tit: {{ titModulo }}</h3>
-        </v-flex>
+        <mk-head :titulo="titModulo" ></mk-head>
         <v-flex lg12>
           <v-card>
             <mk-table-head

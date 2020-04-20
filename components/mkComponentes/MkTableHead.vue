@@ -13,8 +13,11 @@
     >
       <v-icon>edit</v-icon>
     </v-btn>
-    <v-btn v-if="(sel.length > 0)&&can('del')" icon fab color="red" small @click="$emit('deleteItem')">
+    <v-btn v-if="(sel.length > 0)&&can('del')" icon fab color="red" small @click.prevent="$emit('deleteItem')">
       <v-icon>delete</v-icon>
+    </v-btn>
+    <v-btn v-if="(sel.length > 0)&&can('del')&&(Auth.recycled)" icon fab color="green" small @click.prevent="$emit('restoreItem')">
+      <v-icon>restore</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
     <div>
@@ -39,7 +42,7 @@
 
     <v-btn icon fab color="blue" small @click="onRecycled" title="Papelera">
       <v-icon v-if="recycled">undo</v-icon>
-      <v-icon v-else>delete_sweep</v-icon>
+      <v-icon v-else>restore_from_trash</v-icon>
     </v-btn>
 
   </v-toolbar>
@@ -64,12 +67,12 @@ export default {
       recycled:false
     };
   },
-  inject: {Auth:{ default: {} },can:{default:()=>true}},
+  inject: ['can','Auth'],
   methods: {
     onRecycled(){
         this.recycled=!this.recycled;
-        //this.$emit('recycled:clic',this.recycled);
-        this.Auth.recycled=this.recycled;
+        //  this.Auth.recycled=this.recycled;
+        this.Auth._updateData('recycled',this.recycled);
     },
     onBuscar(datos, quitarbusqueda = false, lCond = []) {
       this.lCond = lCond;

@@ -2,9 +2,7 @@
   <div id="pageTable">
     <v-container grid-list-xl fluid>
       <v-layout row wrap>
-        <v-flex sm12>
-          <h3>{{ titModulo }}</h3>
-        </v-flex>
+        <mk-head :titulo="titModulo" ></mk-head>
         <v-flex lg12>
           <v-card>
             <mk-table-head
@@ -108,7 +106,6 @@
               chips
               label="Grupos de Permisos"
               multiple
-              @input="onInput"
               @change="onChange"
             ></v-select>
 
@@ -191,9 +188,6 @@ export default {
         .finally(function() {
           me.loading = false;
         });
-    },
-    onInput(v) {
-      console.log("onInputSelect", v);
     },
 
     onChangePermisos(newPermisos) {
