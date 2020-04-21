@@ -16,13 +16,13 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: "gSistema v.0.1",
+    title: "mkTimeWork v.0.1",
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {
-        hid: 'description', name: 'description', content: 'gSistema v0.1 \n' +
-          '    Makroz@hotmail.com.'
+        hid: 'description', name: 'description', content: 'mkTimeWork v0.1 \n' +
+          '    Makroz@hotmail.com. +591 72170900'
       }
     ],
     link: [
