@@ -4,6 +4,7 @@ import MkForm from "@/components/mkComponentes/MkFormulario";
 import MkTableHead from "@/components/mkComponentes/MkTableHead";
 import MkTableRow from "@/components/mkComponentes/MkTableRow";
 import MkPaginator from "@/components/mkComponentes/MkPaginator";
+import {c} from "@/components/mkComponentes/MkUtils.js";
 import Swal from "sweetalert2";
 import { isNull, log } from "util";
 export default {
@@ -537,17 +538,16 @@ export default {
   },
   created: function() {
     this.$store.dispatch('auth/getUser');
-    //console.log("Crear");
+    c("crear");
     this.paramsExtra.buscar = "";
     this.created = 2;
   },
   mounted() {
-
-    //console.log("mounted");
+   c("Ejecuto",this.$options.name,'mounted');
     //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
-    //TODO: ver de como sacar en console con colores los mensajes
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
+
 
 
   }

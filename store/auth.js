@@ -1,6 +1,5 @@
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
-import Swal from "sweetalert2";
 const _lap=process.env.mkAuth.key;
 
 export const state = () => ({
