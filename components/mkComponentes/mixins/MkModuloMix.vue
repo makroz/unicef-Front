@@ -4,6 +4,7 @@ import MkForm from "@/components/mkComponentes/MkFormulario";
 import MkTableHead from "@/components/mkComponentes/MkTableHead";
 import MkTableRow from "@/components/mkComponentes/MkTableRow";
 import MkPaginator from "@/components/mkComponentes/MkPaginator";
+import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import {c} from "@/components/mkComponentes/MkUtils.js";
 import Swal from "sweetalert2";
 import { isNull, log } from "util";
@@ -16,6 +17,7 @@ export default {
     MkTableRow,
     MkPaginator
   },
+ mixins: [MkRulesMix],
   data() {
     return {
       created:true,
@@ -30,77 +32,13 @@ export default {
         total: 0,
         options: { rowsPerPage: -1, sortBy: "id", descending: true }
       },
-      rules: {
-        required: value => !!value || "Dato es Requerido",
-        num: value => !isNaN(value) || "Debe ser un Numerico",
-        min(minNum) {
-          return v =>
-            {
-            //console.error('min',minNum);
-             return (v || "").length > minNum || "Minimo " + minNum + " caracteres"
-             };
-        },
-        max(maxNum) {
-          return v =>{
-            //console.error('max',maxNum);
-            (v || "").length <= maxNum || "Maximo " + maxNum + " caracteres";
-            }
-        },
-        noSpaces: v => (v || "").indexOf(" ") < 0 || "No se admite espacios",
-        email: value => {
-          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          return pattern.test(value) || "e-mail no válido";
-        },
-        unique: (campo) => {
-          let me=this;
-          return (v) =>
-            {
-              //console.error('unique',v,campo,':',me.rulesUnico.old);
-            if (!v){
-              return true;
-            }
-            if ((!me.rulesUnico.processing)&&(v!=me.rulesUnico.old)){
-              //console.log('corriendo Unique:',v,'/',me.rulesUnico.old);
-              me.rulesUnico.processing=true;
-              let id=me.item.id;
-              if (!id){
-                id=0;
-              }
-              try {
-              me.$axios.get(me.urlModulo + '/' + id+'?existe=1&where='+campo+'&valor='+v, { where: campo, valor: v }).then(
-                ({data}) => {
-                    if (data.ok>0){
-                      me.rulesUnico.valid= 'Ese dato ya existe';
-                    }else{
-                      me.rulesUnico.valid= true;
-                    }
-                    me.rulesUnico.old=v;
-                    me.rulesUnico.processing=false;
-                    me.$refs[campo].validate();
-                }
-              );
-
-              } catch (error) {
-                  me.rulesUnico.processing=false;
-              }
-            }
-            return me.rulesUnico.valid;
-            };
-        },
-      },
       //filtros y busqueda
       busquedas: [],
       //modal
-      rulesUnico:{
-        valid:true,
-        old:'',
-        processing:false
-      },
       modal: false,
       tituloModal: "",
       loading: false,
       paramsExtra: {},
-
       item: {
         id: 0,
         name: ""
@@ -120,8 +58,7 @@ export default {
         authAccess: this.$options.authAccess||this.$options.name,
         proteger:this.$options.middleware||'',
         _updateData:this._updateData,
-      }
-
+      },
     };
   },
   methods: {
@@ -491,6 +428,7 @@ export default {
       let h = [];
       this.campos.forEach(el => {
         if (el.headers) {
+          if (el.headers)
           h.push({
             text: el.text,
             value: el.value || null,
