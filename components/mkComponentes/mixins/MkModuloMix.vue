@@ -240,6 +240,12 @@ export default {
         });
     },
     isOk(data) {
+      if (data._warning){
+        data._warning.forEach(e => {
+          c(e[0],e[2],e[1],e[3]);
+        });
+
+      }
       if (data.ok < 0) {
         console.error(data.msg);
           Swal.fire({
@@ -249,8 +255,6 @@ export default {
             showConfirmButton: false,
             timer: 1500
           })
-
-//        alert(data.msg);
         if (data.ok==-1001){
           this.$store.dispatch('auth/logout');
         }
@@ -544,10 +548,10 @@ export default {
   },
   mounted() {
    c("Ejecuto",this.$options.name,'mounted');
-    //TODO: ver el cache en las consultas del crud en back y en el front opcion de checksum
+    //TODO: ver el cache en las consultas del crud en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
-
+    //TODO: crear un choser de columnas que se pueden ver o no, colum resizer, colkumna span o juntar columanas, frozen columnas
 
 
   }
