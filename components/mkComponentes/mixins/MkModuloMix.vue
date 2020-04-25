@@ -20,6 +20,7 @@ export default {
  mixins: [MkRulesMix],
   data() {
     return {
+      headers:this.headersC,
       created:true,
       urlModulo: this.$options.name,
       titModulo: this.$options.name,
@@ -62,6 +63,21 @@ export default {
     };
   },
   methods: {
+    toggleAll () {
+        if (this.lista.selected.length) this.lista.selected = []
+        else this.lista.selected = this.lista.items.slice()
+      },
+      changeSort (column,sortable=false) {
+        if (!sortable){ return false;}
+        if (this.paginator.options.sortBy === column) {
+          this.paginator.options.descending = !this.paginator.options.descending
+        } else {
+          this.paginator.options.sortBy = column
+          this.paginator.options.descending = false
+        }
+        this.listar();
+
+      },
     onBuscar(datos, quitarbuscar = false) {
       this.paginator.page = 1;
       this.busquedas = datos;
@@ -413,7 +429,53 @@ export default {
      },
      _updateData(data,val){
        this.Auth[data]=val;
-     }
+     },
+     onChangeColumns(value){
+       this.headers.forEach(e => {
+         if (e.value == value){
+           e.visible=!e.visible
+           //alert(e.visible);
+        }
+       });
+
+
+
+     },
+     getHeaders: function() {
+      let h=[];
+      this.campos.forEach(el => {
+        if (el.headers) {
+          h.push({
+            text: el.text,
+            value: el.value || null,
+            align: el.align || "left",
+            width: el.width || null,
+            sortable: el.sortable || true,
+            visible: el.visible || true
+          });
+        }
+      });
+
+      h.push({
+        text: "Estado",
+        value: "status",
+        align: "center",
+        width: "150px",
+        sortable: false,
+        visible: true
+      });
+    if (this.can('edit')||this.can('del')){
+      h.push({
+        text: "Acciones",
+        value: "",
+        align: "left",
+        width: "175px",
+        sortable: false,
+        visible: true
+      });
+    }
+      return h;
+    },
   },
   watch: {
     Auth: {
@@ -424,39 +486,8 @@ export default {
 	  }
   },
   computed: {
-     headers: function() {
-      let h = [];
-      this.campos.forEach(el => {
-        if (el.headers) {
-          if (el.headers)
-          h.push({
-            text: el.text,
-            value: el.value || null,
-            align: el.align || "left",
-            width: el.width || null,
-            sortable: el.sortable && true
-          });
-        }
-      });
-
-      h.push({
-        text: "Estado",
-        value: "status",
-        align: "center",
-        width: "150px",
-        sortable: false
-      });
-    if (this.can('edit')||this.can('del')){
-      h.push({
-        text: "Acciones",
-        value: "",
-        align: "left",
-        width: "175px",
-        sortable: false
-      });
-    }
-
-      return h;
+    headersC:function(){
+      return this.getHeaders();
     },
     search_campos: function() {
       let h = [];
@@ -465,7 +496,8 @@ export default {
           h.push({
             text: el.text,
             value: el.value || null,
-            type: el.type || "text"
+            type: el.type || "text",
+            visible:el.visible||true,
           });
         }
       });
@@ -479,6 +511,8 @@ export default {
     }
   },
   created: function() {
+    //this.headers=this.getHeaders();
+       this.headers=this.getHeaders();
     this.$store.dispatch('auth/getUser');
     c("crear");
     this.paramsExtra.buscar = "";
@@ -486,10 +520,12 @@ export default {
   },
   mounted() {
    c("Ejecuto",this.$options.name,'mounted');
+   this.headers=this.getHeaders();
+   c(this.headers1,"Headers",this.$options.name);
     //TODO: ver el cache en las consultas del crud en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
-    //TODO: crear un choser de columnas que se pueden ver o no, colum resizer, colkumna span o juntar columanas, frozen columnas
+    //TODO: crear un data table propio choser de columnas que se pueden ver o no, colum resizer, colkumna span o juntar columanas, frozen columnas
 
 
   }

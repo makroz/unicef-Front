@@ -2,7 +2,7 @@
   <div id="pageTable">
     <v-container grid-list-xl fluid>
       <v-layout row wrap>
-        <mk-head :titulo="titModulo" ></mk-head>
+        <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
           <v-card>
             <mk-table-head
@@ -12,6 +12,7 @@
               :sel="lista.selected"
               :busquedas="busquedas"
               :campos="search_campos"
+              @changeColumns="onChangeColumns"
             ></mk-table-head>
             <v-divider></v-divider>
             <v-card-text class="pa-0">
@@ -28,16 +29,40 @@
                 hide-actions
                 :pagination.sync="paginator.options"
               >
+                <template slot="headers" slot-scope="props">
+                  <tr>
+                    <th>
+                      <v-checkbox
+                        :input-value="props.all"
+                        :indeterminate="props.indeterminate"
+                        primary
+                        hide-details
+                        @click.stop="toggleAll"
+                      ></v-checkbox>
+                    </th>
+                    <template v-for="header in props.headers">
+                    <th v-if="header.visible" :key="header.value"
+                      :class="['column', header.sortable ? 'sortable' : '', 'text-xs-'+header.align, paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
+                      @click="changeSort(header.value,header.sortable)"
+                      :width='header.width'
+
+                    >
+
+                      <v-icon v-if="header.sortable" small>arrow_upward</v-icon>
+                      {{ header.text }}
+                    </th>
+                    </template>
+                  </tr>
+                </template>
+
                 <template slot="items" slot-scope="props">
                   <mk-table-row
                     :datos="props"
+                    :headers="headers"
                     @openDialog="openDialog"
                     @deleteItem="deleteItem"
                     @onStatus="setStatus"
                   >
-                    <td class="text-xs-left">{{ props.item.id }}</td>
-                    <td>{{ props.item.name }}</td>
-                    <td>{{ props.item.email }}</td>
                   </mk-table-row>
                 </template>
               </v-data-table>
@@ -73,7 +98,7 @@
               label="eMail"
               v-model="item.email"
               :rules="[rules.required,rules.email,rules.unique('email')]"
-              ref='email'
+              ref="email"
               validate-on-blur
             ></v-text-field>
             <v-text-field
@@ -116,23 +141,22 @@
             ></mk-permisos>
           </v-tab-item>
         </v-tabs-items>
-
       </mk-form>
     </v-container>
   </div>
 </template>
 
 <script>
-import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
-import MkPermisos from "@/components/mkComponentes/mkPermisos/MkPermisos";
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
 
 export default {
-  middleware: ["authAccess"],
+  middleware: ['authAccess'],
   mixins: [MkModuloMix],
   components: {
     MkPermisos
   },
-  name: "Usuarios",
+  name: 'Usuarios',
   data() {
     return {
       //urlModulo: '',
@@ -140,28 +164,28 @@ export default {
       tabs: 0,
       campos: [
         {
-          text: "Id",
-          value: "id",
-          align: "left",
-          width: "100px",
+          text: 'Id',
+          value: 'id',
+          align: 'left',
+          width: '100px',
           headers: true,
-          type: "num",
+          type: 'num',
           search: true
         },
         {
-          text: "Nombre",
-          value: "name",
-          width: "250px",
+          text: 'Nombre',
+          value: 'name',
+          width: '250px',
           headers: true,
-          type: "text",
+          type: 'text',
           search: true
         },
         {
-          text: "Email",
-          value: "email",
-          align: "left",
+          text: 'Email',
+          value: 'email',
+          align: 'left',
           headers: true,
-          type: "text",
+          type: 'text',
           search: true
         }
       ],
@@ -171,98 +195,98 @@ export default {
       permisoGrupos: null,
       lGrupos: [],
       lRoles: []
-    };
+    }
   },
   methods: {
     onChange(v) {
-      let me = this;
+      let me = this
       me.$axios
-        .post(me.urlModulo + "/permisosGrupos/0", { grupos: v })
+        .post(me.urlModulo + '/permisosGrupos/0', { grupos: v })
         .then(function(response) {
-          me.permisoGrupos = response.data.data;
+          me.permisoGrupos = response.data.data
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error)
         })
         .finally(function() {
-          me.loading = false;
-        });
+          me.loading = false
+        })
     },
 
     onChangePermisos(newPermisos) {
-      this.permisos = Object.assign({}, newPermisos);
+      this.permisos = Object.assign({}, newPermisos)
     },
     beforeSave(me) {
-      delete me.item.grupos;
+      delete me.item.grupos
       if (me.item.id > 0) {
-        delete me.item.pass;
+        delete me.item.pass
       }
-      let permiso = [];
+      let permiso = []
       for (const obj in me.permisos) {
-        if (me.permisos[obj].valor>0){
+        if (me.permisos[obj].valor > 0) {
           permiso.push({
-          id: me.permisos[obj].id,
-          valor: me.permisos[obj].valor
-        });
+            id: me.permisos[obj].id,
+            valor: me.permisos[obj].valor
+          })
         }
       }
 
-      me.paramsExtra.permisos = permiso;
+      me.paramsExtra.permisos = permiso
     },
     beforeOpen(accion, data = {}) {
-      let me = this;
-      me.tabs = 0;
+      let me = this
+      me.tabs = 0
 
-      me.item.pass = "";
-      me.paramsExtra.grupos = [];
+      me.item.pass = ''
+      me.paramsExtra.grupos = []
       if (me.item.grupos) {
-        me.paramsExtra.grupos = me.item.grupos;
+        me.paramsExtra.grupos = me.item.grupos
       }
       me.$axios
-        .post(me.urlModulo + "/permisos/" + me.item.id, me.paramsExtra)
+        .post(me.urlModulo + '/permisos/' + me.item.id, me.paramsExtra)
         .then(function(response) {
-          me.permisos = response.data.data;
-          me.permisoGrupos = response.data.msg.data;
+          me.permisos = response.data.data
+          me.permisoGrupos = response.data.msg.data
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error)
         })
         .finally(function() {
-          me.loading = false;
-        });
+          me.loading = false
+        })
     }
   },
   computed: {},
   mounted() {
-    let me = this;
-    let url = "Grupos?page=1&per_page=-1&cols=id,name&disabled=1";
+    let me = this
+    let url = 'Grupos?page=1&per_page=-1&cols=id,name&disabled=1'
 
     me.$axios
       .get(url)
       .then(function(response) {
-        me.lGrupos = response.data.data;
+        me.lGrupos = response.data.data
       })
       .catch(function(error) {
-        console.log(error);
+        console.log(error)
       })
       .finally(function() {
-        me.loading = false;
-      });
+        me.loading = false
+      })
 
-    url = "Roles?page=1&per_page=-1&cols=id,name&disabled=1";
+    url = 'Roles?page=1&per_page=-1&cols=id,name&disabled=1'
     me.$axios
       .get(url)
       .then(function(response) {
-        me.lRoles = response.data.data;
+        me.lRoles = response.data.data
       })
       .catch(function(error) {
-        console.log(error);
+        console.log(error)
       })
       .finally(function() {
-        me.loading = false;
-      });
+        me.loading = false
+      })
   }
-};
+}
 </script>
 <style lang="css">
 .tab-items-row >>> .v-window__container,

@@ -44,16 +44,19 @@
       <v-icon v-if="recycled">undo</v-icon>
       <v-icon v-else>restore_from_trash</v-icon>
     </v-btn>
+    <mk-menu-columns :items='campos' @input="onChangeColumns"></mk-menu-columns>
 
   </v-toolbar>
 </template>
 
 <script>
 import MkBusquedas from "@/components/mkComponentes/MkBusquedas";
+import MkMenuColumns from "@/components/mkComponentes/MkMenuColumns";
 export default {
   name: "mkTableHead",
   components: {
-    MkBusquedas
+    MkBusquedas,
+    MkMenuColumns
   },
   props: {
     sel: null,
@@ -77,6 +80,9 @@ export default {
     onBuscar(datos, quitarbusqueda = false, lCond = []) {
       this.lCond = lCond;
       this.$emit("busqueda:avanzada", datos, quitarbusqueda);
+    },
+     onChangeColumns(value) {
+      this.$emit("changeColumns", value);
     }
   }
 };

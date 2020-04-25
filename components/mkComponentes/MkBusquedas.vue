@@ -4,7 +4,6 @@
       <v-icon color="red">delete</v-icon>
     </v-btn>
     <v-btn icon @click="open()">
-      <!-- <v-icon v-if="busquedas.length > 0" color="red">find_replace</v-icon> -->
       <v-icon>search</v-icon>
     </v-btn>
     <v-dialog v-model="modal" scrollable persistent max-width="90%">

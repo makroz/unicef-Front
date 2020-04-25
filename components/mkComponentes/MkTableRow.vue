@@ -3,9 +3,9 @@
     <td width="50px">
       <v-checkbox primary hide-details v-model="datos.selected"></v-checkbox>
     </td>
-    <slot>
-      <td class="text-xs-left">datos</td>
-    </slot>
+      <template v-for="header in headers">
+        <td v-if="(header.visible)&&(header.value!='status')&&(datos.item[header.value]!=undefined)" :class="['text-xs-'+header.align]" :key="header.value" :width="header.width">{{ datos.item[header.value] }}</td>
+      </template>
     <td class="text-xs-center">
       <mk-status :status="datos.item.status" :id="datos.item.id" @onStatus="setStatus"></mk-status>
     </td>
@@ -56,11 +56,13 @@
 
 <script>
 import MkStatus from "@/components/mkComponentes/MkStatus";
+import {c} from "@/components/mkComponentes/MkUtils.js";
 export default {
   name: "mkTableRow",
   components: { MkStatus },
   props: {
     datos: {},
+    headers:{},
   },
   inject: ['Auth','can'],
   methods: {
@@ -73,7 +75,10 @@ export default {
     }
   }
 
-  }
+  },
+  mounted() {
+    c(this.headers,"Headers",this.$options.name);
+  },
 };
 </script>
 
