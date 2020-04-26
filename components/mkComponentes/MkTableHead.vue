@@ -59,21 +59,29 @@ export default {
     MkBusquedas,
     MkMenuColumns
   },
-  props: ['sel','busquedas','campos','headers'],
+  props: {
+    sel: {
+      type: [String,Array,Object],
+      default: null
+    },
+    busquedas:{
+      type: [Array,Object],
+      default: null
+    } ,
+    campos:{
+      type: [Array,Object],
+      default: null
+    },
+    headers:{
+      type: [Array,Object],
+      default: []
+    },
+  },
   data() {
     return {
-      curPermisos:{
-      type: [Array,Object],
-      default: []
-    },
-      lCond:{
-      type: [Array,Object],
-      default: []
-    },
-      recycled:{
-      type: Boolean,
-      default: false
-    },
+      curPermisos: [],
+      lCond: [],
+      recycled:false
     };
   },
   inject: ['can','Auth'],
