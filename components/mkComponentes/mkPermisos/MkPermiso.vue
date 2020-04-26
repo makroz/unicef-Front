@@ -58,7 +58,7 @@
 export default {
   name: "mkPermiso",
   props: {
-    permisos:{
+    permiso:{
       type: [Array,Object],
       default: null
     },
