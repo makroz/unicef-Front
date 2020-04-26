@@ -366,39 +366,28 @@ export default {
       this.$nextTick(this.$refs.focus.focus);
     },
     setParams(name='',value=''){
-      let params=this.getParams();
-      if (params==false){
-        params={};
-      }
       if (name==''){
           name='paginator';
           value=this.paginator;
       }
-      params[name]=value;
-      //console.log('Guardando storage params:',this.$options.name+".Params", params,'nombre:',name,'valor:',value);
-
+      //console.log('Guardando:',this.$options.name+".Params."+name, value);
       try {
-    params = JSON.stringify(params);
-      localStorage.setItem(this.$options.name+".Params", params);
+        value = JSON.stringify(value);
+        localStorage.setItem(this.$options.name+".Params."+name, value);
       } catch (error) {
-      console.error(error);
+        console.error(error);
       }
-
-
     },
 
-    getParams(name=''){
-      let params={};
-      if (localStorage.getItem(this.$options.name+".Params")){
-        params=JSON.parse(localStorage.getItem(this.$options.name+".Params"));
-      }
-
-      if (name!=''){
-        if (params[name]){
-          params=params[name];
-        }else{
-          params=false;
+    getParams(name='',def=false){
+      let params=def;
+      try {
+        params=JSON.parse(localStorage.getItem(this.$options.name+".Params."+name));
+        if (!params){
+          params=def;
         }
+      } catch (error) {
+        params=def;
       }
       //console.error('Params ',name,':',params);
       return params;
@@ -461,10 +450,13 @@ export default {
         }
        });
       this.setParams('headers',this.headers);
-        //console.log('Change columns headers',this.headers);
      },
      getHeaders: function() {
-      let h=[];
+      let h=this.getParams('headers');
+      if (h!==false){
+        return h;
+      }
+      h=[];
       this.campos.forEach(el => {
         if (el.headers) {
           h.push({
@@ -534,11 +526,11 @@ export default {
   	return {
       can: this.can,
       Auth:this.Auth,
+      setParams:this.setParams,
+      getParams:this.getParams
     }
   },
   created: function() {
-    //this.headers=this.getHeaders();
-       //this.headers=this.getHeaders();
     this.$store.dispatch('auth/getUser');
     //c("crear");
     this.paramsExtra.buscar = "";
@@ -546,13 +538,11 @@ export default {
   },
   mounted() {
 //   c("Ejecuto",this.$options.name,'mounted');
-   this.headers=this.getHeaders();
-  //    c(this.getHeaders(),"Headers",this.$options.name);
-  // console.log('Paginator:',this.paginator);
+    this.headers=this.getHeaders();
     //TODO: ver el cache en las consultas del crud en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
-    //TODO: crear un data table propio choser de columnas que se pueden ver o no, colum resizer, colkumna span o juntar columanas, frozen columnas
+    //TODO: crear un data table propio {choser de columnas que se pueden ver o no,} colum resizer, colkumna span o juntar columanas, frozen columnas
 
 
   }

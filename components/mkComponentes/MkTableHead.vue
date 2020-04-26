@@ -74,7 +74,7 @@ export default {
     },
     headers:{
       type: [Array,Object],
-      default: []
+      default: null
     },
   },
   data() {
