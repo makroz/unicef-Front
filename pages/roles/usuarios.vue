@@ -12,6 +12,7 @@
               :sel="lista.selected"
               :busquedas="busquedas"
               :campos="search_campos"
+              :headers="headers"
               @changeColumns="onChangeColumns"
             ></mk-table-head>
             <v-divider></v-divider>

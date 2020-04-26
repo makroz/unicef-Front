@@ -1,5 +1,5 @@
 <template>
-  <tr >
+  <tr>
     <td
       class="text-xs-left"
       @dblclick="selPermiso()"
@@ -58,9 +58,18 @@
 export default {
   name: "mkPermiso",
   props: {
-    permisoGrupos: null,
-    permiso: null,
-    index: 0
+    permisos:{
+      type: [Array,Object],
+      default: null
+    },
+    permisoGrupos: {
+      type: [Array,Object],
+      default: null
+    },
+    index: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {};

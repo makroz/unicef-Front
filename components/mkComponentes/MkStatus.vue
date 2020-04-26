@@ -13,8 +13,14 @@
 export default {
   name: "setstatus",
   props: {
-    status: 0,
-    id: 0
+    status:{
+      type: [Number,String],
+      default: 0
+    },
+    id:{
+      type: [Number,String],
+      default: 0
+    },
   },
   data() {
     return {};

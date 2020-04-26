@@ -61,9 +61,15 @@ export default {
   name: "mkTableRow",
   components: { MkStatus },
   props: {
-    datos: {},
-    headers:{},
-  },
+    datos:{
+      type: [Array,Object],
+      default: []
+    },
+    headers:{
+      type: [Array,Object],
+      default: []
+    },
+    },
   inject: ['Auth','can'],
   methods: {
     setStatus(id, estado) {
@@ -77,7 +83,7 @@ export default {
 
   },
   mounted() {
-    c(this.headers,"Headers",this.$options.name);
+    //c(this.headers,"Headers",this.$options.name);
   },
 };
 </script>

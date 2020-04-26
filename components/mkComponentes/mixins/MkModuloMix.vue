@@ -20,11 +20,11 @@ export default {
  mixins: [MkRulesMix],
   data() {
     return {
-      headers:this.headersC,
+      headers:this.getParams('headers')||this.headersC,
       created:true,
       urlModulo: this.$options.name,
       titModulo: this.$options.name,
-      paginator: this.getParams() || {
+      paginator: this.getParams('paginator') || {
         perPage: 5,
         perPageList: [2, 5, 10, 25, 50, { value: "-1", text: "Todos" }],
         n_page: 1,
@@ -365,19 +365,43 @@ export default {
       this.afterOpen(accion, data);
       this.$nextTick(this.$refs.focus.focus);
     },
-    setParams(){
-      let params=this.paginator;
-      params = JSON.stringify(params);
+    setParams(name='',value=''){
+      let params=this.getParams();
+      if (params==false){
+        params={};
+      }
+      if (name==''){
+          name='paginator';
+          value=this.paginator;
+      }
+      params[name]=value;
+      //console.log('Guardando storage params:',this.$options.name+".Params", params,'nombre:',name,'valor:',value);
+
+      try {
+    params = JSON.stringify(params);
       localStorage.setItem(this.$options.name+".Params", params);
+      } catch (error) {
+      console.error(error);
+      }
+
+
     },
 
-    getParams(){
+    getParams(name=''){
+      let params={};
       if (localStorage.getItem(this.$options.name+".Params")){
-        let params=JSON.parse(localStorage.getItem(this.$options.name+".Params"));
-        return params;
-      }else{
-        return false;
+        params=JSON.parse(localStorage.getItem(this.$options.name+".Params"));
       }
+
+      if (name!=''){
+        if (params[name]){
+          params=params[name];
+        }else{
+          params=false;
+        }
+      }
+      //console.error('Params ',name,':',params);
+      return params;
     },
     can(val,alertar=false) {
         //console.info('entro a can!!! :'+val);
@@ -434,12 +458,10 @@ export default {
        this.headers.forEach(e => {
          if (e.value == value){
            e.visible=!e.visible
-           //alert(e.visible);
         }
        });
-
-
-
+      this.setParams('headers',this.headers);
+        //console.log('Change columns headers',this.headers);
      },
      getHeaders: function() {
       let h=[];
@@ -462,18 +484,22 @@ export default {
         align: "center",
         width: "150px",
         sortable: false,
-        visible: true
+        visible: true,
+        fixed:true
       });
     if (this.can('edit')||this.can('del')){
       h.push({
         text: "Acciones",
-        value: "",
+        value: "actions",
         align: "left",
         width: "175px",
         sortable: false,
-        visible: true
+        visible: true,
+        fixed:true
+
       });
     }
+      this.setParams('headers',h);
       return h;
     },
   },
@@ -512,16 +538,17 @@ export default {
   },
   created: function() {
     //this.headers=this.getHeaders();
-       this.headers=this.getHeaders();
+       //this.headers=this.getHeaders();
     this.$store.dispatch('auth/getUser');
-    c("crear");
+    //c("crear");
     this.paramsExtra.buscar = "";
     this.created = 2;
   },
   mounted() {
-   c("Ejecuto",this.$options.name,'mounted');
+//   c("Ejecuto",this.$options.name,'mounted');
    this.headers=this.getHeaders();
-   c(this.headers1,"Headers",this.$options.name);
+  //    c(this.getHeaders(),"Headers",this.$options.name);
+  // console.log('Paginator:',this.paginator);
     //TODO: ver el cache en las consultas del crud en el front opcion de checksum
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc

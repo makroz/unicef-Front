@@ -30,8 +30,14 @@ export default {
     MkPermiso
   },
   props: {
-    permisos: null,
-    permisoGrupos: null
+    permisos:{
+      type: [Array,Object],
+      default: null
+    },
+    permisoGrupos: {
+      type: [Array,Object],
+      default: null
+    }
   },
   data() {
     return {

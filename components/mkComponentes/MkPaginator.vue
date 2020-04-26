@@ -29,7 +29,7 @@ export default {
   name: "paginator",
   props: {
     paginator: {
-      type: Object,
+      type: [Array,Object],
       default: () => ({
         perPage: 2,
         perPageList: [2, 5, 10, 25, 50, { value: "-1", text: "Todos" }],

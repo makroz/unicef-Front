@@ -44,7 +44,8 @@
       <v-icon v-if="recycled">undo</v-icon>
       <v-icon v-else>restore_from_trash</v-icon>
     </v-btn>
-    <mk-menu-columns :items='campos' @input="onChangeColumns"></mk-menu-columns>
+
+    <mk-menu-columns :items='headers' @input="onChangeColumns"></mk-menu-columns>
 
   </v-toolbar>
 </template>
@@ -58,16 +59,21 @@ export default {
     MkBusquedas,
     MkMenuColumns
   },
-  props: {
-    sel: null,
-    busquedas: null,
-    campos: null,
-  },
+  props: ['sel','busquedas','campos','headers'],
   data() {
     return {
-      curPermisos: [],
-      lCond: [],
-      recycled:false
+      curPermisos:{
+      type: [Array,Object],
+      default: []
+    },
+      lCond:{
+      type: [Array,Object],
+      default: []
+    },
+      recycled:{
+      type: Boolean,
+      default: false
+    },
     };
   },
   inject: ['can','Auth'],

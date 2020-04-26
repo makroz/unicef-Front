@@ -8,15 +8,16 @@
 export default {
   name: "mkHead",
   props: {
-    titulo: '',
+    titulo: {
+      type: String,
+      default: ''
+    },
   },
   data() {
     return {
     };
   },
   inject: {Auth:{ default: {} },can:{default:()=>true}},
-  methods: {
-  }
 };
 </script>
 

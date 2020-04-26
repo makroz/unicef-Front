@@ -2,7 +2,9 @@
   <div>
     <v-dialog v-model="modal" scrollable persistent max-width="70%">
       <v-card>
-        <v-card-title ><span class="headline">{{ tit }}</span></v-card-title>
+        <v-card-title>
+          <span class="headline">{{ tit }}</span>
+        </v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-form ref="form" v-model="formValid" lazy-validation>
@@ -27,17 +29,26 @@
 </template>
 <script>
 export default {
-  name: "mkFormulario",
+  name: 'mkFormulario',
   props: {
-    modal: false,
-    tit: "",
-    accion: 0
+    modal: {
+      type: Boolean,
+      default: false
+    },
+    tit:{
+      type: String,
+      default: ''
+    },
+    accion: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {
       formValid: true
-    };
+    }
   }
-};
+}
 </script>
 
