@@ -4,6 +4,10 @@ import MkForm from "@/components/mkComponentes/MkFormulario";
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import {c} from "@/components/mkComponentes/MkUtils.js";
 import Swal from "sweetalert2";
+import AES from 'crypto-js/aes';
+import Utf8 from 'crypto-js/enc-utf8';
+const _lap=process.env.mkAuth.key;
+import MD5 from "crypto-js/md5";
 import { isNull, log } from "util";
 export default {
   name: "MkModuloMix",
@@ -40,7 +44,8 @@ export default {
       },
       lista: {
         items: [],
-        selected: []
+        selected: [],
+        checksum:'',
       },
       cacheCan:{
         '1':false,
@@ -157,11 +162,23 @@ export default {
         if (this.Auth.recycled){
           url=url+'&recycled=1';
         }
+        let ct='&_ct_=';
+        try {
+          ct=ct+(JSON.parse(localStorage.getItem(MD5(url).toString()))).ct;
+        } catch (error) {
+          ct='';
+        }
       me.$axios
-        .get(url)
+        .get(url+ct)
         .then(function(response) {
-          if (me.isOk(response.data)) {
+          if (me.isOk(response.data,url)) {
           me.setParams();
+          if (response.data.data=='_ct_'){
+            //response.data.data=JSON.parse(AES.decrypt((JSON.parselocalStorage.getItem(MD5(url).toString())).response, _lap).toString(Utf8));
+            response.data.data=(JSON.parse(localStorage.getItem(MD5(url).toString()))).response;
+            response.data.data=JSON.parse(AES.decrypt(response.data.data, _lap).toString(Utf8))
+            //response.data.data=(JSON.parse(localStorage.getItem(MD5(url).toString()))).response;
+          }
           me.fillTable(response.data);
           }
         })
@@ -173,7 +190,7 @@ export default {
           me.created==true;
         });
     },
-    isOk(data) {
+    isOk(data,url) {
       if (data._warning){
         data._warning.forEach(e => {
           c(e[0],e[2],e[1],e[3]);
@@ -193,6 +210,17 @@ export default {
           this.$store.dispatch('auth/logout');
         }
         return false;
+      }
+      if (data.data == '_ct_') {
+        c('Estos datos ya estan cacheados',this.$options.name,'Cache')
+      }else{
+        const ct={
+          ct:MD5(JSON.stringify(data.data)).toString(),
+          response:AES.encrypt(JSON.stringify(data.data), _lap).toString()
+          //response:data.data
+        }
+        //localStorage.setItem(url,MD5(JSON.stringify(data.data)).toString());
+        localStorage.setItem(MD5(url).toString(),JSON.stringify(ct));
       }
       return true;
     },
@@ -520,7 +548,7 @@ export default {
   mounted() {
 //   c("Ejecuto",this.$options.name,'mounted');
     this.headers=this.getHeaders();
-    //TODO: ver el cache en las consultas del crud en el front opcion de checksum
+    //TODO: tratar de que el cache se hag bajo una sola llave de localstore para un facil depuracion;
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no,} colum resizer, colkumna span o juntar columanas, frozen columnas
