@@ -4,24 +4,75 @@
       <v-layout row wrap>
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
-          <mk-data-table
-            :lista="lista"
-            :busquedas="busquedas"
-            :search_campos="search_campos"
-            :headers="headers"
-            :loading="loading"
-            :paginator="paginator"
-            @openDialog="openDialog"
-            @deleteItem="deleteItem"
-            @setStatus="setStatus"
-            @listar="listar"
-            @onPerPageChange="onPerPageChange"
-            @onChangeColumns="onChangeColumns"
-            @onBuscar="onBuscar"
-          ></mk-data-table>
+          <mk-data-table></mk-data-table>
+          <v-card>
+            <mk-table-head
+              @openDialog="openDialog"
+              @deleteItem="deleteItem"
+              @busqueda:avanzada="onBuscar"
+              :sel="lista.selected"
+              :busquedas="busquedas"
+              :campos="search_campos"
+              :headers="headers"
+              @changeColumns="onChangeColumns"
+            ></mk-table-head>
+            <v-divider></v-divider>
+            <v-card-text class="pa-0">
+              <v-data-table
+                :headers="headers"
+                :items="lista.items"
+                class="elevation-1"
+                item-key="id"
+                select-all
+                v-model="lista.selected"
+                :loading="loading"
+                :server-items-length="paginator.total"
+                @update:pagination="listar"
+                hide-actions
+                :pagination.sync="paginator.options"
+              >
+                <template slot="headers" slot-scope="props">
+                  <tr>
+                    <th>
+                      <v-checkbox
+                        :input-value="props.all"
+                        :indeterminate="props.indeterminate"
+                        primary
+                        hide-details
+                        @click.stop="toggleAll"
+                      ></v-checkbox>
+                    </th>
+                    <template v-for="header in props.headers">
+                    <th v-if="header.visible" :key="header.value"
+                      :class="['column', header.sortable ? 'sortable' : '', 'text-xs-'+header.align, paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
+                      @click="changeSort(header.value,header.sortable)"
+                      :width='header.width'
+
+                    >
+
+                      <v-icon v-if="header.sortable" small>arrow_upward</v-icon>
+                      {{ header.text }}
+                    </th>
+                    </template>
+                  </tr>
+                </template>
+
+                <template slot="items" slot-scope="props">
+                  <mk-table-row
+                    :datos="props"
+                    :headers="headers"
+                    @openDialog="openDialog"
+                    @deleteItem="deleteItem"
+                    @onStatus="setStatus"
+                  >
+                  </mk-table-row>
+                </template>
+              </v-data-table>
+            </v-card-text>
+          </v-card>
         </v-flex>
       </v-layout>
-
+      <mk-paginator :paginator="paginator" @input="listar" @change="onPerPageChange"></mk-paginator>
       <mk-form
         ref="mkForm"
         :modal="modal"
@@ -99,14 +150,12 @@
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
-import MkDataTable from '@/components/mkComponentes/MkDataTable'
 import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
 
 export default {
   middleware: ['authAccess'],
   mixins: [MkModuloMix],
   components: {
-    MkDataTable,
     MkPermisos
   },
   name: 'Usuarios',

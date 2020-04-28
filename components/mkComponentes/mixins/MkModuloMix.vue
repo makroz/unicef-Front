@@ -1,9 +1,6 @@
 <script>
 import MkHead from "@/components/mkComponentes/MkHead";
 import MkForm from "@/components/mkComponentes/MkFormulario";
-import MkTableHead from "@/components/mkComponentes/MkTableHead";
-import MkTableRow from "@/components/mkComponentes/MkTableRow";
-import MkPaginator from "@/components/mkComponentes/MkPaginator";
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import {c} from "@/components/mkComponentes/MkUtils.js";
 import Swal from "sweetalert2";
@@ -13,9 +10,6 @@ export default {
   components: {
     MkHead,
     MkForm,
-    MkTableHead,
-    MkTableRow,
-    MkPaginator
   },
  mixins: [MkRulesMix],
   data() {
@@ -63,22 +57,9 @@ export default {
     };
   },
   methods: {
-    toggleAll () {
-        if (this.lista.selected.length) this.lista.selected = []
-        else this.lista.selected = this.lista.items.slice()
-      },
-      changeSort (column,sortable=false) {
-        if (!sortable){ return false;}
-        if (this.paginator.options.sortBy === column) {
-          this.paginator.options.descending = !this.paginator.options.descending
-        } else {
-          this.paginator.options.sortBy = column
-          this.paginator.options.descending = false
-        }
-        this.listar();
 
-      },
     onBuscar(datos, quitarbuscar = false) {
+      console.log('OnBuscar Mix:',datos,this.busqueda);
       this.paginator.page = 1;
       this.busquedas = datos;
       this.listar(datos, quitarbuscar);
@@ -300,7 +281,7 @@ export default {
       let titleOk='Elemento(s) eliminado(s)!';
       let icon ='warning';
       let color ='red';
-      let boton=  'Si, BORROR!!!';
+      let boton=  'Si, BORRAR!!!';
       let url=me.urlModulo + "/delete";
       if (restore){
         title= 'Seguro de querer Restaurar este Item?';

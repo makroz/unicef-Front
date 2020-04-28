@@ -67,7 +67,7 @@ export default {
       default: null
     },
     index: {
-      type: Number,
+      type: [Number,String],
       default: 0
     }
   },
