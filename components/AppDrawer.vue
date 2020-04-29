@@ -84,11 +84,11 @@
     props: {
       expanded: {
         type: Boolean,
-        default: false
+        default: true
       },
     },
     data: () => ({
-      mini: true,
+      mini: false,
       menus: menu,
       scrollSettings: {
         maxScrollbarLength: 160

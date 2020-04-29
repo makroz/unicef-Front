@@ -582,11 +582,10 @@ export default {
     //   console.log(key)
     // }
 
-    //TODO: tratar de que el cache se hag bajo una sola llave de localstore para un facil depuracion;
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no,} colum resizer, colkumna span o juntar columanas, frozen columnas
-    //TODO: revisar la ruta de permisos cache y otras rutas para aplicar cache en ambios lados
+
   }
 }
 </script>
