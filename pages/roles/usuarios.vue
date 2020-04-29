@@ -153,10 +153,11 @@ export default {
   methods: {
     onChange(v) {
       let me = this
+      let url = me.urlModulo + '/permisosGrupos/0,' + v
       me.$axios
-        .post(me.urlModulo + '/permisosGrupos/0', { grupos: v })
+        .post(url + this.getCt(url), { grupos: v })
         .then(function(response) {
-          me.permisoGrupos = response.data.data
+          me.permisoGrupos = me.getDataCache(response.data, url)
         })
         .catch(function(error) {
           console.log(error)
@@ -215,9 +216,9 @@ export default {
     let url = 'Grupos?page=1&per_page=-1&cols=id,name&disabled=1'
 
     me.$axios
-      .get(url)
+      .get(url + me.getCt(url))
       .then(function(response) {
-        me.lGrupos = response.data.data
+        me.lGrupos = me.getDataCache(response.data, url)
       })
       .catch(function(error) {
         console.log(error)
@@ -226,11 +227,11 @@ export default {
         me.loading = false
       })
 
-    url = 'Roles?page=1&per_page=-1&cols=id,name&disabled=1'
+    let url1 = 'Roles?page=1&per_page=-1&cols=id,name&disabled=1' //paso 1 para cachear
     me.$axios
-      .get(url)
+      .get(url1 + me.getCt(url1)) //paso 2 para cachear
       .then(function(response) {
-        me.lRoles = response.data.data
+        me.lRoles = me.getDataCache(response.data, url1) //paso 3 para cachear
       })
       .catch(function(error) {
         console.log(error)
