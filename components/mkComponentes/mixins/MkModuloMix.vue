@@ -72,16 +72,14 @@ export default {
       this.paginator.page = 1
       this.listar()
     },
-    getDataCache(data,url){
+    getDataCache(data, url) {
       if (data.data == '_ct_') {
         c('Estos datos ya estan cacheados', this.$options.name, 'Cache')
-              //response.data.data=(JSON.parse(localStorage.getItem(MD5(url).toString()))).response;//debug sin enxriptar
-              data.data = JSON.parse(
-                localStorage.getItem('cache_' + MD5(url).toString())
-              ).response //encriptado1.0
-              data.data = JSON.parse(
-                AES.decrypt(data.data, _lap).toString(Utf8)
-              ) //encriptado1.1
+        //response.data.data=(JSON.parse(localStorage.getItem(MD5(url).toString()))).response;//debug sin enxriptar
+        data.data = JSON.parse(
+          localStorage.getItem('cache_' + MD5(url).toString())
+        ).response //encriptado1.0
+        data.data = JSON.parse(AES.decrypt(data.data, _lap).toString(Utf8)) //encriptado1.1
       } else {
         const ct = {
           //response:data.data//Derbug No Encriptado
@@ -90,11 +88,10 @@ export default {
         }
         localStorage.setItem('cache_' + MD5(url).toString(), JSON.stringify(ct))
       }
-      return data.data;
+      return data.data
     },
-    fillTable(data,url) {
-
-      this.lista.items = this.getDataCache(data,url);
+    fillTable(data, url) {
+      this.lista.items = this.getDataCache(data, url)
 
       this.paginator.total = data.ok
       this.oldBuscar = this.buscar
@@ -105,19 +102,21 @@ export default {
         this.paginator.n_page = 1
       }
     },
-    getCt(url){
-      let ct = '_ct_=';
-      if (url.includes('?')){
-        ct = '&'+ct;
-      }else{
-        ct = '?'+ct;
+    getCt(url) {
+      let ct = '_ct_='
+      if (url.includes('?')) {
+        ct = '&' + ct
+      } else {
+        ct = '?' + ct
       }
       try {
-        ct = ct + JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct;
+        ct =
+          ct +
+          JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
       } catch (error) {
-        ct = '';
+        ct = ''
       }
-      return ct;
+      return ct
     },
     listar(d, quitarbuscar = false) {
       let me = this
@@ -202,7 +201,7 @@ export default {
         .then(function(response) {
           if (me.isOk(response.data, url)) {
             me.setParams()
-            me.fillTable(response.data,url)
+            me.fillTable(response.data, url)
           }
         })
         .catch(function(error) {
@@ -240,15 +239,15 @@ export default {
         return false
       }
       let me = this
-      let url=me.urlModulo + '/setStatus?status='+newStatus;
+      let url = me.urlModulo + '/setStatus?status=' + newStatus
       me.$axios
-        .post(url+this.getCt(url), {
-//          status: newStatus,
+        .post(url + this.getCt(url), {
+          //          status: newStatus,
           id: id
         })
         .then(function(response) {
           if (me.isOk(response.data)) {
-            me.fillTable(response.data.data,url)
+            me.fillTable(response.data.data, url)
             me.paramsExtra = {}
           } else {
             //con error
@@ -274,12 +273,12 @@ export default {
         if (!this.can('edit', true)) {
           return false
         }
-        let url=me.urlModulo + '/' + me.item.id;
+        let url = me.urlModulo + '/' + me.item.id
         me.$axios
-          .put(url+this.getCt(url), me.item)
+          .put(url + this.getCt(url), me.item)
           .then(function(response) {
             if (me.isOk(response.data)) {
-              me.fillTable(response.data.data,url)
+              me.fillTable(response.data.data, url)
               me.closeDialog()
               me.paramsExtra = {}
             } else {
@@ -294,14 +293,14 @@ export default {
         if (!this.can('add', true)) {
           return false
         }
-        let url=me.urlModulo;
+        let url = me.urlModulo
 
         me.$axios
-          .post(url+this.getCt(url), me.item)
+          .post(url + this.getCt(url), me.item)
           .then(function(response) {
             if (me.isOk(response.data)) {
               me.paginator.page = 1
-              me.fillTable(response.data.data,url)
+              me.fillTable(response.data.data, url)
               me.closeDialog()
               me.paramsExtra = {}
             } else {
@@ -482,14 +481,6 @@ export default {
     _updateData(data, val) {
       this.Auth[data] = val
     },
-    onChangeColumns(value) {
-      this.headers.forEach((e) => {
-        if (e.value == value) {
-          e.visible = !e.visible
-        }
-      })
-      this.setParams('headers', this.headers)
-    },
     getHeaders: function() {
       let h = this.getParams('headers')
       if (h !== false) {
@@ -531,6 +522,20 @@ export default {
       }
       this.setParams('headers', h)
       return h
+    },
+    onColVisible(value) {
+      this.headers.forEach((e) => {
+        if (e.value == value) {
+          e.visible = !e.visible
+        }
+      })
+      this.setParams('headers', this.headers)
+    },
+    onColSort(newIndex, oldIndex) {
+      const me = this
+      const sel = me.headers.splice(oldIndex, 1)[0]
+      me.headers.splice(newIndex, 0, sel)
+      this.setParams('headers', this.headers)
     }
   },
   watch: {
@@ -581,11 +586,12 @@ export default {
     // for (var key in localStorage) { //Borrar caache
     //   console.log(key)
     // }
-
+    //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
+    //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
+    //TODO: adicioonar a todas las tablas el creado por y modificado por igual que el borrado por
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
-    //TODO: crear un data table propio {choser de columnas que se pueden ver o no,} colum resizer, colkumna span o juntar columanas, frozen columnas
-
+    //TODO: crear un data table propio {choser de columnas que se pueden ver o no, columnas sort} colum resizer, colkumna span o juntar columanas, frozen columnas
   }
 }
 </script>

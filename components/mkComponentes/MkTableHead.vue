@@ -59,7 +59,7 @@
       <v-icon v-else>restore_from_trash</v-icon>
     </v-btn>
 
-    <mk-menu-columns :items="headers" @input="onChangeColumns"></mk-menu-columns>
+    <mk-menu-columns :items="headers" @column:visible="onColVisible" @column:sort="onSortCol"></mk-menu-columns>
   </v-toolbar>
 </template>
 
@@ -108,8 +108,11 @@ export default {
       this.lCond = lCond
       this.$emit('busqueda:avanzada', datos, quitarbusqueda)
     },
-    onChangeColumns(value) {
-      this.$emit('changeColumns', value)
+    onColVisible(value) {
+      this.$emit('column:visible', value)
+    },
+    onSortCol(newIndex, oldIndex) {
+      this.$emit('column:sort', newIndex, oldIndex)
     }
   }
 }

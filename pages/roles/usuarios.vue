@@ -16,7 +16,8 @@
             @setStatus="setStatus"
             @listar="listar"
             @onPerPageChange="onPerPageChange"
-            @onChangeColumns="onChangeColumns"
+            @column:visible="onColVisible"
+            @column:sort="onColSort"
             @onBuscar="onBuscar"
           ></mk-data-table>
         </v-flex>

@@ -8,7 +8,8 @@
       :busquedas="busquedas"
       :campos="search_campos"
       :headers="headers"
-      @changeColumns="onChangeColumns"
+      @column:visible="onColVisible"
+      @column:sort="onSortCol"
     ></mk-table-head>
     <v-divider></v-divider>
     <v-card-text class="pa-0">
@@ -42,7 +43,7 @@
                 :key="header.value"
                 :class="['column', header.sortable ? 'sortable' : '', 'text-xs-'+header.align, paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
                 @click="changeSort(header.value,header.sortable)"
-                :width="header.width"
+                :width="header.width?header.width:'100%'"
               >
                 <v-icon v-if="header.sortable" small>arrow_upward</v-icon>
                 {{ header.text }}
@@ -124,9 +125,13 @@ export default {
     onPerPageChange(page) {
       this.$emit('onPerPageChange', page)
     },
-    onChangeColumns(value) {
-      this.$emit('onChangeColumns', value)
+    onColVisible(value) {
+      this.$emit('column:visible', value)
+    },
+    onSortCol(newIndex,oldIndex) {
+      this.$emit('column:sort', newIndex,oldIndex);
     }
+
   }
 }
 </script>
