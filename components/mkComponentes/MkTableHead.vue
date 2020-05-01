@@ -59,7 +59,7 @@
       <v-icon v-else>restore_from_trash</v-icon>
     </v-btn>
 
-    <mk-menu-columns :items="headers" @column:visible="onColVisible" @column:sort="onSortCol"></mk-menu-columns>
+    <mk-menu-columns :items="headers" @column:visible="onColVisible" @column:change="onColChange"></mk-menu-columns>
   </v-toolbar>
 </template>
 
@@ -111,8 +111,8 @@ export default {
     onColVisible(value) {
       this.$emit('column:visible', value)
     },
-    onSortCol(newIndex, oldIndex) {
-      this.$emit('column:sort', newIndex, oldIndex)
+    onColChange(headers) {
+      this.$emit('column:change', headers)
     }
   }
 }

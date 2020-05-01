@@ -523,18 +523,16 @@ export default {
       this.setParams('headers', h)
       return h
     },
-    onColVisible(value) {
-      this.headers.forEach((e) => {
-        if (e.value == value) {
-          e.visible = !e.visible
-        }
-      })
-      this.setParams('headers', this.headers)
-    },
-    onColSort(newIndex, oldIndex) {
-      const me = this
-      const sel = me.headers.splice(oldIndex, 1)[0]
-      me.headers.splice(newIndex, 0, sel)
+    // onColVisible(value) {
+    //   this.headers.forEach((e) => {
+    //     if (e.value == value) {
+    //       e.visible = !e.visible
+    //     }
+    //   })
+    //   this.setParams('headers', this.headers)
+    // },
+    onColChange(headers) {
+      this.headers=headers;
       this.setParams('headers', this.headers)
     }
   },

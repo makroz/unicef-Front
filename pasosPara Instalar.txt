@@ -27,6 +27,7 @@ env: {
 
 npm install sweetalert2
 npm install crypto-js
+npm i -S vuedraggable
 copiar dentro de componentes la carpeta mkComponentes
 copiar el archivo roles.vue de pages
 copiar la carpeta roles dentro de pages

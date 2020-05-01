@@ -8,8 +8,7 @@
       :busquedas="busquedas"
       :campos="search_campos"
       :headers="headers"
-      @column:visible="onColVisible"
-      @column:sort="onSortCol"
+      @column:change="onColChange"
     ></mk-table-head>
     <v-divider></v-divider>
     <v-card-text class="pa-0">
@@ -125,11 +124,8 @@ export default {
     onPerPageChange(page) {
       this.$emit('onPerPageChange', page)
     },
-    onColVisible(value) {
-      this.$emit('column:visible', value)
-    },
-    onSortCol(newIndex,oldIndex) {
-      this.$emit('column:sort', newIndex,oldIndex);
+    onColChange(headers) {
+      this.$emit('column:change', headers);
     }
 
   }

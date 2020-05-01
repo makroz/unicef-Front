@@ -118,6 +118,7 @@ export const actions = {
           commit("setRutaBack", "/");
         }
         this.$router.push(this.state.auth.rutaBack);
+        return true;
       } else {
         commit("setAuthToken", null);
         this.$axios.defaults.headers.common["Authorization"] = "";
@@ -131,6 +132,7 @@ export const actions = {
       }
       throw error;
     }
+    return false;
   },
   async getUser({getters,commit,dispatch}){
     if (!getters.getUser){
@@ -143,21 +145,23 @@ export const actions = {
     this.$axios.defaults.headers.common["Authorization"] = "";
     commit("SET_USER", null);
     commit("setAcceso", false);
-
     this.$router.push("/login");
+    return true;
   },
   reloadUser({ commit },persist=true) {
+    let user={};
     if (localStorage.getItem("Auth")) {
       try {
-        let user =JSON.parse(AES.decrypt(localStorage.getItem("Auth"), _lap).toString(Utf8));
+         user =JSON.parse(AES.decrypt(localStorage.getItem("Auth"), _lap).toString(Utf8));
         let token =JSON.parse(AES.decrypt(localStorage.getItem("AuthToken"), _lap).toString(Utf8));
         commit("SET_USER", user,persist);
         commit("setAuthToken", token,persist);
-        return user;
+        //return user;
       } catch (e) {
         console.log("error", e);
         commit("SET_USER", null);
       }
     }
+    return user;
   }
 };
