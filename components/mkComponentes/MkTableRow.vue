@@ -4,7 +4,7 @@
       <v-checkbox primary hide-details v-model="datos.selected"></v-checkbox>
     </td>
       <template v-for="header in headers">
-        <td v-if="(header.visible)&&(header.value!='status')&&(datos.item[header.value]!=undefined)" :class="['text-xs-'+header.align]" :key="header.value" :width="header.width?header.width:'100%'">{{ datos.item[header.value] }}</td>
+        <td v-if="(header.visible)&&(header.value!='status')&&(datos.item[header.value]!=undefined)" :class="['text-xs-'+header.align]" :key="header.value" >{{ datos.item[header.value] }}</td>
       </template>
     <td class="text-xs-center">
       <mk-status :status="datos.item.status" :id="datos.item.id" @onStatus="setStatus"></mk-status>

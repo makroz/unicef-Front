@@ -501,10 +501,10 @@ export default {
       })
 
       h.push({
-        text: 'Estado',
+        text: 'Status',
         value: 'status',
         align: 'center',
-        width: '150px',
+        width: '50px',
         sortable: false,
         visible: true,
         fixed: true
@@ -513,8 +513,8 @@ export default {
         h.push({
           text: 'Acciones',
           value: 'actions',
-          align: 'left',
-          width: '175px',
+          align: 'center',
+          width: '165px',
           sortable: false,
           visible: true,
           fixed: true

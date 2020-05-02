@@ -1,38 +1,34 @@
 <template>
-  <v-chip
-    v-if="status=='1'"
-    class="ma-2"
-    color="green"
-    text-color="white"
+  <v-icon
+    :color="status=='1'?'green':'red'"
     small
-    @click="setStatus(0)"
-  >activo</v-chip>
-  <v-chip v-else class="ma-2" color="red" small text-color="white" @click="setStatus(1)">inactivo</v-chip>
+    @click="setStatus(status==1?0:1)"
+  >fiber_manual_record</v-icon>
 </template>
 <script>
 export default {
-  name: "setstatus",
+  name: 'setstatus',
   props: {
-    status:{
-      type: [Number,String],
+    status: {
+      type: [Number, String],
       default: 0
     },
-    id:{
-      type: [Number,String],
+    id: {
+      type: [Number, String],
       default: 0
-    },
+    }
   },
   data() {
-    return {};
+    return {}
   },
-  inject: {Auth:{ default: {} },can:{default:()=>true}},
+  inject: { Auth: { default: {} }, can: { default: () => true } },
   methods: {
     setStatus(estado) {
       if (this.can('edit')) {
-        this.$emit("onStatus", this.id, estado);
+        this.$emit('onStatus', this.id, estado)
       }
     }
   }
-};
+}
 </script>
 

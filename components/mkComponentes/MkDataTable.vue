@@ -42,11 +42,9 @@
                 :key="header.value"
                 :class="['column', header.sortable ? 'sortable' : '', 'text-xs-'+header.align, paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
                 @click="changeSort(header.value,header.sortable)"
-                :width="header.width?header.width:'100%'"
-              >
-                <v-icon v-if="header.sortable" small>arrow_upward</v-icon>
-                {{ header.text }}
-              </th>
+                :style="'width:'+header.width"
+             >
+                {{ header.text }} <v-icon  v-if="header.sortable" small>arrow_upward</v-icon></th>
             </template>
           </tr>
         </template>
