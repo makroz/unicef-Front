@@ -2,51 +2,25 @@
   <div id="pageTable">
     <v-container grid-list-xl fluid>
       <v-layout row wrap>
-        <mk-head :titulo="titModulo" ></mk-head>
+        <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
-          <v-card>
-            <mk-table-head
-              @openDialog="openDialog"
-              @deleteItem="deleteItem"
-              @busqueda:avanzada="onBuscar"
-              :sel="lista.selected"
-              :busquedas="busquedas"
-              :campos="search_campos"
-            ></mk-table-head>
-            <v-divider></v-divider>
-            <v-card-text class="pa-0">
-              <v-data-table
-                :headers="headers"
-                :items="lista.items"
-                class="elevation-1"
-                item-key="id"
-                select-all
-                v-model="lista.selected"
-                :loading="loading"
-                :server-items-length="paginator.total"
-                @update:pagination="listar"
-                hide-actions
-                :pagination.sync="paginator.options"
-              >
-                <template slot="items" slot-scope="props">
-                  <mk-table-row
-                    :item="props.item"
-                    :datos="props"
-                    @openDialog="openDialog"
-                    @deleteItem="deleteItem"
-                    @onStatus="setStatus"
-                  >
-                    <td class="text-xs-left">{{ props.item.id }}</td>
-                    <td>{{ props.item.name }}</td>
-                    <td>{{ props.item.descrip }}</td>
-                  </mk-table-row>
-                </template>
-              </v-data-table>
-            </v-card-text>
-          </v-card>
+          <mk-data-table
+            :lista="lista"
+            :busquedas="busquedas"
+            :search_campos="search_campos"
+            :headers="headers"
+            :loading="loading"
+            :paginator="paginator"
+            @openDialog="openDialog"
+            @deleteItem="deleteItem"
+            @setStatus="setStatus"
+            @listar="listar"
+            @onPerPageChange="onPerPageChange"
+            @column:change="onColChange"
+            @onBuscar="onBuscar"
+          ></mk-data-table>
         </v-flex>
       </v-layout>
-      <mk-paginator :paginator="paginator" @input="listar" @change="onPerPageChange"></mk-paginator>
       <mk-form
         ref="mkForm"
         :modal="modal"
@@ -72,12 +46,14 @@
 </template>
 
 <script>
-import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkDataTable from '@/components/mkComponentes/MkDataTable'
 import MkPermisos from "@/components/mkComponentes/mkPermisos/MkPermisos";
 
 export default {
   mixins: [MkModuloMix],
   components: {
+    MkDataTable,
     MkPermisos
   },
   name: "Grupos",
@@ -131,10 +107,12 @@ export default {
     },
     beforeOpen(accion, data = {}) {
       let me = this;
+      let url = me.urlModulo + "/permisos/" + me.item.id
+      me.loading=true;
       me.$axios
-        .post(me.urlModulo + "/permisos/" + me.item.id, [])
+        .post(url+ this.getCt(url), [])
         .then(function(response) {
-          me.permisos = response.data.data;
+          me.permisos = me.getDataCache(response.data, url)
         })
         .catch(function(error) {
           console.log(error);
