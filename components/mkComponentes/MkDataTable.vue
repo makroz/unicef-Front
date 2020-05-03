@@ -15,7 +15,7 @@
       <v-data-table
         :headers="headers"
         :items="lista.items"
-        class="elevation-1"
+        :class="[loading?'loading':'','elevation-1']"
         item-key="id"
         select-all
         v-model="lista.selected"
@@ -129,3 +129,9 @@ export default {
   }
 }
 </script>
+<style >
+ .loading table > tbody{
+
+    color:rgb(195, 195, 195);
+  }
+</style>

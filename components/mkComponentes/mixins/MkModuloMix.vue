@@ -130,7 +130,6 @@ export default {
         setTimeout(() => (this.created = true), 2000)
       }
 
-      me.loading = true
       let page = me.paginator.page || 1
       let criterio = me.criterio || ''
       let perPage = me.paginator.perPage || 5
@@ -195,7 +194,7 @@ export default {
       if (this.Auth.recycled) {
         url = url + '&recycled=1'
       }
-
+      me.loading = true
       me.$axios
         .get(url + this.getCt(url))
         .then(function(response) {
@@ -240,6 +239,7 @@ export default {
       }
       let me = this
       let url = me.urlModulo + '/setStatus?status=' + newStatus
+      me.loading = true
       me.$axios
         .post(url + this.getCt(url), {
           //          status: newStatus,
@@ -255,6 +255,9 @@ export default {
         })
         .catch(function(error) {
           console.log(error)
+        })
+        .finally(function() {
+          me.loading = false
         })
     },
     beforeSave(me) {},
@@ -273,6 +276,7 @@ export default {
         if (!this.can('edit', true)) {
           return false
         }
+        me.loading = true
         let url = me.urlModulo + '/' + me.item.id
         me.$axios
           .put(url + this.getCt(url), me.item)
@@ -289,10 +293,15 @@ export default {
             console.log(error)
             isError = 2
           })
+          .finally(function() {
+            me.loading = false
+          })
       } else {
         if (!this.can('add', true)) {
           return false
         }
+
+        me.loading = true
         let url = me.urlModulo
 
         me.$axios
@@ -310,6 +319,9 @@ export default {
           .catch(function(error) {
             console.log(error)
             isError = 2
+          })
+          .finally(function() {
+            me.loading = false
           })
         this.afterSave(me, isError)
       }
@@ -355,6 +367,7 @@ export default {
           if (this.Auth.recycled) {
             url = url + '?recycled=1'
           }
+          me.loading = true
           me.$axios
             .post(url, {
               id: id
@@ -371,6 +384,9 @@ export default {
             })
             .catch(function(error) {
               console.log(error)
+            })
+            .finally(function() {
+              me.loading = false
             })
         }
       })
@@ -523,16 +539,8 @@ export default {
       this.setParams('headers', h)
       return h
     },
-    // onColVisible(value) {
-    //   this.headers.forEach((e) => {
-    //     if (e.value == value) {
-    //       e.visible = !e.visible
-    //     }
-    //   })
-    //   this.setParams('headers', this.headers)
-    // },
     onColChange(headers) {
-      this.headers=headers;
+      this.headers = headers
       this.setParams('headers', this.headers)
     }
   },
