@@ -192,15 +192,19 @@ export default {
       me.tabs = 0
 
       me.item.pass = ''
+      me.rulesUnico.old=data.email;
       me.paramsExtra.grupos = []
       if (me.item.grupos) {
         me.paramsExtra.grupos = me.item.grupos
       }
+
+      let url = me.urlModulo + '/permisos/' + me.item.id
+      let url2 = me.urlModulo + '/permisos/' + me.item.id+JSON.stringify(me.paramsExtra)
       me.$axios
-        .post(me.urlModulo + '/permisos/' + me.item.id, me.paramsExtra)
+        .post(url+me.getCt(url2,false,2), me.paramsExtra)
         .then(function(response) {
-          me.permisos = response.data.data
-          me.permisoGrupos = response.data.msg.data
+          me.permisos = me.getDataCache(response.data, url2,false);
+          me.permisoGrupos = me.getDataCache(response.data.msg,url2,false,2);
         })
         .catch(function(error) {
           console.log(error)

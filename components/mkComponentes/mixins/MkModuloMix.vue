@@ -72,15 +72,19 @@ export default {
       this.paginator.page = 1
       this.listar()
     },
-    getDataCache(data, url,paginate=true) {
+    getDataCache(data, url,paginate=true, lista=1) {
       if (paginate){
         url=url+JSON.stringify(this.paginator);
+      }
+
+      if (lista!=1){
+        url=url+'_'+lista;
       }
       if (data.data == '_ct_') {
         c('Estos datos ya estan cacheados', this.$options.name, 'Cache')
         if (this.$store.state.auth.encryptActive){
           data.data = JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())) //encriptado1.0
-          console.log(url,data.data);
+          //console.log(url,data.data);
           data.data = JSON.parse(AES.decrypt(data.data.response, _lap).toString(Utf8)) //encriptado1.1
 
         }else{
@@ -104,6 +108,7 @@ export default {
     },
     fillTable(data, url) {
       this.lista.items = this.getDataCache(data, url)
+      //this.lista.items = data.data;
 
       this.paginator.total = data.ok
       this.oldBuscar = this.buscar
@@ -114,11 +119,12 @@ export default {
         this.paginator.n_page = 1
       }
     },
-    getCt(url,paginate=true) {
+    getCt(url,paginate=true,lista=1) {
       if (!this.$store.state.auth.cacheActive){
         return '';
       }
       let ct = '_ct_='
+      let ct2 = ''
       if (url.includes('?')) {
         ct = '&' + ct
       } else {
@@ -127,16 +133,29 @@ export default {
       if (paginate){
       url=url+JSON.stringify(this.paginator);
       }
+      if (lista==1){
+        ct2='';
+      }
+
       try {
         if (this.$store.state.auth.encryptActive){
           ct = ct + JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
         }else{
             ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
         }
+        if (lista!=1){
+        ct2 = '&_ct2_='
+        if (this.$store.state.auth.encryptActive){
+          ct2 = ct2 + JSON.parse(localStorage.getItem('cache_' + MD5(url+'_'+lista).toString())).ct
+        }else{
+            ct2 = ct2 + JSON.parse(localStorage.getItem('cache_' + url+'_'+lista)).ct
+        }
+        }
       } catch (error) {
         ct = ''
+        ct2 = ''
       }
-      return ct
+      return ct+ct2;
     },
     listar(d, quitarbuscar = false) {
       let me = this
@@ -620,7 +639,7 @@ export default {
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no, columnas sort} colum resizer, colkumna span o juntar columanas, frozen columnas
-    //TODO: revisar o hacer que el cache en el back pueda recibir 2 topken de cche del front porque puede haber 2 listados
+        //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
 
   }
 }
