@@ -35,7 +35,7 @@ export default {
         perPageList: [2, 5, 10, 25, 50, { value: "-1", text: "Todos" }],
         n_page: 1,
         page: 1,
-        offset: 3,
+        offset: 5,
         total: 0
       })
     }
@@ -49,8 +49,8 @@ export default {
     },
     onChange(perPage) {
       this.$emit("change", perPage);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

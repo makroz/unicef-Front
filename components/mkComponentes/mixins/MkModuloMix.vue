@@ -72,21 +72,33 @@ export default {
       this.paginator.page = 1
       this.listar()
     },
-    getDataCache(data, url) {
+    getDataCache(data, url,paginate=true) {
+      if (paginate){
+        url=url+JSON.stringify(this.paginator);
+      }
       if (data.data == '_ct_') {
         c('Estos datos ya estan cacheados', this.$options.name, 'Cache')
-        //response.data.data=(JSON.parse(localStorage.getItem(MD5(url).toString()))).response;//debug sin enxriptar
-        data.data = JSON.parse(
-          localStorage.getItem('cache_' + MD5(url).toString())
-        ).response //encriptado1.0
-        data.data = JSON.parse(AES.decrypt(data.data, _lap).toString(Utf8)) //encriptado1.1
-      } else {
-        const ct = {
-          //response:data.data//Derbug No Encriptado
-          ct: MD5(JSON.stringify(data.data)).toString(),
-          response: AES.encrypt(JSON.stringify(data.data), _lap).toString()
+        if (this.$store.state.auth.encryptActive){
+          data.data = JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())) //encriptado1.0
+          console.log(url,data.data);
+          data.data = JSON.parse(AES.decrypt(data.data.response, _lap).toString(Utf8)) //encriptado1.1
+
+        }else{
+          data.data = JSON.parse(localStorage.getItem('cache_' + url)).response
+          //console.log(url,data.data);
         }
-        localStorage.setItem('cache_' + MD5(url).toString(), JSON.stringify(ct))
+      } else {
+
+        let response=data.data
+         if (this.$store.state.auth.encryptActive){
+          url=MD5(url).toString();
+          response=AES.encrypt(JSON.stringify(Object.values(data.data)), _lap).toString()
+         }
+        const ct = {
+          ct: MD5(JSON.stringify(data.data)).toString(),
+          response: response
+        }
+        localStorage.setItem('cache_' + url, JSON.stringify(ct))
       }
       return data.data
     },
@@ -95,24 +107,29 @@ export default {
 
       this.paginator.total = data.ok
       this.oldBuscar = this.buscar
-      let n_page = Math.round(data.ok / this.paginator.perPage)
+      let n_page = Math.ceil(data.ok / this.paginator.perPage)
       if (this.paginator.perPage < this.paginator.total) {
         this.paginator.n_page = n_page
       } else {
         this.paginator.n_page = 1
       }
     },
-    getCt(url) {
+    getCt(url,paginate=true) {
       let ct = '_ct_='
       if (url.includes('?')) {
         ct = '&' + ct
       } else {
         ct = '?' + ct
       }
+      if (paginate){
+      url=url+JSON.stringify(this.paginator);
+      }
       try {
-        ct =
-          ct +
-          JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
+        if (this.$store.state.auth.encryptActive){
+          ct = ct + JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
+        }else{
+            ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
+        }
       } catch (error) {
         ct = ''
       }
@@ -518,22 +535,24 @@ export default {
 
       h.push({
         text: 'Status',
-        value: 'status',
+        value: '__st__',
         align: 'center',
         width: '50px',
         sortable: false,
         visible: true,
-        fixed: true
+        fixed: true,
+        noRow:true
       })
       if (this.can('edit') || this.can('del')) {
         h.push({
           text: 'Acciones',
-          value: 'actions',
+          value: '__act__',
           align: 'center',
           width: '165px',
           sortable: false,
           visible: true,
-          fixed: true
+          fixed: true,
+          noRow:true
         })
       }
       this.setParams('headers', h)
@@ -582,7 +601,7 @@ export default {
   created: function() {
     this.$store.dispatch('auth/getUser')
     //c("crear");
-    this.paramsExtra.buscar = ''
+    //this.paramsExtra.buscar = ''
     this.created = 2
   },
   mounted() {
@@ -598,6 +617,8 @@ export default {
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no, columnas sort} colum resizer, colkumna span o juntar columanas, frozen columnas
+    //TODO: revisar o hacer que el cache en el back pueda recibir 2 topken de cche del front porque puede haber 2 listados
+
   }
 }
 </script>

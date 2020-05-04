@@ -216,9 +216,9 @@ export default {
     let url = 'Grupos?page=1&per_page=-1&cols=id,name&disabled=1'
 
     me.$axios
-      .get(url + me.getCt(url))
+      .get(url + me.getCt(url,false))
       .then(function(response) {
-        me.lGrupos = me.getDataCache(response.data, url)
+        me.lGrupos = me.getDataCache(response.data, url,false)
       })
       .catch(function(error) {
         console.log(error)
@@ -229,9 +229,9 @@ export default {
 
     let url1 = 'Roles?page=1&per_page=-1&cols=id,name&disabled=1' //paso 1 para cachear
     me.$axios
-      .get(url1 + me.getCt(url1)) //paso 2 para cachear
+      .get(url1 + me.getCt(url1,false)) //paso 2 para cachear
       .then(function(response) {
-        me.lRoles = me.getDataCache(response.data, url1) //paso 3 para cachear
+        me.lRoles = me.getDataCache(response.data, url1,false) //paso 3 para cachear
       })
       .catch(function(error) {
         console.log(error)

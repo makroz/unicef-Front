@@ -7,6 +7,8 @@ export const state = () => ({
   authUser: null,
   acceso:false,
   rutaBack: null,
+  cacheActive:true,
+  encryptActive:true,
   permisos: { view: 1, ver:1, show:1,leer:1,read:1
              , add: 4, crear: 4, alta:4, create:4, store:4
              , edit: 2, editar:2, mod:2, modificar:2, update:2
@@ -69,6 +71,13 @@ export const getters = {
 export const mutations = {
   setAcceso(state,valor){
     state.acceso=valor;
+  },
+  setCacheActive(state,valor){
+    state.cacheActive=valor;
+  },
+
+  setEncriptActive(state,valor){
+    state.encrypActive=valor;
   },
   SET_USER(state, user,persist=true) {
     if ((user != null)&&(persist)) {
