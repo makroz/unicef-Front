@@ -7,7 +7,7 @@ export const state = () => ({
   authUser: null,
   acceso:false,
   rutaBack: null,
-  cacheActive:true,
+  cacheActive:false,
   encryptActive:true,
   permisos: { view: 1, ver:1, show:1,leer:1,read:1
              , add: 4, crear: 4, alta:4, create:4, store:4

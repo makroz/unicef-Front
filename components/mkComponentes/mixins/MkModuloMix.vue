@@ -115,6 +115,9 @@ export default {
       }
     },
     getCt(url,paginate=true) {
+      if (!this.$store.state.auth.cacheActive){
+        return '';
+      }
       let ct = '_ct_='
       if (url.includes('?')) {
         ct = '&' + ct
