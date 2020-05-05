@@ -69,7 +69,7 @@ module.exports = {
 ],
   axios: {
     // proxyHeaders: false
-    baseURL: "http://gFactura.com/public/api"
+    baseURL: "http://mkTimeWork.com/public/api"
   },
 
   /*

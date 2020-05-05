@@ -15,7 +15,7 @@ añadir em nuxt.config.js el modulo de axios y configurar el Url del api
  modules: ["@nuxtjs/axios"],
   axios: {
     // proxyHeaders: false
-    baseURL: "http://gFactura.com/public/api"
+    baseURL: "http://mkTimeWork.com/public/api"
   },
 ---
 añadir la key en el env de nuxt.config.js
