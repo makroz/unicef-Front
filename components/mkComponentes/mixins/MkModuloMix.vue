@@ -76,32 +76,37 @@ export default {
       this.paginator.page = 1
       this.listar()
     },
-    getDataCache(data, url,paginate=true, lista=1) {
-      if (paginate){
-        url=url+JSON.stringify(this.paginator);
+    getDataCache(data, url, paginate = true, lista = 1) {
+      if (paginate) {
+        url = url + JSON.stringify(this.paginator)
       }
 
-      if (lista!=1){
-        url=url+'_'+lista;
+      if (lista != 1) {
+        url = url + '_' + lista
       }
       if (data.data == '_ct_') {
         c('Estos datos ya estan cacheados', this.$options.name, 'Cache')
-        if (this.$store.state.auth.encryptActive){
-          data.data = JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())) //encriptado1.0
+        if (this.$store.state.auth.encryptActive) {
+          data.data = JSON.parse(
+            localStorage.getItem('cache_' + MD5(url).toString())
+          ) //encriptado1.0
           //console.log(url,data.data);
-          data.data = JSON.parse(AES.decrypt(data.data.response, _lap).toString(Utf8)) //encriptado1.1
-
-        }else{
+          data.data = JSON.parse(
+            AES.decrypt(data.data.response, _lap).toString(Utf8)
+          ) //encriptado1.1
+        } else {
           data.data = JSON.parse(localStorage.getItem('cache_' + url)).response
           //console.log(url,data.data);
         }
       } else {
-
-        let response=data.data
-         if (this.$store.state.auth.encryptActive){
-          url=MD5(url).toString();
-          response=AES.encrypt(JSON.stringify(Object.values(data.data)), _lap).toString()
-         }
+        let response = data.data
+        if (this.$store.state.auth.encryptActive) {
+          url = MD5(url).toString()
+          response = AES.encrypt(
+            JSON.stringify(Object.values(data.data)),
+            _lap
+          ).toString()
+        }
         const ct = {
           ct: MD5(JSON.stringify(data.data)).toString(),
           response: response
@@ -123,9 +128,9 @@ export default {
         this.paginator.n_page = 1
       }
     },
-    getCt(url,paginate=true,lista=1) {
-      if (!this.$store.state.auth.cacheActive){
-        return '';
+    getCt(url, paginate = true, lista = 1) {
+      if (!this.$store.state.auth.cacheActive) {
+        return ''
       }
       let ct = '_ct_='
       let ct2 = ''
@@ -134,32 +139,42 @@ export default {
       } else {
         ct = '?' + ct
       }
-      if (paginate){
-      url=url+JSON.stringify(this.paginator);
+      if (paginate) {
+        url = url + JSON.stringify(this.paginator)
       }
-      if (lista==1){
-        ct2='';
+      if (lista == 1) {
+        ct2 = ''
       }
 
       try {
-        if (this.$store.state.auth.encryptActive){
-          ct = ct + JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
-        }else{
-            ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
+        if (this.$store.state.auth.encryptActive) {
+          ct =
+            ct +
+            JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
+        } else {
+          ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
         }
-        if (lista!=1){
-        ct2 = '&_ct2_='
-        if (this.$store.state.auth.encryptActive){
-          ct2 = ct2 + JSON.parse(localStorage.getItem('cache_' + MD5(url+'_'+lista).toString())).ct
-        }else{
-            ct2 = ct2 + JSON.parse(localStorage.getItem('cache_' + url+'_'+lista)).ct
-        }
+        if (lista != 1) {
+          ct2 = '&_ct2_='
+          if (this.$store.state.auth.encryptActive) {
+            ct2 =
+              ct2 +
+              JSON.parse(
+                localStorage.getItem(
+                  'cache_' + MD5(url + '_' + lista).toString()
+                )
+              ).ct
+          } else {
+            ct2 =
+              ct2 +
+              JSON.parse(localStorage.getItem('cache_' + url + '_' + lista)).ct
+          }
         }
       } catch (error) {
         ct = ''
         ct2 = ''
       }
-      return ct+ct2;
+      return ct + ct2
     },
     listar(d, quitarbuscar = false) {
       let me = this
@@ -540,9 +555,15 @@ export default {
     _updateData(data, val) {
       this.Auth[data] = val
     },
-    getHeaders: function() {
+    getHeaders:  function() {
       let h = this.getParams('headers')
       if (h !== false) {
+        // this.campos.forEach((el, index) => {
+        //   if (el.headers) {
+        //     h[index].lista = el.lista || false
+        //     console.log('headers:',index,el.value,el.lista,h[index].lista)
+        //   }
+        // })
         return h
       }
       h = []
@@ -554,7 +575,8 @@ export default {
             align: el.align || 'left',
             width: el.width || null,
             sortable: el.sortable || true,
-            visible: el.visible || true
+            visible: el.visible || true,
+            lista: el.lista || false
           })
         }
       })
@@ -567,7 +589,8 @@ export default {
         sortable: false,
         visible: true,
         fixed: true,
-        noRow:true
+        noRow: true,
+        lista: false
       })
       if (this.can('edit') || this.can('del')) {
         h.push({
@@ -578,7 +601,8 @@ export default {
           sortable: false,
           visible: true,
           fixed: true,
-          noRow:true
+          noRow: true,
+          lista: false
         })
       }
       this.setParams('headers', h)
@@ -643,8 +667,7 @@ export default {
     //TODO: ver el porque el vtable row redibuja las filas ejecutando la funcioines de autenticacon acceso can tambien las rules de atenticacion se ejecutan cada vez
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no, columnas sort} colum resizer, colkumna span o juntar columanas, frozen columnas
-        //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
-
+    //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
   }
 }
 </script>

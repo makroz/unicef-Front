@@ -4,7 +4,8 @@
       <v-checkbox primary hide-details v-model="datos.selected"></v-checkbox>
     </td>
       <template v-for="header in headers">
-        <td v-if="(header.visible)&&(header.noRow!=true)" :class="['text-xs-'+header.align]" :key="header.value" >{{ datos.item[header.value] }}</td>
+        <td v-if="(header.visible)&&(header.noRow!=true)" :class="['text-xs-'+header.align]" :key="header.value" >{{ header.lista?colLista(header.lista,datos.item[header.value]):datos.item[header.value] }}</td>
+        <!-- <td v-if="(header.visible)&&(header.noRow!=true)" :class="['text-xs-'+header.align]" :key="header.value" >{{ header.lista }}</td> -->
       </template>
     <td class="text-xs-center">
       <mk-status :status="datos.item.status" :id="datos.item.id" @onStatus="setStatus"></mk-status>
@@ -78,7 +79,22 @@ export default {
     if (this.can('edit')){
       this.$emit('openDialog','edit', item)
     }
-  }
+  },
+  colLista(lista,v){
+
+//      console.log('llego1:',e)
+
+      //return 'llego';
+
+        let valor=(lista.find(el=>el.id==v))
+        // //console.log('llego2:',valor)
+        // if (typeof(valor.name)==undefined){
+        //   valor['name']='';
+        // }else{
+        //   valor=valor.name;
+        // }
+        return valor?valor.name:'';
+    }
   },
 };
 </script>

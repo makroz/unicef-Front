@@ -10,8 +10,16 @@ export function c(msg,m1='',m2='',tipo=''){
   if (tipo.trim()=='warning'){
     c1='background:#FF5733 ; color: #fff';
   }
+  if (tipo.trim()=='warning'){
+    c1='background:#FF5733 ; color: #fff';
+  }
   if (tipo.trim()=='info'){
     c1='background:#1C72E7 ; color: #fff';
+    c2='background:#000 ; color: #fff';
+  }
+
+  if (tipo.trim()=='error'){
+    c1='background:#ff0808 ; color: #fff';
     c2='background:#000 ; color: #fff';
   }
 
@@ -22,4 +30,5 @@ export function c(msg,m1='',m2='',tipo=''){
   msg);
   return true;
 }
+
 

@@ -9,32 +9,56 @@ const Menu = [
   },
   {
     title: "Modulo Usuarios",
-    group: "roles",
-    component: "roles",
+    group: "usuarios",
+    component: "usuarios",
     icon: "face",
     items: [
       {
-        name: "grupos",
-        title: "Grupos",
-        href: "/roles/grupos"
-      },
-      {
         name: "roles",
         title: "Roles",
-        href: "/roles/roles"
+        href: "/usuarios/roles"
       },
       {
         name: "permisos",
         title: "Permisos",
         badge: "new",
-        href: "/roles/permisos"
+        href: "/usuarios/permisos"
       },
       {
+        name: "grupos",
+        title: "Grupos",
+        href: "/usuarios/grupos"
+      },
+            {
         name: "usuarios",
         title: "Usuarios",
         badge: "new",
-        href: "/roles/usuarios"
+        href: "/usuarios/usuarios"
       }
+    ]
+  },
+  {
+    title: "Modulo Empresas",
+    group: "empresas",
+    component: "empresas",
+    icon: "face",
+    items: [
+      {
+        name: "empresas",
+        title: "Empresas",
+        href: "/empresas/empresas"
+      },
+      {
+        name: "sucursales",
+        title: "Sucursales",
+        badge: "new",
+        href: "/empresas/sucursales"
+      },
+      {
+        name: "empleados",
+        title: "Empleados",
+        href: "/empresas/empleados"
+      },
     ]
   },
   { divider: true },
