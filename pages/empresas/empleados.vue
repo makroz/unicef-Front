@@ -143,7 +143,6 @@ export default {
           me.campos.forEach((el, index) => {
           if (el.value=='sucursales_id') {
             me.headers[index].lista = me.lSucursales
-            console.log('headers:',index,el.value,el.lista,me.headers[index].lista)
           }
           })
 

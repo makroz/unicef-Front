@@ -9,7 +9,9 @@
           <v-list-tile :key="item.value" v-if="!item.fixed" ripple="ripple">
             <v-list-tile-content @click="onVisible(item.value)">
               <v-list-tile-title>
-                <v-checkbox :input-value="item.visible?'true':''" :label="item.text"></v-checkbox>
+                <v-icon  v-if="item.visible">visibility</v-icon>
+                <v-icon v-else color="red" >visibility_off</v-icon>
+                {{item.text}}
               </v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action style="min-width:30px">
@@ -39,6 +41,11 @@ export default {
     return {
       open: false,
       items_: this.items
+    }
+  },
+  watch: {
+    items(n,o){
+      this.items_=n;
     }
   },
   methods: {

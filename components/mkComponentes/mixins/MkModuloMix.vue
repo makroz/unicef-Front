@@ -116,10 +116,10 @@ export default {
       return data.data
     },
     fillTable(data, url) {
+      //console.log('filltable:',data)
       this.lista.items = this.getDataCache(data, url)
-      //this.lista.items = data.data;
 
-      this.paginator.total = data.ok
+this.paginator.total = data.ok
       this.oldBuscar = this.buscar
       let n_page = Math.ceil(data.ok / this.paginator.perPage)
       if (this.paginator.perPage < this.paginator.total) {
@@ -556,7 +556,8 @@ export default {
       this.Auth[data] = val
     },
     getHeaders:  function() {
-      let h = this.getParams('headers')
+      let me=this;
+      let h = me.getParams('headers')
       if (h !== false) {
         // this.campos.forEach((el, index) => {
         //   if (el.headers) {
@@ -567,7 +568,7 @@ export default {
         return h
       }
       h = []
-      this.campos.forEach((el) => {
+      me.campos.forEach((el) => {
         if (el.headers) {
           h.push({
             text: el.text,
@@ -617,7 +618,10 @@ export default {
     Auth: {
       deep: true,
       handler: function(v, old) {
+        if (JSON.stringify(old)!==JSON.stringify(v)){
+        console.log('wahtch:',v,old)
         this.listar()
+        }
       }
     }
   },
@@ -668,6 +672,9 @@ export default {
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no, columnas sort} colum resizer, colkumna span o juntar columanas, frozen columnas
     //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
+    //TODO: hacer em empleados el metodo de un select que actualiza a otro select
+    //TODO: hacer el asyn data o fect para usuarios y otros que necesitan de datos iniciales y el cache sacarlo del trait y llevarlo a un utilitario
+    //TODO: el remover columnas no funciina en modulo empresaas
   }
 }
 </script>

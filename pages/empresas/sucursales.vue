@@ -152,7 +152,6 @@ export default {
           me.campos.forEach((el, index) => {
           if (el.value=='empresas_id') {
             me.headers[index].lista = me.lEmpresas
-            console.log('headers:',index,el.value,el.lista,me.headers[index].lista)
           }
           })
 
