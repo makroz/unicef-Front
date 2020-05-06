@@ -1,19 +1,23 @@
 <script>
 import MkHead from '@/components/mkComponentes/MkHead'
 import MkForm from '@/components/mkComponentes/MkFormulario'
+import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
-import { c } from '@/components/mkComponentes/MkUtils.js'
 import Swal from 'sweetalert2'
 import AES from 'crypto-js/aes'
 import Utf8 from 'crypto-js/enc-utf8'
-const _lap = process.env.mkAuth.key
 import MD5 from 'crypto-js/md5'
+import { c } from '@/components/mkComponentes/MkUtils.js'
 import { isNull, log } from 'util'
+
+const _lap = process.env.mkAuth.key
+
 export default {
   name: 'MkModuloMix',
   components: {
     MkHead,
-    MkForm
+    MkForm,
+    MkDataTable
   },
   mixins: [MkRulesMix],
   data() {

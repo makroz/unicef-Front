@@ -64,9 +64,9 @@
   </v-card>
 </template>
 <script>
-import MkTableHead from '@/components/mkComponentes/MkTableHead'
-import MkTableRow from '@/components/mkComponentes/MkTableRow'
-import MkPaginator from '@/components/mkComponentes/MkPaginator'
+import MkTableHead from '@/components/mkComponentes/MkDataTable/MkTableHead'
+import MkTableRow from '@/components/mkComponentes/MkDataTable/MkTableRow'
+import MkPaginator from '@/components/mkComponentes/MkDataTable/MkPaginator'
 
 export default {
   name: 'MkDataTable',

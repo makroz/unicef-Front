@@ -55,8 +55,7 @@
 </template>
 
 <script>
-import MkStatus from "@/components/mkComponentes/MkStatus";
-import {c} from "@/components/mkComponentes/MkUtils.js";
+import MkStatus from "@/components/mkComponentes/MkDataTable/MkStatus";
 export default {
   name: "mkTableRow",
   components: { MkStatus },
@@ -80,10 +79,6 @@ export default {
       this.$emit('openDialog','edit', item)
     }
   }
-
-  },
-  mounted() {
-    //c(this.headers,"Headers",this.$options.name);
   },
 };
 </script>

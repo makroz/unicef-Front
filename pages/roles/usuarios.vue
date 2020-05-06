@@ -99,14 +99,12 @@
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
-import MkDataTable from '@/components/mkComponentes/MkDataTable'
 import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
 
 export default {
   middleware: ['authAccess'],
   mixins: [MkModuloMix],
   components: {
-    MkDataTable,
     MkPermisos
   },
   name: 'Usuarios',

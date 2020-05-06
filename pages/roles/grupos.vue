@@ -47,13 +47,11 @@
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
-import MkDataTable from '@/components/mkComponentes/MkDataTable'
 import MkPermisos from "@/components/mkComponentes/mkPermisos/MkPermisos";
 
 export default {
   mixins: [MkModuloMix],
   components: {
-    MkDataTable,
     MkPermisos
   },
   name: "Grupos",

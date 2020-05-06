@@ -64,8 +64,8 @@
 </template>
 
 <script>
-import MkBusquedas from '@/components/mkComponentes/MkBusquedas'
-import MkMenuColumns from '@/components/mkComponentes/MkMenuColumns'
+import MkBusquedas from '@/components/mkComponentes/MkDataTable/MkBusquedas'
+import MkMenuColumns from '@/components/mkComponentes/MkDataTable/MkMenuColumns'
 export default {
   name: 'mkTableHead',
   components: {

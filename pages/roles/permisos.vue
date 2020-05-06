@@ -54,13 +54,11 @@
 
 <script>
 import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
-import MkDataTable from '@/components/mkComponentes/MkDataTable'
 
 export default {
   mixins: [MkModuloMix],
   name: "Permisos",
   components: {
-    MkDataTable,
   },
   data() {
     return {
