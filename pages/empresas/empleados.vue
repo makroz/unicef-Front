@@ -117,23 +117,11 @@ export default {
     }
   },
   methods: {},
-  mounted() {
-    //console.log('mounted');
-    let me = this
-    me.$store
-      .dispatch('auth/loadData', { url: 'Sucursales', campos: 'id,name' })
-      .then((response) => {
-        me.lSucursales = response
-        me.campos.forEach((el, index) => {
-          if (el.value == 'sucursales_id') {
-            me.headers[index].lista = me.lSucursales
-          }
-        })
-      })
-      .catch(function(error) {
-        console.log(error)
-      })
-  }
+ async mounted() {
+  let me=this;
+  me.lEmpresas = await me.$store.dispatch('auth/loadData',{url:'Sucursales',campos:'id,name'})
+  me.updateListCol('sucursales_id', me.lSucursales)
+}
 }
 </script>
 

@@ -4,11 +4,7 @@ import MkForm from '@/components/mkComponentes/MkFormulario'
 import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import Swal from 'sweetalert2'
-import AES from 'crypto-js/aes'
-import Utf8 from 'crypto-js/enc-utf8'
-import MD5 from 'crypto-js/md5'
 import { c } from '@/components/mkComponentes/lib/MkUtils.js'
-
 
 const _lap = process.env.mkAuth.key
 
@@ -50,7 +46,7 @@ export default {
         items: [],
         selected: [],
         checksum: '',
-        oldRecycled:false
+        oldRecycled: false
       },
       cacheCan: {
         '1': false,
@@ -79,54 +75,21 @@ export default {
     },
     getDataCache(data, url, paginate = true, lista = 1) {
       if (paginate) {
-        paginate=this.paginator
+        paginate = this.paginator
       }
 
-      return this.$store.getters['auth/getDataCache'](data,url,paginate,lista)
-
-      // if (paginate) {
-      //   url = url + JSON.stringify(this.paginator)
-      // }
-
-      // if (lista != 1) {
-      //   url = url + '_' + lista
-      // }
-      // if (data.data == '_ct_') {
-      //   c('Estos datos ya estan cacheados', this.$options.name, 'Cache')
-      //   if (this.$store.state.auth.encryptActive) {
-      //     data.data = JSON.parse(
-      //       localStorage.getItem('cache_' + MD5(url).toString())
-      //     ) //encriptado1.0
-      //     //console.log(url,data.data);
-      //     data.data = JSON.parse(
-      //       AES.decrypt(data.data.response, _lap).toString(Utf8)
-      //     ) //encriptado1.1
-      //   } else {
-      //     data.data = JSON.parse(localStorage.getItem('cache_' + url)).response
-      //     //console.log(url,data.data);
-      //   }
-      // } else {
-      //   let response = data.data
-      //   if (this.$store.state.auth.encryptActive) {
-      //     url = MD5(url).toString()
-      //     response = AES.encrypt(
-      //       JSON.stringify(Object.values(data.data)),
-      //       _lap
-      //     ).toString()
-      //   }
-      //   const ct = {
-      //     ct: MD5(JSON.stringify(data.data)).toString(),
-      //     response: response
-      //   }
-      //   localStorage.setItem('cache_' + url, JSON.stringify(ct))
-      // }
-      // return data.data
+      return this.$store.getters['auth/getDataCache'](
+        data,
+        url,
+        paginate,
+        lista
+      )
     },
     fillTable(data, url) {
       //console.log('filltable:',data)
       this.lista.items = this.getDataCache(data, url)
 
-this.paginator.total = data.ok
+      this.paginator.total = data.ok
       this.oldBuscar = this.buscar
       let n_page = Math.ceil(data.ok / this.paginator.perPage)
       if (this.paginator.perPage < this.paginator.total) {
@@ -136,56 +99,10 @@ this.paginator.total = data.ok
       }
     },
     getCt(url, paginate = true, lista = 1) {
-      if (paginate){
-        paginate=this.paginator
+      if (paginate) {
+        paginate = this.paginator
       }
-      return this.$store.getters['auth/getCt'](url,paginate,lista)
-      // if (!this.$store.state.auth.cacheActive) {
-      //   return ''
-      // }
-      // let ct = '_ct_='
-      // let ct2 = ''
-      // if (url.includes('?')) {
-      //   ct = '&' + ct
-      // } else {
-      //   ct = '?' + ct
-      // }
-      // if (paginate) {
-      //   url = url + JSON.stringify(this.paginator)
-      // }
-      // if (lista == 1) {
-      //   ct2 = ''
-      // }
-
-      // try {
-      //   if (this.$store.state.auth.encryptActive) {
-      //     ct =
-      //       ct +
-      //       JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
-      //   } else {
-      //     ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
-      //   }
-      //   if (lista != 1) {
-      //     ct2 = '&_ct2_='
-      //     if (this.$store.state.auth.encryptActive) {
-      //       ct2 =
-      //         ct2 +
-      //         JSON.parse(
-      //           localStorage.getItem(
-      //             'cache_' + MD5(url + '_' + lista).toString()
-      //           )
-      //         ).ct
-      //     } else {
-      //       ct2 =
-      //         ct2 +
-      //         JSON.parse(localStorage.getItem('cache_' + url + '_' + lista)).ct
-      //     }
-      //   }
-      // } catch (error) {
-      //   ct = ''
-      //   ct2 = ''
-      // }
-      // return ct + ct2
+      return this.$store.getters['auth/getCt'](url, paginate, lista)
     },
     listar(d, quitarbuscar = false) {
       let me = this
@@ -206,7 +123,7 @@ this.paginator.total = data.ok
       let buscar = ''
       let bus = []
 
-      if (typeof d !== 'object' || (d===null)) {
+      if (typeof d !== 'object' || d === null) {
         d = { sortBy: null, descending: null }
       } else {
         this.busquedas.forEach(function(item) {
@@ -311,7 +228,6 @@ this.paginator.total = data.ok
       me.loading = true
       me.$axios
         .post(url + this.getCt(url), {
-          //          status: newStatus,
           id: id
         })
         .then(function(response) {
@@ -566,8 +482,8 @@ this.paginator.total = data.ok
     _updateData(data, val) {
       this.Auth[data] = val
     },
-    getHeaders:  function() {
-      let me=this;
+    getHeaders: function() {
+      let me = this
       let h = me.getParams('headers')
       if (h !== false) {
         // this.campos.forEach((el, index) => {
@@ -623,13 +539,21 @@ this.paginator.total = data.ok
     onColChange(headers) {
       this.headers = headers
       this.setParams('headers', this.headers)
+    },
+    updateListCol(campo, lista) {
+      let me = this
+      me.campos.forEach((el, index) => {
+        if (el.value == campo) {
+          me.headers[index].lista = lista
+        }
+      })
     }
   },
   watch: {
     Auth: {
       deep: true,
       handler: function(v, old) {
-        if (this.listar.oldRecycled!=v.recycled){
+        if (this.listar.oldRecycled != v.recycled) {
           this.listar()
         }
       }
@@ -682,7 +606,7 @@ this.paginator.total = data.ok
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no, columnas sort} colum resizer, colkumna span o juntar columanas, frozen columnas
     //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
-    //TODO: pnesar como hacer el loaddata de listas para n tablas en una sola peticion
+    //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
     //TODO: hacer que la config de cache encrypt etc se maneje en el menu laterual derecho
     //TODO: hacer em empleados el metodo de un select que actualiza a otro select
   }

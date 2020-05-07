@@ -215,47 +215,12 @@ export default {
   async asyncData(me) {
     let lGrupos = await me.store.dispatch('auth/loadData',{url:'Grupos',campos:'id,name'})
     let lRoles = await me.store.dispatch('auth/loadData',{url:'Roles',campos:'id,name'})
-    // const store=me.store.getters;
-    // let url = 'Grupos?page=1&per_page=-1&cols=id,name&disabled=1'
-    // let lGrupos= await me.$axios.get(url + store['auth/getCt'](url))
-    // lGrupos=store['auth/getDataCache'](lGrupos.data, url)
-
-    // let url1 = 'Roles?page=1&per_page=-1&cols=id,name&disabled=1'
-    // let lRoles= await me.$axios.get(url1 + store['auth/getCt'](url1))
-    //   lRoles = store['auth/getDataCache'](lRoles.data, url1)
     return {
       lRoles:lRoles,
       lGrupos:lGrupos
     }
   },
   mounted() {
-    // let me = this
-    // let url = 'Grupos?page=1&per_page=-1&cols=id,name&disabled=1'
-
-    // me.$axios
-    //   .get(url + me.getCt(url,false))
-    //   .then(function(response) {
-    //     me.lGrupos = me.getDataCache(response.data, url,false)
-    //   })
-    //   .catch(function(error) {
-    //     console.log(error)
-    //   })
-    //   .finally(function() {
-    //     me.loading = false
-    //   })
-
-    // let url1 = 'Roles?page=1&per_page=-1&cols=id,name&disabled=1' //paso 1 para cachear
-    // me.$axios
-    //   .get(url1 + me.getCt(url1,false)) //paso 2 para cachear
-    //   .then(function(response) {
-    //     me.lRoles = me.getDataCache(response.data, url1,false) //paso 3 para cachear
-    //   })
-    //   .catch(function(error) {
-    //     console.log(error)
-    //   })
-    //   .finally(function() {
-    //     me.loading = false
-    //   })
   }
 }
 </script>

@@ -43,25 +43,16 @@
           ref="email"
           validate-on-blur
         ></v-text-field>
-        <v-text-field
-          label="Direccion"
-          v-model="item.dir"
-          validate-on-blur
-        ></v-text-field>
-        <v-text-field
-          label="Telefonos"
-          v-model="item.tel"
-          validate-on-blur
-        ></v-text-field>
-         <v-select
-              v-model="item.empresas_id"
-              :items="lEmpresas"
-              :rules="[rules.required]"
-              label="Empresa"
-               item-text="name"
-              item-value="id"
-            ></v-select>
-
+        <v-text-field label="Direccion" v-model="item.dir" validate-on-blur></v-text-field>
+        <v-text-field label="Telefonos" v-model="item.tel" validate-on-blur></v-text-field>
+        <v-select
+          v-model="item.empresas_id"
+          :items="lEmpresas"
+          :rules="[rules.required]"
+          label="Empresa"
+          item-text="name"
+          item-value="id"
+        ></v-select>
       </mk-form>
     </v-container>
   </div>
@@ -122,19 +113,11 @@ export default {
   methods: {
 
   },
-mounted() {
+async mounted() {
   let me=this;
-  me.$store.dispatch('auth/loadData',{url:'Empresas',campos:'id,name'}).then(response=>{
-          me.lEmpresas = response
-          me.campos.forEach((el, index) => {
-          if (el.value=='empresas_id') {
-            me.headers[index].lista = me.lEmpresas
-          }
-          })
-  }).catch(function(error) {
-        console.log(error)
-      })
-  }
+  me.lEmpresas = await me.$store.dispatch('auth/loadData',{url:'Empresas',campos:'id,name'})
+  me.updateListCol('empresas_id', me.lEmpresas)
+}
 }
 </script>
 
