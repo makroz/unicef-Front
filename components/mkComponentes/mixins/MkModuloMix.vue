@@ -7,8 +7,8 @@ import Swal from 'sweetalert2'
 import AES from 'crypto-js/aes'
 import Utf8 from 'crypto-js/enc-utf8'
 import MD5 from 'crypto-js/md5'
-import { c } from '@/components/mkComponentes/MkUtils.js'
-import { isNull, log } from 'util'
+import { c } from '@/components/mkComponentes/lib/MkUtils.js'
+
 
 const _lap = process.env.mkAuth.key
 
@@ -49,7 +49,8 @@ export default {
       lista: {
         items: [],
         selected: [],
-        checksum: ''
+        checksum: '',
+        oldRecycled:false
       },
       cacheCan: {
         '1': false,
@@ -78,42 +79,48 @@ export default {
     },
     getDataCache(data, url, paginate = true, lista = 1) {
       if (paginate) {
-        url = url + JSON.stringify(this.paginator)
+        paginate=this.paginator
       }
 
-      if (lista != 1) {
-        url = url + '_' + lista
-      }
-      if (data.data == '_ct_') {
-        c('Estos datos ya estan cacheados', this.$options.name, 'Cache')
-        if (this.$store.state.auth.encryptActive) {
-          data.data = JSON.parse(
-            localStorage.getItem('cache_' + MD5(url).toString())
-          ) //encriptado1.0
-          //console.log(url,data.data);
-          data.data = JSON.parse(
-            AES.decrypt(data.data.response, _lap).toString(Utf8)
-          ) //encriptado1.1
-        } else {
-          data.data = JSON.parse(localStorage.getItem('cache_' + url)).response
-          //console.log(url,data.data);
-        }
-      } else {
-        let response = data.data
-        if (this.$store.state.auth.encryptActive) {
-          url = MD5(url).toString()
-          response = AES.encrypt(
-            JSON.stringify(Object.values(data.data)),
-            _lap
-          ).toString()
-        }
-        const ct = {
-          ct: MD5(JSON.stringify(data.data)).toString(),
-          response: response
-        }
-        localStorage.setItem('cache_' + url, JSON.stringify(ct))
-      }
-      return data.data
+      return this.$store.getters['auth/getDataCache'](data,url,paginate,lista)
+
+      // if (paginate) {
+      //   url = url + JSON.stringify(this.paginator)
+      // }
+
+      // if (lista != 1) {
+      //   url = url + '_' + lista
+      // }
+      // if (data.data == '_ct_') {
+      //   c('Estos datos ya estan cacheados', this.$options.name, 'Cache')
+      //   if (this.$store.state.auth.encryptActive) {
+      //     data.data = JSON.parse(
+      //       localStorage.getItem('cache_' + MD5(url).toString())
+      //     ) //encriptado1.0
+      //     //console.log(url,data.data);
+      //     data.data = JSON.parse(
+      //       AES.decrypt(data.data.response, _lap).toString(Utf8)
+      //     ) //encriptado1.1
+      //   } else {
+      //     data.data = JSON.parse(localStorage.getItem('cache_' + url)).response
+      //     //console.log(url,data.data);
+      //   }
+      // } else {
+      //   let response = data.data
+      //   if (this.$store.state.auth.encryptActive) {
+      //     url = MD5(url).toString()
+      //     response = AES.encrypt(
+      //       JSON.stringify(Object.values(data.data)),
+      //       _lap
+      //     ).toString()
+      //   }
+      //   const ct = {
+      //     ct: MD5(JSON.stringify(data.data)).toString(),
+      //     response: response
+      //   }
+      //   localStorage.setItem('cache_' + url, JSON.stringify(ct))
+      // }
+      // return data.data
     },
     fillTable(data, url) {
       //console.log('filltable:',data)
@@ -129,52 +136,56 @@ this.paginator.total = data.ok
       }
     },
     getCt(url, paginate = true, lista = 1) {
-      if (!this.$store.state.auth.cacheActive) {
-        return ''
+      if (paginate){
+        paginate=this.paginator
       }
-      let ct = '_ct_='
-      let ct2 = ''
-      if (url.includes('?')) {
-        ct = '&' + ct
-      } else {
-        ct = '?' + ct
-      }
-      if (paginate) {
-        url = url + JSON.stringify(this.paginator)
-      }
-      if (lista == 1) {
-        ct2 = ''
-      }
+      return this.$store.getters['auth/getCt'](url,paginate,lista)
+      // if (!this.$store.state.auth.cacheActive) {
+      //   return ''
+      // }
+      // let ct = '_ct_='
+      // let ct2 = ''
+      // if (url.includes('?')) {
+      //   ct = '&' + ct
+      // } else {
+      //   ct = '?' + ct
+      // }
+      // if (paginate) {
+      //   url = url + JSON.stringify(this.paginator)
+      // }
+      // if (lista == 1) {
+      //   ct2 = ''
+      // }
 
-      try {
-        if (this.$store.state.auth.encryptActive) {
-          ct =
-            ct +
-            JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
-        } else {
-          ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
-        }
-        if (lista != 1) {
-          ct2 = '&_ct2_='
-          if (this.$store.state.auth.encryptActive) {
-            ct2 =
-              ct2 +
-              JSON.parse(
-                localStorage.getItem(
-                  'cache_' + MD5(url + '_' + lista).toString()
-                )
-              ).ct
-          } else {
-            ct2 =
-              ct2 +
-              JSON.parse(localStorage.getItem('cache_' + url + '_' + lista)).ct
-          }
-        }
-      } catch (error) {
-        ct = ''
-        ct2 = ''
-      }
-      return ct + ct2
+      // try {
+      //   if (this.$store.state.auth.encryptActive) {
+      //     ct =
+      //       ct +
+      //       JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
+      //   } else {
+      //     ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
+      //   }
+      //   if (lista != 1) {
+      //     ct2 = '&_ct2_='
+      //     if (this.$store.state.auth.encryptActive) {
+      //       ct2 =
+      //         ct2 +
+      //         JSON.parse(
+      //           localStorage.getItem(
+      //             'cache_' + MD5(url + '_' + lista).toString()
+      //           )
+      //         ).ct
+      //     } else {
+      //       ct2 =
+      //         ct2 +
+      //         JSON.parse(localStorage.getItem('cache_' + url + '_' + lista)).ct
+      //     }
+      //   }
+      // } catch (error) {
+      //   ct = ''
+      //   ct2 = ''
+      // }
+      // return ct + ct2
     },
     listar(d, quitarbuscar = false) {
       let me = this
@@ -195,7 +206,7 @@ this.paginator.total = data.ok
       let buscar = ''
       let bus = []
 
-      if (typeof d !== 'object' || isNull(d)) {
+      if (typeof d !== 'object' || (d===null)) {
         d = { sortBy: null, descending: null }
       } else {
         this.busquedas.forEach(function(item) {
@@ -618,9 +629,8 @@ this.paginator.total = data.ok
     Auth: {
       deep: true,
       handler: function(v, old) {
-        if (JSON.stringify(old)!==JSON.stringify(v)){
-        console.log('wahtch:',v,old)
-        this.listar()
+        if (this.listar.oldRecycled!=v.recycled){
+          this.listar()
         }
       }
     }
@@ -663,7 +673,7 @@ this.paginator.total = data.ok
     this.headers = this.getHeaders()
 
     // for (var key in localStorage) { //Borrar caache
-    //   console.log(key)
+    //console.log('funciones',log,isNull)
     // }
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
@@ -672,9 +682,9 @@ this.paginator.total = data.ok
     //TODO: ver de configigurar parametros para el modulo auth, ver de hacerlo un modulo como ser endpoint etc
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no, columnas sort} colum resizer, colkumna span o juntar columanas, frozen columnas
     //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
+    //TODO: pnesar como hacer el loaddata de listas para n tablas en una sola peticion
+    //TODO: hacer que la config de cache encrypt etc se maneje en el menu laterual derecho
     //TODO: hacer em empleados el metodo de un select que actualiza a otro select
-    //TODO: hacer el asyn data o fect para usuarios y otros que necesitan de datos iniciales y el cache sacarlo del trait y llevarlo a un utilitario
-    //TODO: el remover columnas no funciina en modulo empresaas
   }
 }
 </script>

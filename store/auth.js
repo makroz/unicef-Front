@@ -1,5 +1,7 @@
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
+import MD5 from 'crypto-js/md5'
+import { c } from '@/components/mkComponentes/lib/MkUtils.js'
 const _lap=process.env.mkAuth.key;
 
 export const state = () => ({
@@ -19,6 +21,95 @@ export const state = () => ({
 });
 
 export const getters = {
+
+  getCt: state => (url, paginate=false, lista = 1,) =>  {
+    if (!state.cacheActive) {
+      return ''
+    }
+    let ct = '_ct_='
+    let ct2 = ''
+    if (url.includes('?')) {
+      ct = '&' + ct
+    } else {
+      ct = '?' + ct
+    }
+    if (paginate) {
+       url = url + JSON.stringify(paginate)
+    }
+    if (lista == 1) {
+      ct2 = ''
+    }
+
+    try {
+      if (state.encryptActive) {
+        ct =
+          ct +
+          JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
+      } else {
+        ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
+      }
+      if (lista != 1) {
+        ct2 = '&_ct2_='
+        if (state.encryptActive) {
+          ct2 =
+            ct2 +
+            JSON.parse(
+              localStorage.getItem(
+                'cache_' + MD5(url + '_' + lista).toString()
+              )
+            ).ct
+        } else {
+          ct2 =
+            ct2 +
+            JSON.parse(localStorage.getItem('cache_' + url + '_' + lista)).ct
+        }
+      }
+    } catch (error) {
+      ct = ''
+      ct2 = ''
+    }
+    return ct + ct2
+  },
+  getDataCache: state =>(data, url, paginate=false, lista = 1) => {
+    if (paginate) {
+      url = url + JSON.stringify(paginate)
+    }
+
+    if (lista != 1) {
+      url = url + '_' + lista
+    }
+    if (data.data == '_ct_') {
+
+      c('datos cacheados', (url.split('?'))[0], 'Cache')
+      if (state.encryptActive) {
+        data.data = JSON.parse(
+          localStorage.getItem('cache_' + MD5(url).toString())
+        ) //encriptado1.0
+        //console.log(url,data.data);
+        data.data = JSON.parse(
+          AES.decrypt(data.data.response, _lap).toString(Utf8)
+        ) //encriptado1.1
+      } else {
+        data.data = JSON.parse(localStorage.getItem('cache_' + url)).response
+        //console.log(url,data.data);
+      }
+    } else {
+      let response = data.data
+      if (state.encryptActive) {
+        url = MD5(url).toString()
+        response = AES.encrypt(
+          JSON.stringify(Object.values(data.data)),
+          _lap
+        ).toString()
+      }
+      const ct = {
+        ct: MD5(JSON.stringify(data.data)).toString(),
+        response: response
+      }
+      localStorage.setItem('cache_' + url, JSON.stringify(ct))
+    }
+    return data.data
+  },
   getUser: state => {
     return state.authUser;
   },
@@ -102,6 +193,15 @@ export const mutations = {
 };
 
 export const actions = {
+  async loadData({getters},datos){
+    let url = datos.url+'?page=1&per_page=-1&cols='+datos.campos+'&disabled=1'
+    let response = await this.$axios.get(url + getters.getCt(url))
+    // if (response.data.data == '_ct_') {
+    //   c('datos del Cache', datos.url, 'Cache')
+    // }
+    response =getters.getDataCache(response.data, url)
+    return response
+  },
 
   can({getters,commit},act){
     let modulo = this.$router.currentRoute.matched.find(

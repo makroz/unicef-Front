@@ -29,7 +29,6 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-
         <v-text-field
           label="Nombre"
           v-model="item.name"
@@ -51,25 +50,16 @@
           ref="email"
           validate-on-blur
         ></v-text-field>
-        <v-text-field
-          label="Direccion"
-          v-model="item.dir"
-          validate-on-blur
-        ></v-text-field>
-        <v-text-field
-          label="Telefonos"
-          v-model="item.tel"
-          validate-on-blur
-        ></v-text-field>
-         <v-select
-              v-model="item.sucursales_id"
-              :items="lSucursales"
-              :rules="[rules.required]"
-              label="Sucursal donde Trabaja"
-               item-text="name"
-              item-value="id"
-            ></v-select>
-
+        <v-text-field label="Direccion" v-model="item.dir" validate-on-blur></v-text-field>
+        <v-text-field label="Telefonos" v-model="item.tel" validate-on-blur></v-text-field>
+        <v-select
+          v-model="item.sucursales_id"
+          :items="lSucursales"
+          :rules="[rules.required]"
+          label="Sucursal donde Trabaja"
+          item-text="name"
+          item-value="id"
+        ></v-select>
       </mk-form>
     </v-container>
   </div>
@@ -114,44 +104,34 @@ export default {
         },
         {
           text: 'Sucursal',
-          value: "sucursales_id",
+          value: 'sucursales_id',
           align: 'left',
           headers: true,
           type: 'text',
           search: true,
-          lista:this.lSucursales
+          lista: this.lSucursales
         }
-
-
       ],
-      lEmpresas:[],
-      lSucursales:[]
+      lEmpresas: [],
+      lSucursales: []
     }
-
   },
-  methods: {
-
-  },
+  methods: {},
   mounted() {
     //console.log('mounted');
     let me = this
-    let url = 'Sucursales?page=1&per_page=-1&cols=id,name&disabled=1'
-    me.$axios
-      .get(url + me.getCt(url,false))
-      .then(function(response) {
-          me.lSucursales = me.getDataCache(response.data, url,false)
-          me.campos.forEach((el, index) => {
-          if (el.value=='sucursales_id') {
+    me.$store
+      .dispatch('auth/loadData', { url: 'Sucursales', campos: 'id,name' })
+      .then((response) => {
+        me.lSucursales = response
+        me.campos.forEach((el, index) => {
+          if (el.value == 'sucursales_id') {
             me.headers[index].lista = me.lSucursales
           }
-          })
-
+        })
       })
       .catch(function(error) {
         console.log(error)
-      })
-      .finally(function() {
-        me.loading = false
       })
   }
 }

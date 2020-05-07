@@ -122,45 +122,17 @@ export default {
   methods: {
 
   },
-//  fetch() {
-//    console.log(this);
-//   let me = this
-//     let url = 'Empresas?page=1&per_page=-1&cols=id,name&disabled=1'
-//     //me.lEmpresas = me.getDataCache({data:'_ct_'}, url,false)
-//     me.$axios
-//       .get(url + me.getCt(url,false))
-//       .then(function(response) {
-//           me.lEmpresas = me.getDataCache(response.data, url,false)
-//       })
-//       .catch(function(error) {
-//         console.log(error)
-//       })
-//       .finally(function() {
-//         me.loading = false
-//       })
-
-//     //this.lEmpresas = await this.$http.$get(`https://jsonplaceholder.typicode.com/posts/${this.$route.params.id}`)
-//   },
-  mounted() {
-    console.log('mounted');
-    let me = this
-    let url = 'Empresas?page=1&per_page=-1&cols=id,name&disabled=1'
-    me.$axios
-      .get(url + me.getCt(url,false))
-      .then(function(response) {
-          me.lEmpresas = me.getDataCache(response.data, url,false)
+mounted() {
+  let me=this;
+  me.$store.dispatch('auth/loadData',{url:'Empresas',campos:'id,name'}).then(response=>{
+          me.lEmpresas = response
           me.campos.forEach((el, index) => {
           if (el.value=='empresas_id') {
             me.headers[index].lista = me.lEmpresas
           }
           })
-
-      })
-      .catch(function(error) {
+  }).catch(function(error) {
         console.log(error)
-      })
-      .finally(function() {
-        me.loading = false
       })
   }
 }
