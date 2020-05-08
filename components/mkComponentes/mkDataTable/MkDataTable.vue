@@ -6,7 +6,6 @@
       @busqueda:avanzada="onBuscar"
       :sel="lista.selected"
       :busquedas="busquedas"
-      :campos="search_campos"
       :headers="headers"
       @column:change="onColChange"
     ></mk-table-head>
@@ -92,7 +91,6 @@ export default {
   props: [
     'lista',
     'busquedas',
-    'search_campos',
     'headers',
     'loading',
     'paginator'

@@ -36,7 +36,7 @@
     <v-spacer></v-spacer>
     <div>
       <v-chip v-for="(busqueda, key) in busquedas" :key="key" outline small>
-        {{(typeof(campos.find(ele=> ele.value==busqueda.campo))!=='undefined')?(campos.find(ele=> ele.value==busqueda.campo)).text:''}}
+        {{(typeof(headers.find(ele=> ele.value==busqueda.campo))!=='undefined')?(headers.find(ele=> ele.value==busqueda.campo)).text:''}}
         (
         {{( typeof(lCond.find(el=> el.value==busqueda.cond))!=='undefined')?(lCond.find(el=> el.value==busqueda.cond)).text:''}}
         ) {{busqueda.criterio}}
@@ -52,7 +52,7 @@
         >merge_type</v-icon>
       </v-chip>
     </div>
-    <mk-busquedas :busquedas="busquedas" @busqueda:avanzada="onBuscar" :campos="campos"></mk-busquedas>
+    <mk-busquedas :busquedas="busquedas" @busqueda:avanzada="onBuscar" :campos="headers"></mk-busquedas>
 
     <v-btn icon fab color="blue" small @click="onRecycled" title="Papelera">
       <v-icon v-if="Auth.recycled">undo</v-icon>
@@ -78,10 +78,6 @@ export default {
       default: null
     },
     busquedas: {
-      type: [Array, Object],
-      default: null
-    },
-    campos: {
       type: [Array, Object],
       default: null
     },

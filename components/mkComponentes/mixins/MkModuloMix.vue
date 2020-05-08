@@ -520,21 +520,20 @@ export default {
     }
   },
   computed: {
-    search_campos: function() {
-      //console.log('compued',typeof(this.campos),this.campos)
-      let h = []
-      this.campos.forEach((el) => {
-        if (el.search) {
-          h.push({
-            text: el.text,
-            value: el.value || null,
-            type: el.type || 'text',
-            visible: el.visible || true
-          })
-        }
-      })
-      return h
-    }
+    // search_campos: function() {
+    //   let h = []
+    //   this.campos.forEach((el) => {
+    //     if (el.search) {
+    //       h.push({
+    //         text: el.text,
+    //         value: el.value || null,
+    //         type: el.type || 'text',
+    //         visible: el.visible || true
+    //       })
+    //     }
+    //   })
+    //   return h
+    // }
   },
   provide: function() {
     return {
@@ -571,6 +570,7 @@ export default {
     //TODO: hacer em empleados el metodo de un select que actualiza a otro select
     //TODO: me falto corregir bien los nobres de los campos,
     //TODO: tambien me falta arreglar el busqueda que use campos y ya no search_campños, revisar la bisqueda para que reaccione correctamente ante el tipo de dato lista
+   //TODO: ver si guardar las busquedas
   }
 }
 </script>

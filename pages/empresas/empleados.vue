@@ -7,7 +7,6 @@
           <mk-data-table
             :lista="lista"
             :busquedas="busquedas"
-            :search_campos="search_campos"
             :headers="campos"
             :loading="loading"
             :paginator="paginator"
