@@ -17,7 +17,7 @@ export default {
     return {
     };
   },
-  inject: {Auth:{ default: {} },can:{default:()=>true}},
+    inject: ['can', 'Auth'],
 };
 </script>
 

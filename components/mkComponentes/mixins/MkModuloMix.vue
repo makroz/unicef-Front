@@ -18,7 +18,7 @@ export default {
   mixins: [MkRulesMix],
   data() {
     return {
-      headers: this.getParams('headers') || this.headersC,
+      //headers: this.getParams('headers') || this.headersC,
       created: true,
       urlModulo: this.$options.name,
       titModulo: this.$options.name,
@@ -46,8 +46,8 @@ export default {
         items: [],
         selected: [],
         checksum: '',
-        oldRecycled: false
       },
+      oldRecycled: false,
       cacheCan: {
         '1': false,
         '2': false,
@@ -105,6 +105,7 @@ export default {
       return this.$store.getters['auth/getCt'](url, paginate, lista)
     },
     listar(d, quitarbuscar = false) {
+      //console.error('listar');
       let me = this
       if (me.created == false) {
         me.created = true
@@ -204,7 +205,7 @@ export default {
         })
       }
       if (data.ok < 0) {
-        console.error(data.msg)
+        c(data.msg,(url.split('?'))[0],'error','error')
         Swal.fire({
           position: 'top-end',
           title: data.msg,
@@ -213,6 +214,7 @@ export default {
           timer: 1500
         })
         if (data.ok == -1001) {
+          c(data.msg,'LOGING','error','error')
           this.$store.dispatch('auth/logout')
         }
         return false
@@ -482,69 +484,25 @@ export default {
     _updateData(data, val) {
       this.Auth[data] = val
     },
-    getHeaders: function() {
-      let me = this
-      let h = me.getParams('headers')
-      if (h !== false) {
-        // this.campos.forEach((el, index) => {
-        //   if (el.headers) {
-        //     h[index].lista = el.lista || false
-        //     console.log('headers:',index,el.value,el.lista,h[index].lista)
-        //   }
-        // })
-        return h
-      }
-      h = []
-      me.campos.forEach((el) => {
-        if (el.headers) {
-          h.push({
-            text: el.text,
-            value: el.value || null,
-            align: el.align || 'left',
-            width: el.width || null,
-            sortable: el.sortable || true,
-            visible: el.visible || true,
-            lista: el.lista || false
-          })
+    onColChange(headers,visible=false) {
+      if (visible){
+        this.campos.forEach((e) => {
+        if (e.value == headers) {
+            let hide=!e.hidden;
+            this.$set(e,'hidden',hide)
         }
-      })
-
-      h.push({
-        text: 'Status',
-        value: '__st__',
-        align: 'center',
-        width: '50px',
-        sortable: false,
-        visible: true,
-        fixed: true,
-        noRow: true,
-        lista: false
-      })
-      if (this.can('edit') || this.can('del')) {
-        h.push({
-          text: 'Acciones',
-          value: '__act__',
-          align: 'center',
-          width: '165px',
-          sortable: false,
-          visible: true,
-          fixed: true,
-          noRow: true,
-          lista: false
-        })
+      });
+      }else{
+        this.campos = headers;
       }
-      this.setParams('headers', h)
-      return h
-    },
-    onColChange(headers) {
-      this.headers = headers
-      this.setParams('headers', this.headers)
+      this.setParams('headers', this.campos)
     },
     updateListCol(campo, lista) {
       let me = this
       me.campos.forEach((el, index) => {
         if (el.value == campo) {
-          me.headers[index].lista = lista
+          me.campos[index].lista = lista
+          //el.lista = lista
         }
       })
     }
@@ -553,17 +511,17 @@ export default {
     Auth: {
       deep: true,
       handler: function(v, old) {
-        if (this.listar.oldRecycled != v.recycled) {
+        //  console.log('wath',this.oldRecycled,v.recycled)
+        if (this.oldRecycled != v.recycled) {
           this.listar()
+          this.oldRecycled = v.recycled
         }
       }
     }
   },
   computed: {
-    headersC: function() {
-      return this.getHeaders()
-    },
     search_campos: function() {
+      //console.log('compued',typeof(this.campos),this.campos)
       let h = []
       this.campos.forEach((el) => {
         if (el.search) {
@@ -594,7 +552,9 @@ export default {
   },
   mounted() {
     //   c("Ejecuto",this.$options.name,'mounted');
-    this.headers = this.getHeaders()
+
+
+    this.campos = this.getParams('headers')||this.campos ;
 
     // for (var key in localStorage) { //Borrar caache
     //console.log('funciones',log,isNull)
@@ -609,6 +569,8 @@ export default {
     //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
     //TODO: hacer que la config de cache encrypt etc se maneje en el menu laterual derecho
     //TODO: hacer em empleados el metodo de un select que actualiza a otro select
+    //TODO: me falto corregir bien los nobres de los campos,
+    //TODO: tambien me falta arreglar el busqueda que use campos y ya no search_campños, revisar la bisqueda para que reaccione correctamente ante el tipo de dato lista
   }
 }
 </script>

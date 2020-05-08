@@ -6,10 +6,10 @@
     <v-list>
       <draggable v-model="items_" @change="onChange">
         <template v-for="item in items_">
-          <v-list-tile :key="item.value" v-if="!item.fixed" ripple="ripple">
+          <v-list-tile :key="item.value" v-if="item.fixed!==true" ripple="ripple">
             <v-list-tile-content @click="onVisible(item.value)">
               <v-list-tile-title>
-                <v-icon  v-if="item.visible">visibility</v-icon>
+                <v-icon  v-if="!item.hidden">visibility</v-icon>
                 <v-icon v-else color="red" >visibility_off</v-icon>
                 {{item.text}}
               </v-list-tile-title>
@@ -50,15 +50,20 @@ export default {
   },
   methods: {
     onChange: function(e) {
-      this.$emit('column:change', this.items_)
+      this.$emit('column:change', this.items_,false)
     },
     onVisible: function(value){
-      this.items_.forEach((e) => {
-        if (e.value == value) {
-          e.visible = !e.visible
-        }
-      })
-      this.$emit('column:change', this.items_)
+      //console.log('paso 1:',JSON.stringify(item),JSON.stringify(this.items_));
+      //this.$set(item, 'hidden', !item.hidden);
+      // this.items_.forEach((e) => {
+      //   const a=e
+      //   if (e.value == value) {
+      //       e.hidden=!e.hidden;
+      //     console.log(a.hidden,e.hidden);
+      //   }
+      // })
+      //console.log('paso 2:',JSON.stringify(item),JSON.stringify(this.items_));
+      this.$emit('column:change', value,true);
     }
   }
 }

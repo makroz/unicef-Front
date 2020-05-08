@@ -8,7 +8,7 @@
             :lista="lista"
             :busquedas="busquedas"
             :search_campos="search_campos"
-            :headers="headers"
+            :headers="campos"
             :loading="loading"
             :paginator="paginator"
             @openDialog="openDialog"
@@ -100,7 +100,6 @@
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
-//import {getCt, getDataCache} from '@/components/mkComponentes/lib/MkCache.js'
 
 export default {
   middleware: ['authAccess'],
@@ -211,10 +210,10 @@ export default {
         })
     }
   },
-  computed: {},
-  async asyncData(me) {
-    let lGrupos = await me.store.dispatch('auth/loadData',{url:'Grupos',campos:'id,name'})
-    let lRoles = await me.store.dispatch('auth/loadData',{url:'Roles',campos:'id,name'})
+
+  async asyncData({store}) {
+    let lGrupos = await store.dispatch('auth/loadData',{url:'Grupos',campos:'id,name'})
+    let lRoles = await store.dispatch('auth/loadData',{url:'Roles',campos:'id,name'})
     return {
       lRoles:lRoles,
       lGrupos:lGrupos

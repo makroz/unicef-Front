@@ -38,14 +38,27 @@
             </th>
             <template v-for="header in props.headers">
               <th
-                v-if="header.visible"
+                v-if="!header.hidden"
                 :key="header.value"
-                :class="['column', header.sortable ? 'sortable' : '', 'text-xs-'+header.align, paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
-                @click="changeSort(header.value,header.sortable)"
-                :style="'width:'+header.width"
+                :class="['column', header.sortable !==false? 'sortable' : '', header.align?'text-xs-'+header.align:'text-xs-left', paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
+                @click="changeSort(header.value,!(header.sortable===false))"
+                :style="'width:'+header.width?header.width:null"
              >
-                {{ header.text }} <v-icon  v-if="header.sortable" small>arrow_upward</v-icon></th>
+                {{ header.text }} <v-icon  v-if="header.sortable!==false" small>arrow_upward</v-icon></th>
+
             </template>
+            <th
+                key="__st__"
+                :class="['column', 'text-xs-center']"
+                :style="'width:50px'"
+             >
+                Status</th>
+            <th  v-if="(can('edit') || can('del'))"
+                key="__act__"
+                :class="['column', 'text-xs-center']"
+                :style="'width:165px'"
+             >
+                Acciones</th>
           </tr>
         </template>
 
@@ -87,6 +100,7 @@ export default {
   data() {
     return {}
   },
+   inject: ['Auth','can'],
   methods: {
     toggleAll() {
       if (this.lista.selected.length) this.lista.selected = []
@@ -96,6 +110,7 @@ export default {
       if (!sortable) {
         return false
       }
+
       if (this.paginator.options.sortBy === column) {
         this.paginator.options.descending = !this.paginator.options.descending
       } else {
@@ -122,8 +137,8 @@ export default {
     onPerPageChange(page) {
       this.$emit('onPerPageChange', page)
     },
-    onColChange(headers) {
-      this.$emit('column:change', headers);
+    onColChange(headers,visible=false) {
+      this.$emit('column:change', headers,visible);
     }
 
   }

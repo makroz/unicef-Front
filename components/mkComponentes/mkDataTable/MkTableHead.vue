@@ -55,11 +55,11 @@
     <mk-busquedas :busquedas="busquedas" @busqueda:avanzada="onBuscar" :campos="campos"></mk-busquedas>
 
     <v-btn icon fab color="blue" small @click="onRecycled" title="Papelera">
-      <v-icon v-if="recycled">undo</v-icon>
+      <v-icon v-if="Auth.recycled">undo</v-icon>
       <v-icon v-else>restore_from_trash</v-icon>
     </v-btn>
 
-    <mk-menu-columns :items="headers" @column:visible="onColVisible" @column:change="onColChange"></mk-menu-columns>
+    <mk-menu-columns :items="headers" @column:change="onColChange"></mk-menu-columns>
   </v-toolbar>
 </template>
 
@@ -94,25 +94,20 @@ export default {
     return {
       curPermisos: [],
       lCond: [],
-      recycled: false
     }
   },
   inject: ['can', 'Auth'],
   methods: {
     onRecycled() {
-      this.recycled = !this.recycled
-      //  this.Auth.recycled=this.recycled;
-      this.Auth._updateData('recycled', this.recycled)
+      this.Auth.recycled = !this.Auth.recycled
+      this.Auth._updateData('recycled', this.Auth.recycled)
     },
     onBuscar(datos, quitarbusqueda = false, lCond = []) {
       this.lCond = lCond
       this.$emit('busqueda:avanzada', datos, quitarbusqueda)
     },
-    onColVisible(value) {
-      this.$emit('column:visible', value)
-    },
-    onColChange(headers) {
-      this.$emit('column:change', headers)
+    onColChange(headers,visible=false) {
+      this.$emit('column:change', headers,visible)
     }
   }
 }

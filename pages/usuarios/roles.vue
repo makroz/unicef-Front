@@ -8,7 +8,7 @@
             :lista="lista"
             :busquedas="busquedas"
             :search_campos="search_campos"
-            :headers="headers"
+            :headers="campos"
             :loading="loading"
             :paginator="paginator"
             @openDialog="openDialog"
