@@ -568,8 +568,7 @@ export default {
     //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
     //TODO: hacer que la config de cache encrypt etc se maneje en el menu laterual derecho
     //TODO: hacer em empleados el metodo de un select que actualiza a otro select
-    //TODO: me falto corregir bien los nobres de los campos,
-    //TODO: tambien me falta arreglar el busqueda que use campos y ya no search_campños, revisar la bisqueda para que reaccione correctamente ante el tipo de dato lista
+    //TODO: me falto corregir bien los nobres de los campos de headers,
    //TODO: ver si guardar las busquedas
   }
 }

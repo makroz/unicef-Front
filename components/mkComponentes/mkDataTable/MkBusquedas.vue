@@ -30,8 +30,18 @@
               :hideDetails="true"
               label="Condicion"
             ></v-select>
+            <v-select v-if="(item.lista)&&(item.lista.length>0)"
+              class="ma-2"
+              v-model="item.criterio"
+              :items="item.lista"
+              item-text="name"
+              item-value="id"
+              densed
+              :hideDetails="true"
+              label="Criterio"
+            ></v-select>
 
-            <v-text-field
+            <v-text-field v-else
               class="ma-2"
               densed
               label="Criterio"
@@ -42,6 +52,9 @@
               :prepend-icon="item.prepend"
               @click:prepend="onPrepend(item)"
             ></v-text-field>
+
+
+
             <v-btn
               icon
               fab
@@ -113,6 +126,7 @@ export default {
           criterio: "",
           union: "and",
           items: [],
+          lista:false,
           type: "text",
           prepend: ""
         }
@@ -130,6 +144,7 @@ export default {
       modalDate: false,
       itemDate: null,
       tituloModal: "Busqueda Avanzada",
+      lCriterios:false,
       uniones: [
         { value: "and", text: "y" },
         { value: "or", text: "o" }
@@ -158,6 +173,11 @@ export default {
           { value: "24", text: "mayor o igual que" },
           { value: "25", text: "menor o igual que" }
         ],
+        lista: [
+          { value: "20", text: "igual a" },
+          { value: "21", text: "diferente de" },
+        ],
+
         date: [
           { value: "40", text: "igual a" },
           { value: "41", text: "diferente de" },
@@ -188,7 +208,8 @@ export default {
         cond: "1",
         criterio: "",
         union: "and",
-        items: []
+        items: [],
+        lista:false
       });
     },
     onBuscar(quitarbuscar = false) {
@@ -209,7 +230,8 @@ export default {
     },
     onChangeCampo(item) {
       if (item) {
-        const tipo = this.campos.find(campo => campo.value === item.campo).type;
+        const campo=this.campos.find(campo => campo.value === item.campo)
+        const tipo = campo.type;
         item.items = this.condiciones[tipo];
         item.readonly = false;
         item.prepend = "";
@@ -231,6 +253,14 @@ export default {
             item.type = "text";
 
             break;
+        }
+        console.log('changeCampos',campo)
+        if (campo.lista!==false){
+            item.lista=campo.lista;
+            item.items = this.condiciones['lista'];
+
+        }else{
+            item.lista=false;
         }
       }
     },

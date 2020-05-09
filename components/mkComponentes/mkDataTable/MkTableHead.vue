@@ -39,7 +39,7 @@
         {{(typeof(headers.find(ele=> ele.value==busqueda.campo))!=='undefined')?(headers.find(ele=> ele.value==busqueda.campo)).text:''}}
         (
         {{( typeof(lCond.find(el=> el.value==busqueda.cond))!=='undefined')?(lCond.find(el=> el.value==busqueda.cond)).text:''}}
-        ) {{busqueda.criterio}}
+        ) {{ ((busqueda.lista)&&(busqueda.lista.length>0))?busqueda.lista.find(campo => campo.id === busqueda.criterio).name:busqueda.criterio}}
         <v-icon
           v-if="(key < busquedas.length-1) && (busqueda.union=='and')"
           right
