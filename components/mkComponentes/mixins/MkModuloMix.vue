@@ -506,6 +506,32 @@ export default {
           //el.lista = lista
         }
       })
+    },
+     setParentinChildName(hijo, padre, campoUnion, name = 'name', id = 'id') {
+      return hijo.map((e) => {
+        e[name] =
+          (padre.filter((el) => el[id] == e[campoUnion])[0])[name] +
+          ': ' +
+          e[name]
+        return e
+      })
+    },
+    setParentGroup(hijo, padre, campoUnion, name = 'name', id = 'id') {
+      hijo = hijo.sort(
+        (a, b) =>(a[campoUnion] < b[campoUnion]) ? -1 : ((a[campoUnion] > b[campoUnion]) ? 1 : 0)
+      )
+      const temp = []
+      let oGrupo = 0
+      hijo.forEach((e) => {
+        if (oGrupo != e[campoUnion]) {
+          temp.push({
+            header: (padre.filter((el) => el[id] == e[campoUnion])[0])[name]
+          })
+          oGrupo = e[campoUnion]
+        }
+        temp.push(e)
+      })
+      return temp
     }
   },
   watch: {

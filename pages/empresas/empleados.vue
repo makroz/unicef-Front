@@ -58,7 +58,22 @@
           label="Sucursal donde Trabaja"
           item-text="name"
           item-value="id"
-        ></v-select>
+        >
+          <template slot="item" slot-scope="data">
+            <!-- Divider and Header-->
+            <template v-if="typeof data.item !== 'object'">
+              <v-list-tile-content v-text="data.item" />
+            </template>
+            <!-- Normal item -->
+            <template v-else>
+              <v-list-tile-content>
+                <v-list-tile-title >
+                  &nbsp;&nbsp;&nbsp;&nbsp;{{data.item.name}}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </template>
+          </template>
+        </v-select>
       </mk-form>
     </v-container>
   </div>
@@ -115,16 +130,24 @@ export default {
       lSucursales: []
     }
   },
-  methods: {},
- async mounted() {
-  let me=this;
-  me.lEmpresas = await me.$store.dispatch('auth/loadData',{url:'Empresas',campos:'id,name'})
-  me.lSucursales = await me.$store.dispatch('auth/loadData',{url:'Sucursales',campos:'id,name,empresas_id'})
-  me.lSucursales =me.lSucursales.map((e)=>{
-    e.name=(me.lEmpresas.filter(el =>el.id==e.empresas_id))[0].name+': '+e.name;
-    return e});
-  me.updateListCol('sucursales_id', me.lSucursales)
-}
+  methods: {
+
+  },
+  async mounted() {
+    let me = this
+    me.lEmpresas = await me.$store.dispatch('auth/loadData', {
+      url: 'Empresas',
+      campos: 'id,name'
+    })
+    me.lSucursales = await me.$store.dispatch('auth/loadData', {
+      url: 'Sucursales',
+      campos: 'id,name,empresas_id'
+    })
+
+//  me.lSucursales = this.setParentGroup(me.lSucursales,me.lEmpresas,'empresas_id')
+    me.lSucursales = this.setParentinChildName(me.lSucursales,me.lEmpresas,'empresas_id')
+    me.updateListCol('sucursales_id', me.lSucursales)
+  }
 }
 </script>
 
