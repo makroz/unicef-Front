@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { c } from '@/components/mkComponentes/lib/MkUtils.js'
 export default {
   name: "Login",
   data() {
@@ -59,6 +60,7 @@ export default {
         this.auth.password = "";
         this.errorMsg = null;
       } catch (e) {
+        c(e.message,'LOGING','error','error')
         this.errorMsg = e.message;
       }
     },

@@ -32,7 +32,7 @@ export default {
         options: { rowsPerPage: -1, sortBy: 'id', descending: true }
       },
       //filtros y busqueda
-      busquedas: [],
+      busquedas: this.getParams('buscar',[]),
       //modal
       modal: false,
       tituloModal: '',
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     onBuscar(datos, quitarbuscar = false) {
-      console.log('OnBuscar Mix:', datos, this.busqueda)
+      //console.log('OnBuscar Mix:', datos, this.busqueda)
       this.paginator.page = 1
       this.busquedas = datos
       this.listar(datos, quitarbuscar)
@@ -127,7 +127,7 @@ export default {
       if (typeof d !== 'object' || d === null) {
         d = { sortBy: null, descending: null }
       } else {
-        this.busquedas.forEach(function(item) {
+        me.busquedas.forEach(function(item) {
           if (item.criterio != '') {
             bus.push({
               campo: item.campo,
@@ -187,11 +187,12 @@ export default {
         .then(function(response) {
           if (me.isOk(response.data, url)) {
             me.setParams()
+            me.setParams('buscar',me.busquedas)
             me.fillTable(response.data, url)
           }
         })
         .catch(function(error) {
-          console.log(error)
+          console.error(error)
         })
         .finally(function() {
           me.loading = false
@@ -205,7 +206,7 @@ export default {
         })
       }
       if (data.ok < 0) {
-        c(data.msg,(url.split('?'))[0],'error','error')
+        c(data.msg,this.$options.name,'error','error')
         Swal.fire({
           position: 'top-end',
           title: data.msg,
@@ -214,7 +215,7 @@ export default {
           timer: 1500
         })
         if (data.ok == -1001) {
-          c(data.msg,'LOGING','error','error')
+          //c(data.msg,'LOGING','error','error')
           this.$store.dispatch('auth/logout')
         }
         return false
@@ -241,7 +242,7 @@ export default {
           }
         })
         .catch(function(error) {
-          console.log(error)
+          console.error(error)
         })
         .finally(function() {
           me.loading = false
@@ -277,7 +278,7 @@ export default {
             }
           })
           .catch(function(error) {
-            console.log(error)
+            console.error(error)
             isError = 2
           })
           .finally(function() {
@@ -304,7 +305,7 @@ export default {
             }
           })
           .catch(function(error) {
-            console.log(error)
+            console.error(error)
             isError = 2
           })
           .finally(function() {
@@ -370,7 +371,7 @@ export default {
               }
             })
             .catch(function(error) {
-              console.log(error)
+              console.error(error)
             })
             .finally(function() {
               me.loading = false
@@ -567,9 +568,9 @@ export default {
     //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
     //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
     //TODO: hacer que la config de cache encrypt etc se maneje en el menu laterual derecho
-    //TODO: hacer em empleados el metodo de un select que actualiza a otro select
     //TODO: me falto corregir bien los nobres de los campos de headers,
-   //TODO: ver si guardar las busquedas
+    //TODO: hacer em empleados el metodo de un select que actualiza a otro select
+
   }
 }
 </script>

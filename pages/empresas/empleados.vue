@@ -118,7 +118,11 @@ export default {
   methods: {},
  async mounted() {
   let me=this;
-  me.lEmpresas = await me.$store.dispatch('auth/loadData',{url:'Sucursales',campos:'id,name'})
+  me.lEmpresas = await me.$store.dispatch('auth/loadData',{url:'Empresas',campos:'id,name'})
+  me.lSucursales = await me.$store.dispatch('auth/loadData',{url:'Sucursales',campos:'id,name,empresas_id'})
+  me.lSucursales =me.lSucursales.map((e)=>{
+    e.name=(me.lEmpresas.filter(el =>el.id==e.empresas_id))[0].name+': '+e.name;
+    return e});
   me.updateListCol('sucursales_id', me.lSucursales)
 }
 }

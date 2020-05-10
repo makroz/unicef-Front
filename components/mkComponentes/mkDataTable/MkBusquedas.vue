@@ -217,6 +217,7 @@ export default {
       if (quitarbuscar) {
         this.curBusquedas = [];
       }
+      this.curBusquedas=this.curBusquedas.filter(e=>e.criterio!='');
       this.$emit(
         "busqueda:avanzada",
         this.curBusquedas,
@@ -254,7 +255,7 @@ export default {
 
             break;
         }
-        console.log('changeCampos',campo)
+        //console.log('changeCampos',campo)
         if (campo.lista!==false){
             item.lista=campo.lista;
             item.items = this.condiciones['lista'];
