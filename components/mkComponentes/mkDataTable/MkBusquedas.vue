@@ -8,7 +8,7 @@
     </v-btn>
     <v-dialog v-model="modal" scrollable persistent max-width="90%">
       <v-card>
-        <v-card-title >{{tituloModal}} </v-card-title>
+        <v-card-title>{{tituloModal}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-card v-for="(item, index) in curBusquedas" :key="index" class="d-flex flex-start">
@@ -30,7 +30,8 @@
               :hideDetails="true"
               label="Condicion"
             ></v-select>
-            <v-select v-if="(item.lista)&&(item.lista.length>0)"
+            <v-select
+              v-if="(item.lista)&&(item.lista.length>0)"
               class="ma-2"
               v-model="item.criterio"
               :items="item.lista"
@@ -41,7 +42,8 @@
               label="Criterio"
             ></v-select>
 
-            <v-text-field v-else
+            <v-text-field
+              v-else
               class="ma-2"
               densed
               label="Criterio"
@@ -52,8 +54,6 @@
               :prepend-icon="item.prepend"
               @click:prepend="onPrepend(item)"
             ></v-text-field>
-
-
 
             <v-btn
               icon
@@ -97,8 +97,6 @@
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="modal = false">volver</v-btn>
           <v-btn color="green darken-1" flat @click="onBuscar()">Buscar</v-btn>
-
-
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -113,28 +111,30 @@
   </div>
 </template>
 <script>
+import MkCondBusquedasMix from '@/components/mkComponentes/mixins/MkCondBusquedasMix'
 export default {
-  name: "busquedas",
+  mixins: [MkCondBusquedasMix],
+  name: 'busquedas',
 
   props: {
     busquedas: {
       type: Array,
       default: () => [
         {
-          campo: "",
-          cond: "0",
-          criterio: "",
-          union: "and",
+          campo: '',
+          cond: '0',
+          criterio: '',
+          union: 'and',
           items: [],
-          lista:false,
-          type: "text",
-          prepend: ""
+          lista: false,
+          type: 'text',
+          prepend: ''
         }
       ]
     },
     campos: {
       type: Array,
-      default: () => [{ value: "name", text: "Nombre", type: "text" }] //type: date/num/text
+      default: () => [{ value: 'name', text: 'Nombre', type: 'text' }] //type: date/num/text
     }
   },
   data() {
@@ -143,125 +143,88 @@ export default {
       dateSearch: new Date().toISOString().substr(0, 10),
       modalDate: false,
       itemDate: null,
-      tituloModal: "Busqueda Avanzada",
-      lCriterios:false,
+      tituloModal: 'Busqueda Avanzada',
+      lCriterios: false,
       uniones: [
-        { value: "and", text: "y" },
-        { value: "or", text: "o" }
+        { value: 'and', text: 'y' },
+        { value: 'or', text: 'o' }
       ],
       curBusquedas: [],
       mask: {
-        text: "",
-        num: "#"
-      },
-      condiciones: {
-        text: [
-          { value: "11", text: "contiene" },
-          { value: "12", text: "no contiene" },
-          { value: "0", text: "igual a" },
-          { value: "1", text: "diferente de" },
-          { value: "13", text: "empieza por" },
-          { value: "14", text: "no empieza por" },
-          { value: "15", text: "termina por" },
-          { value: "16", text: "no termina por" }
-        ],
-        num: [
-          { value: "20", text: "igual a" },
-          { value: "21", text: "diferente de" },
-          { value: "22", text: "mayor que" },
-          { value: "23", text: "menor que" },
-          { value: "24", text: "mayor o igual que" },
-          { value: "25", text: "menor o igual que" }
-        ],
-        lista: [
-          { value: "20", text: "igual a" },
-          { value: "21", text: "diferente de" },
-        ],
-
-        date: [
-          { value: "40", text: "igual a" },
-          { value: "41", text: "diferente de" },
-          { value: "42", text: "mayor que" },
-          { value: "43", text: "menor que" },
-          { value: "44", text: "mayor o igual que" },
-          { value: "45", text: "menor o igual que" }
-        ]
+        text: '',
+        num: '#'
       }
-    };
+    }
   },
   methods: {
     saveDate() {
-      this.$refs.dialogDate.save(this.dateSearch);
-      this.itemDate.criterio = this.dateSearch;
+      this.$refs.dialogDate.save(this.dateSearch)
+      this.itemDate.criterio = this.dateSearch
     },
     onPrepend(item) {
-      this.dateSearch = item.criterio;
-      this.modalDate = true;
-      this.itemDate = item;
+      this.dateSearch = item.criterio
+      this.modalDate = true
+      this.itemDate = item
     },
     del(index) {
-      this.curBusquedas.splice(index, 1);
+      this.curBusquedas.splice(index, 1)
     },
     add() {
       this.curBusquedas.push({
-        campo: "",
-        cond: "1",
-        criterio: "",
-        union: "and",
+        campo: '',
+        cond: '1',
+        criterio: '',
+        union: 'and',
         items: [],
-        lista:false
-      });
+        lista: false
+      })
     },
     onBuscar(quitarbuscar = false) {
       //console.log("Buscando....");
       if (quitarbuscar) {
-        this.curBusquedas = [];
+        this.curBusquedas = []
       }
-      this.curBusquedas=this.curBusquedas.filter(e=>e.criterio!='');
+      this.curBusquedas = this.curBusquedas.filter((e) => e.criterio != '')
       this.$emit(
-        "busqueda:avanzada",
+        'busqueda:avanzada',
         this.curBusquedas,
-        quitarbuscar,
-        this.condiciones.text.concat(
-          this.condiciones.num,
-          this.condiciones.date
-        )
-      );
-      this.modal = false;
+        quitarbuscar
+      )
+      this.modal = false
     },
     onChangeCampo(item) {
       if (item) {
-        const campo=this.campos.find(campo => campo.value === item.campo)
-        const tipo = campo.type;
-        item.items = this.condiciones[tipo];
-        item.readonly = false;
-        item.prepend = "";
+        const campo = this.campos.find((campo) => campo.value === item.campo)
+        const tipo = campo.type
+        console.log('change campo:',tipo, this.condiciones,this.condiciones[tipo],)
+        item.items = this.condiciones[tipo]
+        item.readonly = false
+        item.prepend = ''
         switch (tipo) {
-          case "date":
-            item.criterio = "";
-            item.type = "text";
-            item.readonly = true;
-            item.prepend = "event";
-            break;
-          case "num":
+          case 'date':
+            item.criterio = ''
+            item.type = 'text'
+            item.readonly = true
+            item.prepend = 'event'
+            break
+          case 'num':
             if (!isNaN(item.criterio)) {
-              item.criterio = "";
+              item.criterio = ''
             }
-            item.type = "number";
+            item.type = 'number'
 
-            break;
+            break
           default:
-            item.type = "text";
+            item.type = 'text'
 
-            break;
+            break
         }
         //console.log('changeCampos',campo)
-        if (campo.lista!==false){
-            item.lista=campo.lista;
-            item.items = this.condiciones['lista'];
-
-        }else{
-            item.lista=false;
+        if (campo.lista) {
+          item.lista = campo.lista
+          item.items = this.condiciones['lista']
+        } else {
+          item.lista = false
         }
       }
     },
@@ -270,23 +233,23 @@ export default {
         if (this.busquedas.length == 0) {
           this.curBusquedas = [
             {
-              campo: "",
-              cond: "1",
-              criterio: "",
-              union: "and",
+              campo: '',
+              cond: '1',
+              criterio: '',
+              union: 'and',
               items: [],
-              type: "text",
-              prepend: ""
+              type: 'text',
+              prepend: ''
             }
-          ];
+          ]
         } else {
-          this.curBusquedas = Object.assign([], this.busquedas);
+          this.curBusquedas = Object.assign([], this.busquedas)
         }
       }
-      this.modal = true;
+      this.modal = true
     }
   }
-};
+}
 </script>
 <style>
 .width-min {

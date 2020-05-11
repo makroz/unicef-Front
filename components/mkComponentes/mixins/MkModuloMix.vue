@@ -595,7 +595,7 @@ export default {
     //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
     //TODO: hacer que la config de cache encrypt etc se maneje en el menu laterual derecho
     //TODO: me falto corregir bien los nobres de los campos de headers,
-    //TODO: hacer em empleados el metodo de un select que actualiza a otro select
+
 
   }
 }

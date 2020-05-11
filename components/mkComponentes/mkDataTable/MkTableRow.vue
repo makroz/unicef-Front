@@ -102,7 +102,7 @@ export default {
     }
   },
   mounted() {
-    //console.log('rowmounted')
+        //console.log('rowmounted')
   }
 }
 </script>

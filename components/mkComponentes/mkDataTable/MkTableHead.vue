@@ -66,8 +66,10 @@
 <script>
 import MkBusquedas from '@/components/mkComponentes/MkDataTable/MkBusquedas'
 import MkMenuColumns from '@/components/mkComponentes/MkDataTable/MkMenuColumns'
+import MkCondBusquedasMix from '@/components/mkComponentes/mixins/MkCondBusquedasMix'
 export default {
   name: 'mkTableHead',
+  mixins:[MkCondBusquedasMix],
   components: {
     MkBusquedas,
     MkMenuColumns
@@ -89,7 +91,7 @@ export default {
   data() {
     return {
       curPermisos: [],
-      lCond: [],
+      lCond:[],
     }
   },
   inject: ['can', 'Auth'],
@@ -98,14 +100,19 @@ export default {
       this.Auth.recycled = !this.Auth.recycled
       this.Auth._updateData('recycled', this.Auth.recycled)
     },
-    onBuscar(datos, quitarbusqueda = false, lCond = []) {
-      this.lCond = lCond
+    onBuscar(datos, quitarbusqueda = false) {
       this.$emit('busqueda:avanzada', datos, quitarbusqueda)
     },
     onColChange(headers,visible=false) {
       this.$emit('column:change', headers,visible)
     }
-  }
+  },
+  mounted() {
+    this.lCond=this.condiciones.text.concat(
+          this.condiciones.num,
+          this.condiciones.date
+        )
+  },
 }
 </script>
 
