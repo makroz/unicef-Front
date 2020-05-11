@@ -8,7 +8,7 @@
         v-if="(!header.hidden)&&(header.noRow!==true)"
         :class="[header.align?'text-xs-'+header.align:'text-xs-left']"
         :key="header.value"
-      >{{ header.lista?colLista(header.lista,datos.item[header.value]):datos.item[header.value] }}</td>
+      >{{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }}</td>
       <!-- <td v-if="(!header.hidden)&&(header.noRow!=true)" :class="['text-xs-'+header.align]" :key="header.value" >{{ header.lista }}</td> -->
     </template>
     <td class="text-xs-center">
@@ -83,9 +83,21 @@ export default {
         this.$emit('openDialog', 'edit', item)
       }
     },
-    colLista(lista, v) {
-      //console.log('llego1:',lista,v)
-      let valor = lista.find((el) => el.id == v)
+    colLista(lista, v, datos) {
+      //console.log('llego1:', lista.value, v, datos)
+      let valor = null
+      if (lista.fromList) {
+        let campoUnion = lista.listFields
+        let hijo = this.headers.find((el) => {
+          //console.log('dentro de hijo', el.value, lista.fromList)
+          return el.value == lista.fromList
+        }).lista
+        //console.log('llego2:', hijo)
+        v = hijo.find((el) => el.id == datos.item[lista.fromList])[campoUnion]
+      }
+      //console.log('llego3:', lista.lista, v)
+      valor = lista.lista.find((el) => el.id == v)
+
       return valor ? valor.name : ''
     }
   },

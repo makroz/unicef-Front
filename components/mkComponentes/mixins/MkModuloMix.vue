@@ -500,12 +500,12 @@ export default {
     },
     updateListCol(campo, lista) {
       let me = this
-      me.campos.forEach((el, index) => {
+      me.campos.forEach(el => {
         if (el.value == campo) {
-          me.campos[index].lista = lista
-          //el.lista = lista
+          el.lista = lista
         }
       })
+      //console.error('updatelist',me.campos)
     },
      setParentinChildName(hijo, padre, campoUnion, name = 'name', id = 'id') {
       return hijo.map((e) => {

@@ -51,9 +51,19 @@
         ></v-text-field>
         <v-text-field label="Direccion" v-model="item.dir" validate-on-blur></v-text-field>
         <v-text-field label="Telefonos" v-model="item.tel" validate-on-blur></v-text-field>
+                <v-select
+          v-model="item.empresas_id"
+          :items="lEmpresas"
+          :rules="[rules.required]"
+          label="Empresa donde Trabaja"
+          item-text="name"
+          item-value="id"
+        >
+        </v-select>
+
         <v-select
           v-model="item.sucursales_id"
-          :items="lSucursales"
+          :items="lSucursales.filter(e=>e.empresas_id==item.empresas_id)"
           :rules="[rules.required]"
           label="Sucursal donde Trabaja"
           item-text="name"
@@ -116,12 +126,24 @@ export default {
           type: 'text',
           search: true
         },
+         {
+          text: 'Empresa',
+          value: 'empresas_id',
+          align: 'left',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lEmpresas,
+          fromList:'sucursales_id',
+          accion:this.getNameEmpresa,
+          listFields:'empresas_id'
+        },
         {
           text: 'Sucursal',
           value: 'sucursales_id',
           align: 'left',
           headers: true,
-          type: 'text',
+          type: 'num',
           search: true,
           lista: this.lSucursales
         }
@@ -131,7 +153,15 @@ export default {
     }
   },
   methods: {
-
+    getNameEmpresa(item){
+      return this.lEmpresas.find(e=>e.id=item.empresas_id).name;
+    },
+   beforeOpen(accion, data = {}) {
+      const me = this
+      if (accion!='add'){
+        me.item.empresas_id=me.lSucursales.find(e=>e.id==me.item.sucursales.id).empresas_id
+      }
+    }
   },
   async mounted() {
     let me = this
@@ -143,10 +173,10 @@ export default {
       url: 'Sucursales',
       campos: 'id,name,empresas_id'
     })
-
-//  me.lSucursales = this.setParentGroup(me.lSucursales,me.lEmpresas,'empresas_id')
-    me.lSucursales = this.setParentinChildName(me.lSucursales,me.lEmpresas,'empresas_id')
+  //me.lSucursales = me.setParentGroup(me.lSucursales,me.lEmpresas,'empresas_id')
+//    me.lSucursales = me.setParentinChildName(me.lSucursales,me.lEmpresas,'empresas_id')
     me.updateListCol('sucursales_id', me.lSucursales)
+    me.updateListCol('empresas_id', me.lEmpresas)
   }
 }
 </script>
