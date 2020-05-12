@@ -159,7 +159,7 @@ export default {
    beforeOpen(accion, data = {}) {
       const me = this
       if (accion!='add'){
-        me.item.empresas_id=me.lSucursales.find(e=>e.id==me.item.sucursales.id).empresas_id
+        me.item.empresas_id=me.lSucursales.find(e=>e.id==me.item.sucursales_id).empresas_id
       }
     }
   },

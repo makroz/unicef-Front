@@ -84,8 +84,10 @@ export default {
       }
     },
     colLista(lista, v, datos) {
-      //console.log('llego1:', lista.value, v, datos)
       let valor = null
+      try {
+      //console.log('llego1:', lista.value, v, datos)
+
       if (lista.fromList) {
         let campoUnion = lista.listFields
         let hijo = this.headers.find((el) => {
@@ -97,6 +99,10 @@ export default {
       }
       //console.log('llego3:', lista.lista, v)
       valor = lista.lista.find((el) => el.id == v)
+      } catch (error) {
+        //console.error(error);
+      }
+
 
       return valor ? valor.name : ''
     }

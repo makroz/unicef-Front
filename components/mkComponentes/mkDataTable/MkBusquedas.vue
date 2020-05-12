@@ -196,7 +196,7 @@ export default {
       if (item) {
         const campo = this.campos.find((campo) => campo.value === item.campo)
         const tipo = campo.type
-        console.log('change campo:',tipo, this.condiciones,this.condiciones[tipo],)
+        //console.log('change campo:',tipo, this.condiciones,this.condiciones[tipo],)
         item.items = this.condiciones[tipo]
         item.readonly = false
         item.prepend = ''
