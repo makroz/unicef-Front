@@ -547,20 +547,7 @@ export default {
     }
   },
   computed: {
-    // search_campos: function() {
-    //   let h = []
-    //   this.campos.forEach((el) => {
-    //     if (el.search) {
-    //       h.push({
-    //         text: el.text,
-    //         value: el.value || null,
-    //         type: el.type || 'text',
-    //         visible: el.visible || true
-    //       })
-    //     }
-    //   })
-    //   return h
-    // }
+
   },
   provide: function() {
     return {
@@ -572,18 +559,13 @@ export default {
   },
   created: function() {
     this.$store.dispatch('auth/getUser')
-    //c("crear");
-    //this.paramsExtra.buscar = ''
     this.created = 2
   },
   mounted() {
-    //   c("Ejecuto",this.$options.name,'mounted');
-
-
     this.campos = this.getParams('headers')||this.campos ;
 
-    // for (var key in localStorage) { //Borrar caache
-    //console.log('funciones',log,isNull)
+    //  for (var key in localStorage) { //Borrar caache
+    // console.log('funciones',key)
     // }
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote

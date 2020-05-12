@@ -34,12 +34,13 @@
       <v-icon>restore</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
-    <div>
+        <div v-if="busquedas">
       <v-chip v-for="(busqueda, key) in busquedas" :key="key" outline small>
+        <template v-if="">
         {{(typeof(headers.find(ele=> ele.value==busqueda.campo))!=='undefined')?(headers.find(ele=> ele.value==busqueda.campo)).text:''}}
         (
         {{( typeof(lCond.find(el=> el.value==busqueda.cond))!=='undefined')?(lCond.find(el=> el.value==busqueda.cond)).text:''}}
-        ) {{ ((busqueda.lista)&&(busqueda.lista.length>0))?busqueda.lista.find(campo => campo.id === busqueda.criterio).name:busqueda.criterio}}
+        ) {{ ((busqueda)&&(busqueda.lista)&&(busqueda.lista.length>0))?busqueda.lista.find(campo => campo.id === busqueda.criterio)?busqueda.lista.find(campo => campo.id === busqueda.criterio).name:busqueda.criterio:busqueda.criterio}}
         <v-icon
           v-if="(key < busquedas.length-1) && (busqueda.union=='and')"
           right
@@ -50,6 +51,7 @@
           right
           color="blue"
         >merge_type</v-icon>
+        </template>
       </v-chip>
     </div>
     <mk-busquedas :busquedas="busquedas" @busqueda:avanzada="onBuscar" :campos="headers"></mk-busquedas>
@@ -92,6 +94,11 @@ export default {
     return {
       curPermisos: [],
       lCond:[],
+    }
+  },
+  computed: {
+    textoBusqueda:()=>{
+
     }
   },
   inject: ['can', 'Auth'],
