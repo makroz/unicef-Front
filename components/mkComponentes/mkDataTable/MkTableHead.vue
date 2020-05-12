@@ -36,7 +36,6 @@
     <v-spacer></v-spacer>
         <div v-if="busquedas">
       <v-chip v-for="(busqueda, key) in busquedas" :key="key" outline small>
-        <template v-if="">
         {{(typeof(headers.find(ele=> ele.value==busqueda.campo))!=='undefined')?(headers.find(ele=> ele.value==busqueda.campo)).text:''}}
         (
         {{( typeof(lCond.find(el=> el.value==busqueda.cond))!=='undefined')?(lCond.find(el=> el.value==busqueda.cond)).text:''}}
@@ -51,7 +50,6 @@
           right
           color="blue"
         >merge_type</v-icon>
-        </template>
       </v-chip>
     </div>
     <mk-busquedas :busquedas="busquedas" @busqueda:avanzada="onBuscar" :campos="headers"></mk-busquedas>
