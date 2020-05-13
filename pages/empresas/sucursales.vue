@@ -5,11 +5,8 @@
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
           <mk-data-table
-            :lista="lista"
-            :busquedas="busquedas"
-            :headers="campos"
-            :loading="loading"
-            :paginator="paginator"
+            v-bind="dataTable"
+            :campos="campos"
             @openDialog="openDialog"
             @deleteItem="deleteItem"
             @setStatus="setStatus"
@@ -74,7 +71,7 @@ export default {
           value: 'id',
           align: 'left',
           width: '100px',
-         header: true,
+          headers: true,
           type: 'num',
           search: true
         },
@@ -82,7 +79,7 @@ export default {
           text: 'Nombre',
           value: 'name',
           width: '250px',
-         header: true,
+          headers: true,
           type: 'text',
           search: true
         },
@@ -90,31 +87,32 @@ export default {
           text: 'Email',
           value: 'email',
           align: 'left',
-         header: true,
+          headers: true,
           type: 'text',
           search: true
         },
         {
           text: 'Empresa',
-          value: "empresas_id",
+          value: 'empresas_id',
           align: 'left',
-         header: true,
+          headers: true,
           type: 'text',
           search: true,
-          lista:this.lEmpresas,
+          lista: this.lEmpresas
         }
-                      ],
-      lEmpresas:[]
+      ],
+      lEmpresas: []
     }
   },
-  methods: {
-
-  },
-async mounted() {
-  let me=this;
-  me.lEmpresas = await me.$store.dispatch('auth/loadData',{url:'Empresas',campos:'id,name'})
-  me.updateListCol('empresas_id', me.lEmpresas)
-}
+  methods: {},
+  async mounted() {
+    let me = this
+    me.lEmpresas = await me.$store.dispatch('auth/loadData', {
+      url: 'Empresas',
+      campos: 'id,name'
+    })
+    me.updateListCol('empresas_id', me.lEmpresas)
+  }
 }
 </script>
 

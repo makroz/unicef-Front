@@ -5,11 +5,8 @@
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
           <mk-data-table
-            :lista="lista"
-            :busquedas="busquedas"
-            :headers="campos"
-            :loading="loading"
-            :paginator="paginator"
+            v-bind="dataTable"
+            :campos="campos"
             @openDialog="openDialog"
             @deleteItem="deleteItem"
             @setStatus="setStatus"
@@ -118,7 +115,7 @@ export default {
           value: 'id',
           align: 'left',
           width: '100px',
-         header: true,
+          headers: true,
           type: 'num',
           search: true
         },
@@ -126,7 +123,7 @@ export default {
           text: 'Nombre',
           value: 'name',
           width: '250px',
-         header: true,
+          headers: true,
           type: 'text',
           search: true
         },
@@ -134,7 +131,7 @@ export default {
           text: 'Email',
           value: 'email',
           align: 'left',
-         header: true,
+          headers: true,
           type: 'text',
           search: true
         }
@@ -142,7 +139,7 @@ export default {
 
       showPass: false,
       permisos: [],
-      permisoGrupos: null,
+      permisoGrupos: null
     }
   },
   methods: {
@@ -187,19 +184,23 @@ export default {
       me.tabs = 0
 
       me.item.pass = ''
-      me.rulesUnico.old=data.email;
+      me.rulesUnico.old = data.email
       me.paramsExtra.grupos = []
       if (me.item.grupos) {
         me.paramsExtra.grupos = me.item.grupos
       }
 
       let url = me.urlModulo + '/permisos/' + me.item.id
-      let url2 = me.urlModulo + '/permisos/' + me.item.id+JSON.stringify(me.paramsExtra)
+      let url2 =
+        me.urlModulo +
+        '/permisos/' +
+        me.item.id +
+        JSON.stringify(me.paramsExtra)
       me.$axios
-        .post(url+me.getCt(url2,false,2), me.paramsExtra)
+        .post(url + me.getCt(url2, false, 2), me.paramsExtra)
         .then(function(response) {
-          me.permisos = me.getDataCache(response.data, url2,false);
-          me.permisoGrupos = me.getDataCache(response.data.msg,url2,false,2);
+          me.permisos = me.getDataCache(response.data, url2, false)
+          me.permisoGrupos = me.getDataCache(response.data.msg, url2, false, 2)
         })
         .catch(function(error) {
           console.log(error)
@@ -210,16 +211,21 @@ export default {
     }
   },
 
-  async asyncData({store}) {
-    let lGrupos = await store.dispatch('auth/loadData',{url:'Grupos',campos:'id,name'})
-    let lRoles = await store.dispatch('auth/loadData',{url:'Roles',campos:'id,name'})
+  async asyncData({ store }) {
+    let lGrupos = await store.dispatch('auth/loadData', {
+      url: 'Grupos',
+      campos: 'id,name'
+    })
+    let lRoles = await store.dispatch('auth/loadData', {
+      url: 'Roles',
+      campos: 'id,name'
+    })
     return {
-      lRoles:lRoles,
-      lGrupos:lGrupos
+      lRoles: lRoles,
+      lGrupos: lGrupos
     }
   },
-  mounted() {
-  }
+  mounted() {}
 }
 </script>
 <style lang="css">

@@ -5,11 +5,8 @@
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
           <mk-data-table
-            :lista="lista"
-            :busquedas="busquedas"
-            :headers="campos"
-            :loading="loading"
-            :paginator="paginator"
+            v-bind="dataTable"
+            :campos="campos"
             @openDialog="openDialog"
             @deleteItem="deleteItem"
             @setStatus="setStatus"
@@ -41,7 +38,7 @@
           v-model="item.slug"
           :rules="[rules.required, rules.noSpaces,rules.unique('slug')]"
           validate-on-blur
-          ref='slug'
+          ref="slug"
           counter
           maxlength="20"
         ></v-text-field>
@@ -52,56 +49,55 @@
 </template>
 
 <script>
-import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 
 export default {
   mixins: [MkModuloMix],
-  name: "Permisos",
-  components: {
-  },
+  name: 'Permisos',
+  components: {},
   data() {
     return {
       //urlModulo: '',
       //titModulo: '',
       campos: [
         {
-          text: "Id",
-          value: "id",
-          align: "left",
-          width: "50px",
-         header: true,
-          type: "num",
+          text: 'Id',
+          value: 'id',
+          align: 'left',
+          width: '50px',
+          headers: true,
+          type: 'num',
           search: true
         },
         {
-          text: "Slug",
-          value: "slug",
-          width: "150px",
-         header: true,
-          type: "text",
+          text: 'Slug',
+          value: 'slug',
+          width: '150px',
+          headers: true,
+          type: 'text',
           search: true
         },
         {
-          text: "Permiso",
-          value: "name",
-          width: "250px",
-         header: true,
-          type: "text",
+          text: 'Permiso',
+          value: 'name',
+          width: '250px',
+          headers: true,
+          type: 'text',
           search: true
         },
         {
-          text: "Descripcion",
-          value: "descrip",
-          align: "left",
-         header: true,
-          type: "text",
+          text: 'Descripcion',
+          value: 'descrip',
+          align: 'left',
+          headers: true,
+          type: 'text',
           search: true
         }
       ]
-    };
+    }
   },
   methods: {}
-};
+}
 </script>
 
 

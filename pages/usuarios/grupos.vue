@@ -5,11 +5,8 @@
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
           <mk-data-table
-            :lista="lista"
-            :busquedas="busquedas"
-            :headers="campos"
-            :loading="loading"
-            :paginator="paginator"
+            v-bind="dataTable"
+            :campos="campos"
             @openDialog="openDialog"
             @deleteItem="deleteItem"
             @setStatus="setStatus"
@@ -46,78 +43,78 @@
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
-import MkPermisos from "@/components/mkComponentes/mkPermisos/MkPermisos";
+import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
 
 export default {
   mixins: [MkModuloMix],
   components: {
     MkPermisos
   },
-  name: "Grupos",
+  name: 'Grupos',
   data() {
     return {
       //urlModulo: '',
       //titModulo: '',
       campos: [
         {
-          text: "Id",
-          value: "id",
-          align: "left",
-          width: "100px",
-         header: true,
-          type: "num",
+          text: 'Id',
+          value: 'id',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
           search: true
         },
         {
-          text: "Grupo",
-          value: "name",
-          width: "250px",
-         header: true,
-          type: "text",
+          text: 'Grupo',
+          value: 'name',
+          width: '250px',
+          headers: true,
+          type: 'text',
           search: true
         },
         {
-          text: "Descripcion",
-          value: "descrip",
-          align: "left",
-         header: true,
-          type: "num",
+          text: 'Descripcion',
+          value: 'descrip',
+          align: 'left',
+          headers: true,
+          type: 'num',
           search: true
         }
       ],
       permisos: []
-    };
+    }
   },
   methods: {
     onChangePermisos(newPermisos) {
-      this.permisos = Object.assign([], newPermisos);
+      this.permisos = Object.assign([], newPermisos)
     },
     beforeSave(me) {
-      let permiso = [];
+      let permiso = []
       for (const obj in me.permisos) {
         permiso[obj] = {
           id: me.permisos[obj].id,
           valor: me.permisos[obj].valor
-        };
+        }
       }
-      me.paramsExtra.permisos = permiso;
+      me.paramsExtra.permisos = permiso
     },
     beforeOpen(accion, data = {}) {
-      let me = this;
-      let url = me.urlModulo + "/permisos/" + me.item.id
-      me.loading=true;
+      let me = this
+      let url = me.urlModulo + '/permisos/' + me.item.id
+      me.loading = true
       me.$axios
-        .post(url+ this.getCt(url), [])
+        .post(url + this.getCt(url), [])
         .then(function(response) {
           me.permisos = me.getDataCache(response.data, url)
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error)
         })
         .finally(function() {
-          me.loading = false;
-        });
+          me.loading = false
+        })
     }
   }
-};
+}
 </script>

@@ -6,13 +6,13 @@
       @busqueda:avanzada="onBuscar"
       :sel="lista.selected"
       :busquedas="busquedas"
-      :headers="headers"
+      :headers="campos"
       @column:change="onColChange"
     ></mk-table-head>
     <v-divider></v-divider>
     <v-card-text class="pa-0">
       <v-data-table
-        :headers="headers"
+        :headers="campos"
         :items="lista.items"
         :class="[loading?'loading':'','elevation-1']"
         item-key="id"
@@ -37,7 +37,7 @@
             </th>
             <template v-for="header in props.headers">
               <th
-                v-if="header.header && !header.hidden"
+                v-if="header.headers && !header.hidden"
                 :key="header.value"
                 :class="['column', header.sortable !==false? 'sortable' : '', header.align?'text-xs-'+header.align:'text-xs-left', paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
                 @click="changeSort(header.value,!(header.sortable===false))"
@@ -64,7 +64,7 @@
         <template slot="items" slot-scope="props">
           <mk-table-row
             :datos="props"
-            :headers="headers"
+            :headers="campos"
             @openDialog="openDialog"
             @deleteItem="deleteItem"
             @onStatus="setStatus"
@@ -91,7 +91,7 @@ export default {
   props: [
     'lista',
     'busquedas',
-    'headers',
+    'campos',
     'loading',
     'paginator'
   ],

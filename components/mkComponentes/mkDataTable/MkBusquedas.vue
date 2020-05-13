@@ -12,16 +12,15 @@
         <v-divider></v-divider>
         <v-card-text>
           <v-card v-for="(item, index) in curBusquedas" :key="index" class="d-flex flex-start">
+
             <v-select
               class="ma-2"
               v-model="item.campo"
               :items="campos"
-              @input="onChangeCampo(item)"
               densed
-              :hideDetails="true"
               label="Campo"
+              @input="onChangeCampo(item)"
             ></v-select>
-
             <v-select
               class="ma-2"
               v-model="item.cond"

@@ -5,11 +5,8 @@
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
           <mk-data-table
-            :lista="lista"
-            :busquedas="busquedas"
-            :headers="campos"
-            :loading="loading"
-            :paginator="paginator"
+            v-bind="dataTable"
+            :campos="campos"
             @openDialog="openDialog"
             @deleteItem="deleteItem"
             @setStatus="setStatus"
@@ -51,16 +48,14 @@
         ></v-text-field>
         <v-text-field label="Direccion" v-model="item.dir" validate-on-blur></v-text-field>
         <v-text-field label="Telefonos" v-model="item.tel" validate-on-blur></v-text-field>
-                <v-select
+        <v-select
           v-model="item.empresas_id"
           :items="lEmpresas"
           :rules="[rules.required]"
           label="Empresa donde Trabaja"
           item-text="name"
           item-value="id"
-        >
-        </v-select>
-
+        ></v-select>
         <v-select
           v-model="item.sucursales_id"
           :items="lSucursales.filter(e=>e.empresas_id==item.empresas_id)"
@@ -69,20 +64,7 @@
           item-text="name"
           item-value="id"
         >
-          <template slot="item" slot-scope="data">
-            <!-- Divider and Header-->
-            <template v-if="typeof data.item !== 'object'">
-              <v-list-tile-content v-text="data.item" />
-            </template>
-            <!-- Normal item -->
-            <template v-else>
-              <v-list-tile-content>
-                <v-list-tile-title >
-                  &nbsp;&nbsp;&nbsp;&nbsp;{{data.item.name}}
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </template>
-          </template>
+
         </v-select>
       </mk-form>
     </v-container>
@@ -106,7 +88,7 @@ export default {
           value: 'id',
           align: 'left',
           width: '100px',
-         header: true,
+          headers: true,
           type: 'num',
           search: true
         },
@@ -114,7 +96,7 @@ export default {
           text: 'Nombre',
           value: 'name',
           width: '250px',
-         header: true,
+          headers: true,
           type: 'text',
           search: true
         },
@@ -122,26 +104,26 @@ export default {
           text: 'Email',
           value: 'email',
           align: 'left',
-         header: true,
+          headers: true,
           type: 'text',
           search: true
         },
-         {
+        {
           text: 'Empresa',
           value: 'empresas_id',
           align: 'left',
-         header: true,
+          headers: true,
           type: 'num',
           search: true,
           lista: this.lEmpresas,
-          fromList:'sucursales_id',
-          listField:'empresas_id'
+          fromList: 'sucursales_id',
+          listField: 'empresas_id'
         },
         {
           text: 'Sucursal',
           value: 'sucursales_id',
           align: 'left',
-         header: true,
+          headers: true,
           type: 'num',
           search: true,
           lista: this.lSucursales
@@ -152,13 +134,15 @@ export default {
     }
   },
   methods: {
-    getNameEmpresa(item){
-      return this.lEmpresas.find(e=>e.id=item.empresas_id).name;
+    getNameEmpresa(item) {
+      return this.lEmpresas.find((e) => (e.id = item.empresas_id)).name
     },
-   beforeOpen(accion, data = {}) {
+    beforeOpen(accion, data = {}) {
       const me = this
-      if (accion!='add'){
-        me.item.empresas_id=me.lSucursales.find(e=>e.id==me.item.sucursales_id).empresas_id
+      if (accion != 'add') {
+        me.item.empresas_id = me.lSucursales.find(
+          (e) => e.id == me.item.sucursales_id
+        ).empresas_id
       }
     }
   },
@@ -172,8 +156,8 @@ export default {
       url: 'Sucursales',
       campos: 'id,name,empresas_id'
     })
-  //me.lSucursales = me.setParentGroup(me.lSucursales,me.lEmpresas,'empresas_id')
-//    me.lSucursales = me.setParentinChildName(me.lSucursales,me.lEmpresas,'empresas_id')
+    //me.lSucursales = me.setParentGroup(me.lSucursales,me.lEmpresas,'empresas_id')
+    //    me.lSucursales = me.setParentinChildName(me.lSucursales,me.lEmpresas,'empresas_id')
     me.updateListCol('sucursales_id', me.lSucursales)
     me.updateListCol('empresas_id', me.lEmpresas)
   }

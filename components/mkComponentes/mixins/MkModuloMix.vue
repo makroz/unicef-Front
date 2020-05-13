@@ -18,35 +18,40 @@ export default {
   mixins: [MkRulesMix],
   data() {
     return {
-      //headers: this.getParams('headers') || this.headersC,
+      dataTable: {
+        lista: {
+          items: [],
+          selected: [],
+          checksum: ''
+        },
+        busquedas: this.getParams('buscar', []),
+        loading: false,
+        paginator: this.getParams('paginator') || {
+          perPage: 5,
+          perPageList: [2, 5, 10, 25, 50, { value: '-1', text: 'Todos' }],
+          n_page: 1,
+          page: 1,
+          offset: 5,
+          total: 0,
+          options: { rowsPerPage: -1, sortBy: 'id', descending: true }
+        }
+      },
       created: true,
       urlModulo: this.$options.name,
       titModulo: this.$options.name,
-      paginator: this.getParams('paginator') || {
-        perPage: 5,
-        perPageList: [2, 5, 10, 25, 50, { value: '-1', text: 'Todos' }],
-        n_page: 1,
-        page: 1,
-        offset: 5,
-        total: 0,
-        options: { rowsPerPage: -1, sortBy: 'id', descending: true }
-      },
+
       //filtros y busqueda
-      busquedas: this.getParams('buscar',[]),
+
       //modal
       modal: false,
       tituloModal: '',
-      loading: false,
+
       paramsExtra: {},
       item: {
         id: 0,
         name: ''
       },
-      lista: {
-        items: [],
-        selected: [],
-        checksum: '',
-      },
+
       oldRecycled: false,
       cacheCan: {
         '1': false,
@@ -65,17 +70,17 @@ export default {
   methods: {
     onBuscar(datos, quitarbuscar = false) {
       //console.log('OnBuscar Mix:', datos, this.busqueda)
-      this.paginator.page = 1
-      this.busquedas = datos
+      this.dataTable.paginator.page = 1
+      this.dataTable.busquedas = datos
       this.listar(datos, quitarbuscar)
     },
     onPerPageChange(page) {
-      this.paginator.page = 1
+      this.dataTable.paginator.page = 1
       this.listar()
     },
     getDataCache(data, url, paginate = true, lista = 1) {
       if (paginate) {
-        paginate = this.paginator
+        paginate = this.dataTable.paginator
       }
 
       return this.$store.getters['auth/getDataCache'](
@@ -87,20 +92,20 @@ export default {
     },
     fillTable(data, url) {
       //console.log('filltable:',data)
-      this.lista.items = this.getDataCache(data, url)
+      this.dataTable.lista.items = this.getDataCache(data, url)
 
-      this.paginator.total = data.ok
+      this.dataTable.paginator.total = data.ok
       this.oldBuscar = this.buscar
-      let n_page = Math.ceil(data.ok / this.paginator.perPage)
-      if (this.paginator.perPage < this.paginator.total) {
-        this.paginator.n_page = n_page
+      let n_page = Math.ceil(data.ok / this.dataTable.paginator.perPage)
+      if (this.dataTable.paginator.perPage < this.dataTable.paginator.total) {
+        this.dataTable.paginator.n_page = n_page
       } else {
-        this.paginator.n_page = 1
+        this.dataTable.paginator.n_page = 1
       }
     },
     getCt(url, paginate = true, lista = 1) {
       if (paginate) {
-        paginate = this.paginator
+        paginate = this.dataTable.paginator
       }
       return this.$store.getters['auth/getCt'](url, paginate, lista)
     },
@@ -117,9 +122,9 @@ export default {
         setTimeout(() => (this.created = true), 2000)
       }
 
-      let page = me.paginator.page || 1
+      let page = me.dataTable.paginator.page || 1
       let criterio = me.criterio || ''
-      let perPage = me.paginator.perPage || 5
+      let perPage = me.dataTable.paginator.perPage || 5
 
       let buscar = ''
       let bus = []
@@ -127,7 +132,7 @@ export default {
       if (typeof d !== 'object' || d === null) {
         d = { sortBy: null, descending: null }
       } else {
-        me.busquedas.forEach(function(item) {
+        me.dataTable.busquedas.forEach(function(item) {
           if (item.criterio != '') {
             bus.push({
               campo: item.campo,
@@ -139,8 +144,8 @@ export default {
         })
       }
 
-      let sortBy = d.sortBy || me.paginator.options.sortBy || ''
-      let order = d.descending || me.paginator.options.descending || false
+      let sortBy = d.sortBy || me.dataTable.paginator.options.sortBy || ''
+      let order = d.descending || me.dataTable.paginator.options.descending || false
 
       if (bus.length > 0) {
         buscar = '&buscar=' + JSON.stringify(bus)
@@ -152,9 +157,9 @@ export default {
       }
 
       if (!d.sortBy && d.rowsPerPage) {
-        sortBy = me.paginator.options.sortBy
+        sortBy = me.dataTable.paginator.options.sortBy
         d.sortBy = sortBy
-        order = !me.paginator.options.descending
+        order = !me.dataTable.paginator.options.descending
         d.descending = order
       }
 
@@ -168,7 +173,7 @@ export default {
       } else {
         sortBy = ''
       }
-      me.paginator.page = page
+      me.dataTable.paginator.page = page
 
       let url =
         me.urlModulo +
@@ -181,13 +186,13 @@ export default {
       if (this.Auth.recycled) {
         url = url + '&recycled=1'
       }
-      me.loading = true
+      me.dataTable.loading = true
       me.$axios
         .get(url + this.getCt(url))
         .then(function(response) {
           if (me.isOk(response.data, url)) {
             me.setParams()
-            me.setParams('buscar',me.busquedas)
+            me.setParams('buscar', me.dataTable.busquedas)
             me.fillTable(response.data, url)
           }
         })
@@ -195,7 +200,7 @@ export default {
           console.error(error)
         })
         .finally(function() {
-          me.loading = false
+          me.dataTable.loading = false
           me.created == true
         })
     },
@@ -206,7 +211,7 @@ export default {
         })
       }
       if (data.ok < 0) {
-        c(data.msg,this.$options.name,'error','error')
+        c(data.msg, this.$options.name, 'error', 'error')
         Swal.fire({
           position: 'top-end',
           title: data.msg,
@@ -228,7 +233,7 @@ export default {
       }
       let me = this
       let url = me.urlModulo + '/setStatus?status=' + newStatus
-      me.loading = true
+      me.dataTable.loading = true
       me.$axios
         .post(url + this.getCt(url), {
           id: id
@@ -245,7 +250,7 @@ export default {
           console.error(error)
         })
         .finally(function() {
-          me.loading = false
+          me.dataTable.loading = false
         })
     },
     beforeSave(me) {},
@@ -264,7 +269,7 @@ export default {
         if (!this.can('edit', true)) {
           return false
         }
-        me.loading = true
+        me.dataTable.loading = true
         let url = me.urlModulo + '/' + me.item.id
         me.$axios
           .put(url + this.getCt(url), me.item)
@@ -282,21 +287,21 @@ export default {
             isError = 2
           })
           .finally(function() {
-            me.loading = false
+            me.dataTable.loading = false
           })
       } else {
         if (!this.can('add', true)) {
           return false
         }
 
-        me.loading = true
+        me.dataTable.loading = true
         let url = me.urlModulo
 
         me.$axios
           .post(url + this.getCt(url), me.item)
           .then(function(response) {
             if (me.isOk(response.data)) {
-              me.paginator.page = 1
+              me.dataTable.paginator.page = 1
               me.fillTable(response.data.data, url)
               me.closeDialog()
               me.paramsExtra = {}
@@ -309,7 +314,7 @@ export default {
             isError = 2
           })
           .finally(function() {
-            me.loading = false
+            me.dataTable.loading = false
           })
         this.afterSave(me, isError)
       }
@@ -319,9 +324,9 @@ export default {
         return false
       }
       let me = this
-      if (me.lista.selected.length > 0) {
+      if (me.dataTable.lista.selected.length > 0) {
         id = ''
-        me.lista.selected.forEach((item) => {
+        me.dataTable.lista.selected.forEach((item) => {
           id = id + item.id + ','
         })
         id = id + '0'
@@ -355,7 +360,7 @@ export default {
           if (this.Auth.recycled) {
             url = url + '?recycled=1'
           }
-          me.loading = true
+          me.dataTable.loading = true
           me.$axios
             .post(url, {
               id: id
@@ -374,7 +379,7 @@ export default {
               console.error(error)
             })
             .finally(function() {
-              me.loading = false
+              me.dataTable.loading = false
             })
         }
       })
@@ -405,7 +410,7 @@ export default {
     setParams(name = '', value = '') {
       if (name == '') {
         name = 'paginator'
-        value = this.paginator
+        value = this.dataTable.paginator
       }
       //console.log('Guardando:',this.$options.name+".Params."+name, value);
       try {
@@ -485,47 +490,51 @@ export default {
     _updateData(data, val) {
       this.Auth[data] = val
     },
-    onColChange(headers,visible=false) {
-      if (visible){
+    onColChange(headers, visible = false) {
+      if (visible) {
         this.campos.forEach((e) => {
-        if (e.value == headers) {
-            let hide=!e.hidden;
-            this.$set(e,'hidden',hide)
-        }
-      });
-      }else{
-        this.campos = headers;
+          if (e.value == headers) {
+            let hide = !e.hidden
+            this.$set(e, 'hidden', hide)
+          }
+        })
+      } else {
+        this.campos = headers
       }
       this.setParams('headers', this.campos)
     },
     updateListCol(campo, lista) {
       let me = this
-      me.campos.forEach(el => {
+      me.campos.forEach((el) => {
         if (el.value == campo) {
           el.lista = lista
         }
       })
       //console.error('updatelist',me.campos)
     },
-     setParentinChildName(hijo, padre, campoUnion, name = 'name', id = 'id') {
+    setParentinChildName(hijo, padre, campoUnion, name = 'name', id = 'id') {
       return hijo.map((e) => {
         e[name] =
-          (padre.filter((el) => el[id] == e[campoUnion])[0])[name] +
+          padre.filter((el) => el[id] == e[campoUnion])[0][name] +
           ': ' +
           e[name]
         return e
       })
     },
     setParentGroup(hijo, padre, campoUnion, name = 'name', id = 'id') {
-      hijo = hijo.sort(
-        (a, b) =>(a[campoUnion] < b[campoUnion]) ? -1 : ((a[campoUnion] > b[campoUnion]) ? 1 : 0)
+      hijo = hijo.sort((a, b) =>
+        a[campoUnion] < b[campoUnion]
+          ? -1
+          : a[campoUnion] > b[campoUnion]
+          ? 1
+          : 0
       )
       const temp = []
       let oGrupo = 0
       hijo.forEach((e) => {
         if (oGrupo != e[campoUnion]) {
           temp.push({
-            header: (padre.filter((el) => el[id] == e[campoUnion])[0])[name]
+            header: padre.filter((el) => el[id] == e[campoUnion])[0][name]
           })
           oGrupo = e[campoUnion]
         }
@@ -546,9 +555,7 @@ export default {
       }
     }
   },
-  computed: {
-
-  },
+  computed: {},
   provide: function() {
     return {
       can: this.can,
@@ -562,7 +569,7 @@ export default {
     this.created = 2
   },
   mounted() {
-    this.campos = this.getParams('headers')||this.campos ;
+    this.campos = this.getParams('headers') || this.campos
 
     //  for (var key in localStorage) { //Borrar caache
     // console.log('funciones',key)
@@ -577,7 +584,6 @@ export default {
     //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
     //TODO: hacer que la config de cache encrypt etc se maneje en el menu laterual derecho
     //TODO: me falto corregir bien los nobres de los campos de headers,
-
   }
 }
 </script>

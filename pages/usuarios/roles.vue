@@ -5,11 +5,8 @@
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
           <mk-data-table
-            :lista="lista"
-            :busquedas="busquedas"
-            :headers="campos"
-            :loading="loading"
-            :paginator="paginator"
+            v-bind="dataTable"
+            :campos="campos"
             @openDialog="openDialog"
             @deleteItem="deleteItem"
             @setStatus="setStatus"
@@ -46,48 +43,48 @@
 </template>
 
 <script>
-import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 
 export default {
-  middleware: ["authAccess"],
+  middleware: ['authAccess'],
 
   mixins: [MkModuloMix],
-  name: "Roles",
+  name: 'Roles',
   data() {
     return {
       //urlModulo: '',
       //titModulo: '',
       campos: [
         {
-          text: "Id",
-          value: "id",
-          align: "left",
-          width: "100px",
-         header: true,
-          type: "num",
+          text: 'Id',
+          value: 'id',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
           search: true
         },
         {
-          text: "Nombre",
-          value: "name",
-          width: "150px",
-         header: true,
-          type: "text",
+          text: 'Nombre',
+          value: 'name',
+          width: '150px',
+          headers: true,
+          type: 'text',
           search: true
         },
         {
-          text: "Descripcion",
-          value: "descrip",
-          align: "left",
-         header: true,
-          type: "text",
+          text: 'Descripcion',
+          value: 'descrip',
+          align: 'left',
+          headers: true,
+          type: 'text',
           search: true
         }
       ]
-    };
+    }
   },
   methods: {}
-};
+}
 </script>
 
 <style lang="stylus"></style>
