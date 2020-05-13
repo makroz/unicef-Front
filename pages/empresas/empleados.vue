@@ -106,7 +106,7 @@ export default {
           value: 'id',
           align: 'left',
           width: '100px',
-          headers: true,
+         header: true,
           type: 'num',
           search: true
         },
@@ -114,7 +114,7 @@ export default {
           text: 'Nombre',
           value: 'name',
           width: '250px',
-          headers: true,
+         header: true,
           type: 'text',
           search: true
         },
@@ -122,7 +122,7 @@ export default {
           text: 'Email',
           value: 'email',
           align: 'left',
-          headers: true,
+         header: true,
           type: 'text',
           search: true
         },
@@ -130,19 +130,18 @@ export default {
           text: 'Empresa',
           value: 'empresas_id',
           align: 'left',
-          headers: true,
+         header: true,
           type: 'num',
           search: true,
           lista: this.lEmpresas,
           fromList:'sucursales_id',
-          accion:this.getNameEmpresa,
-          listFields:'empresas_id'
+          listField:'empresas_id'
         },
         {
           text: 'Sucursal',
           value: 'sucursales_id',
           align: 'left',
-          headers: true,
+         header: true,
           type: 'num',
           search: true,
           lista: this.lSucursales

@@ -63,7 +63,7 @@ export default {
           value: "id",
           align: "left",
           width: "100px",
-          headers: true,
+         header: true,
           type: "num",
           search: true
         },
@@ -71,7 +71,7 @@ export default {
           text: "Nombre",
           value: "name",
           width: "150px",
-          headers: true,
+         header: true,
           type: "text",
           search: true
         },
@@ -79,7 +79,7 @@ export default {
           text: "Descripcion",
           value: "descrip",
           align: "left",
-          headers: true,
+         header: true,
           type: "text",
           search: true
         }

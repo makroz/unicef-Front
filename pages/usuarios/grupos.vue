@@ -64,7 +64,7 @@ export default {
           value: "id",
           align: "left",
           width: "100px",
-          headers: true,
+         header: true,
           type: "num",
           search: true
         },
@@ -72,7 +72,7 @@ export default {
           text: "Grupo",
           value: "name",
           width: "250px",
-          headers: true,
+         header: true,
           type: "text",
           search: true
         },
@@ -80,7 +80,7 @@ export default {
           text: "Descripcion",
           value: "descrip",
           align: "left",
-          headers: true,
+         header: true,
           type: "num",
           search: true
         }

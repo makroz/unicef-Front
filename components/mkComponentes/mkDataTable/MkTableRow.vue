@@ -5,11 +5,10 @@
     </td>
     <template v-for="header in headers">
       <td
-        v-if="(!header.hidden)&&(header.noRow!==true)"
+        v-if="header.header && !header.hidden"
         :class="[header.align?'text-xs-'+header.align:'text-xs-left']"
         :key="header.value"
       >{{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }}</td>
-      <!-- <td v-if="(!header.hidden)&&(header.noRow!=true)" :class="['text-xs-'+header.align]" :key="header.value" >{{ header.lista }}</td> -->
     </template>
     <td class="text-xs-center">
       <mk-status :status="datos.item.status" :id="datos.item.id" @onStatus="setStatus"></mk-status>
@@ -86,29 +85,28 @@ export default {
     colLista(lista, v, datos) {
       let valor = null
       try {
-      //console.log('llego1:', lista.value, v, datos)
+        //console.log('llego1:', lista.value, v, datos)
 
-      if (lista.fromList) {
-        let campoUnion = lista.listFields
-        let hijo = this.headers.find((el) => {
-          //console.log('dentro de hijo', el.value, lista.fromList)
-          return el.value == lista.fromList
-        }).lista
-        //console.log('llego2:', hijo)
-        v = hijo.find((el) => el.id == datos.item[lista.fromList])[campoUnion]
-      }
-      //console.log('llego3:', lista.lista, v)
-      valor = lista.lista.find((el) => el.id == v)
+        if (lista.fromList) {
+          let campoUnion = lista.listField
+          let hijo = this.headers.find((el) => {
+            //console.log('dentro de hijo', el.value, lista.fromList)
+            return el.value == lista.fromList
+          }).lista
+          //console.log('llego2:', hijo)
+          v = hijo.find((el) => el.id == datos.item[lista.fromList])[campoUnion]
+        }
+        //console.log('llego3:', lista.lista, v)
+        valor = lista.lista.find((el) => el.id == v)
       } catch (error) {
         //console.error(error);
       }
-
 
       return valor ? valor.name : ''
     }
   },
   mounted() {
-        //console.log('rowmounted')
+    //console.log('rowmounted')
   }
 }
 </script>

@@ -37,7 +37,7 @@
             </th>
             <template v-for="header in props.headers">
               <th
-                v-if="!header.hidden"
+                v-if="header.header && !header.hidden"
                 :key="header.value"
                 :class="['column', header.sortable !==false? 'sortable' : '', header.align?'text-xs-'+header.align:'text-xs-left', paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
                 @click="changeSort(header.value,!(header.sortable===false))"
