@@ -55,37 +55,7 @@
         shrink
         pa-1
       >
-
-      <mk-img v-show="!imgDel && (!imgCanEdit || (myImg.hasImage && myImg.hasImage()))" v-model="myImg" :width="100" :height="100" prevent-white-space @init="onImgInit"
-        :placeholder="'Arrastre o Click'"
-        :placeholder-font-size="12"
-        :accept="'image/*'"
-        :quality="2"
-        :show-remove-button="false"
-        :zoom-speed="10"
-        title="Arrastre o Click para cargar el Perfil"
-        >
-        </mk-img>
-        <div v-if="imgDel || imgCanEdit && (myImg.hasImage && !myImg.hasImage())" @click="imgCanEdit=false;">
-        <img   width="100" height="100" :src="imgFile"  @error="imgCanDel=false;imgCanEdit=false;"/>
-        <div v-show="imgDel" style="position:absolute;bottom:25px;">
-          <v-icon style="position:relative;font-size:100px;" color="red" >close</v-icon>
-        </div>
-
-        </div>
-        <div style="position:absolute;z-index:100000;background-color:white ">
-        <v-icon v-show="!imgDel" :small="myImg.hasImage?myImg.hasImage()?imgMenu:false:false" color="red" @click="myImg.chooseFile()">image_search</v-icon>
-        <v-icon v-show="imgCanDel " :small="myImg.hasImage?myImg.hasImage()?imgMenu:false:false" :color="imgDel?'red':'green'"  @click="imgDel=!imgDel" >delete_forever</v-icon>
-        <v-icon v-show="!imgDel && (myImg.hasImage?myImg.hasImage():false)" :small="imgMenu" @click="imgMenu=!imgMenu" :color="imgMenu?'grey':'red'" >control_point_duplicate</v-icon>
-        <span v-show="imgMenu && !imgDel" style="position:relative;">
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.remove()">cancel</v-icon>
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.zoomIn()">zoom_in</v-icon>
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.zoomOut()">zoom_out</v-icon>
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.rotate(-1)">rotate_90_degrees_ccw</v-icon>
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.flipX()">flip</v-icon>
-        </span>
-      </div>
-      .
+      <mk-img v-model="mkImgData" :w="100" :h="100"></mk-img>
  </v-flex>
  <v-flex
         grow

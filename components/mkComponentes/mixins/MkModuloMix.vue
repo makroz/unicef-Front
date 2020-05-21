@@ -263,11 +263,11 @@ export default {
       }
       let isError = 0
       me.beforeSave(me)
-      if (me.myImg){
-        me.item.imgDel=me.imgDel;
+      if (me.mkImgData.myImg){
+        me.item.imgDel=me.mkImgData.imgDel;
         me.item.imgFile='';
         if (!me.imgDel){
-          me.item.imgFile=me.myImg.generateDataUrl();
+          me.item.imgFile=me.mkImgData.myImg.generateDataUrl();
         }
       }
 
@@ -406,22 +406,28 @@ export default {
       }
 
       this.item = Object.assign({}, data)
-      if (this.myImg){
-        this.myImg.remove();
+      if (this.mkImgData.myImg){
+        if (this.mkImgData.myImg.remove){
+          this.mkImgData.myImg.remove();
+        }
         var d = new Date();
-        this.imgFile=_storage+this.$options.name+'_'+this.item.id+'.png?v='+d.getTime();
-        this.imgCanDel=accion=='edit';
-        this.imgDel=false;
+        this.mkImgData.imgFile=_storage+this.$options.name+'_'+this.item.id+'.png?v='+d.getTime();
+        this.mkImgData.imgCanDel=accion=='edit';
+        this.mkImgData.imgDel=false;
+        if (accion == 'add') {
+          this.mkImgData.imgCanEdit=false;
+        }else{
+          this.mkImgData.imgCanEdit=true;
+        }
+
       }
 
     this.$refs.mkForm.$refs.form.resetValidation()
       this.beforeOpen(accion, data)
       if (accion == 'add') {
-        this.imgCanEdit=false;
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
       } else {
-        this.imgCanEdit=true;
         this.tituloModal = 'Editar ' + this.titModulo
       }
       this.afterOpen(accion, data)
