@@ -16,13 +16,13 @@
             <span class="caption">&copy; {{ new Date().getFullYear() }}</span>
             <v-spacer></v-spacer>
             <span class="caption mr-1"> Made with love </span>
-            <v-icon color="pink" small>favorite</v-icon>
+            <v-icon @click="showSetting()" color="pink" small>favorite</v-icon>
           </v-footer>
         </v-content>
         <!-- Go to top -->
         <app-fab></app-fab>
         <!-- theme setting -->
-        <v-btn small fab dark falt fixed top="top" right="right" class="setting-fab" color="red"
+        <v-btn v-if="setting==2" small fab dark falt fixed top="top" right="right" class="setting-fab" color="red"
                @click="openThemeSettings">
           <v-icon>settings</v-icon>
         </v-btn>
@@ -34,7 +34,7 @@
           hide-overlay
           fixed
         >
-          <theme-settings></theme-settings>
+          <theme-settings v-if="setting==2"></theme-settings>
         </v-navigation-drawer>
       </v-app>
     </template>
@@ -77,13 +77,21 @@
         show: false,
         text: '',
         color: '',
-      }
+      },
+      setting:0
     }),
 
     methods: {
       openThemeSettings() {
         this.$vuetify.goTo(0)
         this.rightDrawer = (!this.rightDrawer)
+      },
+      showSetting(){
+        this.setting++
+        if (this.setting>2){
+          this.setting=0
+          this.rightDrawer=false;
+        }
       }
     }
   }

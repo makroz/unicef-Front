@@ -1,3 +1,11 @@
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    // Indica los métodos permitidos.
+    header('Access-Control-Allow-Methods: GET, POST, DELETE');
+    // Indica los encabezados permitidos.
+    header('Access-Control-Allow-Headers: Authorization');
+    http_response_code(204);
+}
+
 npx create-nuxt-app <project-name>
 
 # https://github.com/moeddami/nuxt-material-admin
@@ -26,6 +34,7 @@ env: {
   },
 
 npm install sweetalert2
+npm install --save vue-croppa
 npm install crypto-js
 npm i -S vuedraggable
 copiar dentro de componentes la carpeta mkComponentes
@@ -45,3 +54,6 @@ $ npm run build
 
 # generate static project
 $ npm run generate
+
+
+http://localhost:8001/storage/usuarios_37.png

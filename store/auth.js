@@ -80,7 +80,7 @@ export const getters = {
     }
     if (data.data == '_ct_') {
 
-      c('datos cacheados', (url.split('?'))[0], 'Cache')
+      c('datos cacheados', (url.split('?'))[0].split('/')[0], 'Cache')
       if (state.encryptActive) {
         data.data = JSON.parse(
           localStorage.getItem('cache_' + MD5(url).toString())
@@ -160,6 +160,12 @@ export const getters = {
   }
 };
 export const mutations = {
+  toggleCache(state){
+    state.cacheActive=!state.cacheActive
+  },
+  toggleEncrypt(state){
+    state.encrypActive=!state.encrypActive
+  },
   setAcceso(state,valor){
     state.acceso=valor;
   },

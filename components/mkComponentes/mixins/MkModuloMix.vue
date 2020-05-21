@@ -6,6 +6,7 @@ import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import Swal from 'sweetalert2'
 import { c } from '@/components/mkComponentes/lib/MkUtils.js'
 
+const _storage='http://mktimework.com/storage/app/public/';
 const _lap = process.env.mkAuth.key
 
 export default {
@@ -261,9 +262,12 @@ export default {
         return false
       }
       let isError = 0
-      this.beforeSave(me)
+      me.beforeSave(me)
       if (Object.keys(me.paramsExtra).length !== 0) {
         me.item.paramsExtra = me.paramsExtra
+      }
+      if (me.myCroppa){
+        me.item.imageFile=me.myCroppa.generateDataUrl();
       }
       if (me.item.id !== null) {
         if (!this.can('edit', true)) {
@@ -394,17 +398,28 @@ export default {
       if (!this.can(accion, true)) {
         return false
       }
-      this.modal = true
+
       this.item = Object.assign({}, data)
-      this.$refs.mkForm.$refs.form.resetValidation()
+      if (this.myCroppa){
+        this.myCroppa.remove();
+        this.croppaFile=_storage+this.$options.name+'_'+this.item.id+'.png';
+        this.imgCanDel=accion=='edit';
+        this.imgDel=false;
+        //this.myCroppa.refresh();
+      }
+
+    this.$refs.mkForm.$refs.form.resetValidation()
       this.beforeOpen(accion, data)
       if (accion == 'add') {
+        this.cropaEdit=false;
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
       } else {
+        this.cropaEdit=true
         this.tituloModal = 'Editar ' + this.titModulo
       }
       this.afterOpen(accion, data)
+       this.modal = true
       this.$nextTick(this.$refs.focus.focus)
     },
     setParams(name = '', value = '') {
@@ -571,9 +586,6 @@ export default {
   mounted() {
     this.campos = this.getParams('headers') || this.campos
 
-    //  for (var key in localStorage) { //Borrar caache
-    // console.log('funciones',key)
-    // }
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
     //TODO: adicioonar a todas las tablas el creado por y modificado por igual que el borrado por
@@ -582,8 +594,9 @@ export default {
     //TODO: crear un data table propio {choser de columnas que se pueden ver o no, columnas sort} colum resizer, colkumna span o juntar columanas, frozen columnas
     //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
     //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
-    //TODO: hacer que la config de cache encrypt etc se maneje en el menu laterual derecho
-    //TODO: me falto corregir bien los nobres de los campos de headers,
+    //TODO: hacer que el auth y authtoken esten codificados, atraves de una clave de modulo/activo
+    //TODO:  eliminar en el servidor, luego ver lo de mas imagenes, convertir en un componente
+
   }
 }
 </script>
