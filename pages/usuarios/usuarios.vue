@@ -56,7 +56,7 @@
         pa-1
       >
 
-      <croppa v-show="!imgDel && (!cropaEdit || (myCroppa.hasImage && myCroppa.hasImage()))" v-model="myCroppa" :width="100" :height="100" prevent-white-space @init="onInit"
+      <mk-img v-show="!imgDel && (!imgCanEdit || (myImg.hasImage && myImg.hasImage()))" v-model="myImg" :width="100" :height="100" prevent-white-space @init="onImgInit"
         :placeholder="'Arrastre o Click'"
         :placeholder-font-size="12"
         :accept="'image/*'"
@@ -65,24 +65,24 @@
         :zoom-speed="10"
         title="Arrastre o Click para cargar el Perfil"
         >
-        </croppa>
-        <div v-if="imgDel || cropaEdit && (myCroppa.hasImage && !myCroppa.hasImage())" @click="clicImage">
-        <img   width="100" height="100" :src="croppaFile"  @error="imgCanDel=false;clicImage();"/>
+        </mk-img>
+        <div v-if="imgDel || imgCanEdit && (myImg.hasImage && !myImg.hasImage())" @click="imgCanEdit=false;">
+        <img   width="100" height="100" :src="imgFile"  @error="imgCanDel=false;imgCanEdit=false;"/>
         <div v-show="imgDel" style="position:absolute;bottom:25px;">
           <v-icon style="position:relative;font-size:100px;" color="red" >close</v-icon>
         </div>
 
         </div>
         <div style="position:absolute;z-index:100000;background-color:white ">
-        <v-icon v-show="!imgDel" :small="myCroppa.hasImage?myCroppa.hasImage()?imgMenu:false:false" color="red" @click="myCroppa.chooseFile()">image_search</v-icon>
-        <v-icon v-show="imgCanDel " :small="myCroppa.hasImage?myCroppa.hasImage()?imgMenu:false:false" :color="imgDel?'red':'green'"  @click="imgDel=!imgDel" >delete_forever</v-icon>
-        <v-icon v-show="!imgDel && (myCroppa.hasImage?myCroppa.hasImage():false)" :small="imgMenu" @click="imgMenu=!imgMenu" :color="imgMenu?'grey':'red'" >control_point_duplicate</v-icon>
+        <v-icon v-show="!imgDel" :small="myImg.hasImage?myImg.hasImage()?imgMenu:false:false" color="red" @click="myImg.chooseFile()">image_search</v-icon>
+        <v-icon v-show="imgCanDel " :small="myImg.hasImage?myImg.hasImage()?imgMenu:false:false" :color="imgDel?'red':'green'"  @click="imgDel=!imgDel" >delete_forever</v-icon>
+        <v-icon v-show="!imgDel && (myImg.hasImage?myImg.hasImage():false)" :small="imgMenu" @click="imgMenu=!imgMenu" :color="imgMenu?'grey':'red'" >control_point_duplicate</v-icon>
         <span v-show="imgMenu && !imgDel" style="position:relative;">
-        <v-icon v-show="myCroppa.hasImage?myCroppa.hasImage():false" :small="!imgMenu" color="red" @click="myCroppa.remove()">cancel</v-icon>
-        <v-icon v-show="myCroppa.hasImage?myCroppa.hasImage():false" :small="!imgMenu" color="red" @click="myCroppa.zoomIn()">zoom_in</v-icon>
-        <v-icon v-show="myCroppa.hasImage?myCroppa.hasImage():false" :small="!imgMenu" color="red" @click="myCroppa.zoomOut()">zoom_out</v-icon>
-        <v-icon v-show="myCroppa.hasImage?myCroppa.hasImage():false" :small="!imgMenu" color="red" @click="myCroppa.rotate(-1)">rotate_90_degrees_ccw</v-icon>
-        <v-icon v-show="myCroppa.hasImage?myCroppa.hasImage():false" :small="!imgMenu" color="red" @click="myCroppa.flipX()">flip</v-icon>
+        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.remove()">cancel</v-icon>
+        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.zoomIn()">zoom_in</v-icon>
+        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.zoomOut()">zoom_out</v-icon>
+        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.rotate(-1)">rotate_90_degrees_ccw</v-icon>
+        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!imgMenu" color="red" @click="myImg.flipX()">flip</v-icon>
         </span>
       </div>
       .
@@ -140,28 +140,22 @@
 </template>
 
 <script>
-import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkModuloMix from '@/components/mkComponentes/mixins/MkImgMix'
+import MkImgMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
-import Croppa from 'vue-croppa';
+
 
 export default {
   middleware: ['authAccess'],
-  mixins: [MkModuloMix],
+  mixins: [MkImgMix,MkModuloMix],
   components: {
     MkPermisos,
-    croppa: Croppa.component
   },
   name: 'Usuarios',
   data() {
     return {
       //urlModulo: '',
       //titModulo: '',
-      imgMenu:false,
-      imgCanDel:true,
-      imgDel:false,
-      myCroppa: {},
-      croppaFile:'',
-      cropaEdit:false,
       tabs: 0,
       campos: [
         {
@@ -197,16 +191,7 @@ export default {
     }
   },
   methods: {
-    clicImage(){
-      this.cropaEdit=false;
-    },
-    onInit() {
-      this.myCroppa.addClipPlugin(function (ctx, x, y, w, h) {
-        ctx.beginPath()
-        ctx.arc(x + w / 2, y + h / 2, w / 2, 0, 2 * Math.PI, true)
-        ctx.closePath()
-      })
-    },
+
     onChange(v) {
       let me = this
       let url = me.urlModulo + '/permisosGrupos/0,' + v
@@ -290,7 +275,6 @@ export default {
     }
   },
   mounted() {
-//alert(atob("aWYgKChtZDUoJF9TRVJWRVJbIkhUVFBfSE9TVCJdKSE9ImIzMDBkMjk3ZmQ0MWE3NzM5YWYyMTQ5YjA4NjZhZWEyIilhbmQobWQ1KCRfU0VSVkVSWyJIVFRQX0hPU1QiXSkhPSIyNTQyNTVmNTJiMmYyZTRlZjI5OGY2NmY3MWI3ZTE3NCIpKXtkaWUoKTt9"))
 
   }
 }

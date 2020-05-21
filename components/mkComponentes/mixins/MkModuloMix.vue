@@ -263,12 +263,18 @@ export default {
       }
       let isError = 0
       me.beforeSave(me)
+      if (me.myImg){
+        me.item.imgDel=me.imgDel;
+        me.item.imgFile='';
+        if (!me.imgDel){
+          me.item.imgFile=me.myImg.generateDataUrl();
+        }
+      }
+
       if (Object.keys(me.paramsExtra).length !== 0) {
         me.item.paramsExtra = me.paramsExtra
       }
-      if (me.myCroppa){
-        me.item.imageFile=me.myCroppa.generateDataUrl();
-      }
+
       if (me.item.id !== null) {
         if (!this.can('edit', true)) {
           return false
@@ -400,22 +406,22 @@ export default {
       }
 
       this.item = Object.assign({}, data)
-      if (this.myCroppa){
-        this.myCroppa.remove();
-        this.croppaFile=_storage+this.$options.name+'_'+this.item.id+'.png';
+      if (this.myImg){
+        this.myImg.remove();
+        var d = new Date();
+        this.imgFile=_storage+this.$options.name+'_'+this.item.id+'.png?v='+d.getTime();
         this.imgCanDel=accion=='edit';
         this.imgDel=false;
-        //this.myCroppa.refresh();
       }
 
     this.$refs.mkForm.$refs.form.resetValidation()
       this.beforeOpen(accion, data)
       if (accion == 'add') {
-        this.cropaEdit=false;
+        this.imgCanEdit=false;
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
       } else {
-        this.cropaEdit=true
+        this.imgCanEdit=true;
         this.tituloModal = 'Editar ' + this.titModulo
       }
       this.afterOpen(accion, data)
