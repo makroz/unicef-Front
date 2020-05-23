@@ -1,6 +1,6 @@
 <template>
   <div>
-    <croppa v-show="!value.imgDel && (!value.imgCanEdit || (myImg.hasImage && myImg.hasImage()))"
+    <croppa v-show="!value.imgDel && (!value.imgCanEdit || myImg.hasImage())"
         v-model="myImg"
         :width="w" :height="h"
         prevent-white-space
@@ -14,7 +14,7 @@
         title="Arrastre o Click para cargar el Perfil"
         >
         </croppa>
-        <div v-if="value.imgDel || value.imgCanEdit && (myImg.hasImage && !myImg.hasImage())" @click="value.imgCanEdit=false;">
+        <div v-if="value.imgDel || (value.imgCanEdit && !myImg.hasImage())" @click="value.imgCanEdit=false;">
         <img   :width="w" :height="h" :src="value.imgFile"  @error="value.imgCanDel=false;value.imgCanEdit=false;"/>
         <div v-show="value.imgDel" style="position:absolute;bottom:25px;">
           <v-icon style="position:relative;font-size:100px;" color="red" >close</v-icon>
@@ -22,15 +22,15 @@
 
         </div>
         <div style="position:absolute;z-index:100000;background-color:white ">
-        <v-icon v-show="!value.imgDel" :small="myImg.hasImage?myImg.hasImage()?value.imgMenu:false:false" color="red" @click="myImg.chooseFile()">image_search</v-icon>
-        <v-icon v-show="value.imgCanDel " :small="myImg.hasImage?myImg.hasImage()?value.imgMenu:false:false" :color="value.imgDel?'red':'green'"  @click="value.imgDel=!value.imgDel" >delete_forever</v-icon>
-        <v-icon v-show="!value.imgDel && (myImg.hasImage?myImg.hasImage():false)" :small="value.imgMenu" @click="value.imgMenu=!value.imgMenu" :color="value.imgMenu?'grey':'red'" >control_point_duplicate</v-icon>
+        <v-icon v-show="!value.imgDel" :small="myImg.hasImage()?value.imgMenu:false" color="red" @click="myImg.chooseFile()">image_search</v-icon>
+        <v-icon v-show="value.imgCanDel " :small="myImg.hasImage()?value.imgMenu:false" :color="value.imgDel?'red':'green'"  @click="value.imgDel=!value.imgDel" >delete_forever</v-icon>
+        <v-icon v-show="!value.imgDel && myImg.hasImage()" :small="value.imgMenu" @click="value.imgMenu=!value.imgMenu" :color="value.imgMenu?'grey':'red'" >control_point_duplicate</v-icon>
         <span v-show="value.imgMenu && !value.imgDel" style="position:relative;">
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!value.imgMenu" color="red" @click="myImg.remove()">cancel</v-icon>
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!value.imgMenu" color="red" @click="myImg.zoomIn()">zoom_in</v-icon>
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!value.imgMenu" color="red" @click="myImg.zoomOut()">zoom_out</v-icon>
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!value.imgMenu" color="red" @click="myImg.rotate(-1)">rotate_90_degrees_ccw</v-icon>
-        <v-icon v-show="myImg.hasImage?myImg.hasImage():false" :small="!value.imgMenu" color="red" @click="myImg.flipX()">flip</v-icon>
+        <v-icon v-show="myImg.hasImage()" :small="!value.imgMenu" color="red" @click="myImg.remove()">cancel</v-icon>
+        <v-icon v-show="myImg.hasImage()" :small="!value.imgMenu" color="red" @click="myImg.zoomIn()">zoom_in</v-icon>
+        <v-icon v-show="myImg.hasImage()" :small="!value.imgMenu" color="red" @click="myImg.zoomOut()">zoom_out</v-icon>
+        <v-icon v-show="myImg.hasImage()" :small="!value.imgMenu" color="red" @click="myImg.rotate(-1)">rotate_90_degrees_ccw</v-icon>
+        <v-icon v-show="myImg.hasImage()" :small="!value.imgMenu" color="red" @click="myImg.flipX()">flip</v-icon>
         </span>
       </div>
                  .
@@ -59,7 +59,7 @@ export default {
 
   data() {
     return {
-      myImg:{},
+      myImg:{hasImage:()=>false},
       }
     },
   watch: {

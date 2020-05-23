@@ -605,6 +605,7 @@ export default {
     //TODO: boton de GRABAR y SEGUIR
     //TODO: check de no resetear cuando grabae y siga
     //TODO: olvide contraseña
+    //TODO: hacer un dirty soft para el actualizar , revisr antes de enviar si todos los item son iguales no envia el update, o se tiene imagen solo enviar la imagen o borrado
   }
 }
 </script>
