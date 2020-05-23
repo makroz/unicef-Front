@@ -14,12 +14,12 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="$emit('closeDialog')">Close</v-btn>
+          <v-btn color="blue darken-1" flat @click.stop="$emit('closeDialog')">Close</v-btn>
           <v-btn
             :disabled="!formValid"
             color="green darken-1"
             flat
-            @click.native="$emit('grabarItem')"
+            @click.stop="$emit('grabarItem')"
             v-text="accion > 0 ? 'Actualizar' : 'Grabar'"
           >Actualizar</v-btn>
         </v-card-actions>

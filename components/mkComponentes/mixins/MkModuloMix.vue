@@ -263,7 +263,7 @@ export default {
       }
       let isError = 0
       me.beforeSave(me)
-      if (me.mkImgData.myImg){
+      if (me.MkImgMix){
         me.item.imgDel=me.mkImgData.imgDel;
         me.item.imgFile='';
         if (!me.imgDel){
@@ -406,20 +406,14 @@ export default {
       }
 
       this.item = Object.assign({}, data)
-      if (this.mkImgData.myImg){
-        if (this.mkImgData.myImg.remove){
-          this.mkImgData.myImg.remove();
-        }
+      if (this.MkImgMix){
+        this.mkImgData.remove=true;
         var d = new Date();
         this.mkImgData.imgFile=_storage+this.$options.name+'_'+this.item.id+'.png?v='+d.getTime();
+        this.mkImgData.file='';
         this.mkImgData.imgCanDel=accion=='edit';
+        this.mkImgData.imgCanEdit=accion=='edit';
         this.mkImgData.imgDel=false;
-        if (accion == 'add') {
-          this.mkImgData.imgCanEdit=false;
-        }else{
-          this.mkImgData.imgCanEdit=true;
-        }
-
       }
 
     this.$refs.mkForm.$refs.form.resetValidation()
@@ -608,7 +602,9 @@ export default {
     //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
     //TODO: hacer que el auth y authtoken esten codificados, atraves de una clave de modulo/activo
     //TODO:  eliminar en el servidor, luego ver lo de mas imagenes, convertir en un componente
-
+    //TODO: boton de GRABAR y SEGUIR
+    //TODO: check de no resetear cuando grabae y siga
+    //TODO: olvide contraseña
   }
 }
 </script>

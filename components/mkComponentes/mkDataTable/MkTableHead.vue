@@ -1,6 +1,6 @@
 <template>
   <v-toolbar card color="white">
-    <v-btn round color="primary" @click="$emit('openDialog','add')" v-if="can('add')==true">
+    <v-btn round color="primary" @click.stop="$emit('openDialog','add')" v-if="can('add')==true">
       <v-icon>add</v-icon>Adicionar
     </v-btn>
     <v-btn

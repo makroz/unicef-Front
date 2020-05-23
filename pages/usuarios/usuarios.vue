@@ -33,14 +33,15 @@
 
         <v-tabs-items grow v-model="tabs">
           <v-tab-item>
-
-
             <v-text-field
               label="Nombre"
+              name='name'
+              id='name'
               v-model="item.name"
               :rules="[rules.required]"
               validate-on-blur
               ref="focus"
+              @focus="focus"
             ></v-text-field>
 
             <v-text-field
@@ -50,38 +51,31 @@
               ref="email"
               validate-on-blur
             ></v-text-field>
-<v-layout row>
- <v-flex
-        shrink
-        pa-1
-      >
-      <mk-img v-model="mkImgData" :w="100" :h="100"></mk-img>
- </v-flex>
- <v-flex
-        grow
-        pa-1
-      >
-            <v-text-field
-              v-if="!item.id>0"
-              :append-icon="showPass ? 'visibility' : 'visibility_off'"
-              :rules="[rules.required, rules.min(8)]"
-              :type="showPass ? 'text' : 'password'"
-              v-model="item.pass"
-              label="Password"
-              validate-on-blur
-              @click:append="showPass = !showPass"
-            ></v-text-field>
-            <v-select
-              v-model="item.roles_id"
-              :items="lRoles"
-              :rules="[rules.required]"
-              item-text="name"
-              item-value="id"
-              label="Rol"
-            ></v-select>
- </v-flex>
-</v-layout>
-
+            <v-layout row>
+              <v-flex shrink pa-1>
+                <mk-img v-model="mkImgData" :w="100" :h="100"></mk-img>
+              </v-flex>
+              <v-flex grow pa-1>
+                <v-text-field
+                  v-if="!item.id>0"
+                  :append-icon="showPass ? 'visibility' : 'visibility_off'"
+                  :rules="[rules.required, rules.min(8)]"
+                  :type="showPass ? 'text' : 'password'"
+                  v-model="item.pass"
+                  label="Password"
+                  validate-on-blur
+                  @click:append="showPass = !showPass"
+                ></v-text-field>
+                <v-select
+                  v-model="item.roles_id"
+                  :items="lRoles"
+                  :rules="[rules.required]"
+                  item-text="name"
+                  item-value="id"
+                  label="Rol"
+                ></v-select>
+              </v-flex>
+            </v-layout>
           </v-tab-item>
           <v-tab-item>
             <v-select
@@ -110,16 +104,15 @@
 </template>
 
 <script>
-import MkModuloMix from '@/components/mkComponentes/mixins/MkImgMix'
-import MkImgMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkImgMix from '@/components/mkComponentes/mixins/MkImgMix'
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
-
 
 export default {
   middleware: ['authAccess'],
-  mixins: [MkImgMix,MkModuloMix],
+  mixins: [MkImgMix, MkModuloMix],
   components: {
-    MkPermisos,
+    MkPermisos
   },
   name: 'Usuarios',
   data() {
@@ -161,7 +154,11 @@ export default {
     }
   },
   methods: {
-
+    focus(v){
+      v.cancelBubble=true;
+      console.log(v);
+      //alert('focus')
+    },
     onChange(v) {
       let me = this
       let url = me.urlModulo + '/permisosGrupos/0,' + v
@@ -244,9 +241,7 @@ export default {
       lGrupos: lGrupos
     }
   },
-  mounted() {
-
-  }
+  mounted() {}
 }
 </script>
 <style lang="css">

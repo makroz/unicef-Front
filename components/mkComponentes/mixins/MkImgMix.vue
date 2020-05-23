@@ -5,6 +5,7 @@ export default {
   components:{MkImg},
   data() {
     return {
+      MkImgMix:true,
       mkImgData:{
       imgMenu:false,
       imgCanDel:true,
@@ -12,6 +13,8 @@ export default {
       myImg: {},
       imgFile:'',
       imgCanEdit:false,
+      remove:false,
+      file:'',
       }
     }
   },
