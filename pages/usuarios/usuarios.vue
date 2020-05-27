@@ -41,7 +41,6 @@
               :rules="[rules.required]"
               validate-on-blur
               ref="focus"
-              @focus="focus"
             ></v-text-field>
 
             <v-text-field
@@ -154,11 +153,6 @@ export default {
     }
   },
   methods: {
-    focus(v){
-      v.cancelBubble=true;
-      console.log(v);
-      //alert('focus')
-    },
     onChange(v) {
       let me = this
       let url = me.urlModulo + '/permisosGrupos/0,' + v
@@ -183,6 +177,8 @@ export default {
       if (me.item.id > 0) {
         delete me.item.pass
       }
+
+      if (JSON.stringify(me.dirty.permisos)!=JSON.stringify(me.permisos)){
       let permiso = []
       for (const obj in me.permisos) {
         if (me.permisos[obj].valor > 0) {
@@ -192,8 +188,16 @@ export default {
           })
         }
       }
-
       me.paramsExtra.permisos = permiso
+      }else{
+        delete me.paramsExtra.permisos;
+      }
+
+      if (JSON.stringify(me.dirty.grupos)==JSON.stringify(me.paramsExtra.grupos)){
+        delete me.paramsExtra.grupos;
+      }
+
+
     },
     beforeOpen(accion, data = {}) {
       let me = this
@@ -204,6 +208,7 @@ export default {
       me.paramsExtra.grupos = []
       if (me.item.grupos) {
         me.paramsExtra.grupos = me.item.grupos
+        me.dirty.grupos=me.paramsExtra.grupos
       }
 
       let url = me.urlModulo + '/permisos/' + me.item.id
@@ -217,6 +222,8 @@ export default {
         .then(function(response) {
           me.permisos = me.getDataCache(response.data, url2, false)
           me.permisoGrupos = me.getDataCache(response.data.msg, url2, false, 2)
+          me.dirty.permisos=Object.assign(me.permisos);
+          //me.dirty.permisoGrupos=Object.assign(me.permisoGrupos);
         })
         .catch(function(error) {
           console.log(error)

@@ -90,6 +90,7 @@ export default {
       this.permisos = Object.assign([], newPermisos)
     },
     beforeSave(me) {
+      if (JSON.stringify(me.dirty.permisos)!=JSON.stringify(me.permisos)){
       let permiso = []
       for (const obj in me.permisos) {
         permiso[obj] = {
@@ -98,6 +99,10 @@ export default {
         }
       }
       me.paramsExtra.permisos = permiso
+      }else{
+        delete me.paramsExtra.permisos;
+      }
+
     },
     beforeOpen(accion, data = {}) {
       let me = this
@@ -107,6 +112,7 @@ export default {
         .post(url + this.getCt(url), [])
         .then(function(response) {
           me.permisos = me.getDataCache(response.data, url)
+          me.dirty.permisos=Object.assign(me.permisos);
         })
         .catch(function(error) {
           console.log(error)

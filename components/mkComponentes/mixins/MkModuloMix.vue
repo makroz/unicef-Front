@@ -52,6 +52,9 @@ export default {
         id: 0,
         name: ''
       },
+      dirty:{
+        item:{}
+      },
 
       oldRecycled: false,
       cacheCan: {
@@ -257,17 +260,24 @@ export default {
     beforeSave(me) {},
     afterSave(me, isError = 0) {},
     grabarItem() {
+
       let me = this
       if (!me.$refs.mkForm.$refs.form.validate()) {
         return false
       }
       let isError = 0
       me.beforeSave(me)
+
       if (me.MkImgMix){
-        me.item.imgDel=me.mkImgData.imgDel;
-        me.item.imgFile='';
-        if (!me.imgDel){
+        // // me.item.imgDel=me.mkImgData.imgDel;
+        // me.item.imgFile='';
+        if (!me.mkImgData.imgDel){
           me.item.imgFile=me.mkImgData.myImg.generateDataUrl();
+          if (me.item.imgFile==''){
+            delete me.item.imgFile;
+          }
+        }else{
+          me.item.imgDel=me.mkImgData.imgDel;
         }
       }
 
@@ -281,8 +291,32 @@ export default {
         }
         me.dataTable.loading = true
         let url = me.urlModulo + '/' + me.item.id
+
+        // let itemData=JSON.parse(JSON.stringify(me.item));
+        // for (const el in me.dirty.item) {
+        //   if (JSON.stringify(me.dirty.item[el])==JSON.stringify(itemData[el])){
+        //       delete itemData[el]
+        //   }
+        //  }
+
+        let itemData={};
+         for (const el in me.dirty.item) {
+          if (JSON.stringify(me.dirty.item[el])!=JSON.stringify(me.item[el])){
+              if (me.item[el]!==undefined) {
+              itemData[el]=me.item[el];
+              //console.log('itemdata.'+el+':',itemData[el])
+              }
+
+          }
+        }
+
+        if (Object.keys(itemData).length === 0) {
+          me.closeDialog();
+          return false;
+        }
+        console.log('itemdata:',itemData)
         me.$axios
-          .put(url + this.getCt(url), me.item)
+          .put(url + this.getCt(url),itemData)
           .then(function(response) {
             if (me.isOk(response.data)) {
               me.fillTable(response.data.data, url)
@@ -397,6 +431,7 @@ export default {
     beforeOpen(accion, data = {}) {},
     afterOpen(accion, data = {}) {},
     closeDialog() {
+      this.dataTable.loading = false
       this.tituloModal = ''
       this.modal = false
     },
@@ -406,7 +441,7 @@ export default {
       }
 
       this.item = Object.assign({}, data)
-      if (this.MkImgMix){
+            if (this.MkImgMix){
         this.mkImgData.remove=true;
         var d = new Date();
         this.mkImgData.imgFile=_storage+this.$options.name+'_'+this.item.id+'.png?v='+d.getTime();
@@ -422,6 +457,7 @@ export default {
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
       } else {
+        this.dirty.item = Object.assign({}, data)
         this.tituloModal = 'Editar ' + this.titModulo
       }
       this.afterOpen(accion, data)
@@ -601,11 +637,11 @@ export default {
     //TODO: revisar si aumentando un cockie con mitad dekl token mejora la seguridad
     //TODO: ??? pnesar como hacer el loaddata de listas para n tablas en una sola peticion
     //TODO: hacer que el auth y authtoken esten codificados, atraves de una clave de modulo/activo
-    //TODO:  eliminar en el servidor, luego ver lo de mas imagenes, convertir en un componente
     //TODO: boton de GRABAR y SEGUIR
     //TODO: check de no resetear cuando grabae y siga
     //TODO: olvide contraseña
-    //TODO: hacer un dirty soft para el actualizar , revisr antes de enviar si todos los item son iguales no envia el update, o se tiene imagen solo enviar la imagen o borrado
+    //TODO: hacer que las imagenes se puedan guardar en bd si existen o no, y haga el juego de la cantidad  para evitar que salga que la imagen no existe en el front
+    //TODO: hacer que sea opcionar prametrizado el que el update solo grabe los que fueron dirty
   }
 }
 </script>
