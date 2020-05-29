@@ -14,6 +14,7 @@
       <v-data-table
         :headers="campos"
         :items="lista.items"
+        :headers-length="campos.length+3"
         :class="[loading?'loading':'','elevation-1']"
         item-key="id"
         select-all
@@ -55,7 +56,7 @@
             <th  v-if="(can('edit') || can('del'))"
                 key="__act__"
                 :class="['column', 'text-xs-center']"
-                :style="'width:165px'"
+                :style="'width:175px'"
              >
                 Acciones</th>
           </tr>

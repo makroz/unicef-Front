@@ -7,6 +7,9 @@ module.exports = {
   mode: 'spa',
 
   env: {
+    mkConfig:{
+      dirty: true,
+    },
       mkAuth: {
       key:'asasasa'
     }

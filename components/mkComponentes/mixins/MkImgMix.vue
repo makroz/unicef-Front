@@ -14,7 +14,7 @@ export default {
       imgFile:'',
       imgCanEdit:false,
       remove:false,
-      file:'',
+      refresh:false,
       }
     }
   },

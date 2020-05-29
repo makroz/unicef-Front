@@ -64,14 +64,18 @@ export default {
     },
   watch: {
       'value.remove':function(val){
-        //alert(3);
           this.value.myImg=this.myImg;
           if (val==true){
             this.myImg.remove()
             this.value.remove=false
 
           }
-      }
+      },
+      // 'value.refresh':function(val){
+
+      //     this.value.myImg=this.myImg;
+      //     this.value.refresh=false;
+      // }
     },
     mounted() {
     },

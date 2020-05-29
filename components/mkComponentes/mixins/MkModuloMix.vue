@@ -6,8 +6,9 @@ import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import Swal from 'sweetalert2'
 import { c } from '@/components/mkComponentes/lib/MkUtils.js'
 
-const _storage='http://mktimework.com/storage/app/public/';
+const _storage = 'http://mktimework.com/storage/app/public/'
 const _lap = process.env.mkAuth.key
+const _dirty = process.env.mkConfig.dirty
 
 export default {
   name: 'MkModuloMix',
@@ -52,8 +53,8 @@ export default {
         id: 0,
         name: ''
       },
-      dirty:{
-        item:{}
+      dirty: {
+        item: {}
       },
 
       oldRecycled: false,
@@ -149,7 +150,8 @@ export default {
       }
 
       let sortBy = d.sortBy || me.dataTable.paginator.options.sortBy || ''
-      let order = d.descending || me.dataTable.paginator.options.descending || false
+      let order =
+        d.descending || me.dataTable.paginator.options.descending || false
 
       if (bus.length > 0) {
         buscar = '&buscar=' + JSON.stringify(bus)
@@ -259,8 +261,7 @@ export default {
     },
     beforeSave(me) {},
     afterSave(me, isError = 0) {},
-    grabarItem() {
-
+    async grabarItem() {
       let me = this
       if (!me.$refs.mkForm.$refs.form.validate()) {
         return false
@@ -268,16 +269,23 @@ export default {
       let isError = 0
       me.beforeSave(me)
 
-      if (me.MkImgMix){
+      if (me.MkImgMix) {
         // // me.item.imgDel=me.mkImgData.imgDel;
         // me.item.imgFile='';
-        if (!me.mkImgData.imgDel){
-          me.item.imgFile=me.mkImgData.myImg.generateDataUrl();
-          if (me.item.imgFile==''){
-            delete me.item.imgFile;
+        if (!me.mkImgData.imgDel) {
+          if (me.mkImgData.myImg.hasImage()){
+            me.mkImgData.refresh=true
+            me.item.imgFile = this.mkImgData.myImg.generateDataUrl('image/png',0.7);
+    //        let blob = await this.mkImgData.myImg.promisedBlob();
+  //          me.item.imgFile = blob;
+//            alert('size: ' +me.item.imgFile.size)
+
+
+            //alert('1',me.item.imgFile.size);
           }
-        }else{
-          me.item.imgDel=me.mkImgData.imgDel;
+
+        } else {
+          me.item.imgDel = me.mkImgData.imgDel
         }
       }
 
@@ -292,31 +300,30 @@ export default {
         me.dataTable.loading = true
         let url = me.urlModulo + '/' + me.item.id
 
-        // let itemData=JSON.parse(JSON.stringify(me.item));
-        // for (const el in me.dirty.item) {
-        //   if (JSON.stringify(me.dirty.item[el])==JSON.stringify(itemData[el])){
-        //       delete itemData[el]
-        //   }
-        //  }
+        let itemData = {}
 
-        let itemData={};
-         for (const el in me.dirty.item) {
-          if (JSON.stringify(me.dirty.item[el])!=JSON.stringify(me.item[el])){
-              if (me.item[el]!==undefined) {
-              itemData[el]=me.item[el];
-              //console.log('itemdata.'+el+':',itemData[el])
+        if (_dirty) {
+          //alert('dirty',me.item.imgFile)
+          for (const el in me.item) {
+            if (
+              JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
+            ) {
+              if (me.item[el] !== undefined) {
+                itemData[el] = me.item[el]
               }
-
+            }
           }
+          if (Object.keys(itemData).length === 0) {
+           // me.closeDialog()
+           alert('esta vacio')
+            return false
+          }
+        } else {
+          itemData=me.item;
         }
 
-        if (Object.keys(itemData).length === 0) {
-          me.closeDialog();
-          return false;
-        }
-        console.log('itemdata:',itemData)
         me.$axios
-          .put(url + this.getCt(url),itemData)
+          .put(url + this.getCt(url), itemData)
           .then(function(response) {
             if (me.isOk(response.data)) {
               me.fillTable(response.data.data, url)
@@ -441,27 +448,37 @@ export default {
       }
 
       this.item = Object.assign({}, data)
-            if (this.MkImgMix){
-        this.mkImgData.remove=true;
-        var d = new Date();
-        this.mkImgData.imgFile=_storage+this.$options.name+'_'+this.item.id+'.png?v='+d.getTime();
-        this.mkImgData.file='';
-        this.mkImgData.imgCanDel=accion=='edit';
-        this.mkImgData.imgCanEdit=accion=='edit';
-        this.mkImgData.imgDel=false;
+      //mkImg
+      if (this.MkImgMix) {
+        this.mkImgData.remove = true
+        var d = new Date()
+        this.mkImgData.imgFile =
+          _storage +
+          this.$options.name +
+          '_' +
+          this.item.id +
+          '.png?v=' +
+          d.getTime()
+        this.mkImgData.file = ''
+        this.mkImgData.imgCanDel = accion == 'edit'
+        this.mkImgData.imgCanEdit = accion == 'edit'
+        this.mkImgData.imgDel = false
       }
+      //mkImg
 
-    this.$refs.mkForm.$refs.form.resetValidation()
+      this.$refs.mkForm.$refs.form.resetValidation()
       this.beforeOpen(accion, data)
       if (accion == 'add') {
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
       } else {
-        this.dirty.item = Object.assign({}, data)
+        if (_dirty) {
+          this.dirty.item = Object.assign({}, data)
+        }
         this.tituloModal = 'Editar ' + this.titModulo
       }
       this.afterOpen(accion, data)
-       this.modal = true
+      this.modal = true
       this.$nextTick(this.$refs.focus.focus)
     },
     setParams(name = '', value = '') {
@@ -641,7 +658,6 @@ export default {
     //TODO: check de no resetear cuando grabae y siga
     //TODO: olvide contraseña
     //TODO: hacer que las imagenes se puedan guardar en bd si existen o no, y haga el juego de la cantidad  para evitar que salga que la imagen no existe en el front
-    //TODO: hacer que sea opcionar prametrizado el que el update solo grabe los que fueron dirty
   }
 }
 </script>
