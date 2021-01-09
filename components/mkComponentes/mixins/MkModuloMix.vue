@@ -658,6 +658,9 @@ export default {
     //TODO: check de no resetear cuando grabae y siga
     //TODO: olvide contraseña
     //TODO: hacer que las imagenes se puedan guardar en bd si existen o no, y haga el juego de la cantidad  para evitar que salga que la imagen no existe en el front
+    //TODO: subir imagenes con BLOB
+    // TODO: hacer para las tablas anexas el modificar y borrar, sea solo las que aplican, para asi podr hacer rastreo
+    //TODO: encriptar los nom res de los archivos imagenes subidos para no mostrar el id
   }
 }
 </script>

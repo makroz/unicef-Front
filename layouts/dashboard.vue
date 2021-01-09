@@ -7,7 +7,7 @@
         <app-toolbar class="app--toolbar"></app-toolbar>
         <v-content>
           <!-- Page Header -->
-          <page-header></page-header>
+          <!-- <page-header></page-header> -->
           <div class="page-wrapper">
             <nuxt/>
           </div>

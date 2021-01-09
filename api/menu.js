@@ -61,6 +61,25 @@ const Menu = [
       },
     ]
   },
+  {
+    title: "Modulo Horarios",
+    group: "horarios",
+    component: "horarios",
+    icon: "face",
+    items: [
+      {
+        name: "paramsHorarios",
+        title: "Parametros Horarios",
+        href: "/horarios/paramsHorarios"
+      },
+      {
+        name: "horarios",
+        title: "Horarios",
+        badge: "new",
+        href: "/horarios/horarios"
+      },
+    ]
+  },
   { divider: true },
   { header: "Extras" },
   {
