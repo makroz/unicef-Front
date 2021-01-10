@@ -1,5 +1,5 @@
 <script>
-import MkImg from '@/components/mkComponentes//mkImg/MkImg';
+import MkImg from '@/components/mkComponentes/mkImg/MkImg';
 export default {
   name: 'MkImgMix',
   components:{MkImg},
@@ -7,14 +7,14 @@ export default {
     return {
       MkImgMix:true,
       mkImgData:{
-      imgMenu:false,
-      imgCanDel:true,
-      imgDel:false,
-      myImg: {},
-      imgFile:'',
-      imgCanEdit:false,
-      remove:false,
-      refresh:false,
+        imgMenu:false,
+        imgCanDel:true,
+        imgDel:false,
+        myImg: {},
+        imgFile:'',
+        imgCanEdit:false,
+        remove:false,
+        refresh:false,
       }
     }
   },

@@ -6,8 +6,8 @@ import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import Swal from 'sweetalert2'
 import { c } from '@/components/mkComponentes/lib/MkUtils.js'
 
-const _storage = 'http://mktimework.com/storage/app/public/'
-const _lap = process.env.mkAuth.key
+const _storage = process.env.mkConfig.storageUrl
+const _lap = process.env.mkConfig.authKey
 const _dirty = process.env.mkConfig.dirty
 
 export default {
@@ -303,7 +303,7 @@ export default {
         let itemData = {}
 
         if (_dirty) {
-          //alert('dirty',me.item.imgFile)
+          console.log('permisos',JSON.stringify(me.dirty.permisos),JSON.stringify(me.permisos))
           for (const el in me.item) {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
@@ -314,8 +314,8 @@ export default {
             }
           }
           if (Object.keys(itemData).length === 0) {
-           // me.closeDialog()
-           alert('esta vacio')
+           me.closeDialog()
+           //alert('esta vacio',me.item)
             return false
           }
         } else {
@@ -639,12 +639,17 @@ export default {
     }
   },
   created: function() {
+     // this.$axios.setHeader('Content-Type', 'application/x-www-form-urlencoded', [
+  //'post','get','put'
+//])
     this.$store.dispatch('auth/getUser')
     this.created = 2
+
+    console.log(process.env)
   },
   mounted() {
-    this.campos = this.getParams('headers') || this.campos
-
+      this.campos = this.getParams('headers') || this.campos
+console.log(process.env)
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
     //TODO: adicioonar a todas las tablas el creado por y modificado por igual que el borrado por
@@ -659,8 +664,11 @@ export default {
     //TODO: olvide contraseña
     //TODO: hacer que las imagenes se puedan guardar en bd si existen o no, y haga el juego de la cantidad  para evitar que salga que la imagen no existe en el front
     //TODO: subir imagenes con BLOB
-    // TODO: hacer para las tablas anexas el modificar y borrar, sea solo las que aplican, para asi podr hacer rastreo
+    //TODO: hacer para las tablas anexas el modificar y borrar, sea solo las que aplican, para asi podr hacer rastreo
     //TODO: encriptar los nom res de los archivos imagenes subidos para no mostrar el id
+    //TODO: encriptar los id de los request
+    //TODO: ver si se puede hacer que el back envie un flag si existe imagen para que el front nointente cargarlo
+    //TODO: en permisos ver que el scrool siempre aparezca
   }
 }
 </script>

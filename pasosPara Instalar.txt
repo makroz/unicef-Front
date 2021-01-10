@@ -2,7 +2,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     // Indica los métodos permitidos.
     header('Access-Control-Allow-Methods: GET, POST, DELETE');
     // Indica los encabezados permitidos.
-    header('Access-Control-Allow-Headers: Authorization');
+    header('Access-Control-Allow-Headers: ');
     http_response_code(204);
 }
 

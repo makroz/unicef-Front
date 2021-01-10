@@ -8,11 +8,12 @@ module.exports = {
 
     env: {
         mkConfig: {
+            authKey: 'asasasa',
             dirty: true,
+            storageUrl: 'http://unicef.test/storage/'
         },
-        mkAuth: {
-            key: 'asasasa'
-        }
+
+
     },
 
     /*
@@ -71,8 +72,19 @@ module.exports = {
      */
     modules: ["@nuxtjs/axios"],
     axios: {
-        // proxyHeaders: false
-        baseURL: "http://unicef.test/api"
+        // proxyHeaders: false,
+        baseURL: "http://unicef.test/api",
+        // headers: {
+        //     'Accept': 'application/x-www-form-urlencoded',
+        //     'Content-Type': 'application/x-www-form-urlencoded',
+        //     common: {
+        //         'Accept': 'application/x-www-form-urlencoded',
+        //         'Content-Type': 'application/x-www-form-urlencoded'
+        //     }
+        // }
+        // headers: {
+        //     'Content-Type': 'application/x-www-form-urlencoded'
+        // }
     },
 
     /*
