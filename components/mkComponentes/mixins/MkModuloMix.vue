@@ -12,6 +12,7 @@ const _dirty = process.env.mkConfig.dirty
 
 export default {
   name: 'MkModuloMix',
+  layout: "dashboard",
   components: {
     MkHead,
     MkForm,
@@ -595,6 +596,9 @@ export default {
         return e
       })
     },
+    str(obj){
+      return JSON.stringify(obj)+""
+    },
     setParentGroup(hijo, padre, campoUnion, name = 'name', id = 'id') {
       hijo = hijo.sort((a, b) =>
         a[campoUnion] < b[campoUnion]
@@ -645,11 +649,10 @@ export default {
     this.$store.dispatch('auth/getUser')
     this.created = 2
 
-    console.log(process.env)
   },
   mounted() {
       this.campos = this.getParams('headers') || this.campos
-console.log(process.env)
+
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
     //TODO: adicioonar a todas las tablas el creado por y modificado por igual que el borrado por
@@ -669,6 +672,7 @@ console.log(process.env)
     //TODO: encriptar los id de los request
     //TODO: ver si se puede hacer que el back envie un flag si existe imagen para que el front nointente cargarlo
     //TODO: en permisos ver que el scrool siempre aparezca
+    //TODO: hacer que el enter en elformulario sea un grabar o cancelar depende de lo que se quiera
   }
 }
 </script>

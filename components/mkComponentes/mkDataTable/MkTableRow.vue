@@ -8,7 +8,9 @@
         v-if="header.headers && !header.hidden"
         :class="[header.align?'text-xs-'+header.align:'text-xs-left']"
         :key="header.value"
-      >{{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }}</td>
+      >
+      {{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }}
+      </td>
     </template>
     <td class="text-xs-center">
       <mk-status :status="datos.item.status" :id="datos.item.id" @onStatus="setStatus"></mk-status>
@@ -84,6 +86,7 @@ export default {
     },
     colLista(lista, v, datos) {
       let valor = null
+      //lista.lista= JSON.parse(lista.lista) 
       try {
         //console.log('llego1:', lista.value, v, datos)
 
@@ -101,7 +104,7 @@ export default {
       } catch (error) {
         //console.error(error);
       }
-
+      //lista.lista= JSON.stringify(lista.lista) 
       return valor ? valor.name : ''
     }
   },

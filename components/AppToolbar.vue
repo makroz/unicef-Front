@@ -6,7 +6,7 @@
     app
   >
     <v-toolbar-title class="ml-0 pl-3">
-      <v-toolbar-side-icon @click.stop="toggleDrawer()"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="toggleDrawer()"></v-toolbar-side-icon>Sistema de Saneamiento
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn icon @click="handleFullScreen()">
