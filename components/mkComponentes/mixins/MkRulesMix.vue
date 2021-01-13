@@ -11,7 +11,7 @@ export default {
       rules: {
         required: value => !!value || "Dato es Requerido",
         noSpaces: v => (v || "").indexOf(" ") < 0 || "No se admite espacios",
-        num: value => !isNaN(value) || "Debe ser un Numerico",
+        num: value => !value || !isNaN(value) || "Debe ser un Numerico",
         min(minNum) {return v =>{
              return (v || "").length > minNum || "Minimo " + minNum + " caracteres"
             };
