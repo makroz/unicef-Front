@@ -41,7 +41,7 @@
             label="Epsa"
             id="epsa"
             v-model="item.epsa"
-            :rules="[rules.required]"
+            :rules="[rules.required,rules.num]"
             validate-on-blur
           ></v-text-field>
 
@@ -94,6 +94,27 @@
             validate-on-blur
           ></v-text-field>
         </v-layout>
+        <div id="map-wrap" style="height: 200px; width: 100%">
+          <client-only>
+            <l-map
+              :zoom="zoom"
+              :center="center"
+              style="height: 200px; width: 100%"
+              ref="mymap"
+            >
+              <l-tile-layer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+                :useCors="false"
+              ></l-tile-layer>
+              <l-marker
+                :lat-lng="marker"
+                :draggable="true"
+                @update:latLng="updateMaker"
+              ></l-marker>
+            </l-map>
+          </client-only>
+        </div>
       </mk-form>
     </v-container>
   </div>
@@ -111,7 +132,6 @@ export default {
     return {
       //urlModulo: '',
       //titModulo: '',
-      tabs: 0,
       campos: [
         {
           text: 'Id',
@@ -123,43 +143,118 @@ export default {
           search: true,
         },
         {
-          text: 'Nombre',
+          text: 'Beneficierio',
           value: 'nom',
-          width: '250px',
           headers: true,
           type: 'text',
           search: true,
         },
         {
-          text: 'Email',
-          value: 'email',
-          align: 'left',
+          text: 'cod.epsa',
+          value: 'epsa',
+          width: '100px',
+          align: 'right',
           headers: true,
-          type: 'text',
+          type: 'num',
           search: true,
         },
+        {
+          text: 'autoriza',
+          value: 'autoriza',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'check',
+          options:[1,'Si','No'],
+          search: true,
+        },
+        {
+          text: 'proteccion',
+          value: 'protec',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'check',
+          options:[1,'Si','No'],
+          search: true,
+        },
+        {
+          text: 'Distrito',
+          value: 'distritos_id',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lDistritos,
+        },
+        {
+          text: 'Entidad',
+          value: 'entidades_id',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lEntidades,
+        },
       ],
+      center: [-17.783373986957255, -63.18209478792436],
+      marker: [-17.783373986957255, -63.18209478792436],
+      zoom: 13,
+      lEntidades: [],
+      lDistritos: [],
     }
   },
   methods: {
-    beforeSave(me) {},
+    updateMaker(e) {
+      //console.log(e)
+      this.item.lat = e.lat
+      this.item.long = e.lng
+    },
+    initMap() {
+      if (this.item.lat) {
+        this.center = [this.item.lat, this.item.long]
+        this.marker = [this.item.lat, this.item.long]
+        this.zoom = 13
+      }
+      this.$refs.mymap.mapObject.invalidateSize().setView(this.center, 13)
+    },
+    beforeOpen() {
+      setTimeout(() => {
+        this.initMap()
+      }, 100)
+    },
   },
 
-  async asyncData({ store }) {
-    let lEntidades = await store.dispatch('auth/loadData', {
+  // async asyncData({ store }) {
+  //   let lEntidades = await store.dispatch('auth/loadData', {
+  //     url: 'Entidades',
+  //     campos: 'id,name',
+  //   })
+  //   let lDistritos = await store.dispatch('auth/loadData', {
+  //     url: 'Distritos',
+  //     campos: 'id,name',
+  //   })
+  //   return {
+  //     lEntidades: lEntidades,
+  //     lDistritos: lDistritos,
+  //   }
+  // },
+   async mounted() {
+    let me = this
+    me.lEntidades  = await me.$store.dispatch('auth/loadData', {
       url: 'Entidades',
-      campos: 'id,name',
+      campos: 'id,name'
     })
-    let lDistritos = await store.dispatch('auth/loadData', {
+    me.lDistritos  = await me.$store.dispatch('auth/loadData', {
       url: 'Distritos',
-      campos: 'id,name',
+      campos: 'id,name'
     })
-    return {
-      lEntidades: lEntidades,
-      lDistritos: lDistritos,
-    }
-  },
-  mounted() {},
+
+     me.updateListCol('entidades_id', me.lEntidades)
+     me.updateListCol('distritos_id', me.lDistritos)
+   }
 }
 </script>
 <style scoped>

@@ -70,7 +70,7 @@ module.exports = {
     /*
      ** Nuxt.js modules
      */
-    modules: ["@nuxtjs/axios"],
+    modules: ["@nuxtjs/axios", 'nuxt-leaflet'],
     axios: {
         // proxyHeaders: false,
         baseURL: "http://unicef.test/api",

@@ -9,7 +9,8 @@
         :class="[header.align?'text-xs-'+header.align:'text-xs-left']"
         :key="header.value"
       >
-      {{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }}
+      <!-- {{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }} -->
+      {{ showItem(header,datos) }}
       </td>
     </template>
     <td class="text-xs-center">
@@ -83,6 +84,35 @@ export default {
       if (this.can('edit')) {
         this.$emit('openDialog', 'edit', item)
       }
+    },
+    showItem(lista,datos) {
+      //header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value]
+      //let v=datos.item[lista.value]
+      let valor = datos.item[lista.value]
+
+      if (lista.type=='check') {
+          if (valor==lista.options[0]){
+            valor=lista.options[1]
+          }else{
+            valor=lista.options[2]
+          }
+          return valor
+      }
+
+      try {
+        if (lista.fromList) {
+          let campoUnion = lista.listField
+          let hijo = this.headers.find((el) => {
+            return el.value == lista.fromList
+          }).lista
+          valor = hijo.find((el) => el.id == datos.item[lista.fromList])[campoUnion]
+        }
+        valor = lista.lista.find((el) => el.id == valor)
+        return valor ? valor.name : ''
+      } catch (error) {
+        //console.error(error);
+      }
+      return valor
     },
     colLista(lista, v, datos) {
       let valor = null

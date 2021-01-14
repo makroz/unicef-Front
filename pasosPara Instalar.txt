@@ -33,6 +33,7 @@ env: {
     }
   },
 
+nom install nuxt-leaflet --save
 npm install sweetalert2
 npm install --save vue-croppa
 npm install crypto-js
@@ -54,6 +55,5 @@ $ npm run build
 
 # generate static project
 $ npm run generate
-
 
 http://localhost:8001/storage/usuarios_37.png
