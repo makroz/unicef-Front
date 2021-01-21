@@ -63,6 +63,7 @@
   import ThemeSettings from '@/components/ThemeSettings'
 
   export default {
+    name: 'dashboard',
     components: {
       AppDrawer,
       AppToolbar,

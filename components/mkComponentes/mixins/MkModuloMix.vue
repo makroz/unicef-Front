@@ -12,11 +12,11 @@ const _dirty = process.env.mkConfig.dirty
 
 export default {
   name: 'MkModuloMix',
-  layout: "dashboard",
+  layout: 'dashboard',
   components: {
     MkHead,
     MkForm,
-    MkDataTable
+    MkDataTable,
   },
   mixins: [MkRulesMix],
   data() {
@@ -25,7 +25,7 @@ export default {
         lista: {
           items: [],
           selected: [],
-          checksum: ''
+          checksum: '',
         },
         busquedas: this.getParams('buscar', []),
         loading: false,
@@ -36,8 +36,8 @@ export default {
           page: 1,
           offset: 5,
           total: 0,
-          options: { rowsPerPage: -1, sortBy: 'id', descending: true }
-        }
+          options: { rowsPerPage: -1, sortBy: 'id', descending: true },
+        },
       },
       created: true,
       urlModulo: this.$options.name,
@@ -52,25 +52,25 @@ export default {
       paramsExtra: {},
       item: {
         id: 0,
-        name: ''
+        name: '',
       },
       dirty: {
-        item: {}
+        item: {},
       },
 
       oldRecycled: false,
       cacheCan: {
-        '1': false,
-        '2': false,
-        '4': false,
-        '8': false
+        1: false,
+        2: false,
+        4: false,
+        8: false,
       },
       Auth: {
         recycled: false,
         authAccess: this.$options.authAccess || this.$options.name,
         proteger: this.$options.middleware || '',
-        _updateData: this._updateData
-      }
+        _updateData: this._updateData,
+      },
     }
   },
   methods: {
@@ -138,13 +138,13 @@ export default {
       if (typeof d !== 'object' || d === null) {
         d = { sortBy: null, descending: null }
       } else {
-        me.dataTable.busquedas.forEach(function(item) {
+        me.dataTable.busquedas.forEach(function (item) {
           if (item.criterio != '') {
             bus.push({
               campo: item.campo,
               cond: item.cond,
               criterio: item.criterio,
-              union: item.union
+              union: item.union,
             })
           }
         })
@@ -196,17 +196,17 @@ export default {
       me.dataTable.loading = true
       me.$axios
         .get(url + this.getCt(url))
-        .then(function(response) {
+        .then(function (response) {
           if (me.isOk(response.data, url)) {
             me.setParams()
             me.setParams('buscar', me.dataTable.busquedas)
             me.fillTable(response.data, url)
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error(error)
         })
-        .finally(function() {
+        .finally(function () {
           me.dataTable.loading = false
           me.created == true
         })
@@ -224,7 +224,7 @@ export default {
           title: data.msg,
           icon: 'warning',
           showConfirmButton: false,
-          timer: 1500
+          timer: 1500,
         })
         if (data.ok == -1001) {
           //c(data.msg,'LOGING','error','error')
@@ -243,9 +243,9 @@ export default {
       me.dataTable.loading = true
       me.$axios
         .post(url + this.getCt(url), {
-          id: id
+          id: id,
         })
-        .then(function(response) {
+        .then(function (response) {
           if (me.isOk(response.data)) {
             me.fillTable(response.data.data, url)
             me.paramsExtra = {}
@@ -253,10 +253,10 @@ export default {
             //con error
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error(error)
         })
-        .finally(function() {
+        .finally(function () {
           me.dataTable.loading = false
         })
     },
@@ -274,17 +274,18 @@ export default {
         // // me.item.imgDel=me.mkImgData.imgDel;
         // me.item.imgFile='';
         if (!me.mkImgData.imgDel) {
-          if (me.mkImgData.myImg.hasImage()){
-            me.mkImgData.refresh=true
-            me.item.imgFile = this.mkImgData.myImg.generateDataUrl('image/png',0.7);
-    //        let blob = await this.mkImgData.myImg.promisedBlob();
-  //          me.item.imgFile = blob;
-//            alert('size: ' +me.item.imgFile.size)
-
+          if (me.mkImgData.myImg.hasImage()) {
+            me.mkImgData.refresh = true
+            me.item.imgFile = this.mkImgData.myImg.generateDataUrl(
+              'image/png',
+              0.7
+            )
+            //        let blob = await this.mkImgData.myImg.promisedBlob();
+            //          me.item.imgFile = blob;
+            //            alert('size: ' +me.item.imgFile.size)
 
             //alert('1',me.item.imgFile.size);
           }
-
         } else {
           me.item.imgDel = me.mkImgData.imgDel
         }
@@ -304,7 +305,11 @@ export default {
         let itemData = {}
 
         if (_dirty) {
-          console.log('permisos',JSON.stringify(me.dirty.permisos),JSON.stringify(me.permisos))
+          // console.log(
+          //   'permisos',
+          //   JSON.stringify(me.dirty.permisos),
+          //   JSON.stringify(me.permisos)
+          // )
           for (const el in me.item) {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
@@ -315,17 +320,17 @@ export default {
             }
           }
           if (Object.keys(itemData).length === 0) {
-           me.closeDialog()
-           //alert('esta vacio',me.item)
+            me.closeDialog()
+            //alert('esta vacio',me.item)
             return false
           }
         } else {
-          itemData=me.item;
+          itemData = me.item
         }
 
         me.$axios
           .put(url + this.getCt(url), itemData)
-          .then(function(response) {
+          .then(function (response) {
             if (me.isOk(response.data)) {
               me.fillTable(response.data.data, url)
               me.closeDialog()
@@ -334,11 +339,11 @@ export default {
               isError = 1
             }
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.error(error)
             isError = 2
           })
-          .finally(function() {
+          .finally(function () {
             me.dataTable.loading = false
           })
       } else {
@@ -351,7 +356,7 @@ export default {
 
         me.$axios
           .post(url + this.getCt(url), me.item)
-          .then(function(response) {
+          .then(function (response) {
             if (me.isOk(response.data)) {
               me.dataTable.paginator.page = 1
               me.fillTable(response.data.data, url)
@@ -361,11 +366,11 @@ export default {
               isError = 1
             }
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.error(error)
             isError = 2
           })
-          .finally(function() {
+          .finally(function () {
             me.dataTable.loading = false
           })
         this.afterSave(me, isError)
@@ -404,7 +409,7 @@ export default {
         showCancelButton: true,
         confirmButtonColor: color,
         reverseButtons: true,
-        confirmButtonText: boton
+        confirmButtonText: boton,
       }).then((willDelete) => {
         //console.log('willdelete:',willDelete);
         if (willDelete.value === true) {
@@ -415,22 +420,22 @@ export default {
           me.dataTable.loading = true
           me.$axios
             .post(url, {
-              id: id
+              id: id,
             })
             .then(({ data }) => {
               if (me.isOk(data)) {
                 me.fillTable(data.data)
                 Swal.fire({
                   title: titleOk,
-                  icon: 'success'
+                  icon: 'success',
                 })
                 me.paramsExtra = {}
               }
             })
-            .catch(function(error) {
+            .catch(function (error) {
               console.error(error)
             })
-            .finally(function() {
+            .finally(function () {
               me.dataTable.loading = false
             })
         }
@@ -474,7 +479,7 @@ export default {
         this.tituloModal = 'Registrar ' + this.titModulo
       } else {
         if (_dirty) {
-          this.dirty.item = Object.assign({}, data)
+          this.dirty.item = Object.assign({}, this.item)
         }
         this.tituloModal = 'Editar ' + this.titModulo
       }
@@ -555,7 +560,7 @@ export default {
             title: alertar,
             icon: 'warning',
             showConfirmButton: false,
-            timer: 1500
+            timer: 1500,
           })
         }
       }
@@ -587,6 +592,16 @@ export default {
       })
       //console.error('updatelist',me.campos)
     },
+    async getListaBackend(url, campos, item=null) {
+      let lista = await this.$store.dispatch('auth/loadData', {
+        url: url,
+        campos: campos,
+      })
+      if (item){
+        this.updateListCol(item, lista)
+      }
+      return lista
+    },
     setParentinChildName(hijo, padre, campoUnion, name = 'name', id = 'id') {
       return hijo.map((e) => {
         e[name] =
@@ -596,8 +611,8 @@ export default {
         return e
       })
     },
-    str(obj){
-      return JSON.stringify(obj)+""
+    str(obj) {
+      return JSON.stringify(obj) + ''
     },
     setParentGroup(hijo, padre, campoUnion, name = 'name', id = 'id') {
       hijo = hijo.sort((a, b) =>
@@ -612,46 +627,45 @@ export default {
       hijo.forEach((e) => {
         if (oGrupo != e[campoUnion]) {
           temp.push({
-            header: padre.filter((el) => el[id] == e[campoUnion])[0][name]
+            header: padre.filter((el) => el[id] == e[campoUnion])[0][name],
           })
           oGrupo = e[campoUnion]
         }
         temp.push(e)
       })
       return temp
-    }
+    },
   },
   watch: {
     Auth: {
       deep: true,
-      handler: function(v, old) {
+      handler: function (v, old) {
         //  console.log('wath',this.oldRecycled,v.recycled)
         if (this.oldRecycled != v.recycled) {
           this.listar()
           this.oldRecycled = v.recycled
         }
-      }
-    }
+      },
+    },
   },
   computed: {},
-  provide: function() {
+  provide: function () {
     return {
       can: this.can,
       Auth: this.Auth,
       setParams: this.setParams,
-      getParams: this.getParams
+      getParams: this.getParams,
     }
   },
-  created: function() {
-     // this.$axios.setHeader('Content-Type', 'application/x-www-form-urlencoded', [
-  //'post','get','put'
-//])
+  created: function () {
+    // this.$axios.setHeader('Content-Type', 'application/x-www-form-urlencoded', [
+    //'post','get','put'
+    //])
     this.$store.dispatch('auth/getUser')
     this.created = 2
-
   },
   mounted() {
-      this.campos = this.getParams('headers') || this.campos
+    this.campos = this.getParams('headers') || this.campos
 
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
@@ -673,6 +687,6 @@ export default {
     //TODO: ver si se puede hacer que el back envie un flag si existe imagen para que el front nointente cargarlo
     //TODO: en permisos ver que el scrool siempre aparezca
     //TODO: hacer que el enter en elformulario sea un grabar o cancelar depende de lo que se quiera
-  }
+  },
 }
 </script>

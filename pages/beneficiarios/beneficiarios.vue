@@ -1,6 +1,6 @@
 <template>
   <div id="pageTable">
-    <v-container grid-list-xl fluid>
+    <v-container grid-list-md fluid>
       <v-layout row wrap>
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
@@ -26,95 +26,108 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-        <v-text-field
-          label="Nombre"
-          name="nom"
-          id="nom"
-          v-model="item.nom"
-          :rules="[rules.required]"
-          validate-on-blur
-          ref="focus"
-        ></v-text-field>
-        <v-layout row>
+        <v-container grid-list-md fluid>
           <v-text-field
-            class="sep"
-            label="Epsa"
-            id="epsa"
-            v-model="item.epsa"
-            :rules="[rules.required,rules.num]"
-            validate-on-blur
-          ></v-text-field>
-
-          <v-select
-            class="sep"
-            v-model="item.entidades_id"
-            :items="lEntidades"
+            label="Nombre"
+            name="name"
+            id="name"
+            v-model="item.name"
             :rules="[rules.required]"
+            validate-on-blur
+            ref="focus"
+          ></v-text-field>
+          <v-layout row>
+            <v-flex>
+              <v-text-field
+                label="Epsa"
+                id="epsa"
+                v-model="item.epsa"
+                :rules="[rules.required, rules.num]"
+                validate-on-blur
+              ></v-text-field>
+            </v-flex>
+            <v-flex>
+              <v-select
+                v-model="item.entidades_id"
+                :items="lEntidades"
+                :rules="[rules.required]"
+                item-text="name"
+                item-value="id"
+                label="Entidad"
+              ></v-select>
+            </v-flex>
+            <v-flex>
+              <v-select
+                v-model="item.distritos_id"
+                :items="lDistritos"
+                :rules="[rules.required]"
+                item-text="name"
+                item-value="id"
+                label="Distrito"
+              ></v-select>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex>
+              <v-checkbox
+                v-model="item.protec"
+                value="1"
+                label="Programa de Protección"
+              ></v-checkbox>
+            </v-flex>
+            <v-flex>
+              <v-checkbox
+                v-model="item.autoriza"
+                value="1"
+                label="Autoriza Monitoreo"
+              ></v-checkbox>
+            </v-flex>
+          </v-layout>
+          <v-select
+            v-model="item.rutas_id"
+            :items="lRutas"
             item-text="name"
             item-value="id"
-            label="Entidad"
+            label="Ruta de Monitoreo"
           ></v-select>
 
-          <v-select
-            v-model="item.distritos_id"
-            :items="lDistritos"
-            :rules="[rules.required]"
-            item-text="name"
-            item-value="id"
-            label="Distrito"
-          ></v-select>
-        </v-layout>
-        <v-layout row>
-          <v-checkbox
-            class="sep"
-            v-model="item.protec"
-            value="1"
-            label="Programa de Protección"
-          ></v-checkbox>
-          <v-checkbox
-            v-model="item.autoriza"
-            value="1"
-            label="Autoriza Monitoreo"
-          ></v-checkbox>
-        </v-layout>
-
-        <v-text-field label="Direccion" v-model="item.dir"></v-text-field>
-        <v-layout row>
-          <v-text-field
-            class="sep"
-            label="Latitud"
-            v-model="item.lat"
-            :rules="[rules.num]"
-            validate-on-blur
-          ></v-text-field>
-          <v-text-field
-            label="Longitud"
-            v-model="item.long"
-            :rules="[rules.num]"
-            validate-on-blur
-          ></v-text-field>
-        </v-layout>
-        <div id="map-wrap" style="height: 200px; width: 100%">
-          <client-only>
-            <l-map
-              :zoom="zoom"
-              :center="center"
-              style="height: 200px; width: 100%"
-              ref="mymap"
-            >
-              <l-tile-layer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
-                :useCors="false"
-              ></l-tile-layer>
-              <l-marker
-                :lat-lng="marker"
-                :draggable="true"
-                @update:latLng="updateMaker"
-              ></l-marker>
-            </l-map>
-          </client-only>
-        </div>
+          <v-text-field label="Direccion" v-model="item.dir"></v-text-field>
+          <v-layout row>
+            <v-text-field
+              label="Latitud"
+              v-model="item.lat"
+              :rules="[rules.num]"
+              validate-on-blur
+            ></v-text-field>
+            <v-text-field
+              label="Longitud"
+              v-model="item.long"
+              :rules="[rules.num]"
+              validate-on-blur
+            ></v-text-field>
+          </v-layout>
+          <div id="map-wrap" style="height: 200px; width: 100%">
+            <client-only>
+              <l-map
+                :zoom="zoom"
+                :center="center"
+                style="height: 200px; width: 100%"
+                ref="mymap"
+              >
+                <l-tile-layer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+                  :useCors="false"
+                ></l-tile-layer>
+                <l-marker
+                  :lat-lng="marker"
+                  :draggable="true"
+                  @update:latLng="updateMaker"
+                ></l-marker>
+              </l-map>
+            </client-only>
+          </div>
+        </v-container>
       </mk-form>
     </v-container>
   </div>
@@ -144,7 +157,7 @@ export default {
         },
         {
           text: 'Beneficierio',
-          value: 'nom',
+          value: 'name',
           headers: true,
           type: 'text',
           search: true,
@@ -165,7 +178,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'check',
-          options:[1,'Si','No'],
+          options: [1, 'Si', 'No'],
           search: true,
         },
         {
@@ -175,7 +188,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'check',
-          options:[1,'Si','No'],
+          options: [1, 'Si', 'No'],
           search: true,
         },
         {
@@ -198,12 +211,23 @@ export default {
           search: true,
           lista: this.lEntidades,
         },
+        {
+          text: 'Ruta',
+          value: 'rutas_id',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lRutas,
+        },
       ],
       center: [-17.783373986957255, -63.18209478792436],
       marker: [-17.783373986957255, -63.18209478792436],
       zoom: 13,
       lEntidades: [],
       lDistritos: [],
+      lRutas: [],
     }
   },
   methods: {
@@ -241,24 +265,32 @@ export default {
   //     lDistritos: lDistritos,
   //   }
   // },
-   async mounted() {
-    let me = this
-    me.lEntidades  = await me.$store.dispatch('auth/loadData', {
-      url: 'Entidades',
-      campos: 'id,name'
-    })
-    me.lDistritos  = await me.$store.dispatch('auth/loadData', {
-      url: 'Distritos',
-      campos: 'id,name'
-    })
+  async mounted() {
+    this.lRutas = await this.getListaBackend('Rutas', 'id,name', 'rutas_id')
+    this.lEntidades = await this.getListaBackend(
+      'Entidades',
+      'id,name',
+      'entidades_id'
+    )
+    this.lDistritos = await this.getListaBackend(
+      'Distritos',
+      'id,name',
+      'distritos_id'
+    )
+    // let me = this
+    // me.lEntidades  = await me.$store.dispatch('auth/loadData', {
+    //   url: 'Entidades',
+    //   campos: 'id,name'
+    // })
+    // me.lDistritos  = await me.$store.dispatch('auth/loadData', {
+    //   url: 'Distritos',
+    //   campos: 'id,name'
+    // })
 
-     me.updateListCol('entidades_id', me.lEntidades)
-     me.updateListCol('distritos_id', me.lDistritos)
-   }
+    //  me.updateListCol('entidades_id', me.lEntidades)
+    //  me.updateListCol('distritos_id', me.lDistritos)
+  },
 }
 </script>
 <style scoped>
-.sep {
-  margin-right: 10px;
-}
 </style>

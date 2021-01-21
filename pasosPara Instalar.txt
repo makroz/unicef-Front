@@ -45,7 +45,7 @@ copiar el archivo login.vue dentro de pages
 copiar el archivo menu.js de la carpeta api
 copiar los archivos auth.vue y authAccess.js de la carpeta middleware
 copiar el archivo auth.js de la carpeta store
-
+en los layout completar los name para que no de warm en la consola
 **************
 # serve with hot reload at localhost:3000
 $ npm run dev

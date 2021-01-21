@@ -98,6 +98,10 @@ export default {
           }
           return valor
       }
+      if (lista.type=='count') {
+            valor=valor.length
+          return valor
+      }
 
       try {
         if (lista.fromList) {

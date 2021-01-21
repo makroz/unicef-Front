@@ -9,7 +9,7 @@ export const state = () => ({
     authUser: null,
     acceso: false,
     rutaBack: null,
-    cacheActive: true,
+    cacheActive: false,
     encryptActive: true,
     permisos: {
         view: 1,
@@ -223,10 +223,10 @@ export const mutations = {
 export const actions = {
     async loadData({ getters }, datos) {
         let url = datos.url + '?page=1&per_page=-1&cols=' + datos.campos + '&disabled=1'
+        if (datos.filter) {
+            url = url + '&filter=' + datos.filter
+        }
         let response = await this.$axios.get(url + getters.getCt(url))
-            // if (response.data.data == '_ct_') {
-            //   c('datos del Cache', datos.url, 'Cache')
-            // }
         response = getters.getDataCache(response.data, url)
         return response
     },
