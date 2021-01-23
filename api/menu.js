@@ -8,6 +8,17 @@ const Menu = [
         href: "/dashboard"
     },
     {
+        title: "Modulo Servicios",
+        group: "servicios",
+        component: "servicios",
+        icon: "face",
+        items: [{
+            name: "servicios",
+            title: "Servicios",
+            href: "/servicios/servicios"
+        }, ]
+    },
+    {
         title: "Modulo Rutas",
         group: "rutas",
         component: "rutas",
