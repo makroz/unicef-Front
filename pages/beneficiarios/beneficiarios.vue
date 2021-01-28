@@ -93,18 +93,22 @@
 
           <v-text-field label="Direccion" v-model="item.dir"></v-text-field>
           <v-layout row>
+            <v-flex>
             <v-text-field
               label="Latitud"
               v-model="item.lat"
               :rules="[rules.num]"
               validate-on-blur
             ></v-text-field>
+            </v-flex>
+            <v-flex>
             <v-text-field
               label="Longitud"
               v-model="item.long"
               :rules="[rules.num]"
               validate-on-blur
             ></v-text-field>
+            </v-flex>
           </v-layout>
           <div id="map-wrap" style="height: 200px; width: 100%">
             <client-only>
@@ -237,14 +241,21 @@ export default {
       this.item.long = e.lng
     },
     initMap() {
-      if (this.item.lat) {
+      if ((this.item.lat) && (this.item.lat!='')) {
         this.center = [this.item.lat, this.item.long]
         this.marker = [this.item.lat, this.item.long]
         this.zoom = 13
+      }else{
+        this.item.lat=''
+        this.item.long=''
       }
       this.$refs.mymap.mapObject.invalidateSize().setView(this.center, 13)
     },
-    beforeOpen() {
+   beforeOpen(accion, data = {}) {
+     if (accion=='add'){
+       data.lat=''
+       data.long=''
+     }
       setTimeout(() => {
         this.initMap()
       }, 100)

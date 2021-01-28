@@ -454,6 +454,10 @@ export default {
       }
 
       this.item = Object.assign({}, data)
+      if (this.beforeOpen(accion, this.item)===false){
+        return false
+      }
+      //this.item = Object.assign({}, data)
       //mkImg
       if (this.MkImgMix) {
         this.mkImgData.remove = true
@@ -473,7 +477,7 @@ export default {
       //mkImg
 
       this.$refs.mkForm.$refs.form.resetValidation()
-      this.beforeOpen(accion, data)
+      
       if (accion == 'add') {
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
@@ -583,11 +587,11 @@ export default {
       }
       this.setParams('headers', this.campos)
     },
-    updateListCol(campo, lista) {
+    updateListCol(campo, lista,lLista='lista') {
       let me = this
       me.campos.forEach((el) => {
         if (el.value == campo) {
-          el.lista = lista
+          el[lLista] = lista
         }
       })
       //console.error('updatelist',me.campos)
@@ -687,6 +691,7 @@ export default {
     //TODO: ver si se puede hacer que el back envie un flag si existe imagen para que el front nointente cargarlo
     //TODO: en permisos ver que el scrool siempre aparezca
     //TODO: hacer que el enter en elformulario sea un grabar o cancelar depende de lo que se quiera
+    //TODO> revisar el modeulo de usuarios y otros mas para ver lasmejoras del loaddb y oras mejroas
   },
 }
 </script>

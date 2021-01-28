@@ -26,75 +26,77 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-      <v-container grid-list-md fluid>
-        <v-text-field
-          label="Nombre"
-          name="name"
-          id="name"
-          v-model="item.name"
-          :rules="[rules.required]"
-          validate-on-blur
-          ref="focus"
-        ></v-text-field>
+        <v-container grid-list-md fluid>
+          <v-text-field
+            label="Nombre"
+            name="name"
+            id="name"
+            v-model="item.name"
+            :rules="[rules.required]"
+            validate-on-blur
+            ref="focus"
+          ></v-text-field>
 
-        <v-text-field label="Descripcion" v-model="item.descrip"></v-text-field>
-        <v-select
-          v-model="item.usuarios_id"
-          :items="lUsuarios"
-          item-text="name"
-          item-value="id"
-          label="Monitor Asignado"
-        ></v-select>
-        <v-layout wrap >
-          <v-flex sx12 sm12 md6   >
-          <v-autocomplete
-            
-            v-model="item.beneficiarios"
-            :items="lBeneficiarios"
-            :filter="customFilter"
-            color="primary"
+          <v-text-field
+            label="Descripcion"
+            v-model="item.descrip"
+          ></v-text-field>
+          <v-select
+            v-model="item.usuarios_id"
+            :items="lUsuarios"
+            :rules="[rules.required]"
             item-text="name"
-            label="Beneficiarios"
             item-value="id"
-            item-avatar="id"
-            multiple
-            clearable
-            chips
-            deletable-chips
-            solo-inverted
-            counter
-          >
-          </v-autocomplete>
-          </v-flex>
-          <v-flex md6 > 
-          <div id="map-wrap" style="height: 200px;width:100%">
-            <client-only>
-              <l-map
-                :zoom="zoom"
-                :center="center"
-                style="height: 200px; width: 100%"
-                ref="mymap"
+            label="Monitor Asignado"
+          ></v-select>
+          <v-layout wrap>
+            <v-flex sx12 sm12 md6>
+              <v-autocomplete
+                v-model="item.beneficiarios"
+                :items="lBeneficiarios"
+                color="primary"
+                item-text="name"
+                label="Beneficiarios"
+                item-value="id"
+                item-avatar="id"
+                multiple
+                clearable
+                chips
+                deletable-chips
+                solo-inverted
+                counter
               >
-                <l-tile-layer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
-                  :useCors="false"
-                ></l-tile-layer>
-                <div v-if="this.lBeneficiarios.length > 0">
-                  <l-marker
-                    v-for="(marker, index) in item.beneficiarios"
-                    :key="index"
-                    :lat-lng="getMarker(marker, item, index)"
-                    :draggable="false"
-                    :visible="true"
-                  ></l-marker>
-                </div>
-              </l-map>
-            </client-only>
-          </div>
-          </v-flex>
-        </v-layout>
-      </v-container>
+              </v-autocomplete>
+            </v-flex>
+            <v-flex md6>
+              <div id="map-wrap" style="height: 200px; width: 100%">
+                <client-only>
+                  <l-map
+                    :zoom="zoom"
+                    :center="center"
+                    style="height: 200px; width: 100%"
+                    ref="mymap"
+                  >
+                    <l-tile-layer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+                      :useCors="false"
+                    ></l-tile-layer>
+                    <div v-if="this.lBeneficiarios.length > 0">
+                      <l-marker
+                        v-for="(marker, index) in item.beneficiarios"
+                        :key="index"
+                        :lat-lng="getMarker(marker, item, index)"
+                        :draggable="false"
+                        :visible="true"
+                      ></l-marker>
+                    </div>
+                  </l-map>
+                </client-only>
+              </div>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </mk-form>
     </v-container>
   </div>
@@ -217,7 +219,7 @@ export default {
     async beforeOpen(accion, data = {}) {
       let me = this
       me.lBeneficiarios = await me.getListaBackend(
-        'Rutas/beneficiarios/' + me.item.id,
+        'Rutas/beneficiarios/' + data.id,
         ''
       )
 
@@ -239,7 +241,7 @@ export default {
       if (index >= 0) this.item.beneficiarios.splice(index, 1)
     },
   },
-  
+
   async mounted() {
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id') //ver si se uede sacr los parametros del headers o campos
   },

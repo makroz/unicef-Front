@@ -6,7 +6,7 @@
     <template v-for="header in headers">
       <td
         v-if="header.headers && !header.hidden"
-        :class="[header.align?'text-xs-'+header.align:'text-xs-left']"
+        :class="[header.align?'text-xs-'+header.align:'text-xs-left ',header.lColor?header.lColor[datos.item[header.value]]:'']"
         :key="header.value"
       >
       <!-- {{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }} -->

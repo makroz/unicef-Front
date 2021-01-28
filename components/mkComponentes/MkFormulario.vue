@@ -7,7 +7,7 @@
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <v-form ref="form" v-model="formValid" lazy-validation>
+          <v-form ref="form" v-on:submit.prevent v-model="formValid" lazy-validation>
             <slot>Contenido</slot>
           </v-form>
         </v-card-text>

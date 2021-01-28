@@ -1,0 +1,313 @@
+<template>
+  <div id="pageTable">
+    <v-container grid-list-md fluid>
+      <v-layout row wrap>
+        <mk-head :titulo="titModulo"></mk-head>
+        <v-flex lg12>
+          <mk-data-table
+            v-bind="dataTable"
+            :campos="campos"
+            @openDialog="openDialog"
+            @deleteItem="deleteItem"
+            @setStatus="setStatus"
+            @listar="listar"
+            @onPerPageChange="onPerPageChange"
+            @column:change="onColChange"
+            @onBuscar="onBuscar"
+          ></mk-data-table>
+        </v-flex>
+      </v-layout>
+
+      <mk-form
+        ref="mkForm"
+        :modal="modal"
+        :tit="tituloModal"
+        :accion="item.id"
+        @closeDialog="closeDialog"
+        @grabarItem="grabarItem"
+      >
+        <v-container grid-list-md fluid>
+          <v-autocomplete
+            v-model="item.beneficiarios_id"
+            :items="lBeneficiarios"
+            :filter="customFilter"
+            @change="change"
+            color="primary"
+            item-text="name"
+            label="Beneficiario"
+            item-value="id"
+            :rules="[rules.required]"
+            ref="focus"
+            :readonly="!!item.id"
+          >
+          </v-autocomplete>
+
+          <v-text-field
+            label="Epsa"
+            v-model="itemData.epsa"
+            disabled
+          ></v-text-field>
+
+          <v-card v-if="!!!item.id">
+            <v-toolbar color="primary" dark dense>
+              <v-toolbar-title>Servicios Disponibles</v-toolbar-title>
+            </v-toolbar>
+
+            <v-list style="max-height: 300px; overflow-y: scroll">
+              <template v-for="item in lServicios">
+                <v-list-tile
+                  :key="item.id"
+                  :class="item.selected ? 'success' : ''"
+                >
+                  <v-list-tile-action>
+                    <v-checkbox
+                      v-model="item.selected"
+                      color="red"
+                    ></v-checkbox>
+                  </v-list-tile-action>
+
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      {{ item.name }}
+                      <span style="font-size: 10px">{{ item.obs }}</span>
+                    </v-list-tile-title>
+                  </v-list-tile-content>
+                  <v-list-tile-avatar v-if="item.selected">
+                    <v-text-field
+                      label="Cantidad"
+                      v-model="item.cantidad"
+                      :disabled="
+                        item.selected ? (item.cant ? false : true) : true
+                      "
+                      :rules="[rules.required, rules.num, rules.minVal(1)]"
+                      validate-on-blur
+                      color="primary"
+                      :class="item.selectded ? 'secondary' : ''"
+                      style="
+                        font-size: 12px;
+                        padding-bottom: 0;
+                        padding-top: 12px;
+                      "
+                    ></v-text-field>
+                  </v-list-tile-avatar>
+                </v-list-tile>
+              </template>
+            </v-list>
+          </v-card>
+          <v-card v-else>
+            <v-toolbar color="primary" dark dense>
+              <v-toolbar-title>
+                Cambiar Estado Actual de
+                <span :class="lColor[item.estado]"> {{ getNameLista(item.estado ,lEstados) }} </span> <span class="red--text">>>></span
+                ><span :class="lColor[item.estado*1 +1]">
+                  {{ getNameLista(item.estado*1 +1,lEstados) }}
+                </span>
+                </v-toolbar-title>
+            </v-toolbar>
+            <v-layout row pa-2>
+            <v-flex md10>
+            <v-text-field
+            label="Servicio"
+            :value="getNameLista(item.servicios_id,lServicios)"
+            readonly
+          ></v-text-field>
+          </v-flex>
+          <v-flex md2>
+          <v-text-field
+            label="Cantidad"
+            :value="item.cant"
+            readonly
+          ></v-text-field>
+          </v-flex>
+            </v-layout>
+          </v-card>
+        </v-container>
+      </mk-form>
+    </v-container>
+  </div>
+</template>
+
+<script>
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+
+export default {
+  //middleware: ['authAccess'],
+  mixins: [MkModuloMix],
+  components: {},
+  name: 'SolicitudServicios',
+  data() {
+    return {
+      //urlModulo: '',
+      titModulo: 'Solicitud de Servicios',
+      tabs: 0,
+      campos: [
+        {
+          text: 'Id',
+          value: 'id',
+          align: 'left',
+          width: '80px',
+          headers: true,
+          type: 'num',
+          search: true,
+        },
+        {
+          text: 'Fecha',
+          value: 'fecha_1',
+          width: '250px',
+          headers: true,
+          type: 'date',
+          search: true,
+        },
+        {
+          text: 'Servicio',
+          value: 'servicios_id',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lServicios,
+        },
+        {
+          text: 'Beneficiario',
+          value: 'beneficiarios_id',
+          align: 'left',
+          width: '80px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lBeneficiarios,
+        },
+
+        {
+          text: 'Monitor',
+          value: 'usuarios_id_1',
+          align: 'left',
+          width: '80px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lUsuarios,
+        },
+        {
+          text: 'Cant',
+          value: 'cant',
+          width: '50px',
+          headers: true,
+          type: 'num',
+          search: true,
+          align: 'right',
+        },
+        {
+          text: 'Estado',
+          value: 'estado',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lEstados,
+          lColor: this.lColor,
+        },
+        
+      ],
+      lUsuarios: [],
+      lBeneficiarios: [],
+      lServicios: [],
+      lEstados: [
+        { id: 1, name: 'Pendiente'},
+        { id: 2, name: 'Realizado'},
+        { id: 3, name: 'Verificado'},
+        { id: 4, name: 'Autorizado'},
+        { id: 5, name: 'Comercial' },
+        { id: 6, name: 'Completado'},
+      ],
+      lColor: [
+        '',
+        'grey--text',
+        'green--text text--lighten-3' ,
+        'green--text text--lighten-1' ,
+        'green--text' ,
+        'green--text text--darken-2' ,
+        'green--text text--darken-4' ,
+      ],
+      itemData: {
+        epsa: '',
+      },
+    }
+  },
+  methods: {
+    change(e) {
+      this.itemData = this.lBeneficiarios.find((el) => el.id === e)
+    },
+    getNameLista(e,lista) {
+      let valor = lista.find((el) => el.id == e)
+      return valor ? valor.name : e
+    },
+    beforeOpen(accion, data = {}) {
+     
+      if (accion == 'add') {
+         this.itemData.epsa = ''
+        this.lServicios.forEach((e) => {
+          e.cantidad = 1
+          if (e.selected) {
+            e.selected = null
+          }
+        })
+      } else {
+        this.change(data.beneficiarios_id)
+        if (data.estado>=6){
+          return false
+        }
+
+        //data.estado =(data.estado*1)+1;
+      }
+    },
+    beforeSave(me) {
+      //console.log('id',me.item.id)
+      if (!me.item.id){
+      let servicios = []
+      for (const obj in me.lServicios) {
+        if (me.lServicios[obj].selected === true) {
+          servicios.push({
+            id: me.lServicios[obj].id,
+            cant: me.lServicios[obj].cantidad,
+          })
+        }
+      }
+      me.paramsExtra.servicios = servicios
+      }else{
+        // delete me.paramsExtra.servicios
+        // delete me.items.paramsExtra.servicios 
+        me.item.estado =(me.item.estado*1)+1;
+      }
+    },
+    customFilter(item, queryText, itemText) {
+      const textOne = item.name + ''
+      const textTwo = item.id + ''
+      const searchText = queryText
+      return (
+        textOne.indexOf(searchText) > -1 || textTwo.indexOf(searchText) > -1
+      )
+    },
+  },
+
+  async mounted() {
+    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id') //ver si se uede sacr los parametros del headers o campos
+    this.lBeneficiarios = await this.getListaBackend(
+      'Beneficiarios',
+      '',
+      'beneficiarios_id'
+    )
+    this.lServicios = await this.getListaBackend(
+      'Servicios',
+      '',
+      'servicios_id'
+    )
+    this.updateListCol('estado', this.lEstados)
+    this.updateListCol('estado', this.lColor,'lColor')
+  },
+}
+</script>
+<style scope >
+</style>

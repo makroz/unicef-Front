@@ -20,6 +20,14 @@ export default {
             return (v || "").length <= maxNum || "Maximo " + maxNum + " caracteres";
             }
         },
+        minVal(minNum) {return v =>{
+            return v>=minNum  || "debe ser Mayor o igual a " + minNum ;
+            }
+        },
+        maxVal(maxNum) {return v =>{
+            return v<=maxNum  || "debe ser Menor o igual  a " + maxNum ;
+            }
+        },
         email: value => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || "e-mail no válido";
