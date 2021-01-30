@@ -57,12 +57,13 @@
               <template v-for="item in lServicios">
                 <v-list-tile
                   :key="item.id"
-                  :class="item.selected ? 'success' : ''"
+                  :class="item.selected ? 'deep-purple lighten-5 deep-purple--text text--accent-4' : ''"
                 >
                   <v-list-tile-action>
                     <v-checkbox
                       v-model="item.selected"
-                      color="red"
+                      color="deep-purple accent-4"
+                      
                     ></v-checkbox>
                   </v-list-tile-action>
 
@@ -74,7 +75,7 @@
                   </v-list-tile-content>
                   <v-list-tile-avatar v-if="item.selected">
                     <v-text-field
-                      label="Cantidad"
+                      
                       v-model="item.cantidad"
                       :disabled="
                         item.selected ? (item.cant ? false : true) : true
@@ -83,6 +84,8 @@
                       validate-on-blur
                       color="primary"
                       :class="item.selectded ? 'secondary' : ''"
+                      type="number"
+                      min="1"
                       style="
                         font-size: 12px;
                         padding-bottom: 0;
