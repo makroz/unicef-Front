@@ -136,6 +136,15 @@ export default {
           type: 'text',
           search: true
         },
+                {
+          text: 'Rol',
+          value: 'roles_id',
+          align: 'left',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lRoles,
+        },
         {
           text: 'Email',
           value: 'email',
@@ -147,6 +156,8 @@ export default {
       ],
 
       showPass: false,
+      lGrupos:[],
+      lRoles:[],
       permisos: [],
       permisoGrupos: null
     }
@@ -233,21 +244,24 @@ export default {
     }
   },
 
-  async asyncData({ store }) {
-    let lGrupos = await store.dispatch('auth/loadData', {
-      url: 'Grupos',
-      campos: 'id,name'
-    })
-    let lRoles = await store.dispatch('auth/loadData', {
-      url: 'Roles',
-      campos: 'id,name'
-    })
-    return {
-      lRoles: lRoles,
-      lGrupos: lGrupos
-    }
+  // async asyncData({ store }) {
+  //   let lGrupos = await store.dispatch('auth/loadData', {
+  //     url: 'Grupos',
+  //     campos: 'id,name'
+  //   })
+  //   let lRoles = await store.dispatch('auth/loadData', {
+  //     url: 'Roles',
+  //     campos: 'id,name'
+  //   })
+  //   return {
+  //     lRoles: lRoles,
+  //     lGrupos: lGrupos
+  //   }
+  // },
+  async mounted() {
+    this.lGrupos = await this.getListaBackend('Grupos', '', 'grupos_id')
+    this.lRoles = await this.getListaBackend('Roles','','roles_id')
   },
-  mounted() {}
 }
 </script>
 <style lang="css">

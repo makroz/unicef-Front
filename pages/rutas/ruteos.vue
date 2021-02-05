@@ -118,14 +118,40 @@ export default {
         {
           text: 'Beneficiarios',
           value: 'beneficiarios',
-           width: '100px',
+          width: '100px',
           headers: true,
           type: 'text',
           search: true,
         },
+        {
+          text: 'Estado',
+          value: 'estado',
+          width: '100px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lEstados,
+          lColor: this.lColor,
+        },
       ],
       lUsuarios: [],
-//      lBeneficiarios: [],
+      lEstados: [
+        '',
+        'Abierto',
+        'En progreso',
+        'Terminado',
+        'Verificado',
+        'Cerrado',
+      ],
+      lColor: [
+        '',
+        'grey--text',
+        'green--text text--lighten-3',
+        'green--text text--lighten-1',
+        'green--text',
+        'green--text text--darken-2',
+        'green--text text--darken-4',
+      ],
       lRutas: [],
     }
   },
@@ -140,12 +166,16 @@ export default {
         maximumAge: 0,
       }
 
-      navigator.geolocation.getCurrentPosition(this.successGps, this.errorGps, options)
+      navigator.geolocation.getCurrentPosition(
+        this.successGps,
+        this.errorGps,
+        options
+      )
     },
     successGps(position) {
       var coordenadas = position.coords
-      this.item.lat=coordenadas.latitude
-      this.item.lng=coordenadas.longitude
+      this.item.lat = coordenadas.latitude
+      this.item.lng = coordenadas.longitude
       console.log('Tu posición actual es:')
       console.log(position)
     },
@@ -156,13 +186,13 @@ export default {
 
     beforeOpen(accion, data = {}) {
       let me = this
-      if (accion=='add'){
+      if (accion == 'add') {
         this.getPosition()
-        data.lng=''
-        data.lng=''
-        data.usuarios_id=null
+        data.lng = ''
+        data.lng = ''
+        data.usuarios_id = null
       }
-      
+
       // me.lBeneficiarios = await me.getListaBackend(
       //   'Rutas/beneficiarios/' + data.id,
       //   ''
@@ -177,6 +207,8 @@ export default {
       'id,name,usuarios_id',
       'rutas_id'
     )
+    this.updateListCol('estado', this.lEstados)
+    this.updateListCol('estado', this.lColor, 'lColor')
     //this.setOptionTable('del').visible=false;
   },
 }

@@ -378,8 +378,8 @@ export default {
       }
     },
     callAction(opt, item) {
-      let f=(this[opt.action])
-      f(opt.id,item)
+      let f = this[opt.action]
+      f(opt.id, item)
     },
     restoreItem(action, item) {
       action = 'restore'
@@ -615,6 +615,15 @@ export default {
       }
       return lista
     },
+    async getDataBackend(url, campos, param = null) {
+      let data = await this.$store.dispatch('auth/loadData', {
+        url: url,
+        campos: campos,
+        param:param
+      })
+      return data
+    },
+
     setParentinChildName(hijo, padre, campoUnion, name = 'name', id = 'id') {
       return hijo.map((e) => {
         e[name] =
@@ -681,7 +690,18 @@ export default {
     this.created = 2
   },
   mounted() {
-    this.campos = this.getParams('headers') || this.campos
+    let campos=this.getParams('headers')
+    if (campos){
+      // campos.forEach(e => {
+      //   if (e.lista){
+      //     if (el.value == campo) {
+      //       e.lista = this.lista
+      //     }
+      //   }
+      // });
+      this.campos =  campos
+    }
+    
     this.dataTable.acciones = [
       {
         id: 'add',
@@ -717,7 +737,6 @@ export default {
         grupos: ['topbar', 'recycled'],
       },
     ]
-
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
     //TODO: adicioonar a todas las tablas el creado por y modificado por igual que el borrado por

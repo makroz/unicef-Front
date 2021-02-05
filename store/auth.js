@@ -229,9 +229,13 @@ export const actions = {
         if (datos.filter) {
             url = url + '&filter=' + datos.filter
         }
-        let response = await this.$axios.get(url + getters.getCt(url))
-        response = getters.getDataCache(response.data, url)
-        return response
+        let response = ''
+        if ((datos.datos) && (datos.datos.length > 0)) {
+            response = await this.$axios.post(url + getters.getCt(url), datos.datos)
+        } else {
+            response = await this.$axios.get(url + getters.getCt(url))
+        }
+        return getters.getDataCache(response.data, url)
     },
 
     can({ getters, commit }, act) {
