@@ -6,9 +6,8 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-            :campos="campos"
-            @openDialog="openDialog"
-            @deleteItem="deleteItem"
+:campos="campos"
+            @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
             @onPerPageChange="onPerPageChange"

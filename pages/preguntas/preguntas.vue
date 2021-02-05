@@ -6,9 +6,8 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-            :campos="campos"
-            @openDialog="openDialog"
-            @deleteItem="deleteItem"
+:campos="campos"
+            @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
             @onPerPageChange="onPerPageChange"
@@ -96,7 +95,6 @@ export default {
         {
           text: 'Pregunta',
           value: 'pregunta',
-          width: '250px',
           headers: true,
           type: 'text',
           search: true
@@ -105,12 +103,14 @@ export default {
           text: 'Orden',
           value: 'orden',
           align: 'left',
+          width: '100px',
           headers: true,
           type: 'text',
         },
         {
           text: 'Categoria',
           value: 'categ_id',
+          width: '100px',
           align: 'left',
           headers: true,
           type: 'num',
@@ -120,6 +120,7 @@ export default {
         {
           text: 'Tipo',
           value: 'tipo',
+          width: '100px',
           align: 'left',
           headers: true,
           type: 'num',

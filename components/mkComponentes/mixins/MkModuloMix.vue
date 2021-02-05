@@ -4,7 +4,7 @@ import MkForm from '@/components/mkComponentes/MkFormulario'
 import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import Swal from 'sweetalert2'
-import { c } from '@/components/mkComponentes/lib/MkUtils.js'
+import { c, getTitFromName } from '@/components/mkComponentes/lib/MkUtils.js'
 
 const _storage = process.env.mkConfig.storageUrl
 const _lap = process.env.mkConfig.authKey
@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       dataTable: {
+        acciones: [],
         lista: {
           items: [],
           selected: [],
@@ -41,7 +42,7 @@ export default {
       },
       created: true,
       urlModulo: this.$options.name,
-      titModulo: this.$options.name,
+      titModulo: getTitFromName(this.$options.name),
 
       //filtros y busqueda
 
@@ -376,15 +377,25 @@ export default {
         this.afterSave(me, isError)
       }
     },
-    deleteItem(id, restore = false) {
+    callAction(opt, item) {
+      let f=(this[opt.action])
+      f(opt.id,item)
+    },
+    restoreItem(action, item) {
+      action = 'restore'
+      this.deleteItem(action, item)
+    },
+    deleteItem(action, item = { id: 0 }) {
+      let restore = action == 'restore'
+      let id = item.id
       if (!this.can('del', true)) {
         return false
       }
       let me = this
       if (me.dataTable.lista.selected.length > 0) {
         id = ''
-        me.dataTable.lista.selected.forEach((item) => {
-          id = id + item.id + ','
+        me.dataTable.lista.selected.forEach((e) => {
+          id = id + e.id + ','
         })
         id = id + '0'
       }
@@ -411,9 +422,7 @@ export default {
         reverseButtons: true,
         confirmButtonText: boton,
       }).then((willDelete) => {
-        //console.log('willdelete:',willDelete);
         if (willDelete.value === true) {
-          //let url=me.urlModulo + "/delete";
           if (this.Auth.recycled) {
             url = url + '?recycled=1'
           }
@@ -453,11 +462,11 @@ export default {
         return false
       }
 
-      this.item = Object.assign({}, data)
-      if (this.beforeOpen(accion, this.item)===false){
+      //this.item = Object.assign({}, data)
+      if (this.beforeOpen(accion, data) === false) {
         return false
       }
-      //this.item = Object.assign({}, data)
+      this.item = Object.assign({}, data)
       //mkImg
       if (this.MkImgMix) {
         this.mkImgData.remove = true
@@ -477,7 +486,7 @@ export default {
       //mkImg
 
       this.$refs.mkForm.$refs.form.resetValidation()
-      
+
       if (accion == 'add') {
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
@@ -587,7 +596,7 @@ export default {
       }
       this.setParams('headers', this.campos)
     },
-    updateListCol(campo, lista,lLista='lista') {
+    updateListCol(campo, lista, lLista = 'lista') {
       let me = this
       me.campos.forEach((el) => {
         if (el.value == campo) {
@@ -596,12 +605,12 @@ export default {
       })
       //console.error('updatelist',me.campos)
     },
-    async getListaBackend(url, campos, item=null) {
+    async getListaBackend(url, campos, item = null) {
       let lista = await this.$store.dispatch('auth/loadData', {
         url: url,
         campos: campos,
       })
-      if (item){
+      if (item) {
         this.updateListCol(item, lista)
       }
       return lista
@@ -639,6 +648,9 @@ export default {
       })
       return temp
     },
+    setOptionTable(id) {
+      return this.dataTable.acciones.find((e) => e.id == id)
+    },
   },
   watch: {
     Auth: {
@@ -670,6 +682,41 @@ export default {
   },
   mounted() {
     this.campos = this.getParams('headers') || this.campos
+    this.dataTable.acciones = [
+      {
+        id: 'add',
+        color: 'primary',
+        icon: 'add',
+        text: 'Adicionar',
+        visible: this.can('add'),
+        action: 'openDialog',
+        grupos: ['topbar'],
+      },
+      {
+        id: 'edit',
+        color: 'primary',
+        icon: 'edit',
+        visible: this.can('edit'),
+        action: 'openDialog',
+        grupos: ['action', 'topbar'],
+      },
+      {
+        id: 'del',
+        color: 'pink',
+        icon: 'delete',
+        visible: this.can('del'),
+        action: 'deleteItem',
+        grupos: ['action', 'topbar', 'recycled'],
+      },
+      {
+        id: 'restore',
+        color: 'green',
+        icon: 'restore',
+        visible: this.can('del'),
+        action: 'restoreItem',
+        grupos: ['topbar', 'recycled'],
+      },
+    ]
 
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote

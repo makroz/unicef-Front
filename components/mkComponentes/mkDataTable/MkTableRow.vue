@@ -1,106 +1,103 @@
 <template>
   <tr @dblclick="onEdit(datos.item)">
-    <td width="50px">
-      <v-checkbox primary hide-details v-model="datos.selected"></v-checkbox>
+    <td width="50px" style="padding: 0 12px">
+      <v-checkbox
+        class="pa-0 pm-0"
+        primary
+        hide-details
+        v-model="datos.selected"
+      ></v-checkbox>
+    </td>
+
+    <td
+      v-if="(!$store.state.config.tbl_opts_p)&&((can('edit') || can('del')))"
+      class="text-xs-center pa-0 ma-0"
+    >
+      <mk-table-actions :acciones="acciones" :item="datos.item" @callAction="callAction"
+          ></mk-table-actions>
+
     </td>
     <template v-for="header in headers">
       <td
         v-if="header.headers && !header.hidden"
-        :class="[header.align?'text-xs-'+header.align:'text-xs-left ',header.lColor?header.lColor[datos.item[header.value]]:'']"
+        :class="[
+          header.align ? 'text-xs-' + header.align : 'text-xs-left ',
+          header.lColor ? header.lColor[datos.item[header.value]] : '',
+        ]"
         :key="header.value"
+        style="padding: 0 12px"
       >
-      <!-- {{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }} -->
-      {{ showItem(header,datos) }}
+        <!-- {{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }} -->
+        {{ showItem(header, datos) }}
       </td>
     </template>
-    <td class="text-xs-center">
-      <mk-status :status="datos.item.status" :id="datos.item.id" @onStatus="setStatus"></mk-status>
+    <td class="text-xs-center" style="padding: 0 12px">
+      <mk-status
+        :status="datos.item.status"
+        :id="datos.item.id"
+        @onStatus="setStatus"
+      ></mk-status>
     </td>
-    <td class="text-xs-left" v-if="can('edit')||can('del')">
-      <v-btn
-        v-if="can('edit')"
-        depressed
-        outline
-        icon
-        fab
-        dark
-        color="primary"
-        small
-        @click="$emit('openDialog','edit', datos.item)"
-      >
-        <v-icon>edit</v-icon>
-      </v-btn>
-      <v-btn
-        v-if="can('del')"
-        depressed
-        outline
-        icon
-        fab
-        dark
-        color="pink"
-        small
-        @click="$emit('deleteItem',datos.item.id)"
-      >
-        <v-icon>delete</v-icon>
-      </v-btn>
-      <v-btn
-        v-if="Auth.recycled"
-        depressed
-        outline
-        icon
-        fab
-        dark
-        color="green"
-        small
-        @click="$emit('deleteItem',datos.item.id,true)"
-      >
-        <v-icon>restore</v-icon>
-      </v-btn>
+    <td
+      v-if="($store.state.config.tbl_opts_p)&&((can('edit') || can('del')))"
+      class="text-xs-center pa-0 ma-0"
+    >
+      <mk-table-actions :acciones="acciones" :item="datos.item" @callAction="callAction"
+          ></mk-table-actions>
+
     </td>
   </tr>
 </template>
 
 <script>
 import MkStatus from '@/components/mkComponentes/MkDataTable/MkStatus'
+import MkTableActions from '@/components/mkComponentes/MkDataTable/MkTableActions'
 export default {
   name: 'mkTableRow',
-  components: { MkStatus },
+  components: { MkStatus, MkTableActions },
   props: {
     datos: {
       type: [Array, Object],
-      default: []
+      default: [],
     },
     headers: {
       type: [Array, Object],
-      default: []
-    }
+      default: [],
+    },
+    acciones: {
+      type: [Array, Object],
+    },
+
   },
   inject: ['Auth', 'can'],
   methods: {
     setStatus(id, estado) {
       this.$emit('onStatus', id, estado)
     },
+    callAction(opt, item) {
+      this.$emit('callAction', opt, item)
+    },
     onEdit(item) {
-      if (this.can('edit')) {
-        this.$emit('openDialog', 'edit', item)
+      if (this.can('edit')&&this.acciones.find(e=>e.id=='edit').visible) {
+        this.$emit('callAction', {id:'edit',action:'openDialog'}, item)
       }
     },
-    showItem(lista,datos) {
+    showItem(lista, datos) {
       //header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value]
       //let v=datos.item[lista.value]
       let valor = datos.item[lista.value]
 
-      if (lista.type=='check') {
-          if (valor==lista.options[0]){
-            valor=lista.options[1]
-          }else{
-            valor=lista.options[2]
-          }
-          return valor
+      if (lista.type == 'check') {
+        if (valor == lista.options[0]) {
+          valor = lista.options[1]
+        } else {
+          valor = lista.options[2]
+        }
+        return valor
       }
-      if (lista.type=='count') {
-            valor=valor.length
-          return valor
+      if (lista.type == 'count') {
+        valor = valor.length
+        return valor
       }
 
       try {
@@ -109,7 +106,9 @@ export default {
           let hijo = this.headers.find((el) => {
             return el.value == lista.fromList
           }).lista
-          valor = hijo.find((el) => el.id == datos.item[lista.fromList])[campoUnion]
+          valor = hijo.find((el) => el.id == datos.item[lista.fromList])[
+            campoUnion
+          ]
         }
         valor = lista.lista.find((el) => el.id == valor)
         return valor ? valor.name : ''
@@ -120,7 +119,7 @@ export default {
     },
     colLista(lista, v, datos) {
       let valor = null
-      //lista.lista= JSON.parse(lista.lista) 
+      //lista.lista= JSON.parse(lista.lista)
       try {
         //console.log('llego1:', lista.value, v, datos)
 
@@ -138,13 +137,13 @@ export default {
       } catch (error) {
         //console.error(error);
       }
-      //lista.lista= JSON.stringify(lista.lista) 
+      //lista.lista= JSON.stringify(lista.lista)
       return valor ? valor.name : ''
-    }
+    },
   },
   mounted() {
     //console.log('rowmounted')
-  }
+  },
 }
 </script>
 

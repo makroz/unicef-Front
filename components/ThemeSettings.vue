@@ -18,7 +18,14 @@
                 flat
                 value="togleEncrypt"
                 @click="$store.commit('auth/toggleEncrypt')"
-                v-text="$store.state.auth.cacheActive?'Desactivar Encriptacion':'Activar Encriptacion'" />
+                v-text="$store.state.auth.encryptActive?'Desactivar Encriptacion':'Activar Encriptacion'" />
+
+<v-btn
+                flat
+                value="togleTblPos"
+                @click="$store.commit('config/toggle_tbl_opts_p')"
+                v-text="$store.state.config.tbl_opts_p?'Posicion de las Opciones de Listados: Al Final':'Posicion de las Opciones de Listados: Al Inicio'" />
+
 
               <v-btn flat value="clearCache" @click="clearCache()">Borrar Cache</v-btn>
 

@@ -7,8 +7,7 @@
           <mk-data-table
             v-bind="dataTable"
             :campos="campos"
-            @openDialog="openDialog"
-            @deleteItem="deleteItem"
+            @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
             @onPerPageChange="onPerPageChange"
@@ -57,13 +56,16 @@
               <template v-for="item in lServicios">
                 <v-list-tile
                   :key="item.id"
-                  :class="item.selected ? 'deep-purple lighten-5 deep-purple--text text--accent-4' : ''"
+                  :class="
+                    item.selected
+                      ? 'deep-purple lighten-5 deep-purple--text text--accent-4'
+                      : ''
+                  "
                 >
                   <v-list-tile-action>
                     <v-checkbox
                       v-model="item.selected"
                       color="deep-purple accent-4"
-                      
                     ></v-checkbox>
                   </v-list-tile-action>
 
@@ -75,7 +77,6 @@
                   </v-list-tile-content>
                   <v-list-tile-avatar v-if="item.selected">
                     <v-text-field
-                      
                       v-model="item.cantidad"
                       :disabled="
                         item.selected ? (item.cant ? false : true) : true
@@ -101,27 +102,30 @@
             <v-toolbar color="primary" dark dense>
               <v-toolbar-title>
                 Cambiar Estado Actual de
-                <span :class="lColor[item.estado]"> {{ getNameLista(item.estado ,lEstados) }} </span> <span class="red--text">>>></span
-                ><span :class="lColor[item.estado*1 +1]">
-                  {{ getNameLista(item.estado*1 +1,lEstados) }}
+                <span :class="lColor[item.estado]">
+                  {{ getNameLista(item.estado, lEstados) }}
                 </span>
-                </v-toolbar-title>
+                <span class="red--text">>>></span
+                ><span :class="lColor[item.estado * 1 + 1]">
+                  {{ getNameLista(item.estado * 1 + 1, lEstados) }}
+                </span>
+              </v-toolbar-title>
             </v-toolbar>
             <v-layout row pa-2>
-            <v-flex md10>
-            <v-text-field
-            label="Servicio"
-            :value="getNameLista(item.servicios_id,lServicios)"
-            readonly
-          ></v-text-field>
-          </v-flex>
-          <v-flex md2>
-          <v-text-field
-            label="Cantidad"
-            :value="item.cant"
-            readonly
-          ></v-text-field>
-          </v-flex>
+              <v-flex md10>
+                <v-text-field
+                  label="Servicio"
+                  :value="getNameLista(item.servicios_id, lServicios)"
+                  readonly
+                ></v-text-field>
+              </v-flex>
+              <v-flex md2>
+                <v-text-field
+                  label="Cantidad"
+                  :value="item.cant"
+                  readonly
+                ></v-text-field>
+              </v-flex>
             </v-layout>
           </v-card>
         </v-container>
@@ -212,27 +216,26 @@ export default {
           lista: this.lEstados,
           lColor: this.lColor,
         },
-        
       ],
       lUsuarios: [],
       lBeneficiarios: [],
       lServicios: [],
       lEstados: [
-        { id: 1, name: 'Pendiente'},
-        { id: 2, name: 'Realizado'},
-        { id: 3, name: 'Verificado'},
-        { id: 4, name: 'Autorizado'},
+        { id: 1, name: 'Pendiente' },
+        { id: 2, name: 'Realizado' },
+        { id: 3, name: 'Verificado' },
+        { id: 4, name: 'Autorizado' },
         { id: 5, name: 'Comercial' },
-        { id: 6, name: 'Completado'},
+        { id: 6, name: 'Completado' },
       ],
       lColor: [
         '',
         'grey--text',
-        'green--text text--lighten-3' ,
-        'green--text text--lighten-1' ,
-        'green--text' ,
-        'green--text text--darken-2' ,
-        'green--text text--darken-4' ,
+        'green--text text--lighten-3',
+        'green--text text--lighten-1',
+        'green--text',
+        'green--text text--darken-2',
+        'green--text text--darken-4',
       ],
       itemData: {
         epsa: '',
@@ -243,14 +246,13 @@ export default {
     change(e) {
       this.itemData = this.lBeneficiarios.find((el) => el.id === e)
     },
-    getNameLista(e,lista) {
+    getNameLista(e, lista) {
       let valor = lista.find((el) => el.id == e)
       return valor ? valor.name : e
     },
     beforeOpen(accion, data = {}) {
-     
       if (accion == 'add') {
-         this.itemData.epsa = ''
+        this.itemData.epsa = ''
         this.lServicios.forEach((e) => {
           e.cantidad = 1
           if (e.selected) {
@@ -259,7 +261,7 @@ export default {
         })
       } else {
         this.change(data.beneficiarios_id)
-        if (data.estado>=6){
+        if (data.estado >= 6) {
           return false
         }
 
@@ -268,27 +270,28 @@ export default {
     },
     beforeSave(me) {
       //console.log('id',me.item.id)
-      if (!me.item.id){
-      let servicios = []
-      for (const obj in me.lServicios) {
-        if (me.lServicios[obj].selected === true) {
-          servicios.push({
-            id: me.lServicios[obj].id,
-            cant: me.lServicios[obj].cantidad,
-          })
+      if (!me.item.id) {
+        let servicios = []
+        for (const obj in me.lServicios) {
+          if (me.lServicios[obj].selected === true) {
+            servicios.push({
+              id: me.lServicios[obj].id,
+              cant: me.lServicios[obj].cantidad,
+            })
+          }
         }
-      }
-      me.paramsExtra.servicios = servicios
-      }else{
+        me.paramsExtra.servicios = servicios
+      } else {
         // delete me.paramsExtra.servicios
-        // delete me.items.paramsExtra.servicios 
-        me.item.estado =(me.item.estado*1)+1;
+        // delete me.items.paramsExtra.servicios
+        me.item.estado = me.item.estado * 1 + 1
       }
     },
     customFilter(item, queryText, itemText) {
-      const textOne = item.name + ''
-      const textTwo = item.id + ''
-      const searchText = queryText
+      const textOne = ('' + item.name).toLowerCase()
+      const textTwo = ('' + item.id).toLowerCase()
+      const searchText = ('' + queryText).toLowerCase()
+
       return (
         textOne.indexOf(searchText) > -1 || textTwo.indexOf(searchText) > -1
       )
@@ -308,7 +311,7 @@ export default {
       'servicios_id'
     )
     this.updateListCol('estado', this.lEstados)
-    this.updateListCol('estado', this.lColor,'lColor')
+    this.updateListCol('estado', this.lColor, 'lColor')
   },
 }
 </script>

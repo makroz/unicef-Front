@@ -7,6 +7,29 @@ const Menu = [
             name: 'Dashboard',
             href: '/dashboard'
         },
+
+        {
+            title: 'Modulo Rutas',
+            group: 'rutas',
+            component: 'rutas',
+            icon: 'face',
+            items: [{
+                    name: 'ruteosMonitor',
+                    title: 'Realizar Ruteo',
+                    href: '/rutas/ruteosMonitor'
+                },
+                {
+                    name: 'ruteos',
+                    title: 'Ruteos',
+                    href: '/rutas/ruteos'
+                },
+                {
+                    name: 'rutas',
+                    title: 'Rutas',
+                    href: '/rutas/rutas'
+                }
+            ]
+        },
         {
             title: 'Modulo Servicios',
             group: 'servicios',
@@ -23,17 +46,6 @@ const Menu = [
                     href: '/servicios/servicios'
                 }
             ]
-        },
-        {
-            title: 'Modulo Rutas',
-            group: 'rutas',
-            component: 'rutas',
-            icon: 'face',
-            items: [{
-                name: 'rutas',
-                title: 'Rutas',
-                href: '/rutas/rutas'
-            }]
         },
         {
             title: 'Modulo Beneficiarios',
@@ -105,39 +117,7 @@ const Menu = [
                 }
             ]
         },
-
-        {
-            title: 'Modulo Horarios',
-            group: 'horarios',
-            component: 'horarios',
-            icon: 'face',
-            items: [{
-                    name: 'paramsHorarios',
-                    title: 'Parametros Horarios',
-                    href: '/horarios/paramsHorarios'
-                },
-                {
-                    name: 'horarios',
-                    title: 'Horarios',
-                    badge: 'new',
-                    href: '/horarios/horarios'
-                }
-            ]
-        },
         { divider: true },
-        { header: 'Extras' },
-        {
-            title: 'Login',
-            group: 'extra',
-            icon: 'list',
-            href: '/login'
-        },
-        {
-            title: 'Empty',
-            group: 'extra',
-            icon: 'insert_drive_file',
-            href: '/empty'
-        }
     ]
     // reorder menu
 Menu.forEach((item) => {

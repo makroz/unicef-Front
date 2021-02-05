@@ -6,9 +6,8 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-            :campos="campos"
-            @openDialog="openDialog"
-            @deleteItem="deleteItem"
+:campos="campos"
+            @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
             @onPerPageChange="onPerPageChange"
@@ -54,6 +53,7 @@
               <v-autocomplete
                 v-model="item.beneficiarios"
                 :items="lBeneficiarios"
+                :filter="customFilter"
                 color="primary"
                 item-text="name"
                 label="Beneficiarios"
@@ -144,7 +144,7 @@ export default {
           text: 'Monitor.',
           value: 'usuarios_id',
           align: 'left',
-          width: '100px',
+          width: '150px',
           headers: true,
           type: 'num',
           search: true,
@@ -153,6 +153,7 @@ export default {
         {
           text: 'Beneficiarios',
           value: 'beneficiarios',
+           width: '50px',
           headers: true,
           type: 'count',
           search: true,
@@ -220,7 +221,6 @@ export default {
       let me = this
       me.lBeneficiarios = await me.getListaBackend(
         'Rutas/beneficiarios/' + data.id,
-        ''
       )
 
       setTimeout(() => {
@@ -228,10 +228,9 @@ export default {
       }, 300)
     },
     customFilter(item, queryText, itemText) {
-      const textOne = item.name.toLowerCase()
-      const textTwo = item.abbr.toLowerCase()
-      const searchText = queryText.toLowerCase()
-
+      const textOne = ('' + item.name).toLowerCase()
+      const textTwo = ('' + item.id).toLowerCase()
+      const searchText = ('' + queryText).toLowerCase()
       return (
         textOne.indexOf(searchText) > -1 || textTwo.indexOf(searchText) > -1
       )

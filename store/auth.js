@@ -10,7 +10,7 @@ export const state = () => ({
     acceso: false,
     rutaBack: null,
     cacheActive: false,
-    encryptActive: true,
+    encryptActive: false,
     permisos: {
         view: 1,
         ver: 1,
@@ -182,6 +182,9 @@ export const getters = {
     }
 };
 export const mutations = {
+    toggle_tbl_opts_p(state) {
+        state.tbl_opts_p = !state.tbl_opts_p
+    },
     toggleCache(state) {
         state.cacheActive = !state.cacheActive
     },
@@ -279,10 +282,14 @@ export const actions = {
     },
     logout({ commit }) {
         //await this.$axios.post("logout");
-        this.$axios.defaults.headers.common["Authorization"] = "";
+        let me = this
+        me.$axios.defaults.headers.common["Authorization"] = "";
         commit("SET_USER", null);
         commit("setAcceso", false);
-        this.$router.push("/login");
+        setTimeout(() => {
+            me.$router.push("/login");
+        }, 300)
+
         return true;
     },
     reloadUser({ commit }, persist = true) {
@@ -293,6 +300,8 @@ export const actions = {
                 let token = JSON.parse(AES.decrypt(localStorage.getItem("AuthToken"), _lap).toString(Utf8));
                 commit("SET_USER", user, persist);
                 commit("setAuthToken", token, persist);
+                this.$axios.defaults.headers.common["Authorization"] = token;
+                //                console.log("reload", user);
                 //return user;
             } catch (e) {
                 console.log("error", e);

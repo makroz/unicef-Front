@@ -1,13 +1,13 @@
 <template>
   <v-card>
     <mk-table-head
-      @openDialog="openDialog"
-      @deleteItem="deleteItem"
+      @callAction="callAction"
       @busqueda:avanzada="onBuscar"
       :sel="lista.selected"
       :busquedas="busquedas"
       :headers="campos"
       @column:change="onColChange"
+      :acciones="acciones"
     ></mk-table-head>
     <v-divider></v-divider>
     <v-card-text class="pa-0">
@@ -27,8 +27,10 @@
       >
         <template slot="headers" slot-scope="props">
           <tr>
-            <th>
+            <th 
+                style="width:50px;padding:0 12px">
               <v-checkbox
+                
                 :input-value="props.all"
                 :indeterminate="props.indeterminate"
                 primary
@@ -36,38 +38,44 @@
                 @click.stop="toggleAll"
               ></v-checkbox>
             </th>
+            <th  v-if="(!$store.state.config.tbl_opts_p)&&((can('edit') || can('del')))"
+                key="__act__"
+                :class="['column', 'text-xs-center','pa-0','ma-0']"
+                style="width:52px;padding:0 12px"
+             >
+                Acc</th>
             <template v-for="header in props.headers">
               <th
                 v-if="header.headers && !header.hidden"
                 :key="header.value"
                 :class="['column', header.sortable !==false? 'sortable' : '', header.align?'text-xs-'+header.align:'text-xs-left', paginator.options.descending ? 'desc' : 'asc', header.value === paginator.options.sortBy ? 'active' : '']"
                 @click="changeSort(header.value,!(header.sortable===false))"
-                :style="'width:'+header.width?header.width:null"
+                :style="header.width?'width:'+header.width+';padding:0 12px;':'padding:0 12px;'"
              >
                 {{ header.text }} <v-icon  v-if="header.sortable!==false" small>arrow_upward</v-icon></th>
 
             </template>
             <th
                 key="__st__"
-                :class="['column', 'text-xs-center']"
-                :style="'width:50px'"
+                :class="['column', 'text-xs-center','pa-0','ma-0']"
+                style="width:50px;padding:0 12px"
              >
                 Status</th>
-            <th  v-if="(can('edit') || can('del'))"
+            <th  v-if="($store.state.config.tbl_opts_p)&&((can('edit') || can('del')))"
                 key="__act__"
-                :class="['column', 'text-xs-center']"
-                :style="'width:175px'"
+                :class="['column', 'text-xs-center','pa-0','ma-0']"
+                style="width:52px;padding:0 12px"
              >
-                Acciones</th>
+                Acc</th>
           </tr>
         </template>
 
         <template slot="items" slot-scope="props">
           <mk-table-row
             :datos="props"
+            :acciones="acciones"
             :headers="campos"
-            @openDialog="openDialog"
-            @deleteItem="deleteItem"
+            @callAction="callAction"
             @onStatus="setStatus"
           ></mk-table-row>
         </template>
@@ -94,7 +102,8 @@ export default {
     'busquedas',
     'campos',
     'loading',
-    'paginator'
+    'paginator',
+    'acciones'
   ],
   data() {
     return {}
@@ -121,8 +130,13 @@ export default {
     onBuscar(datos, quitarbuscar = false) {
       this.$emit('onBuscar', datos, quitarbuscar)
     },
-    deleteItem(id, restore = false) {
-      this.$emit('deleteItem', id, restore)
+    callAction(opt, item) {
+      console.log('callAction DataTable',opt,item);
+      this.$emit('callAction', opt, item)
+      //this.$emit(opt.action, opt.id,item)
+    },
+    deleteItem(action,item) {
+      this.$emit('deleteItem',action, item)
     },
     openDialog(accion, data = {}) {
       this.$emit('openDialog', accion, data)
@@ -140,7 +154,7 @@ export default {
       this.$emit('column:change', headers,visible);
     }
 
-  }
+  },
 }
 </script>
 <style >
