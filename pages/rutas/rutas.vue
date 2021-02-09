@@ -167,13 +167,13 @@ export default {
   },
   methods: {
     getMarker(id, item, index) {
-      //let marker={ lng: lat, lat: long };
+      //let marker={ lng: lat, lat: lng };
       let lmarker = this.lBeneficiarios.filter((e) => e.id == id)
       let marker = this.center
       //console.log('lmarker',lmarker,id,this.lBeneficiarios)
       if (lmarker.length > 0) {
         //console.log('lmarker2',lmarker)
-        marker = [lmarker[0].lat, lmarker[0].long]
+        marker = [lmarker[0].lat, lmarker[0].lng]
       }
 
       if (index == item.beneficiarios.length - 1) {
@@ -185,7 +185,7 @@ export default {
       return marker
     },
     initMap() {
-      //this.center = [this.item.lat, this.item.long]
+      //this.center = [this.item.lat, this.item.lng]
       this.zoom = 13
       this.$refs.mymap.mapObject.invalidateSize().setView(this.center, 13)
       this.fitMapBounds()

@@ -103,7 +103,7 @@
             <v-flex>
             <v-text-field
               label="Longitud"
-              v-model="item.long"
+              v-model="item.lng"
               :rules="[rules.num]"
               validate-on-blur
             ></v-text-field>
@@ -237,23 +237,23 @@ export default {
     updateMaker(e) {
       //console.log(e)
       this.item.lat = e.lat
-      this.item.long = e.lng
+      this.item.lng = e.lng
     },
     initMap() {
       if ((this.item.lat) && (this.item.lat!='')) {
-        this.center = [this.item.lat, this.item.long]
-        this.marker = [this.item.lat, this.item.long]
+        this.center = [this.item.lat, this.item.lng]
+        this.marker = [this.item.lat, this.item.lng]
         this.zoom = 13
       }else{
         this.item.lat=''
-        this.item.long=''
+        this.item.lng=''
       }
       this.$refs.mymap.mapObject.invalidateSize().setView(this.center, 13)
     },
    beforeOpen(accion, data = {}) {
      if (accion=='add'){
        data.lat=''
-       data.long=''
+       data.lng=''
      }
       setTimeout(() => {
         this.initMap()

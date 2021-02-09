@@ -9,9 +9,9 @@
       <v-toolbar-side-icon @click.stop="toggleDrawer()"></v-toolbar-side-icon>Sistema de Saneamiento
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn icon @click="handleFullScreen()">
+     <v-btn icon @click="handleFullScreen()">
       <v-icon>fullscreen</v-icon>
-    </v-btn>
+    </v-btn> 
     <v-menu offset-y origin="center center" class="elelvation-1" :nudge-right="140" :nudge-bottom="14" transition="scale-transition">
       <v-btn icon flat slot="activator">
         <v-badge color="red" overlap>

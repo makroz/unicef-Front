@@ -15,7 +15,7 @@
         :headers="campos"
         :items="lista.items"
         :headers-length="campos.length+3"
-        :class="[loading?'loading':'','elevation-1']"
+        :class="['elevation-1']"
         item-key="id"
         select-all
         v-model="lista.selected"
@@ -131,7 +131,7 @@ export default {
       this.$emit('onBuscar', datos, quitarbuscar)
     },
     callAction(opt, item) {
-      console.log('callAction DataTable',opt,item);
+      //console.log('callAction DataTable',opt,item);
       this.$emit('callAction', opt, item)
       //this.$emit(opt.action, opt.id,item)
     },

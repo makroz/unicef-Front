@@ -212,7 +212,7 @@ export default {
           me.created == true
         })
     },
-    isOk(data, url) {
+    isOk(data, url='') {
       if (data._warning) {
         data._warning.forEach((e) => {
           c(e[0], e[2], e[1], e[3])
@@ -690,18 +690,19 @@ export default {
     this.created = 2
   },
   mounted() {
-    let campos=this.getParams('headers')
-    if (campos){
-      // campos.forEach(e => {
-      //   if (e.lista){
-      //     if (el.value == campo) {
-      //       e.lista = this.lista
-      //     }
-      //   }
-      // });
-      this.campos =  campos
+    if (this.campos){
+    this.campos=this.getParams('headers')||this.campos
+      this.campos.map(e => {
+        if (typeof e.lista === 'string'){
+          e.lista=this[e.lista]
+        }
+        if (typeof e.lColor === 'string'){
+          e.lColor=this[e.lColor]
+        }
+      });
     }
-    
+    //console.log('campos',this.campos)
+
     this.dataTable.acciones = [
       {
         id: 'add',

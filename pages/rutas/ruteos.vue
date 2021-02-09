@@ -95,7 +95,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lRutas,
+          lista: 'lRutas',
         },
         {
           text: 'Monitor',
@@ -105,7 +105,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lUsuarios,
+          lista: 'lUsuarios',
         },
         {
           text: 'Descripcion',
@@ -130,13 +130,12 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lEstados,
-          lColor: this.lColor,
+          lista: 'lEstados',
+          lColor: 'lColor',
         },
       ],
       lUsuarios: [],
       lEstados: [
-        '',
         'Abierto',
         'En progreso',
         'Terminado',
@@ -144,15 +143,14 @@ export default {
         'Cerrado',
       ],
       lColor: [
-        '',
-        'grey--text',
+        'red--text',
         'green--text text--lighten-3',
         'green--text text--lighten-1',
         'green--text',
-        'green--text text--darken-2',
         'green--text text--darken-4',
       ],
       lRutas: [],
+
     }
   },
   methods: {
@@ -176,8 +174,8 @@ export default {
       var coordenadas = position.coords
       this.item.lat = coordenadas.latitude
       this.item.lng = coordenadas.longitude
-      console.log('Tu posición actual es:')
-      console.log(position)
+      //console.log('Tu posición actual es:')
+      //console.log(position)
     },
 
     errorGps(error) {
@@ -201,14 +199,12 @@ export default {
   },
 
   async mounted() {
-    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
+    this.lUsuarios = await this.getListaBackend('monitores', '','usuarios_id')
     this.lRutas = await this.getListaBackend(
       'Rutas',
       'id,name,usuarios_id',
       'rutas_id'
     )
-    this.updateListCol('estado', this.lEstados)
-    this.updateListCol('estado', this.lColor, 'lColor')
     //this.setOptionTable('del').visible=false;
   },
 }

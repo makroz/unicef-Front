@@ -44,3 +44,14 @@ export function c(msg, m1 = '', m2 = '', tipo = '') {
 export function getTitFromName(msg) {
     return (msg + '').split('/').pop().split(/(?=[A-Z])/).join(' ');
 }
+
+export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
+    let r = false;
+    //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
+    let o = lista.find(el => el[busco] === valor)
+    if (o) {
+        r = o[devuelvo];
+    }
+    //console.log('getdatalista resulatdo:' + o);
+    return r
+}

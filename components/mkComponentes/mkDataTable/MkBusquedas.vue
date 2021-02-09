@@ -8,11 +8,14 @@
     </v-btn>
     <v-dialog v-model="modal" scrollable persistent max-width="90%">
       <v-card>
-        <v-card-title>{{tituloModal}}</v-card-title>
+        <v-card-title>{{ tituloModal }}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <v-card v-for="(item, index) in curBusquedas" :key="index" class="d-flex flex-start">
-
+          <v-card
+            v-for="(item, index) in curBusquedas"
+            :key="index"
+            class="d-flex flex-start"
+          >
             <v-select
               class="ma-2"
               v-model="item.campo"
@@ -30,7 +33,7 @@
               label="Condicion"
             ></v-select>
             <v-select
-              v-if="(item.lista)&&(item.lista.length>0)"
+              v-if="item.lista && item.lista.length > 0"
               class="ma-2"
               v-model="item.criterio"
               :items="item.lista"
@@ -92,15 +95,26 @@
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
-          <v-btn color="red darken-1" flat @click="onBuscar(true)">Quitar Busqueda</v-btn>
+          <v-btn color="red darken-1" flat @click="onBuscar(true)"
+            >Quitar Busqueda</v-btn
+          >
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="modal = false">volver</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="modal = false"
+            >volver</v-btn
+          >
           <v-btn color="green darken-1" flat @click="onBuscar()">Buscar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-dialog ref="dialogDate" v-model="modalDate" persistent lazy full-width width="290px">
+    <v-dialog
+      ref="dialogDate"
+      v-model="modalDate"
+      persistent
+      lazy
+      full-width
+      width="290px"
+    >
       <v-date-picker v-model="dateSearch" scrollable>
         <v-spacer></v-spacer>
         <v-btn flat color="primary" @click="modalDate = false">Cancel</v-btn>
@@ -127,14 +141,14 @@ export default {
           items: [],
           lista: false,
           type: 'text',
-          prepend: ''
-        }
-      ]
+          prepend: '',
+        },
+      ],
     },
     campos: {
       type: Array,
-      default: () => [{ value: 'name', text: 'Nombre', type: 'text' }] //type: date/num/text
-    }
+      default: () => [{ value: 'name', text: 'Nombre', type: 'text' }], //type: date/num/text
+    },
   },
   data() {
     return {
@@ -146,13 +160,13 @@ export default {
       lCriterios: false,
       uniones: [
         { value: 'and', text: 'y' },
-        { value: 'or', text: 'o' }
+        { value: 'or', text: 'o' },
       ],
       curBusquedas: [],
       mask: {
         text: '',
-        num: '#'
-      }
+        num: '#',
+      },
     }
   },
   methods: {
@@ -175,7 +189,7 @@ export default {
         criterio: '',
         union: 'and',
         items: [],
-        lista: false
+        lista: false,
       })
     },
     onBuscar(quitarbuscar = false) {
@@ -184,11 +198,7 @@ export default {
         this.curBusquedas = []
       }
       this.curBusquedas = this.curBusquedas.filter((e) => e.criterio != '')
-      this.$emit(
-        'busqueda:avanzada',
-        this.curBusquedas,
-        quitarbuscar
-      )
+      this.$emit('busqueda:avanzada', this.curBusquedas, quitarbuscar)
       this.modal = false
     },
     onChangeCampo(item) {
@@ -218,9 +228,16 @@ export default {
 
             break
         }
-        //console.log('changeCampos',campo)
         if (campo.lista) {
-          item.lista = campo.lista
+          if (campo.lista[0].id) {
+            item.lista = campo.lista
+          } else {
+            item.lista = []
+            campo.lista.map((e, index) =>
+              item.lista.push({ id: index, name: e })
+            )
+          }
+
           item.items = this.condiciones['lista']
         } else {
           item.lista = false
@@ -238,16 +255,16 @@ export default {
               union: 'and',
               items: [],
               type: 'text',
-              prepend: ''
-            }
+              prepend: '',
+            },
           ]
         } else {
           this.curBusquedas = Object.assign([], this.busquedas)
         }
       }
       this.modal = true
-    }
-  }
+    },
+  },
 }
 </script>
 <style>

@@ -100,8 +100,7 @@ export default {
         return valor
       }
 
-      try {
-        if (lista.fromList) {
+      if (lista.fromList) {
           let campoUnion = lista.listField
           let hijo = this.headers.find((el) => {
             return el.value == lista.fromList
@@ -109,12 +108,13 @@ export default {
           valor = hijo.find((el) => el.id == datos.item[lista.fromList])[
             campoUnion
           ]
+          return valor ? valor.name : ''
         }
-        valor = lista.lista.find((el) => el.id == valor)
-        return valor ? valor.name : ''
-      } catch (error) {
-        //console.error(error);
-      }
+      if (lista.lista) {        
+        
+        valor = lista.lista.find((el,index) => typeof el === 'string'?index==valor:el.id == valor)
+        return valor ? valor.name?valor.name:valor: ''
+      } 
       return valor
     },
     colLista(lista, v, datos) {

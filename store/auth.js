@@ -224,7 +224,7 @@ export const mutations = {
 };
 
 export const actions = {
-    async loadData({ getters }, datos) {
+    async loadData({ getters, dispatch }, datos) {
         let url = datos.url + '?page=1&per_page=-1&cols=' + datos.campos + '&disabled=1'
         if (datos.filter) {
             url = url + '&filter=' + datos.filter
@@ -234,6 +234,11 @@ export const actions = {
             response = await this.$axios.post(url + getters.getCt(url), datos.datos)
         } else {
             response = await this.$axios.get(url + getters.getCt(url))
+        }
+
+        //console.log('authloaddata', response);
+        if (response.data.ok < -1) {
+            dispatch('logout')
         }
         return getters.getDataCache(response.data, url)
     },

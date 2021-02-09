@@ -103,11 +103,11 @@
               <v-toolbar-title>
                 Cambiar Estado Actual de
                 <span :class="lColor[item.estado]">
-                  {{ getNameLista(item.estado, lEstados) }}
+                  {{ lEstados[item.estado]  }}
                 </span>
                 <span class="red--text">>>></span
                 ><span :class="lColor[item.estado * 1 + 1]">
-                  {{ getNameLista(item.estado * 1 + 1, lEstados) }}
+                  {{ lEstados[item.estado*1 +1 ] }}
                 </span>
               </v-toolbar-title>
             </v-toolbar>
@@ -213,23 +213,31 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lEstados,
-          lColor: this.lColor,
+          lista: 'lEstados',
+          lColor: 'lColor',
         },
       ],
       lUsuarios: [],
       lBeneficiarios: [],
       lServicios: [],
       lEstados: [
-        { id: 1, name: 'Pendiente' },
-        { id: 2, name: 'Realizado' },
-        { id: 3, name: 'Verificado' },
-        { id: 4, name: 'Autorizado' },
-        { id: 5, name: 'Comercial' },
-        { id: 6, name: 'Completado' },
+        'Pendiente',
+        'Realizado',
+        'Verificado',
+        'Autorizado',
+        'Comercial',
+        'Completado',
       ],
+
+      // lEstados: [
+      //   { id: 1, name: 'Pendiente' },
+      //   { id: 2, name: 'Realizado' },
+      //   { id: 3, name: 'Verificado' },
+      //   { id: 4, name: 'Autorizado' },
+      //   { id: 5, name: 'Comercial' },
+      //   { id: 6, name: 'Completado' },
+      // ],
       lColor: [
-        '',
         'grey--text',
         'green--text text--lighten-3',
         'green--text text--lighten-1',
@@ -261,7 +269,7 @@ export default {
         })
       } else {
         this.change(data.beneficiarios_id)
-        if (data.estado >= 6) {
+        if (data.estado >= 5) {
           return false
         }
 
@@ -310,8 +318,8 @@ export default {
       '',
       'servicios_id'
     )
-    this.updateListCol('estado', this.lEstados)
-    this.updateListCol('estado', this.lColor, 'lColor')
+    // this.updateListCol('estado', this.lEstados)
+    // this.updateListCol('estado', this.lColor, 'lColor')
   },
 }
 </script>
