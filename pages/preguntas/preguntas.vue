@@ -102,7 +102,7 @@ export default {
         {
           text: 'Orden',
           value: 'orden',
-          align: 'left',
+          align: 'right',
           width: '100px',
           headers: true,
           type: 'text',

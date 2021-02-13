@@ -6,7 +6,7 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-:campos="campos"
+            :campos="campos"
             @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
@@ -34,8 +34,12 @@
           counter
           maxlength="20"
         ></v-text-field>
-
-        <!-- <v-text-field label="Descripcion" v-model="item.descrip"></v-text-field> -->
+        <v-text-field
+          label="Orden"
+          v-model="item.orden"
+          :rules="[rules.required, rules.num]"
+          validate-on-blur
+        ></v-text-field>
       </mk-form>
     </v-container>
   </div>
@@ -61,27 +65,27 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true
+          search: true,
         },
         {
           text: 'Nombre',
           value: 'name',
           headers: true,
           type: 'text',
-          search: true
+          search: true,
         },
-        // {
-        //   text: 'Descripcion',
-        //   value: 'descrip',
-        //   align: 'left',
-        //   headers: true,
-        //   type: 'text',
-        //   search: true
-        // }
-      ]
+        {
+          text: 'Orden',
+          value: 'orden',
+          align: 'right',
+          headers: true,
+          type: 'num',
+          search: true,
+        },
+      ],
     }
   },
-  methods: {}
+  methods: {},
 }
 </script>
 
