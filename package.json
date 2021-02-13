@@ -13,6 +13,8 @@
     "dependencies": {
         "@nuxtjs/axios": "^5.12.5",
         "@nuxtjs/webpackmonitor": "^0.1.0",
+        "@targomo/core": "^0.4.2",
+        "@targomo/leaflet": "0.0.9",
         "cross-env": "^5.2.0",
         "crypto-js": "^4.0.0",
         "font-awesome": "^4.7.0",

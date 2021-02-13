@@ -173,7 +173,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lServicios,
+          lista: 'lServicios',
         },
         {
           text: 'Beneficiario',
@@ -183,7 +183,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lBeneficiarios,
+          lista: 'lBeneficiarios',
         },
 
         {
@@ -194,7 +194,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lUsuarios,
+          lista: 'lUsuarios',
         },
         {
           text: 'Cant',

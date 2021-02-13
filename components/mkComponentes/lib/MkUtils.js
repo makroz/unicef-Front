@@ -50,8 +50,23 @@ export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
     //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
     let o = lista.find(el => el[busco] === valor)
     if (o) {
-        r = o[devuelvo];
+        if (devuelvo == '*') {
+            r = o
+        } else {
+            r = o[devuelvo];
+        }
     }
     //console.log('getdatalista resulatdo:' + o);
     return r
+}
+export function getDistancia(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = (lat2 - lat1) * Math.PI / 180; // deg2rad below
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var a =
+        0.5 - Math.cos(dLat) / 2 +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        (1 - Math.cos(dLon)) / 2;
+
+    return R * 2 * Math.asin(Math.sqrt(a));
 }

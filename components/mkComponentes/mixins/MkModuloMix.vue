@@ -5,6 +5,7 @@ import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import Swal from 'sweetalert2'
 import { c, getTitFromName } from '@/components/mkComponentes/lib/MkUtils.js'
+import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
 
 const _storage = process.env.mkConfig.storageUrl
 const _lap = process.env.mkConfig.authKey
@@ -500,34 +501,36 @@ export default {
       this.modal = true
       this.$nextTick(this.$refs.focus.focus)
     },
-    setParams(name = '', value = '') {
+    setParams(name = '', value = '',encrypt = false) {
       if (name == '') {
         name = 'paginator'
         value = this.dataTable.paginator
       }
+      setCache(this.$options.name + '.Params.' + name,value,encrypt)
       //console.log('Guardando:',this.$options.name+".Params."+name, value);
-      try {
-        value = JSON.stringify(value)
-        localStorage.setItem(this.$options.name + '.Params.' + name, value)
-      } catch (error) {
-        console.error(error)
-      }
+      // try {
+      //   value = JSON.stringify(value)
+      //   localStorage.setItem(this.$options.name + '.Params.' + name, value)
+      // } catch (error) {
+      //   console.error(error)
+      // }
     },
 
-    getParams(name = '', def = false) {
-      let params = def
-      try {
-        params = JSON.parse(
-          localStorage.getItem(this.$options.name + '.Params.' + name)
-        )
-        if (!params) {
-          params = def
-        }
-      } catch (error) {
-        params = def
-      }
-      //console.error('Params ',name,':',params);
-      return params
+    getParams(name = '', def = false,encrypt = false) {
+      return getCache(this.$options.name + '.Params.' + name,def,encrypt)
+      // let params = def
+      // try {
+      //   params = JSON.parse(
+      //     localStorage.getItem(this.$options.name + '.Params.' + name)
+      //   )
+      //   if (!params) {
+      //     params = def
+      //   }
+      // } catch (error) {
+      //   params = def
+      // }
+      // //console.error('Params ',name,':',params);
+      // return params
     },
     can(val, alertar = false) {
       //console.info('entro a can!!! :'+val);
@@ -611,6 +614,9 @@ export default {
         campos: campos,
       })
       if (item) {
+        if (item.isArray) {
+          item.forEach((e=> this.updateListCol(e, lista) ))
+        }else
         this.updateListCol(item, lista)
       }
       return lista

@@ -202,7 +202,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lDistritos,
+          lista: 'lDistritos',
         },
         {
           text: 'Entidad',
@@ -212,7 +212,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lEntidades,
+          lista: 'lEntidades',
         },
         {
           text: 'Ruta',
@@ -222,7 +222,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lRutas,
+          lista: 'lRutas',
         },
       ],
       center: [-17.783373986957255, -63.18209478792436],
@@ -276,7 +276,9 @@ export default {
   //   }
   // },
   async mounted() {
-    this.lRutas = await this.getListaBackend('Rutas', 'id,name', 'rutas_id')
+    this.lRutas = await this.getListaBackend('Rutas', 'id,name',
+     'rutas_id'
+     )
     this.lEntidades = await this.getListaBackend(
       'Entidades',
       'id,name',
@@ -287,18 +289,6 @@ export default {
       'id,name',
       'distritos_id'
     )
-    // let me = this
-    // me.lEntidades  = await me.$store.dispatch('auth/loadData', {
-    //   url: 'Entidades',
-    //   campos: 'id,name'
-    // })
-    // me.lDistritos  = await me.$store.dispatch('auth/loadData', {
-    //   url: 'Distritos',
-    //   campos: 'id,name'
-    // })
-
-    //  me.updateListCol('entidades_id', me.lEntidades)
-    //  me.updateListCol('distritos_id', me.lDistritos)
   },
 }
 </script>

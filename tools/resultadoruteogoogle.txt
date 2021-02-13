@@ -1,0 +1,1302 @@
+ 20210212183708
+ httpsmaps.googleapis.commapsapidirectionsjsonorigin=-17.809407999999998,-63.13082879999999&destination=-17.809407999999998,-63.13082879999999&waypoints=optimizetrue-17.774715554907,-63.155690431595-17.777949106935,-63.20348437616-17.796419586939,-63.181858086905&key=AIzaSyB-e7M4Po3dq0ph0GsPcOxXjagECVC_gS4
+
+{
+  geocoded_waypoints [
+    {
+      geocoder_status OK,
+      place_id ChIJ6xNtk9_o8ZMRD4qKVyd91e0,
+      types [
+        street_address
+      ]
+    },
+    {
+      geocoder_status OK,
+      place_id ChIJjdxOYxXo8ZMR43bx5jSQyn4,
+      types [
+        street_address
+      ]
+    },
+    {
+      geocoder_status OK,
+      place_id ChIJM-mQAQDo8ZMR-itbyPJPYUs,
+      types [
+        street_address
+      ]
+    },
+    {
+      geocoder_status OK,
+      place_id ChIJLcYgnIDo8ZMRcNx0qYNRh5U,
+      types [
+        premise
+      ]
+    },
+    {
+      geocoder_status OK,
+      place_id ChIJ6xNtk9_o8ZMRD4qKVyd91e0,
+      types [
+        street_address
+      ]
+    }
+  ],
+  routes [
+    {
+      bounds {
+        northeast {
+          lat -17.7703048,
+          lng -63.130526
+        },
+        southwest {
+          lat -17.8094199,
+          lng -63.2045785
+        }
+      },
+      copyrights Map data ©2021,
+      legs [
+        {
+          distance {
+            text 6.8 km,
+            value 6821
+          },
+          duration {
+            text 15 min,
+            value 890
+          },
+          end_address Juan de Garay 395, Santa Cruz de la Sierra, Bolivia,
+          end_location {
+            lat -17.7962746,
+            lng -63.1818832
+          },
+          start_address Ave Juan Jose 35, Santa Cruz de la Sierra, Bolivia,
+          start_location {
+            lat -17.8094199,
+            lng -63.1306877
+          },
+          steps [
+            {
+              distance {
+                text 0.2 km,
+                value 184
+              },
+              duration {
+                text 1 min,
+                value 37
+              },
+              end_location {
+                lat -17.8077714,
+                lng -63.130526
+              },
+              html_instructions Dirígete al bnorteb por bLos Roblesb hacia bDos Los Roblesb.,
+              polyline {
+                points zkukBxei`Ka@CCiAGaAECsCM
+              },
+              start_location {
+                lat -17.8094199,
+                lng -63.1306877
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.6 km,
+                value 575
+              },
+              duration {
+                text 2 min,
+                value 92
+              },
+              end_location {
+                lat -17.8074922,
+                lng -63.1359451
+              },
+              html_instructions Gira a la bizquierdab.,
+              maneuver turn-left,
+              polyline {
+                points paukBxdi`KNEfAAv@BErAGrACt@@ZEdBAPCvBAXCxAAjAI`FAZ
+              },
+              start_location {
+                lat -17.8077714,
+                lng -63.130526
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.6 km,
+                value 605
+              },
+              duration {
+                text 2 min,
+                value 108
+              },
+              end_location {
+                lat -17.8073401,
+                lng -63.1414814
+              },
+              html_instructions Mantente a la bizquierdab.,
+              maneuver keep-left,
+              polyline {
+                points x_ukBtfj`KA^@A`AKlDA`@Cd@KdECt@AVA`@RK`DAZAf@A@CjA`@@
+              },
+              start_location {
+                lat -17.8074922,
+                lng -63.1359451
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 1.2 km,
+                value 1191
+              },
+              duration {
+                text 2 min,
+                value 116
+              },
+              end_location {
+                lat -17.8023729,
+                lng -63.1514426
+              },
+              html_instructions Gira a la bderechab,
+              maneuver turn-right,
+              polyline {
+                points z~tkBfik`K}AlE_A`CWl@{BbGGL_AzBo@zAOZA@wEdLIRe@hAAD_A~BaAbCABw@nBABa@dA{@tB
+              },
+              start_location {
+                lat -17.8073401,
+                lng -63.1414814
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 7 m,
+                value 7
+              },
+              duration {
+                text 1 min,
+                value 2
+              },
+              end_location {
+                lat -17.8023188,
+                lng -63.1514162
+              },
+              html_instructions Gira a la bderechab con dirección a bCuarto Anillob,
+              maneuver turn-right,
+              polyline {
+                points x_tkBngm`KIC
+              },
+              start_location {
+                lat -17.8023729,
+                lng -63.1514426
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.5 km,
+                value 461
+              },
+              duration {
+                text 1 min,
+                value 54
+              },
+              end_location {
+                lat -17.805456,
+                lng -63.1538599
+              },
+              html_instructions Dar vuelta en bUb,
+              maneuver uturn-left,
+              polyline {
+                points n_tkBjgm`KWr@NF`@Pp@ZPJxAp@t@d@z@d@ZRNJ@d@v@h@jAz@zAfA
+              },
+              start_location {
+                lat -17.8023188,
+                lng -63.1514162
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 49 m,
+                value 49
+              },
+              duration {
+                text 1 min,
+                value 6
+              },
+              end_location {
+                lat -17.8055328,
+                lng -63.15431390000001
+              },
+              html_instructions Gira a la bderechab hacia bAve Adolfo Román Hijob,
+              maneuver turn-right,
+              polyline {
+                points bstkBrvm`KFh@Dn@
+              },
+              start_location {
+                lat -17.805456,
+                lng -63.1538599
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.6 km,
+                value 606
+              },
+              duration {
+                text 1 min,
+                value 60
+              },
+              end_location {
+                lat -17.8022037,
+                lng -63.15879880000001
+              },
+              html_instructions Gira levemente a la bderechab con dirección a bAve Adolfo Román Hijob,
+              maneuver turn-slight-right,
+              polyline {
+                points pstkBlym`K@ALCLAJEJELILYd@[b@_@j@IH_AtAc@r@OTOPu@fAQRMRw@`Ak@`ASZq@v@KPs@dAW`@MPq@h@
+              },
+              start_location {
+                lat -17.8055328,
+                lng -63.15431390000001
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.3 km,
+                value 262
+              },
+              duration {
+                text 1 min,
+                value 28
+              },
+              end_location {
+                lat -17.8008751,
+                lng -63.160687
+              },
+              html_instructions En la rotonda, toma la b2.ªb salida en dirección a bAv Adolfo Román Hijob,
+              maneuver roundabout-right,
+              polyline {
+                points v~skBnun`KKK@G@A@A@C@CBABA@ABABADBBF@B@@B@@@@BmBzCSuAxB
+              },
+              start_location {
+                lat -17.8022037,
+                lng -63.15879880000001
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.8 km,
+                value 789
+              },
+              duration {
+                text 2 min,
+                value 94
+              },
+              end_location {
+                lat -17.8009683,
+                lng -63.16757389999999
+              },
+              html_instructions En la rotonda, toma la btercerab salida,
+              maneuver roundabout-right,
+              polyline {
+                points nvskBhao`KCCCCECCACAEACEACACC@ACC@A@C@CBA@ABABABABABJ@F@FBFBFBFDDFBDBLj@ABnBBN~FBfDF~A@@pCBpB@f@DjBBxABrB
+              },
+              start_location {
+                lat -17.8008751,
+                lng -63.160687
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.3 km,
+                value 285
+              },
+              duration {
+                text 1 min,
+                value 56
+              },
+              end_location {
+                lat -17.7987199,
+                lng -63.16885310000001
+              },
+              html_instructions Gira a la bderechab,
+              maneuver turn-right,
+              polyline {
+                points `wskBhlp`KyBrAsAr@IDgBr@c@RgA`@UF
+              },
+              start_location {
+                lat -17.8009683,
+                lng -63.16757389999999
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.7 km,
+                value 661
+              },
+              duration {
+                text 1 min,
+                value 80
+              },
+              end_location {
+                lat -17.7979272,
+                lng -63.17495189999999
+              },
+              html_instructions Gira a la bizquierdab con dirección a bAvenida El Trompillob,
+              maneuver turn-left,
+              polyline {
+                points ~hskBhtp`KOFF^BX@NDv@@RTAVCr@Ch@CTQbBO~ASB[zCQfBMtAQfBOnACVBF@J
+              },
+              start_location {
+                lat -17.7987199,
+                lng -63.16885310000001
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.6 km,
+                value 633
+              },
+              duration {
+                text 1 min,
+                value 82
+              },
+              end_location {
+                lat -17.7994528,
+                lng -63.1806984
+              },
+              html_instructions Continúa por bAv. El Trompillob,
+              polyline {
+                points `dskBlzq`KBfABZFd@p@`DDVlBHb@DX~@dFjBTlAHh@^hBFNj@BN
+              },
+              start_location {
+                lat -17.7979272,
+                lng -63.17495189999999
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.1 km,
+                value 109
+              },
+              duration {
+                text 1 min,
+                value 15
+              },
+              end_location {
+                lat -17.7996461,
+                lng -63.1816784
+              },
+              html_instructions Gira a la bderechab para continuar en bAv. El Trompillob,
+              maneuver turn-right,
+              polyline {
+                points pmskBj~r`KCFABADH@Jl@zC
+              },
+              start_location {
+                lat -17.7994528,
+                lng -63.1806984
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.2 km,
+                value 244
+              },
+              duration {
+                text 1 min,
+                value 34
+              },
+              end_location {
+                lat -17.797474,
+                lng -63.18199139999999
+              },
+              html_instructions Gira a la bderechab,
+              maneuver turn-right,
+              polyline {
+                points xnskBnds`KaIl@qBN
+              },
+              start_location {
+                lat -17.7996461,
+                lng -63.1816784
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.1 km,
+                value 130
+              },
+              duration {
+                text 1 min,
+                value 20
+              },
+              end_location {
+                lat -17.7963192,
+                lng -63.1821669
+              },
+              html_instructions Continúa por bAv Ejercito Nacionalb,
+              polyline {
+                points daskBlfs`KI@{E`@
+              },
+              start_location {
+                lat -17.797474,
+                lng -63.18199139999999
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 30 m,
+                value 30
+              },
+              duration {
+                text 1 min,
+                value 6
+              },
+              end_location {
+                lat -17.7962746,
+                lng -63.1818832
+              },
+              html_instructions Gira a la bderechab con dirección a bJuan de Garaybdiv style=font-size0.9emEl destino está a la derecha.div,
+              maneuver turn-right,
+              polyline {
+                points ~yrkBpgs`KIy@
+              },
+              start_location {
+                lat -17.7963192,
+                lng -63.1821669
+              },
+              travel_mode DRIVING
+            }
+          ],
+          traffic_speed_entry [
+            
+          ],
+          via_waypoint [
+            
+          ]
+        },
+        {
+          distance {
+            text 5.1 km,
+            value 5065
+          },
+          duration {
+            text 11 min,
+            value 639
+          },
+          end_address Av.Hernando Sanabria 1581, Santa Cruz de la Sierra, Bolivia,
+          end_location {
+            lat -17.7779246,
+            lng -63.203588
+          },
+          start_address Juan de Garay 395, Santa Cruz de la Sierra, Bolivia,
+          start_location {
+            lat -17.7962746,
+            lng -63.1818832
+          },
+          steps [
+            {
+              distance {
+                text 30 m,
+                value 30
+              },
+              duration {
+                text 1 min,
+                value 6
+              },
+              end_location {
+                lat -17.7963192,
+                lng -63.1821669
+              },
+              html_instructions Dirígete al boesteb por bJuan de Garayb hacia bAv Ejercito Nacionalb.,
+              polyline {
+                points tyrkBves`KHx@
+              },
+              start_location {
+                lat -17.7962746,
+                lng -63.1818832
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.1 km,
+                value 146
+              },
+              duration {
+                text 1 min,
+                value 21
+              },
+              end_location {
+                lat -17.7950189,
+                lng -63.182345
+              },
+              html_instructions Gira a la bderechab con dirección a bAv Ejercito Nacionalb,
+              maneuver turn-right,
+              polyline {
+                points ~yrkBpgs`KO@sF^
+              },
+              start_location {
+                lat -17.7963192,
+                lng -63.1821669
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.3 km,
+                value 332
+              },
+              duration {
+                text 1 min,
+                value 51
+              },
+              end_location {
+                lat -17.7954566,
+                lng -63.185444
+              },
+              html_instructions Gira a la bizquierdab en la 1ª intersección.,
+              maneuver turn-left,
+              polyline {
+                points zqrkBrhs`KBVl@tHBd@xG
+              },
+              start_location {
+                lat -17.7950189,
+                lng -63.182345
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.3 km,
+                value 268
+              },
+              duration {
+                text 1 min,
+                value 40
+              },
+              end_location {
+                lat -17.7978467,
+                lng -63.1850977
+              },
+              html_instructions Gira a la bizquierdab.,
+              maneuver turn-left,
+              polyline {
+                points rtrkB~{s`KvCUdIm@
+              },
+              start_location {
+                lat -17.7954566,
+                lng -63.185444
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.7 km,
+                value 701
+              },
+              duration {
+                text 2 min,
+                value 94
+              },
+              end_location {
+                lat -17.799491,
+                lng -63.1912337
+              },
+              html_instructions Gira a la bderechabdiv style=font-size0.9emPasa una rotondadiv,
+              maneuver turn-right,
+              polyline {
+                points pcskBzys`KLjBBV@VBj@AA@AA@A@@A@A@@@AB@@@@@B@@@@@@@@@@@@@@@@@@@@@Lz@PxBX~C^vEFjAFl@BR@LBLFNFRpAhBvA`B
+              },
+              start_location {
+                lat -17.7978467,
+                lng -63.1850977
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.2 km,
+                value 205
+              },
+              duration {
+                text 1 min,
+                value 40
+              },
+              end_location {
+                lat -17.7981025,
+                lng -63.192511
+              },
+              html_instructions Gira a la bderechab con dirección a bAv. El Trompillob,
+              maneuver turn-right,
+              polyline {
+                points xmskBd`u`Kg@b@EDm@h@WRKJEDa@`@c@^e@^c@b@
+              },
+              start_location {
+                lat -17.799491,
+                lng -63.1912337
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 1.5 km,
+                value 1538
+              },
+              duration {
+                text 3 min,
+                value 159
+              },
+              end_location {
+                lat -17.7848003,
+                lng -63.19490690000001
+              },
+              html_instructions En la rotonda, toma la btercerab salida en dirección a bSegundo anillob,
+              maneuver roundabout-right,
+              polyline {
+                points beskBdhu`KAA@AAAA@E@C@C@A@CBC@ABCB@@A@@@@@@@@@@@@@@[X_@XWPo@`@SL[P_A^oA^{@Nq@Jy@HqBHkCLeGVkCLwBLiAB[eABu@Bu@DWDo@DQ@mCL}CNuADuAFoCLSmDPi@Ba@@[@GCAOCg@@
+              },
+              start_location {
+                lat -17.7981025,
+                lng -63.192511
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 1.0 km,
+                value 1020
+              },
+              duration {
+                text 2 min,
+                value 128
+              },
+              end_location {
+                lat -17.7852629,
+                lng -63.20452719999999
+              },
+              html_instructions Gira a la bizquierdab.,
+              maneuver turn-left,
+              polyline {
+                points ~qpkBdwu`Kr@Bx@BdAJ`F@j@B@BdBBl@LhH@tAHbD@x@FlDBFbCFBlANFxD@z@
+              },
+              start_location {
+                lat -17.7848003,
+                lng -63.19490690000001
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.6 km,
+                value 565
+              },
+              duration {
+                text 1 min,
+                value 67
+              },
+              end_location {
+                lat -17.7802338,
+                lng -63.2039735
+              },
+              html_instructions En la rotonda, toma la b1.ªb salida en dirección a bAv Noel Kempff Mercadob,
+              maneuver roundabout-right,
+              polyline {
+                points ztpkBhsw`KA@A@A@A@M@MAOAy@CSAuAGIAm@CWCEIAkAIaAIUAuAKy@EMAa@CiAKgAIOAKAgAIyAK
+              },
+              start_location {
+                lat -17.7852629,
+                lng -63.20452719999999
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.3 km,
+                value 260
+              },
+              duration {
+                text 1 min,
+                value 33
+              },
+              end_location {
+                lat -17.7779246,
+                lng -63.203588
+              },
+              html_instructions Continúa recto por bAv Noel Kempff Mercadobdiv style=font-size0.9emEl destino está a la derecha.div,
+              maneuver straight,
+              polyline {
+                points luokBxow`KqAIeAKMAcBQEAOAeAKqAKUE
+              },
+              start_location {
+                lat -17.7802338,
+                lng -63.2039735
+              },
+              travel_mode DRIVING
+            }
+          ],
+          traffic_speed_entry [
+            
+          ],
+          via_waypoint [
+            
+          ]
+        },
+        {
+          distance {
+            text 6.3 km,
+            value 6309
+          },
+          duration {
+            text 13 min,
+            value 769
+          },
+          end_address 11, Santa Cruz de la Sierra, Bolivia,
+          end_location {
+            lat -17.7746679,
+            lng -63.15549309999999
+          },
+          start_address Av.Hernando Sanabria 1581, Santa Cruz de la Sierra, Bolivia,
+          start_location {
+            lat -17.7779246,
+            lng -63.203588
+          },
+          steps [
+            {
+              distance {
+                text 10 m,
+                value 10
+              },
+              duration {
+                text 1 min,
+                value 2
+              },
+              end_location {
+                lat -17.7778373,
+                lng -63.20356519999999
+              },
+              html_instructions Dirígete al bnorteb por bAv Noel Kempff Mercadob.,
+              polyline {
+                points ~fokBlmw`KOC
+              },
+              start_location {
+                lat -17.7779246,
+                lng -63.203588
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.6 km,
+                value 623
+              },
+              duration {
+                text 1 min,
+                value 76
+              },
+              end_location {
+                lat -17.7724692,
+                lng -63.2026109
+              },
+              html_instructions En la rotonda, toma la btercerab salida en dirección a bAv Tercer Anillo Internob,
+              maneuver roundabout-right,
+              polyline {
+                points nfokBhmw`KAECAGCGEECCCCCAEACAEACECCCC@A@C@C@C@ABC@CDCBQK@QA}@IkBQoAQa@ESCiDY]E_AKaBOsBQ{@KwAW
+              },
+              start_location {
+                lat -17.7778373,
+                lng -63.20356519999999
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 1.2 km,
+                value 1202
+              },
+              duration {
+                text 2 min,
+                value 135
+              },
+              end_location {
+                lat -17.7737493,
+                lng -63.1914356
+              },
+              html_instructions En la rotonda, toma la b1.ªb salida en dirección a bAvenida Buschb,
+              maneuver roundabout-right,
+              polyline {
+                points dnkBhgw`KAEAECECCCCCCECCAHuARqCB_@V{DDw@TeDPuCDg@V_E@UwFNuBFs@LcBD}@ZmFHoAXeCB_@Fw@
+              },
+              start_location {
+                lat -17.7724692,
+                lng -63.2026109
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 2.6 km,
+                value 2623
+              },
+              duration {
+                text 6 min,
+                value 339
+              },
+              end_location {
+                lat -17.7717743,
+                lng -63.1678995
+              },
+              html_instructions Gira a la bizquierdab con dirección a bAvenida Cristóbal De Mendozab,
+              maneuver turn-left,
+              polyline {
+                points lnkBnau`Kk@_@i@a@[UCCKOi@w@EISa@Yq@GMOe@Qm@ESOo@Mq@[oBSq@EUSg@Yw@EOAAIc@a@iB]cBMm@Oq@Oy@Os@SkAEQCKO}@GYMy@Kq@AKCe@AIIw@CUKW@UDq@@a@Cu@A_ACoBG}Hs@_@q@C[c@AUAiAC{DImHGsIkAq@AsCAqC@Q@iBD_@Hu@@OPwA^kB@APo@Rm@`@gAZs@`@u@JOg@PYXc@
+              },
+              start_location {
+                lat -17.7737493,
+                lng -63.1914356
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.3 km,
+                value 349
+              },
+              duration {
+                text 1 min,
+                value 45
+              },
+              end_location {
+                lat -17.7742909,
+                lng -63.1660049
+              },
+              html_instructions Continúa por bAv. Japónb,
+              polyline {
+                points p`nkBjnp`KRWv@_Al@o@TSXW^Yf@]n@a@fAm@b@OJEPGl@UPGJC
+              },
+              start_location {
+                lat -17.7717743,
+                lng -63.1678995
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 1.1 km,
+                value 1053
+              },
+              duration {
+                text 2 min,
+                value 122
+              },
+              end_location {
+                lat -17.7709102,
+                lng -63.1569123
+              },
+              html_instructions Gira a la bizquierdab con dirección a bAv. Paraguáb,
+              maneuver turn-left,
+              polyline {
+                points hpnkBnbp`KREAKEQOs@SeAY{A[}AO{@]kBMm@g@qCCG}@gFI]YmAWeACIm@qB]aASe@CGIQg@qAIOEKIOi@kAOWSa@IOi@aAa@u@[m@
+              },
+              start_location {
+                lat -17.7742909,
+                lng -63.1660049
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 11 m,
+                value 11
+              },
+              duration {
+                text 1 min,
+                value 2
+              },
+              end_location {
+                lat -17.770959,
+                lng -63.15682039999999
+              },
+              html_instructions Gira a la bderechab hacia bAv Dr Lucas Saucedob,
+              maneuver turn-right,
+              polyline {
+                points d{mkBtin`KDG@C@E
+              },
+              start_location {
+                lat -17.7709102,
+                lng -63.1569123
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.2 km,
+                value 224
+              },
+              duration {
+                text 1 min,
+                value 28
+              },
+              end_location {
+                lat -17.7728184,
+                lng -63.15605589999999
+              },
+              html_instructions Gira levemente a la bderechab con dirección a bAv Dr Lucas Saucedob,
+              maneuver turn-slight-right,
+              polyline {
+                points n{mkBbin`KLMJILGDCXGjA[x@U`@MPERETGfAW
+              },
+              start_location {
+                lat -17.770959,
+                lng -63.15682039999999
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.2 km,
+                value 214
+              },
+              duration {
+                text 1 min,
+                value 20
+              },
+              end_location {
+                lat -17.7746679,
+                lng -63.15549309999999
+              },
+              html_instructions Continúa por bAv Dr Lucas Saucedobdiv style=font-size0.9emEl destino está a la derecha.div,
+              polyline {
+                points bgnkBjdn`KbCm@nBa@LAHCdB[
+              },
+              start_location {
+                lat -17.7728184,
+                lng -63.15605589999999
+              },
+              travel_mode DRIVING
+            }
+          ],
+          traffic_speed_entry [
+            
+          ],
+          via_waypoint [
+            
+          ]
+        },
+        {
+          distance {
+            text 5.8 km,
+            value 5825
+          },
+          duration {
+            text 13 min,
+            value 768
+          },
+          end_address Ave Juan Jose 35, Santa Cruz de la Sierra, Bolivia,
+          end_location {
+            lat -17.8094199,
+            lng -63.1306877
+          },
+          start_address 11, Santa Cruz de la Sierra, Bolivia,
+          start_location {
+            lat -17.7746679,
+            lng -63.15549309999999
+          },
+          steps [
+            {
+              distance {
+                text 0.7 km,
+                value 738
+              },
+              duration {
+                text 2 min,
+                value 102
+              },
+              end_location {
+                lat -17.7812368,
+                lng -63.15470980000001
+              },
+              html_instructions Dirígete al bsurb por bAv Dr Lucas Saucedob hacia bCanal CotocabwbrbAv Guapayb.,
+              polyline {
+                points trnkBx`n`KHALCb@G@KxCk@d@ITI~@Kn@Eh@Cx@GfBIn@C`CIpBGJ~ACrA@lCAb@
+              },
+              start_location {
+                lat -17.7746679,
+                lng -63.15549309999999
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 66 m,
+                value 66
+              },
+              duration {
+                text 1 min,
+                value 15
+              },
+              end_location {
+                lat -17.7818287,
+                lng -63.15471700000001
+              },
+              html_instructions Continúa por bAv Prol San Pablob,
+              polyline {
+                points v{okB{m`Kh@Aj@B@JN@
+              },
+              start_location {
+                lat -17.7812368,
+                lng -63.15470980000001
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.4 km,
+                value 428
+              },
+              duration {
+                text 1 min,
+                value 50
+              },
+              end_location {
+                lat -17.7852913,
+                lng -63.15296650000001
+              },
+              html_instructions Gira a la bizquierdab.,
+              maneuver turn-left,
+              polyline {
+                points l_pkB~{m`KZSf@YzAm@hCeAnAi@zAo@dAc@Bz@c@XIPELCJCPA
+              },
+              start_location {
+                lat -17.7818287,
+                lng -63.15471700000001
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.5 km,
+                value 473
+              },
+              duration {
+                text 1 min,
+                value 51
+              },
+              end_location {
+                lat -17.7858043,
+                lng -63.1488196
+              },
+              html_instructions En la rotonda, toma la b2.ªb salida,
+              maneuver roundabout-right,
+              polyline {
+                points `upkB`qm`K@@@@@@@@@@@DDDBADABABABC@A@A@A@C@A@A@CA@CAC@CACCAB[KBiDE@QDkD@o@@}@@o@B}B@_AW
+              },
+              start_location {
+                lat -17.7852913,
+                lng -63.15296650000001
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.5 km,
+                value 473
+              },
+              duration {
+                text 1 min,
+                value 82
+              },
+              end_location {
+                lat -17.789815,
+                lng -63.1484415
+              },
+              html_instructions Gira a la bderechab con dirección a bCuarto Anillob,
+              maneuver turn-right,
+              polyline {
+                points fxpkBbwl`KT]LSBEBCBCFGHGRMHGJEHEPGv@BzBDv@Br@BDJT@d@Bp@BV@T@`@@
+              },
+              start_location {
+                lat -17.7858043,
+                lng -63.1488196
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 43 m,
+                value 43
+              },
+              duration {
+                text 1 min,
+                value 14
+              },
+              end_location {
+                lat -17.7898671,
+                lng -63.1480536
+              },
+              html_instructions Gira a la bizquierdab hacia bAvenida Cumavib,
+              maneuver turn-left,
+              polyline {
+                points jqqkBvtl`KDK@G@I@GGIAU
+              },
+              start_location {
+                lat -17.789815,
+                lng -63.1484415
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.3 km,
+                value 312
+              },
+              duration {
+                text 1 min,
+                value 48
+              },
+              end_location {
+                lat -17.7901689,
+                lng -63.1452393
+              },
+              html_instructions Continúa por bAvenida Cumavib,
+              polyline {
+                points tqqkBhrl`KIAG]EWEa@CWC[Ak@SBW@SHm@BSD]Dk@DWDMFSNa@JWFQFUBO
+              },
+              start_location {
+                lat -17.7898671,
+                lng -63.1480536
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 1.9 km,
+                value 1948
+              },
+              duration {
+                text 3 min,
+                value 178
+              },
+              end_location {
+                lat -17.8071734,
+                lng -63.141469
+              },
+              html_instructions Gira levemente a la bderechab,
+              maneuver turn-slight-right,
+              polyline {
+                points psqkBv`l`KJULORQRQLKLGPKLINELERGPEf@KGCtBWNCFAfCUbAInAINAFArBWpAOz@KbAOLAzCk@dC[bCYbC[jD_@hBShBSz@MRCtASpFq@BtCYfGs@nAQfAMbBQt@I^Er@E~@Ev@Ah@@
+              },
+              start_location {
+                lat -17.7901689,
+                lng -63.1452393
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.6 km,
+                value 568
+              },
+              duration {
+                text 2 min,
+                value 103
+              },
+              end_location {
+                lat -17.807484,
+                lng -63.13611290000001
+              },
+              html_instructions Gira a la bizquierdab.,
+              maneuver turn-left,
+              polyline {
+                points x}tkBdik`KBkA@}@@g@@[JaDS@a@@WBu@JeEBe@@a@JmD@aA}@
+              },
+              start_location {
+                lat -17.8071734,
+                lng -63.141469
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.6 km,
+                value 592
+              },
+              duration {
+                text 1 min,
+                value 86
+              },
+              end_location {
+                lat -17.8077714,
+                lng -63.130526
+              },
+              html_instructions Mantente a la bderechab.,
+              maneuver keep-right,
+              polyline {
+                points v_ukBtgj`K@_@@[HaF@kAByA@YBwB@QDeBA[Bu@FsADsAC@w@DgAO
+              },
+              start_location {
+                lat -17.807484,
+                lng -63.13611290000001
+              },
+              travel_mode DRIVING
+            },
+            {
+              distance {
+                text 0.2 km,
+                value 184
+              },
+              duration {
+                text 1 min,
+                value 39
+              },
+              end_location {
+                lat -17.8094199,
+                lng -63.1306877
+              },
+              html_instructions Gira a la bderechab con dirección a bLos Roblesbdiv style=font-size0.9emEl destino está a la derecha.div,
+              maneuver turn-right,
+              polyline {
+                points paukBxdi`KrCLB`ADhAFB`@B
+              },
+              start_location {
+                lat -17.8077714,
+                lng -63.130526
+              },
+              travel_mode DRIVING
+            }
+          ],
+          traffic_speed_entry [
+            
+          ],
+          via_waypoint [
+            
+          ]
+        }
+      ],
+      overview_polyline {
+        points zkukBxei`KqDQwCMEvAObFApAGvBKvHMzIg@lROxFEhC`@@}AlEwAnDcCpGaCtFiGhO{DvJc@hA{@tBICWr@NFrAl@jB@pBjAj@^tBnAfDbCLxAGh@KXc@r@eCnDyBbD_@f@w@`Ak@`AeArA_AvAe@r@q@h@KSBCBKJEPPBH@BaCxDuAxBCCIGQE]@KHGNANBNPLFJj@BrBN~FBfDF`BDbGN`JmEfCqBx@qCdAJx@FfA@h@EjAi@bGoAvMe@rEDzAJ`Av@xDlBpKAlIVhABNCFCH@Tl@zCaIl@{BP{E`@Iy@Hx@O@sF^BVl@xHd@xGvCUdIm@LjBDn@@j@GDCFARFNFFNz@j@xGr@dJT~@pAhBvA`Bm@h@wAnAoCdCKBOFMLANBJ{@r@gAr@o@^_A^oA^mBZkDRuS`AeBB{BFoCRsYnAiA@w@ABlBTpKVrO^xRHtFC@ABOByAEaDO{Im@_Ku@wLeAe@IAIOYQISAMBMHGFCBQ]iD[qBW}D]sHs@sCc@CKOQIEgFv@yLp@sKbAeO`@kHHoAXeCJwAuAaA_@Yu@gA{@kBa@sAUcAi@aDYgAu@qBwA_HeBaJYkBEq@OcBHaCQcPCaDG_IQ_WCeHB{Bb@}D`@mBd@}A@{Bl@eAA}BdBoBn@k@fAw@vBoAnBs@KREAKUeAm@aDwAsHsB_Lq@sCq@{B_AaCaA}BwAuCkAwB[m@DGBIXWRKdBc@`Co@A_@rFoAfCc@p@K@KxCk@z@SnBQzFYrFQjBCnHAjABbAm@dFsBtF}Bz@c@XI^IEB@F@N@RERSDYBm@JmJH{G@wAb@q@RUr@c@ZMrDH~HTdCJ`@@DKBQo@IAG]Ky@IsBRmBJiAJe@j@_BJe@Xe@f@c@ZS@a@d@MdASjDa@jHk@hGu@pAQzCk@dC[fGu@tGs@nGy@tFq@KmAvC_@xC[rAKvBGh@@BkABeBNsFTyHLoE@_CNiJJ}FBaCJiCLwEOrCLdADnBJ
+      },
+      summary Av. El Trompillo,
+      warnings [
+        
+      ],
+      waypoint_order [
+        2,
+        1,
+        0
+      ]
+    }
+  ],
+  status OK
+}
