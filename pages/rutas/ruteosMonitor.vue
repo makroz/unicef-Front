@@ -277,7 +277,12 @@
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
-                <v-btn icon color="green" @click="openEval(ruteo, bene)">
+                <v-btn
+                  icon
+                  :color="getColorEval(ruteo, bene)"
+                  @click="openEval(ruteo, bene)"
+                >
+                  <!-- <v-btn icon :color="!getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'estado')?'red':getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'estado')==1?'yellow':'green'" @click="openEval(ruteo, bene)"> -->
                   <v-icon>assignment</v-icon>
                 </v-btn>
               </v-list-tile-action>
@@ -358,7 +363,11 @@
         @grabarItem="grabarEval"
       >
         <v-container grid-list-md fluid>
-          <v-switch v-model="estado" label="Se Puede resalizar la evaluacion?">
+          <v-switch
+            v-model="estado"
+            label="Se Puede resalizar la evaluacion?"
+            color="indigo"
+          >
           </v-switch>
           <v-text-field
             label="Notas de la Evaluacion"
@@ -388,8 +397,8 @@
                     <v-text-field
                       v-if="pregunta.tipo == 2"
                       label="valor"
-                      v-model="item.respuesta[pregunta.id]"
-                      :rules="[rules.required,rules.num]"
+                      v-model="item.respuestas[pregunta.id]"
+                      :rules="[rules.required, rules.num]"
                       validate-on-blur
                       type="number"
                       style="width: 80px"
@@ -397,7 +406,7 @@
 
                     <v-radio-group
                       v-if="pregunta.tipo == 1"
-                      v-model="item.respuesta[pregunta.id]"
+                      v-model="item.respuestas[pregunta.id]"
                       row
                       :rules="[rules.required]"
                       validate-on-blur
@@ -481,7 +490,7 @@ export default {
       }),
       styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
       jsonData: [],
-      item:{respuesta:{}}
+      item: { respuestas: {} },
     }
   },
   methods: {
@@ -489,29 +498,105 @@ export default {
       if (!this.$refs.mkFormEval.$refs.form.validate()) {
         return false
       }
-      this.modalEval = false
+
+      let data = {
+        _noData: 1,
+        id: this.item.evaluaciones_id,
+        obs: this.item.obs,
+        lat: this.coordenadas.latitude,
+        lng: this.coordenadas.longitude,
+        estado: this.estado,
+        usuarios_id: this.$store.state.auth.authUser.id,
+        ruteos_id: this.item.ruteos_id,
+        beneficiarios_id: this.item.beneficiarios_id,
+        respuestas: this.item.respuestas,
+      }
+
+      console.log(this.item, data)
+
+      this.item=data;
+
+      if (!this.can('add', true)) {
+        return false
+      }
+
+      this.urlModulo = 'Evaluaciones'
+      this.grabarItem()
+      this.urlModulo = 'Ruteos'
+      // let url = 'Evaluaciones'
+
+      // this.$axios
+      //   .post(url + this.getCt(url), data)
+      //   .then(function (response) {
+      //     if (this.isOk(response.data)) {
+      //       this.modalEval = false
+
+      //     } else {
+      //       isError = 1
+      //     }
+      //   })
+      //   .catch(function (error) {
+      //     console.error(error)
+      //     isError = 2
+      //   })
+      //   .finally(function () {
+      //     //me.dataTable.loading = false
+      //   })
+
+      return true
+    },
+    getColorEval(ruteo, bene) {
+      return !getDataLista(
+        ruteo.evaluaciones,
+        bene,
+        'beneficiarios_id',
+        'estado'
+      )
+        ? 'red'
+        : getDataLista(
+            ruteo.evaluaciones,
+            bene,
+            'beneficiarios_id',
+            'estado'
+          ) == 1
+        ? 'yellow'
+        : 'green'
     },
     openEval(data, bene) {
       if (!this.can('add', true)) {
         return false
       }
-      //this.getPosition()
+      this.getPosition()
       this.item = Object.assign({}, data)
       this.item.lat = this.coordenadas.latitude
       this.item.estado = this.estado
+      this.item.beneficiarios_id = bene
       this.item.lng = this.coordenadas.longitude
       this.item.usuarios_id = this.$store.state.auth.authUser.id
-      this.item.rutas_id = data.id
+      this.item.ruteos_id = data.id
       this.item.obs = ''
+      let evaluacion = getDataLista(
+        this.item.evaluaciones,
+        bene,
+        'beneficiarios_id',
+        '*'
+      )
+      if (evaluacion) {
+        this.item.evaluaciones_id = evaluacion.id
+      } else {
+        this.item.evaluaciones_id = 0
+      }
+      this.item.estado = evaluacion.estado
 
-      this.item.respuesta={};
-      this.lPreguntas.forEach(e => {
-        this.item.respuesta[e.id]=''
+      this.item.respuestas = {}
+      this.lPreguntas.forEach((e) => {
+        //this.item.respuestas[e.id] = {r:'',t:e.tipo}
+        this.item.respuestas[e.id] = ''
       })
       //this.item.id = null
       this.$refs.mkFormEval.$refs.form.resetValidation()
       this.tituloModal =
-        'Evaluacion para  ' + getDataLista(this.lBeneficiarios, bene)
+        'Evaluacion de ' + getDataLista(this.lBeneficiarios, bene) //colocar computada de acuerdo al tamano
       this.modalEval = true
       //this.$nextTick(this.$refs.focus.focus)
     },
@@ -634,6 +719,11 @@ export default {
     },
     async afterSave(me, isError = 0) {
       me.lRuteos = await this.getListaBackend('RuteosMonitor')
+      if (isError==0) {
+        this.modalEval=false;
+        //modalMap=false;
+      }
+      return true
     },
     addRuteo(data) {
       if (!this.can('add', true)) {

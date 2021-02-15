@@ -297,7 +297,7 @@ export default {
         me.item.paramsExtra = me.paramsExtra
       }
 
-      if (me.item.id !== null) {
+      if ((me.item.id !== null)&&(me.item.id > 0)) {
         if (!this.can('edit', true)) {
           return false
         }
@@ -347,6 +347,7 @@ export default {
           })
           .finally(function () {
             me.dataTable.loading = false
+            me.afterSave(me, isError)
           })
       } else {
         if (!this.can('add', true)) {
@@ -374,8 +375,9 @@ export default {
           })
           .finally(function () {
             me.dataTable.loading = false
+            me.afterSave(me, isError)
           })
-        this.afterSave(me, isError)
+        
       }
     },
     callAction(opt, item) {

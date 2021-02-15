@@ -9,6 +9,17 @@ const Menu = [
         },
 
         {
+            title: 'Modulo Evaluaciones',
+            group: 'evaluaciones',
+            component: 'evaluaciones',
+            icon: 'face',
+            items: [{
+                name: 'evaluaciones',
+                title: 'Evaluaciones',
+                href: '/evaluaciones/evaluaciones'
+            }]
+        },
+        {
             title: 'Modulo Rutas',
             group: 'rutas',
             component: 'rutas',
@@ -30,6 +41,7 @@ const Menu = [
                 }
             ]
         },
+
         {
             title: 'Modulo Servicios',
             group: 'servicios',
