@@ -328,7 +328,7 @@
                   :geojson="jsonData"
                   :options-style="styleFunction"
                 />
-                <div v-if="modalMap && markers && markers.length > 0" >
+                <div v-if="modalMap && markers && markers.length > 0">
                   <l-marker
                     v-for="(marker, index) in markers"
                     :key="index"
@@ -349,67 +349,6 @@
         </v-container>
       </mk-form-full-screen>
 
-      <!-- <v-dialog
-        v-model="modalMap"
-        fullscreen
-        hide-overlay
-        transition="dialog-bottom-transition"
-      >
-        <v-card
-          height="100%"
-          color="red"
-          style="display: flex; flex-direction: column"
-        >
-          <v-toolbar dark color="primary">
-            <v-btn icon dark @click="modalMap = false">
-              <v-icon>close</v-icon>
-            </v-btn>
-            <v-toolbar-title>{{ tituloModal }}</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark flat @click="modalMap = false">Volver</v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
-          
-          {{ markers }}
-          <div id="map-wrap" style="height: 100%; width: 100%">
-            <client-only>
-              <l-map
-                :zoom="zoom"
-                :center="center"
-                style="height: 100%; width: 100%"
-                ref="mymap"
-              >
-                <l-tile-layer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
-                  :useCors="false"
-                ></l-tile-layer>
-                <l-geo-json
-                  :geojson="jsonData"
-                  :options-style="styleFunction"
-                />
-                <div v-if="markers && markers.length > 0">
-                  <l-marker
-                    v-for="(marker, index) in markers"
-                    :key="index"
-                    :lat-lng="getMarker(marker, item, index)"
-                    :draggable="false"
-                    :visible="true"
-                    :icon="getIcon(marker)"
-                  >
-                    <l-tooltip>{{
-                      getDataLista(lBeneficiarios, marker, 'id', 'name') ||
-                      'Tu ubicacion Actual'
-                    }}</l-tooltip>
-                  </l-marker>
-                </div>
-              </l-map>
-            </client-only>
-          </div>
-        </v-card>
-      </v-dialog> -->
-
       <mk-form-full-screen
         ref="mkFormEval"
         :modal="modalEval"
@@ -428,6 +367,50 @@
             :rules="this.estado ? [] : [this.rules.required]"
             validate-on-blur
           ></v-text-field>
+          <template v-if="estado">
+            <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
+              <v-toolbar color="secondary" dark dense>
+                <v-toolbar-side-icon></v-toolbar-side-icon>
+                <v-toolbar-title> {{ categ.name }}</v-toolbar-title>
+              </v-toolbar>
+
+              <div
+                v-for="pregunta in lPregCateg(categ.id)"
+                :key="pregunta.pregunta"
+              >
+                <v-layout row wrap pa-2>
+                  <v-flex grow>
+                    <span class="title text-capitalize">
+                      {{ pregunta.pregunta }}
+                    </span>
+                  </v-flex>
+                  <v-flex shrink>
+                    <v-text-field
+                      v-if="pregunta.tipo == 2"
+                      label="valor"
+                      v-model="item.respuesta[pregunta.id]"
+                      :rules="[rules.required,rules.num]"
+                      validate-on-blur
+                      type="number"
+                      style="width: 80px"
+                    ></v-text-field>
+
+                    <v-radio-group
+                      v-if="pregunta.tipo == 1"
+                      v-model="item.respuesta[pregunta.id]"
+                      row
+                      :rules="[rules.required]"
+                      validate-on-blur
+                    >
+                      <v-radio color="green" label="Si" value="1"></v-radio>
+                      <v-radio color="red" label="No" value="0"></v-radio>
+                    </v-radio-group>
+                  </v-flex>
+                </v-layout>
+                <v-divider></v-divider>
+              </div>
+            </v-card>
+          </template>
         </v-container>
       </mk-form-full-screen>
     </v-container>
@@ -475,8 +458,9 @@ export default {
       },
       lRutas: [],
       estado: false,
-      //item: { },
       lBeneficiarios: [],
+      lCateg: [],
+      lPreguntas: [],
       modalMap: false,
       modalEval: false,
       center: [-17.783373986957255, -63.18209478792436],
@@ -497,10 +481,14 @@ export default {
       }),
       styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
       jsonData: [],
+      item:{respuesta:{}}
     }
   },
   methods: {
     grabarEval() {
+      if (!this.$refs.mkFormEval.$refs.form.validate()) {
+        return false
+      }
       this.modalEval = false
     },
     openEval(data, bene) {
@@ -514,8 +502,12 @@ export default {
       this.item.lng = this.coordenadas.longitude
       this.item.usuarios_id = this.$store.state.auth.authUser.id
       this.item.rutas_id = data.id
-      //this.item._noData = 1
       this.item.obs = ''
+
+      this.item.respuesta={};
+      this.lPreguntas.forEach(e => {
+        this.item.respuesta[e.id]=''
+      })
       //this.item.id = null
       this.$refs.mkFormEval.$refs.form.resetValidation()
       this.tituloModal =
@@ -737,7 +729,7 @@ export default {
       } else {
         marker = [this.coordenadas.latitude, this.coordenadas.longitude]
       }
-      if (!item.beneficiarios){
+      if (!item.beneficiarios) {
         return marker
       }
 
@@ -906,6 +898,12 @@ export default {
       if (this.$vuetify.breakpoint.xs) binding.column = true
       return binding
     },
+    lPregCateg: (app) => (categ) => {
+      let l = app.lPreguntas.filter((e) => e.categ_id == categ)
+
+      console.log('categ:', categ, l)
+      return l
+    },
   },
   watch: {},
   async mounted() {
@@ -918,6 +916,14 @@ export default {
       'id,name,usuarios_id,descrip'
     )
     this.lBeneficiarios = await this.getListaBackend('Beneficiarios', 'id,name')
+    this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
+    this.lPreguntas = await this.getListaBackend('Preguntas')
+    this.lCateg.sort(function (a, b) {
+      return a.orden - b.orden
+    })
+    this.lPreguntas.sort(function (a, b) {
+      return a.orden - b.orden
+    })
     //this.setOptionTable('del').visible=false;
   },
 }

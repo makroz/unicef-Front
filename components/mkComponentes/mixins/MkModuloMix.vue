@@ -608,7 +608,7 @@ export default {
       })
       //console.error('updatelist',me.campos)
     },
-    async getListaBackend(url, campos, item = null) {
+    async getListaBackend(url, campos='', item = null) {
       let lista = await this.$store.dispatch('auth/loadData', {
         url: url,
         campos: campos,
