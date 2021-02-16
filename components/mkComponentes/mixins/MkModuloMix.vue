@@ -312,6 +312,7 @@ export default {
           //   JSON.stringify(me.dirty.permisos),
           //   JSON.stringify(me.permisos)
           // )
+          console.log(me.item,me.dirty.item);
           for (const el in me.item) {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
@@ -323,13 +324,16 @@ export default {
           }
           if (Object.keys(itemData).length === 0) {
             me.closeDialog()
+            me.afterSave(me, 1)
             //alert('esta vacio',me.item)
             return false
           }
         } else {
           itemData = me.item
         }
-
+        if (me.item._noData){
+          itemData._noData=me.item._noData    
+        }
         me.$axios
           .put(url + this.getCt(url), itemData)
           .then(function (response) {
@@ -338,12 +342,12 @@ export default {
               me.closeDialog()
               me.paramsExtra = {}
             } else {
-              isError = 1
+              isError = -1
             }
           })
           .catch(function (error) {
             console.error(error)
-            isError = 2
+            isError = -2
           })
           .finally(function () {
             me.dataTable.loading = false
@@ -366,12 +370,12 @@ export default {
               me.closeDialog()
               me.paramsExtra = {}
             } else {
-              isError = 1
+              isError = -1
             }
           })
           .catch(function (error) {
             console.error(error)
-            isError = 2
+            isError = -2
           })
           .finally(function () {
             me.dataTable.loading = false
@@ -495,7 +499,8 @@ export default {
         this.tituloModal = 'Registrar ' + this.titModulo
       } else {
         if (_dirty) {
-          this.dirty.item = Object.assign({}, this.item)
+          //this.dirty.item = Object.assign({}, this.item)
+          this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
         this.tituloModal = 'Editar ' + this.titModulo
       }

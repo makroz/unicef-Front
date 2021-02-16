@@ -235,7 +235,7 @@
                   </v-layout>
                 </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
-                  {{ getSubHeader(ruteo) }} - {{ ruteo }}
+                  {{ getSubHeader(ruteo) }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
@@ -296,7 +296,7 @@
         :modal="modal"
         :tit="tituloModal"
         :accion="0"
-        @closeDialog="modal = false"
+        @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
         <v-container grid-list-md fluid>
@@ -376,7 +376,7 @@
             :rules="this.estado ? [] : [this.rules.required]"
             validate-on-blur
           ></v-text-field>
-          <template v-if="estado">
+          <template v-if="estado && modalEval">
             <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
               <v-toolbar color="secondary" dark dense>
                 <v-toolbar-side-icon></v-toolbar-side-icon>
@@ -442,6 +442,7 @@ import {
   getCacheKey,
 } from '@/components/mkComponentes/lib/MkCache.js'
 import MkFormFullScreen from '~/components/mkComponentes/MkFormFullScreen.vue'
+const _dirty = process.env.mkConfig.dirty
 
 export default {
   //middleware: ['authAccess'],
@@ -501,11 +502,11 @@ export default {
 
       let data = {
         _noData: 1,
-        id: this.item.evaluaciones_id,
+        id: this.item.id,
         obs: this.item.obs,
         lat: this.coordenadas.latitude,
         lng: this.coordenadas.longitude,
-        estado: this.estado,
+        estado: this.estado?1:0,
         usuarios_id: this.$store.state.auth.authUser.id,
         ruteos_id: this.item.ruteos_id,
         beneficiarios_id: this.item.beneficiarios_id,
@@ -523,26 +524,6 @@ export default {
       this.urlModulo = 'Evaluaciones'
       this.grabarItem()
       this.urlModulo = 'Ruteos'
-      // let url = 'Evaluaciones'
-
-      // this.$axios
-      //   .post(url + this.getCt(url), data)
-      //   .then(function (response) {
-      //     if (this.isOk(response.data)) {
-      //       this.modalEval = false
-
-      //     } else {
-      //       isError = 1
-      //     }
-      //   })
-      //   .catch(function (error) {
-      //     console.error(error)
-      //     isError = 2
-      //   })
-      //   .finally(function () {
-      //     //me.dataTable.loading = false
-      //   })
-
       return true
     },
     getColorEval(ruteo, bene) {
@@ -557,10 +538,10 @@ export default {
             ruteo.evaluaciones,
             bene,
             'beneficiarios_id',
-            'estado'
-          ) == 1
-        ? 'yellow'
-        : 'green'
+            'verif'
+          )
+        ? 'greem'
+        : 'yellow'
     },
     openEval(data, bene) {
       if (!this.can('add', true)) {
@@ -568,32 +549,43 @@ export default {
       }
       this.getPosition()
       this.item = Object.assign({}, data)
+      this.item._noData= 1,
       this.item.lat = this.coordenadas.latitude
-      this.item.estado = this.estado
       this.item.beneficiarios_id = bene
       this.item.lng = this.coordenadas.longitude
       this.item.usuarios_id = this.$store.state.auth.authUser.id
       this.item.ruteos_id = data.id
       this.item.obs = ''
+      this.item.id = null
+      this.item.estado = 0
       let evaluacion = getDataLista(
         this.item.evaluaciones,
         bene,
         'beneficiarios_id',
         '*'
       )
-      if (evaluacion) {
-        this.item.evaluaciones_id = evaluacion.id
-      } else {
-        this.item.evaluaciones_id = 0
-      }
-      this.item.estado = evaluacion.estado
 
       this.item.respuestas = {}
       this.lPreguntas.forEach((e) => {
-        //this.item.respuestas[e.id] = {r:'',t:e.tipo}
-        this.item.respuestas[e.id] = ''
+        if (evaluacion) {
+          this.item.respuestas[e.id] =  getDataLista(evaluacion.respuestas,e.id,'preguntas_id','r_s')
+        }else{
+          this.item.respuestas[e.id] = ''
+        }
+        
       })
-      //this.item.id = null
+
+      this.dirty.item = null
+      if (evaluacion) {
+        this.item.id = evaluacion.id
+        this.item.estado = 1*evaluacion.estado
+        this.item.obs= evaluacion.obs
+         if (_dirty) {
+           this.dirty.item = JSON.parse(JSON.stringify(this.item))
+         }
+      }
+      this.estado=this.item.estado==0?false:true 
+
       this.$refs.mkFormEval.$refs.form.resetValidation()
       this.tituloModal =
         'Evaluacion de ' + getDataLista(this.lBeneficiarios, bene) //colocar computada de acuerdo al tamano
@@ -718,8 +710,10 @@ export default {
       )
     },
     async afterSave(me, isError = 0) {
-      me.lRuteos = await this.getListaBackend('RuteosMonitor')
-      if (isError==0) {
+      if (isError!=1){
+        me.lRuteos = await this.getListaBackend('RuteosMonitor')
+      }
+      if (isError>=0) {
         this.modalEval=false;
         //modalMap=false;
       }
@@ -754,7 +748,8 @@ export default {
       if (posAct) {
         this.markers.push(0)
       }
-      this.item = Object.assign({}, data)
+      this.item = Object.assign({}, data) //TODO:verificar porque da error al cargar mapa despues cargar evaluacion y volver a cargar mapa en esta sentencia
+
       this.item.lat = this.coordenadas.latitude
       this.item.lng = this.coordenadas.longitude
       this.item.usuarios_id = this.$store.state.auth.authUser.id
@@ -801,7 +796,10 @@ export default {
       console.warn('ERROR(' + error.code + '): ' + error.message)
     },
 
-    beforeOpen(accion, data = {}) {},
+    beforeOpen(accion, data = {}) {
+      data.lat=this.coordenadas.latitude
+      data.lng=this.coordenadas.longitude
+    },
     getIcon(id) {
       if (id == 0) {
         return this.icon1
