@@ -468,7 +468,6 @@ export default {
       if (!this.can(accion, true)) {
         return false
       }
-
       //this.item = Object.assign({}, data)
       if (this.beforeOpen(accion, data) === false) {
         return false
@@ -498,15 +497,31 @@ export default {
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
       } else {
+        if (accion=='edit'){
         if (_dirty) {
           //this.dirty.item = Object.assign({}, this.item)
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
         this.tituloModal = 'Editar ' + this.titModulo
+        this.$nextTick(this.$refs.focus.focus)
+        }else{
+          this.item.id = this.item.id*-1
+          this.tituloModal = 'Ver ' + this.titModulo
+        }
+
       }
+
+      // let f=document.getElementById('form').getElementsByTagName('input');
+      // for (let i = 0; i < f.length; i++) {
+      //   console.log(f[i]);
+      //   f[i].setAttribute('readonly','readonly')
+        
+      // }
+     
+
       this.afterOpen(accion, data)
       this.modal = true
-      this.$nextTick(this.$refs.focus.focus)
+      
     },
     setParams(name = '', value = '',encrypt = false) {
       if (name == '') {
@@ -673,6 +688,10 @@ export default {
     setOptionTable(id) {
       return this.dataTable.acciones.find((e) => e.id == id)
     },
+    addOptionTable(option) {
+       this.dataTable.acciones.push(option)
+       return true
+    },
   },
   watch: {
     Auth: {
@@ -725,6 +744,7 @@ export default {
         visible: this.can('add'),
         action: 'openDialog',
         grupos: ['topbar'],
+        orden:1
       },
       {
         id: 'edit',
@@ -733,6 +753,7 @@ export default {
         visible: this.can('edit'),
         action: 'openDialog',
         grupos: ['action', 'topbar'],
+        orden:2
       },
       {
         id: 'del',
@@ -741,6 +762,7 @@ export default {
         visible: this.can('del'),
         action: 'deleteItem',
         grupos: ['action', 'topbar', 'recycled'],
+        orden:3
       },
       {
         id: 'restore',
@@ -749,6 +771,7 @@ export default {
         visible: this.can('del'),
         action: 'restoreItem',
         grupos: ['topbar', 'recycled'],
+        orden:4
       },
     ]
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones

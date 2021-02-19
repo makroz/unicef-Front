@@ -28,10 +28,11 @@
       </template>
     </v-speed-dial>
     <v-layout v-else>
-      <v-flex v-for="opt in acciones" :key="opt.value">
+      <template v-for="opt in acciones" >
+      <v-flex :key="opt.value"  v-if="opt.visible && opt.grupos.includes(grupo)" >
         <v-btn
           class="pa-0 ma-0"
-          v-if="opt.visible && opt.grupos.includes(grupo)"
+         
           icon
           flat
           :color="opt.color"
@@ -41,6 +42,7 @@
           <v-icon>{{ opt.icon }}</v-icon>
         </v-btn>
       </v-flex>
+      </template>
     </v-layout>
   </v-container>
 </template>

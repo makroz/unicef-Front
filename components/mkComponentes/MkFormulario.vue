@@ -7,8 +7,9 @@
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text :class="classContent">
-          <v-form ref="form" v-on:submit.prevent v-model="formValid" lazy-validation>
+          <v-form ref="form" id="form" v-on:submit.prevent v-model="formValid" lazy-validation>
             <slot>Contenido</slot>
+            <!-- <div style="position: absolute;background-color:red; width: 100%;height:100%;top:0;left:0;opacity: 0;"></div> -->
           </v-form>
         </v-card-text>
         <v-divider></v-divider>
@@ -54,6 +55,9 @@ export default {
     return {
       formValid: true
     }
+  },
+  mounted() {
+    console.log(this.$ref);
   }
 }
 </script>

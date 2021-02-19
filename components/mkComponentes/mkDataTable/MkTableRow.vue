@@ -1,5 +1,5 @@
 <template>
-  <tr @dblclick="onEdit(datos.item)">
+  <tr @click="isExpanded?datos.expanded = !datos.expanded:null" @dblclick="onEdit(datos.item)">
     <td width="50px" style="padding: 0 12px">
       <v-checkbox
         class="pa-0 pm-0"
@@ -10,12 +10,14 @@
     </td>
 
     <td
-      v-if="(!$store.state.config.tbl_opts_p)&&((can('edit') || can('del')))"
+      v-if="!$store.state.config.tbl_opts_p && (can('edit') || can('del'))"
       class="text-xs-center pa-0 ma-0"
     >
-      <mk-table-actions :acciones="acciones" :item="datos.item" @callAction="callAction"
-          ></mk-table-actions>
-
+      <mk-table-actions
+        :acciones="acciones"
+        :item="datos.item"
+        @callAction="callAction"
+      ></mk-table-actions>
     </td>
     <template v-for="header in headers">
       <td
@@ -39,12 +41,14 @@
       ></mk-status>
     </td>
     <td
-      v-if="($store.state.config.tbl_opts_p)&&((can('edit') || can('del')))"
+      v-if="$store.state.config.tbl_opts_p && (can('edit') || can('del'))"
       class="text-xs-center pa-0 ma-0"
     >
-      <mk-table-actions :acciones="acciones" :item="datos.item" @callAction="callAction"
-          ></mk-table-actions>
-
+      <mk-table-actions
+        :acciones="acciones"
+        :item="datos.item"
+        @callAction="callAction"
+      ></mk-table-actions>
     </td>
   </tr>
 </template>
@@ -67,7 +71,10 @@ export default {
     acciones: {
       type: [Array, Object],
     },
-
+    isExpanded: {
+      type: Boolean,
+      default: false,
+    },
   },
   inject: ['Auth', 'can'],
   methods: {
@@ -78,15 +85,31 @@ export default {
       this.$emit('callAction', opt, item)
     },
     onEdit(item) {
-      if (this.can('edit')&&this.acciones.find(e=>e.id=='edit').visible) {
-        this.$emit('callAction', {id:'edit',action:'openDialog'}, item)
+      if (
+        this.can('edit') &&
+        this.acciones.find((e) => e.id == 'edit').visible
+      ) {
+        this.$emit('callAction', { id: 'edit', action: 'openDialog' }, item)
       }
     },
     showItem(lista, datos) {
-      //header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value]
-      //let v=datos.item[lista.value]
       let valor = datos.item[lista.value]
 
+      if (lista.type == 'concat') {
+        valor=''
+        lista.concat.forEach((e,idx)=>{
+          if (idx>0) {
+            valor=valor+lista.separator;
+          }
+          valor=valor+this.showItem(this.headers.find(el=>el.value==e),datos)
+        })
+        return valor
+      }
+      if (lista.type == 'date') {
+        valor = new Date(valor);
+        return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear()+ " " + valor.getHours()+ ":" + ("00" +valor.getMinutes()).slice(-2)+ ":" + ("00" +valor.getSeconds()).slice(-2);
+        //return new Date(valor).toLocaleString().split(',')[0]
+      }
       if (lista.type == 'check') {
         if (valor == lista.options[0]) {
           valor = lista.options[1]
@@ -96,25 +119,42 @@ export default {
         return valor
       }
       if (lista.type == 'count') {
-        valor = valor.length
+        if (lista.fromLista) {
+          let campo = lista.fromLista.field || 'name'
+          let idJoin = lista.fromLista.join || 'id'
+          let l2 = lista.fromLista.lista
+          l2 = this.headers.find((e) => e.value == l2) || []
+          idJoin = datos.item[idJoin]
+          valor = l2.lista.find((el, index) => el[idJoin] == valor)
+          if (!valor) {
+            return 0
+          }
+          valor = valor[campo]
+        }
+        try {
+          valor = valor.length
+        } catch (error) {
+          valor = 0
+        }
         return valor
       }
 
       if (lista.fromList) {
-          let campoUnion = lista.listField
-          let hijo = this.headers.find((el) => {
-            return el.value == lista.fromList
-          }).lista
-          valor = hijo.find((el) => el.id == datos.item[lista.fromList])[
-            campoUnion
-          ]
-          return valor ? valor.name : ''
-        }
-      if (lista.lista) {        
-        
-        valor = lista.lista.find((el,index) => typeof el === 'string'?index==valor:el.id == valor)
-        return valor ? valor.name?valor.name:valor: ''
-      } 
+        let campoUnion = lista.listField
+        let hijo = this.headers.find((el) => {
+          return el.value == lista.fromList
+        }).lista
+        valor = hijo.find((el) => el.id == datos.item[lista.fromList])[
+          campoUnion
+        ]
+        return valor ? valor.name : ''
+      }
+      if (lista.lista) {
+        valor = lista.lista.find((el, index) =>
+          typeof el === 'string' ? index == valor : el.id == valor
+        )
+        return valor ? (valor.name ? valor.name : valor) : ''
+      }
       return valor
     },
     colLista(lista, v, datos) {

@@ -192,7 +192,6 @@
             v-for="ruteo in lRuteos.open.data"
             :key="ruteo.id"
             active-class="grey"
-            no-action
           >
             <v-list-tile slot="activator">
               <v-list-tile-avatar>
@@ -268,21 +267,43 @@
               :key="bene.id"
               href="#"
             >
+              <v-list-tile-avatar class="pa-0 pm-0">
+                <v-btn
+                  icon
+                  color="green"
+                  @click="verMapaBene(bene)"
+                  small
+                  style="margin: 0; margin-right: 3px"
+                >
+                  <v-icon>person_pin_circle</v-icon>
+                </v-btn>
+                <v-btn
+                  icon
+                  color="blue"
+                  @click="verMapaBene(bene,true)"
+                  small
+                  style="margin: 0; margin-left: 3px"
+                >
+                  <v-icon>directions_car</v-icon>
+                </v-btn>
+              </v-list-tile-avatar>
+
               <v-list-tile-content>
-                <v-list-tile-title>{{
-                  getDataLista(lBeneficiarios, bene)
-                }}</v-list-tile-title>
+                <v-list-tile-title>
+                  {{ getDataLista(lBeneficiarios, bene) }}
+                </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
                   {{ distancia(getDataLista(lBeneficiarios, bene, 'id', '*')) }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
+              <v-list-tile-action> </v-list-tile-action>
+
               <v-list-tile-action>
                 <v-btn
                   icon
                   :color="getColorEval(ruteo, bene)"
                   @click="openEval(ruteo, bene)"
                 >
-                  <!-- <v-btn icon :color="!getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'estado')?'red':getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'estado')==1?'yellow':'green'" @click="openEval(ruteo, bene)"> -->
                   <v-icon>assignment</v-icon>
                 </v-btn>
               </v-list-tile-action>
@@ -329,7 +350,7 @@
                   attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
                   :useCors="false"
                 ></l-tile-layer>
-                <l-geo-json
+                <l-geo-json v-if="jsonData"
                   :geojson="jsonData"
                   :options-style="styleFunction"
                 />
@@ -506,7 +527,7 @@ export default {
         obs: this.item.obs,
         lat: this.coordenadas.latitude,
         lng: this.coordenadas.longitude,
-        estado: this.estado?1:0,
+        estado: this.estado ? 1 : 0,
         usuarios_id: this.$store.state.auth.authUser.id,
         ruteos_id: this.item.ruteos_id,
         beneficiarios_id: this.item.beneficiarios_id,
@@ -515,7 +536,7 @@ export default {
 
       console.log(this.item, data)
 
-      this.item=data;
+      this.item = data
 
       if (!this.can('add', true)) {
         return false
@@ -534,12 +555,7 @@ export default {
         'estado'
       )
         ? 'red'
-        : getDataLista(
-            ruteo.evaluaciones,
-            bene,
-            'beneficiarios_id',
-            'verif'
-          )
+        : getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'verif')
         ? 'greem'
         : 'yellow'
     },
@@ -549,8 +565,7 @@ export default {
       }
       this.getPosition()
       this.item = Object.assign({}, data)
-      this.item._noData= 1,
-      this.item.lat = this.coordenadas.latitude
+      ;(this.item._noData = 1), (this.item.lat = this.coordenadas.latitude)
       this.item.beneficiarios_id = bene
       this.item.lng = this.coordenadas.longitude
       this.item.usuarios_id = this.$store.state.auth.authUser.id
@@ -568,23 +583,27 @@ export default {
       this.item.respuestas = {}
       this.lPreguntas.forEach((e) => {
         if (evaluacion) {
-          this.item.respuestas[e.id] =  getDataLista(evaluacion.respuestas,e.id,'preguntas_id','r_s')
-        }else{
+          this.item.respuestas[e.id] = getDataLista(
+            evaluacion.respuestas,
+            e.id,
+            'preguntas_id',
+            'r_s'
+          )
+        } else {
           this.item.respuestas[e.id] = ''
         }
-        
       })
 
       this.dirty.item = null
       if (evaluacion) {
         this.item.id = evaluacion.id
-        this.item.estado = 1*evaluacion.estado
-        this.item.obs= evaluacion.obs
-         if (_dirty) {
-           this.dirty.item = JSON.parse(JSON.stringify(this.item))
-         }
+        this.item.estado = 1 * evaluacion.estado
+        this.item.obs = evaluacion.obs
+        if (_dirty) {
+          this.dirty.item = JSON.parse(JSON.stringify(this.item))
+        }
       }
-      this.estado=this.item.estado==0?false:true 
+      this.estado = this.item.estado == 0 ? false : true
 
       this.$refs.mkFormEval.$refs.form.resetValidation()
       this.tituloModal =
@@ -710,11 +729,11 @@ export default {
       )
     },
     async afterSave(me, isError = 0) {
-      if (isError!=1){
+      if (isError != 1) {
         me.lRuteos = await this.getListaBackend('RuteosMonitor')
       }
-      if (isError>=0) {
-        this.modalEval=false;
+      if (isError >= 0) {
+        this.modalEval = false
         //modalMap=false;
       }
       return true
@@ -738,10 +757,27 @@ export default {
       this.modal = true
       this.$nextTick(this.$refs.focus.focus)
     },
-    verMapa(data, posAct = false) {
-      if (!this.can('view', true)) {
-        return false
+    vermapaGoogle(){
+      //
+    },
+    verMapaBene(bene,google=false){
+      this.getPosition()
+      let benef= getDataLista(this.lBeneficiarios, bene,'id','*')
+      if (!google){
+      this.markers = [0,bene]
+      this.tituloModal = "Ubicacion de "+benef.name
+      this.jsonData=null
+      this.modalMap = true
+      setTimeout(() => {
+        this.initMap()
+      }, 300)
+      }else{
+
+        let url="https://www.google.com/maps/dir/?api=1&origion="+this.coordenadas.latitude+","+this.coordenadas.longitude+"&destination="+benef.lat+","+benef.lng+"&dir_action=navigate"
+        window.open(url);
       }
+    },
+    verMapa(data, posAct = false) {
       this.jsonData = []
       this.markers = Object.assign([], data.beneficiarios)
       this.getRutasOptimizada(data)
@@ -774,7 +810,7 @@ export default {
       let options = {
         enableHighAccuracy: true,
         timeout: 6000,
-        maximumAge: 0,
+        maximumAge: 10,
       }
 
       navigator.geolocation.getCurrentPosition(
@@ -797,8 +833,8 @@ export default {
     },
 
     beforeOpen(accion, data = {}) {
-      data.lat=this.coordenadas.latitude
-      data.lng=this.coordenadas.longitude
+      data.lat = this.coordenadas.latitude
+      data.lng = this.coordenadas.longitude
     },
     getIcon(id) {
       if (id == 0) {

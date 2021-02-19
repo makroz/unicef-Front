@@ -19,7 +19,7 @@
             <v-select
               class="ma-2"
               v-model="item.campo"
-              :items="campos"
+              :items="getCampos()"
               densed
               label="Campo"
               @input="onChangeCampo(item)"
@@ -264,7 +264,12 @@ export default {
       }
       this.modal = true
     },
+    getCampos(){
+      return this.campos.filter(campo => campo.search==true)
+    }
   },
+  mounted() {
+  }
 }
 </script>
 <style>

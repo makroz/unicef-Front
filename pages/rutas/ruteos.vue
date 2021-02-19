@@ -13,7 +13,17 @@
             @onPerPageChange="onPerPageChange"
             @column:change="onColChange"
             @onBuscar="onBuscar"
-          ></mk-data-table>
+            :isExpanded="true"
+          >
+            <template slot="detalle" slot-scope="props">
+              <v-card flat>
+                <v-card-text>
+                  Descripcion: {{props.item.obs}}
+
+                </v-card-text>
+              </v-card>
+            </template>
+          </mk-data-table>
         </v-flex>
       </v-layout>
 
@@ -29,6 +39,7 @@
           <v-text-field
             label="Descripcion"
             v-model="item.obs"
+            :readonly="item.id<0"
             ref="focus"
           ></v-text-field>
           <v-select
@@ -39,6 +50,7 @@
             item-value="id"
             label="Ruta Asignada"
             @change="change"
+            :readonly="item.id<0"
           ></v-select>
           <v-select
             v-model="item.usuarios_id"
@@ -47,6 +59,7 @@
             item-text="name"
             item-value="id"
             label="Monitor Asignado"
+            :readonly="item.id<0"
           ></v-select>
           <v-text-field
             label="Latitud"
@@ -59,6 +72,7 @@
             disabled
           ></v-text-field>
         </v-container>
+        
       </mk-form>
     </v-container>
   </div>
@@ -88,6 +102,15 @@ export default {
           search: true,
         },
         {
+          text: 'Abierto',
+          value: 'created_at',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'date',
+          search: true,
+        },
+        {
           text: 'Ruta',
           value: 'rutas_id',
           align: 'left',
@@ -110,7 +133,7 @@ export default {
         {
           text: 'Descripcion',
           value: 'obs',
-          headers: true,
+          headers: false,
           type: 'text',
           search: true,
         },
@@ -119,10 +142,34 @@ export default {
           text: 'Beneficiarios',
           value: 'beneficiarios',
           width: '100px',
-          headers: true,
-          type: 'text',
-          search: true,
+          headers: false,
+          type: 'count',
+          search: false,
+          fromLista: {
+            lista: 'rutas_id',
+            field: 'beneficiarios',
+            join: 'rutas_id',
+          },
         },
+        {
+          text: 'Evaluaciones',
+          value: 'evaluaciones',
+          width: '100px',
+          headers: false,
+          type: 'count',
+          search: false,
+        },
+                {
+          text: 'Benef./Eval.',
+          value: 'benefEval',
+          width: '100px',
+          headers: true,
+          type: 'concat',
+          concat:['beneficiarios','evaluaciones'],
+          separator:'/',
+          search: false,
+        },
+
         {
           text: 'Estado',
           value: 'estado',
@@ -150,7 +197,6 @@ export default {
         'green--text text--darken-4',
       ],
       lRutas: [],
-
     }
   },
   methods: {
@@ -199,13 +245,22 @@ export default {
   },
 
   async mounted() {
-    this.lUsuarios = await this.getListaBackend('monitores', '','usuarios_id')
+        this.addOptionTable({
+        id: 'ver',
+        color: 'green',
+        icon: 'visibility',
+        visible: this.can('ver'),
+        action: 'openDialog',
+        grupos: ['action', 'topbar'],
+        orden:5
+      })
+    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
     this.lRutas = await this.getListaBackend(
       'Rutas',
       'id,name,usuarios_id',
       'rutas_id'
     )
-    //this.setOptionTable('del').visible=false;
+    
   },
 }
 </script>

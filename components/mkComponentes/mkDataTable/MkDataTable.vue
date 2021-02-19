@@ -77,8 +77,15 @@
             :headers="campos"
             @callAction="callAction"
             @onStatus="setStatus"
+            :isExpanded="isExpanded"
           ></mk-table-row>
         </template>
+        
+        <template  v-if="isExpanded" slot="expand"  slot-scope="props" >
+          <slot name="detalle" v-bind:item="props.item" >....</slot>
+          </template>
+
+    
       </v-data-table>
     </v-card-text>
     <mk-paginator :paginator="paginator" @input="listar" @change="onPerPageChange"></mk-paginator>
@@ -103,10 +110,14 @@ export default {
     'campos',
     'loading',
     'paginator',
-    'acciones'
+    'acciones',
+    'isExpanded'
   ],
   data() {
-    return {}
+    return {
+     // expand:false,
+
+    }
   },
    inject: ['Auth','can'],
   methods: {
@@ -154,6 +165,10 @@ export default {
       this.$emit('column:change', headers,visible);
     }
 
+  },
+  mounted() {
+    // this.expand=true
+    // console.log(this);
   },
 }
 </script>
