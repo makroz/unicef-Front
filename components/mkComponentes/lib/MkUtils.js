@@ -45,9 +45,9 @@ export function getTitFromName(msg) {
     return (msg + '').split('/').pop().split(/(?=[A-Z])/).join(' ');
 }
 
-export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
-    let r = false;
-    //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
+export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def = false) {
+    let r = def
+        //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
     let o = lista.find(el => el[busco] === valor)
     if (o) {
         if (devuelvo == '*') {

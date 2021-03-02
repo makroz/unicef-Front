@@ -643,7 +643,7 @@ export default {
       }
       return lista
     },
-    async getDataBackend(url, campos, param = null) {
+    async getDataBackend(url, campos='', param = null) {
       let data = await this.$store.dispatch('auth/loadData', {
         url: url,
         campos: campos,

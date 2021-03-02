@@ -134,7 +134,7 @@
             href="#"
           >
             <v-list-tile-avatar>
-              <v-btn icon flat color="success" @click="verMapa(ruta)">
+              <v-btn icon flat color="success" @click="verMapa(ruta, true)">
                 <v-badge
                   :value="
                     getDataLista(lRutas, ruta.rutas_id, 'id', 'beneficiarios')
@@ -262,7 +262,7 @@
                 lRutas,
                 ruteo.rutas_id,
                 'id',
-                'beneficiarios'
+                'beneficiariosD'
               )"
               :key="bene.id"
               href="#"
@@ -271,7 +271,7 @@
                 <v-btn
                   icon
                   color="green"
-                  @click="verMapaBene(bene)"
+                  @click="verMapaBene(bene.id)"
                   small
                   style="margin: 0; margin-right: 3px"
                 >
@@ -280,7 +280,7 @@
                 <v-btn
                   icon
                   color="blue"
-                  @click="verMapaBene(bene,true)"
+                  @click="verMapaBene(bene.id, true)"
                   small
                   style="margin: 0; margin-left: 3px"
                 >
@@ -290,10 +290,10 @@
 
               <v-list-tile-content>
                 <v-list-tile-title>
-                  {{ getDataLista(lBeneficiarios, bene) }}
+                  {{ getDataLista(lBeneficiarios, bene.id) }}
                 </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
-                  {{ distancia(getDataLista(lBeneficiarios, bene, 'id', '*')) }}
+                  {{ bene.distancia }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action> </v-list-tile-action>
@@ -301,8 +301,8 @@
               <v-list-tile-action>
                 <v-btn
                   icon
-                  :color="getColorEval(ruteo, bene)"
-                  @click="openEval(ruteo, bene)"
+                  :color="getColorEval(ruteo, bene.id)"
+                  @click="openEval(ruteo, bene.id)"
                 >
                   <v-icon>assignment</v-icon>
                 </v-btn>
@@ -350,7 +350,11 @@
                   attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
                   :useCors="false"
                 ></l-tile-layer>
-                <l-geo-json v-if="jsonData"
+                <l-polyline 
+                v-if="jsonLine"
+                :lat-lngs="jsonLine" color="blue"></l-polyline>
+                <l-geo-json
+                  v-if="jsonData"
                   :geojson="jsonData"
                   :options-style="styleFunction"
                 />
@@ -397,49 +401,127 @@
             :rules="this.estado ? [] : [this.rules.required]"
             validate-on-blur
           ></v-text-field>
+
           <template v-if="estado && modalEval">
-            <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
-              <v-toolbar color="secondary" dark dense>
-                <v-toolbar-side-icon></v-toolbar-side-icon>
-                <v-toolbar-title> {{ categ.name }}</v-toolbar-title>
-              </v-toolbar>
+            <v-tabs centered color="indigo" dark icons-and-text>
+              <v-tabs-slider color="yellow"></v-tabs-slider>
 
-              <div
-                v-for="pregunta in lPregCateg(categ.id)"
-                :key="pregunta.pregunta"
-              >
-                <v-layout row wrap pa-2>
-                  <v-flex grow>
-                    <span class="title text-capitalize">
-                      {{ pregunta.pregunta }}
-                    </span>
-                  </v-flex>
-                  <v-flex shrink>
-                    <v-text-field
-                      v-if="pregunta.tipo == 2"
-                      label="valor"
-                      v-model="item.respuestas[pregunta.id]"
-                      :rules="[rules.required, rules.num]"
-                      validate-on-blur
-                      type="number"
-                      style="width: 80px"
-                    ></v-text-field>
+              <v-tab href="#tab-1" elevation-10>
+                Encuesta
+                <v-icon>content_paste</v-icon>
+              </v-tab>
 
-                    <v-radio-group
-                      v-if="pregunta.tipo == 1"
-                      v-model="item.respuestas[pregunta.id]"
-                      row
-                      :rules="[rules.required]"
-                      validate-on-blur
-                    >
-                      <v-radio color="green" label="Si" value="1"></v-radio>
-                      <v-radio color="red" label="No" value="0"></v-radio>
-                    </v-radio-group>
-                  </v-flex>
-                </v-layout>
-                <v-divider></v-divider>
-              </div>
-            </v-card>
+              <v-tab href="#tab-2" elevation-10>
+                Servicios
+                <v-icon>plumbing</v-icon>
+              </v-tab>
+
+              <v-tab-item value="tab-1">
+                <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
+                  <v-toolbar color="secondary" dark dense>
+                    <v-toolbar-side-icon></v-toolbar-side-icon>
+                    <v-toolbar-title> {{ categ.name }}</v-toolbar-title>
+                  </v-toolbar>
+
+                  <div
+                    v-for="pregunta in lPregCateg(categ.id)"
+                    :key="pregunta.pregunta"
+                  >
+                    <v-layout row wrap pa-2>
+                      <v-flex grow>
+                        <span class="title text-capitalize">
+                          {{ pregunta.pregunta }}
+                        </span>
+                      </v-flex>
+                      <v-flex shrink>
+                        <v-text-field
+                          v-if="pregunta.tipo == 2"
+                          label="valor"
+                          v-model="item.respuestas[pregunta.id]"
+                          :rules="[rules.required, rules.num]"
+                          validate-on-blur
+                          type="number"
+                          style="width: 80px"
+                        ></v-text-field>
+
+                        <v-radio-group
+                          v-if="pregunta.tipo == 1"
+                          v-model="item.respuestas[pregunta.id]"
+                          row
+                          :rules="[rules.required]"
+                          validate-on-blur
+                        >
+                          <v-radio color="green" label="Si" value="1"></v-radio>
+                          <v-radio color="red" label="No" value="0"></v-radio>
+                        </v-radio-group>
+                      </v-flex>
+                    </v-layout>
+                    <v-divider></v-divider>
+                  </div>
+                </v-card>
+              </v-tab-item>
+              <v-tab-item value="tab-2">
+                <v-card>
+                  <v-list>
+                    <template v-for="servicio in lServicios">
+                      <v-list-tile
+                        :key="servicio.id"
+                        :class="
+                          servicio.selected
+                            ? 'deep-purple lighten-5 deep-purple--text text--accent-4'
+                            : ''
+                        "
+                      >
+                        <v-list-tile-action>
+                          <v-checkbox
+                            v-if="servicio.estado == 1"
+                            v-model="servicio.selected"
+                            color="deep-purple accent-4"
+                          ></v-checkbox>
+                        </v-list-tile-action>
+
+                        <v-list-tile-content>
+                          <v-list-tile-title>
+                            {{ servicio.name }}
+                            <span style="font-size: 10px">
+                              {{ servicio.obs }}
+                              {{ servicio.estado }}
+                            </span>
+                          </v-list-tile-title>
+                        </v-list-tile-content>
+                        <v-list-tile-avatar v-if="servicio.selected">
+                          <v-text-field
+                            v-model="servicio.cantidad"
+                            :disabled="
+                              servicio.estado == 1
+                                ? servicio.cant
+                                  ? false
+                                  : true
+                                : true
+                            "
+                            :rules="[
+                              rules.required,
+                              rules.num,
+                              rules.minVal(1),
+                            ]"
+                            validate-on-blur
+                            color="primary"
+                            :class="servicio.selectded ? 'secondary' : ''"
+                            type="number"
+                            min="1"
+                            style="
+                              font-size: 12px;
+                              padding-bottom: 0;
+                              padding-top: 12px;
+                            "
+                          ></v-text-field>
+                        </v-list-tile-avatar>
+                      </v-list-tile>
+                    </template>
+                  </v-list>
+                </v-card>
+              </v-tab-item>
+            </v-tabs>
           </template>
         </v-container>
       </mk-form-full-screen>
@@ -490,6 +572,7 @@ export default {
       lRutas: [],
       estado: false,
       lBeneficiarios: [],
+      lServicios: [],
       lCateg: [],
       lPreguntas: [],
       modalMap: false,
@@ -512,6 +595,7 @@ export default {
       }),
       styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
       jsonData: [],
+      jsonLine:[],
       item: { respuestas: {} },
     }
   },
@@ -520,6 +604,13 @@ export default {
       if (!this.$refs.mkFormEval.$refs.form.validate()) {
         return false
       }
+
+      this.item.servicios = {}
+      this.lServicios.forEach((e) => {
+        if (e.selected && e.estado == 1) {
+          this.item.servicios[e.id] = e.cantidad
+        }
+      })
 
       let data = {
         _noData: 1,
@@ -532,9 +623,16 @@ export default {
         ruteos_id: this.item.ruteos_id,
         beneficiarios_id: this.item.beneficiarios_id,
         respuestas: this.item.respuestas,
+        servicios: this.item.servicios,
       }
-
-      console.log(this.item, data)
+      if (
+        this.item.id > 0 &&
+        JSON.stringify(this.dirty.item.servicios) !=
+          JSON.stringify(this.item.servicios)
+      ) {
+        data.benef = this.item.beneficiarios_id
+      }
+      //console.log(this.item, data)
 
       this.item = data
 
@@ -565,7 +663,8 @@ export default {
       }
       this.getPosition()
       this.item = Object.assign({}, data)
-      ;(this.item._noData = 1), (this.item.lat = this.coordenadas.latitude)
+      this.item._noData = 1
+      this.item.lat = this.coordenadas.latitude
       this.item.beneficiarios_id = bene
       this.item.lng = this.coordenadas.longitude
       this.item.usuarios_id = this.$store.state.auth.authUser.id
@@ -580,6 +679,30 @@ export default {
         '*'
       )
 
+      this.item.servicios = {}
+      this.lServicios.forEach((e) => {
+        e.cantidad = 1
+        e.selected = false
+        e.estado = 1
+
+        if (evaluacion) {
+          let existe = getDataLista(
+            evaluacion.servicios,
+            e.id,
+            'servicios_id',
+            '*'
+          )
+          if (existe) {
+            e.cantidad = existe.cant
+            e.selected = true
+            e.estado = existe.estado
+            if (existe.estado == 1) {
+              this.item.servicios[e.id] = existe.cant
+            }
+          }
+        }
+      })
+
       this.item.respuestas = {}
       this.lPreguntas.forEach((e) => {
         if (evaluacion) {
@@ -587,7 +710,8 @@ export default {
             evaluacion.respuestas,
             e.id,
             'preguntas_id',
-            'r_s'
+            'r_s',
+            ''
           )
         } else {
           this.item.respuestas[e.id] = ''
@@ -642,6 +766,7 @@ export default {
       let cached = getCache(cacheKey)
       console.log('consultando cacheado:', cacheKey, cached)
       if (cached) {
+        this.jsonLine = null
         this.jsonData = cached
         console.log('rutas recuperadas del cache')
         //TODO: aqui otra formula para calcular habra que primero calcular elmas cercano del inicio y de ahi calcular todo de nuevo las distancias espaciales recursivamente hasta tener todo ordenado por distancia espacial..
@@ -710,7 +835,7 @@ export default {
           }
         })
         r.tours[0].featureCollection.features = dd
-
+        this.jsonLine = null
         this.jsonData = r.tours[0].featureCollection
         setCache(cacheKey, this.jsonData)
       } catch (error) {
@@ -757,28 +882,46 @@ export default {
       this.modal = true
       this.$nextTick(this.$refs.focus.focus)
     },
-    vermapaGoogle(){
+    vermapaGoogle() {
       //
     },
-    verMapaBene(bene,google=false){
+    verMapaBene(bene, google = false) {
       this.getPosition()
-      let benef= getDataLista(this.lBeneficiarios, bene,'id','*')
-      if (!google){
-      this.markers = [0,bene]
-      this.tituloModal = "Ubicacion de "+benef.name
-      this.jsonData=null
-      this.modalMap = true
-      setTimeout(() => {
-        this.initMap()
-      }, 300)
-      }else{
+      let benef = getDataLista(this.lBeneficiarios, bene, 'id', '*')
+      console.log('hola',[this.coordenadas.latitude, this.coordenadas.longitude],
+                [benef.lat, benef.lng]);
 
-        let url="https://www.google.com/maps/dir/?api=1&origion="+this.coordenadas.latitude+","+this.coordenadas.longitude+"&destination="+benef.lat+","+benef.lng+"&dir_action=navigate"
-        window.open(url);
+      if (!google) {
+        this.markers = [0, bene]
+
+        this.jsonLine = [
+                [this.coordenadas.latitude, this.coordenadas.longitude],
+                [benef.lat, benef.lng],
+              ]
+
+        this.tituloModal = 'Ubicacion de ' + benef.name
+        this.jsonData = null
+        this.modalMap = true
+        setTimeout(() => {
+          this.initMap()
+        }, 300)
+      } else {
+        let url =
+          'https://www.google.com/maps/dir/?api=1&origion=' +
+          this.coordenadas.latitude +
+          ',' +
+          this.coordenadas.longitude +
+          '&destination=' +
+          benef.lat +
+          ',' +
+          benef.lng +
+          '&dir_action=navigate'
+        window.open(url)
       }
     },
     verMapa(data, posAct = false) {
       this.jsonData = []
+      this.jsonLine = null
       this.markers = Object.assign([], data.beneficiarios)
       this.getRutasOptimizada(data)
       if (posAct) {
@@ -820,11 +963,17 @@ export default {
       )
     },
     successGps(position) {
-      this.coordenadas = position.coords
-      this.item.lat = this.coordenadas.latitude
-      this.item.lng = this.coordenadas.longitude
-      this.location = true
-      console.log('LOcalizado', this.coordenadas)
+      if (
+        this.coordenadas.latitude != position.coords.latitude ||
+        this.coordenadas.longitude != position.coords.longitude
+      ) {
+        this.coordenadas = position.coords
+        this.item.lat = this.coordenadas.latitude
+        this.item.lng = this.coordenadas.longitude
+        this.location = true
+        this.ordBeneficiarios(this.lRutas)
+        console.log('Localizado', this.coordenadas)
+      }
     },
 
     errorGps(error) {
@@ -1015,6 +1164,24 @@ export default {
         console.error(error)
       }
     },
+    ordBeneficiarios(lista) {
+      lista.forEach((e) => {
+        let r = []
+        e.beneficiarios.forEach((el) => {
+          r.push({
+            id: el,
+            distancia: this.distancia(
+              getDataLista(this.lBeneficiarios, el, 'id', '*')
+            ),
+          })
+        })
+        r.sort(function (a, b) {
+          return a.distancia - b.distancia
+        })
+        e.beneficiariosD = r
+      })
+      return lista
+    },
   },
   computed: {
     binding() {
@@ -1034,20 +1201,32 @@ export default {
     this.getPosition()
 
     this.lUsuarios = await this.getListaBackend('monitores')
+    this.lBeneficiarios = await this.getListaBackend('Beneficiarios', 'id,name')
     this.lRuteos = await this.getListaBackend('RuteosMonitor')
-    this.lRutas = await this.getListaBackend(
+
+    let rutas = await this.getListaBackend(
       'Rutas',
       'id,name,usuarios_id,descrip'
     )
-    this.lBeneficiarios = await this.getListaBackend('Beneficiarios', 'id,name')
+
+    this.lRutas = this.ordBeneficiarios(rutas)
+
     this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
     this.lPreguntas = await this.getListaBackend('Preguntas')
     this.lCateg.sort(function (a, b) {
       return a.orden - b.orden
     })
+
     this.lPreguntas.sort(function (a, b) {
       return a.orden - b.orden
     })
+
+    let services = await this.getDataBackend('Servicios')
+    services.forEach((e) => {
+      e.cantidad = 1
+      e.selected = false
+    })
+    this.lServicios = services
     //this.setOptionTable('del').visible=false;
   },
 }

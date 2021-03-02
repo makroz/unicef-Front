@@ -307,7 +307,7 @@ export default {
   },
 
   async mounted() {
-    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id') //ver si se uede sacr los parametros del headers o campos
+    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id_1') //ver si se uede sacr los parametros del headers o campos
     this.lBeneficiarios = await this.getListaBackend(
       'Beneficiarios',
       '',
