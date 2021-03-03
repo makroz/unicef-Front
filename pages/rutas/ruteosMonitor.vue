@@ -64,6 +64,7 @@
       <v-layout row wrap>
         <v-flex xs12>
           <v-card>
+            <!-- presentacion -->
             <v-layout v-bind="binding">
               <v-flex pa-4 class="text-xs-center">
                 <img
@@ -92,6 +93,7 @@
               </v-flex>
             </v-layout>
             <v-divider light></v-divider>
+            <!-- cuadritos informativos -->
             <v-card-actions class="pa-3">
               <v-layout align-space-around justify-space-around row fill-height>
                 <mk-simple-card
@@ -120,9 +122,9 @@
           </v-card>
         </v-flex>
       </v-layout>
-
+      <!-- Rutas Disponibles -->
       <v-card>
-        <v-toolbar color="red darken-4" dark>
+        <v-toolbar color="green darken-4" dark>
           <v-icon>add_location_alt</v-icon>
           <v-toolbar-title>Rutas Disponibles</v-toolbar-title>
           <v-spacer></v-spacer>
@@ -181,6 +183,7 @@
         </v-list>
       </v-card>
       <br />
+      <!-- Rutas Abiertas -->
       <v-card>
         <v-toolbar color="yellow darken-4" dark>
           <v-icon>pin_drop</v-icon>
@@ -238,7 +241,13 @@
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
-                <v-btn icon color="primary" @click.stop="" large>
+
+                <v-btn icon color="primary" @click.stop="" large v-if="getDataLista(
+                            lRutas,
+                            ruteo.rutas_id,
+                            'id',
+                            'beneficiarios'
+                          ).length - ruteo.evaluaciones.length>0">
                   <v-badge :value="true" color="green" overlap>
                     <template v-slot:badge>
                       <span>
@@ -254,6 +263,9 @@
                     </template>
                     <v-icon large>groups</v-icon>
                   </v-badge>
+                </v-btn>
+                <v-btn v-else icon color="primary" @click.stop="getPosition(setClose,ruteo.id)" large >
+                    <v-icon large>fact_check</v-icon>
                 </v-btn>
               </v-list-tile-action>
             </v-list-tile>
@@ -311,7 +323,196 @@
           </v-list-group>
         </v-list>
       </v-card>
+      <br />
+      <!-- Rutas Atrasadas  -->
+      <v-card>
+        <v-toolbar color="red darken-4" dark>
+          <v-icon>pin_drop</v-icon>
+          <v-toolbar-title>Rutas Atrasadas </v-toolbar-title>
+        </v-toolbar>
+        <v-list two-line dense>
+          <v-list-group
+            v-model="ruteo1.active"
+            v-for="ruteo1 in lRuteos.retrased.data"
+            :key="ruteo1.id"
+            active-class="grey"
+          >
+            <v-list-tile slot="activator">
+              <v-list-tile-avatar>
+                <v-btn
+                  icon
+                  flat
+                  color="success"
+                  @click.stop="
+                    verMapa(
+                      getDataLista(lRutas, ruteo1.rutas_id, 'id', '*'),
+                      true
+                    )
+                  "
+                >
+                  <v-badge :value="true" color="cyan" overlap>
+                    <template v-slot:badge>
+                      <span>
+                        {{
+                          getDataLista(
+                            lRutas,
+                            ruteo1.rutas_id,
+                            'id',
+                            'beneficiarios'
+                          ).length
+                        }}
+                      </span>
+                    </template>
+                    <v-icon large>map</v-icon>
+                  </v-badge>
+                </v-btn>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-layout row wrap>
+                    <v-flex>
+                      <span class="title text-capitalize">
+                        {{ getDataLista(lRutas, ruteo1.rutas_id) }}
+                      </span>
+                    </v-flex>
+                  </v-layout>
+                </v-list-tile-title>
+                <v-list-tile-sub-title class="caption">
+                  {{ getSubHeader(ruteo1) }}
+                </v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-btn icon color="primary" @click.stop="" large>
+                  <v-badge :value="true" color="green" overlap>
+                    <template v-slot:badge>
+                      <span>
+                        {{
+                          getDataLista(
+                            lRutas,
+                            ruteo1.rutas_id,
+                            'id',
+                            'beneficiarios'
+                          ).length - ruteo1.evaluaciones.length
+                        }}
+                      </span>
+                    </template>
+                    <v-icon large>groups</v-icon>
+                  </v-badge>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-list-tile
+              v-for="bene in getDataLista(
+                lRutas,
+                ruteo1.rutas_id,
+                'id',
+                'beneficiariosD'
+              )"
+              :key="bene.id"
+              href="#"
+            >
+              <v-list-tile-avatar class="pa-0 pm-0">
+                <v-btn
+                  icon
+                  color="green"
+                  @click="verMapaBene(bene.id)"
+                  small
+                  style="margin: 0; margin-right: 3px"
+                >
+                  <v-icon>person_pin_circle</v-icon>
+                </v-btn>
+                <v-btn
+                  icon
+                  color="blue"
+                  @click="verMapaBene(bene.id, true)"
+                  small
+                  style="margin: 0; margin-left: 3px"
+                >
+                  <v-icon>directions_car</v-icon>
+                </v-btn>
+              </v-list-tile-avatar>
 
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  {{ getDataLista(lBeneficiarios, bene.id) }}
+                </v-list-tile-title>
+                <v-list-tile-sub-title class="caption">
+                  {{ bene.distancia }}
+                </v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action> </v-list-tile-action>
+
+              <v-list-tile-action>
+                <v-btn
+                  icon
+                  :color="getColorEval(ruteo1, bene.id)"
+                  @click="openEval(ruteo1, bene.id)"
+                >
+                  <v-icon>assignment</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list-group>
+        </v-list>
+      </v-card>
+      <br />
+      <!-- Rutas Cerradas -->
+      <v-card>
+        <v-toolbar color="blue darken-4" dark>
+          <v-icon>add_location_alt</v-icon>
+          <v-toolbar-title>Rutas Cerradas</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list two-line>
+          <v-list-tile
+            v-for="rutaC in lRuteos.closed.data"
+            :key="rutaC.id"
+            href="#"
+          >
+            <v-list-tile-avatar>
+              <v-btn icon flat color="success" @click="verMapa(rutaC, true)">
+                <v-badge
+                  :value="
+                    getDataLista(lRutas, rutaC.rutas_id, 'id', 'beneficiarios')
+                  "
+                  color="cyan"
+                  overlap
+                >
+                  <template v-slot:badge>
+                    <span>
+                      {{
+                        getDataLista(
+                          lRutas,
+                          rutaC.rutas_id,
+                          'id',
+                          'beneficiarios'
+                        ).length
+                      }}</span
+                    >
+                  </template>
+                  <v-icon large>map</v-icon>
+                </v-badge>
+              </v-btn>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <v-layout row wrap>
+                  <v-flex>
+                    <span class="title text-capitalize">
+                      {{ getDataLista(lRutas, rutaC.rutas_id) }}</span
+                    >
+                  </v-flex>
+                </v-layout>
+              </v-list-tile-title>
+              <v-list-tile-sub-title class="caption">{{
+                getDataLista(lRutas, rutaC.rutas_id, 'id', 'descrip')
+              }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-card>
+      <br />
+      <!-- formulario Principal -->
       <mk-form
         ref="mkForm"
         :modal="modal"
@@ -328,7 +529,7 @@
           ></v-text-field>
         </v-container>
       </mk-form>
-
+      <!-- formulario Mapa FullScreen -->
       <mk-form-full-screen
         ref="mkFormMap"
         :modal="modalMap"
@@ -350,9 +551,11 @@
                   attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
                   :useCors="false"
                 ></l-tile-layer>
-                <l-polyline 
-                v-if="jsonLine"
-                :lat-lngs="jsonLine" color="blue"></l-polyline>
+                <l-polyline
+                  v-if="jsonLine"
+                  :lat-lngs="jsonLine"
+                  color="blue"
+                ></l-polyline>
                 <l-geo-json
                   v-if="jsonData"
                   :geojson="jsonData"
@@ -378,7 +581,7 @@
           </div>
         </v-container>
       </mk-form-full-screen>
-
+      <!-- formulario Evaluaciones FullScreen -->
       <mk-form-full-screen
         ref="mkFormEval"
         :modal="modalEval"
@@ -568,6 +771,14 @@ export default {
           ok: 0,
           data: [],
         },
+        closed: {
+          ok: 0,
+          data: [],
+        },
+        retrased: {
+          ok: 0,
+          data: [],
+        },
       },
       lRutas: [],
       estado: false,
@@ -595,8 +806,9 @@ export default {
       }),
       styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
       jsonData: [],
-      jsonLine:[],
+      jsonLine: [],
       item: { respuestas: {} },
+      callBack:false
     }
   },
   methods: {
@@ -644,6 +856,33 @@ export default {
       this.grabarItem()
       this.urlModulo = 'Ruteos'
       return true
+    },
+    setClose(id) {
+      if (!this.can('edit', true)) {
+        return false
+      }
+      let me = this
+      let url = 'RuteosMonitor/setClose'
+      me.dataTable.loading = true
+      me.$axios
+        .post(url + this.getCt(url), {
+          id: id,
+          lat: this.coordenadas.latitude,
+          lng: this.coordenadas.longitude,
+        })
+        .then(function (response) {
+          if (me.isOk(response.data)) {
+            me.afterSave(me, 0)
+          } else {
+            //con error
+          }
+        })
+        .catch(function (error) {
+          console.error(error)
+        })
+        .finally(function () {
+          me.dataTable.loading = false
+        })
     },
     getColorEval(ruteo, bene) {
       return !getDataLista(
@@ -888,19 +1127,22 @@ export default {
     verMapaBene(bene, google = false) {
       this.getPosition()
       let benef = getDataLista(this.lBeneficiarios, bene, 'id', '*')
-      console.log('hola',[this.coordenadas.latitude, this.coordenadas.longitude],
-                [benef.lat, benef.lng]);
+      console.log(
+        'hola',
+        [this.coordenadas.latitude, this.coordenadas.longitude],
+        [benef.lat, benef.lng]
+      )
 
       if (!google) {
         this.markers = [0, bene]
-
-        this.jsonLine = [
-                [this.coordenadas.latitude, this.coordenadas.longitude],
-                [benef.lat, benef.lng],
-              ]
+        this.jsonData = [{
+            type: 'LineString',
+            coordinates: [[this.coordenadas.longitude, this.coordenadas.latitude],
+           [benef.lng, benef.lat]]
+        }]
 
         this.tituloModal = 'Ubicacion de ' + benef.name
-        this.jsonData = null
+        //this.jsonData = null
         this.modalMap = true
         setTimeout(() => {
           this.initMap()
@@ -949,13 +1191,14 @@ export default {
     change(e) {
       this.item.usuarios_id = this.lRutas.find((el) => el.id === e).usuarios_id
     },
-    getPosition() {
+    getPosition(callBack=false,id=-1) {
       let options = {
         enableHighAccuracy: true,
         timeout: 6000,
         maximumAge: 10,
       }
-
+      this.callBack = callBack
+      this.location=id
       navigator.geolocation.getCurrentPosition(
         this.successGps,
         this.errorGps,
@@ -970,17 +1213,19 @@ export default {
         this.coordenadas = position.coords
         this.item.lat = this.coordenadas.latitude
         this.item.lng = this.coordenadas.longitude
-        this.location = true
+        console.log('Localizado', this.callBack)
         this.ordBeneficiarios(this.lRutas)
-        console.log('Localizado', this.coordenadas)
       }
+      if (this.callBack!=false){
+          this.callBack(this.location)
+      }
+      this.location = true
+      this.callBack=false
     },
-
     errorGps(error) {
       this.location = false
       console.warn('ERROR(' + error.code + '): ' + error.message)
     },
-
     beforeOpen(accion, data = {}) {
       data.lat = this.coordenadas.latitude
       data.lng = this.coordenadas.longitude
