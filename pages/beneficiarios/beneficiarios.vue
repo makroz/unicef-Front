@@ -6,7 +6,7 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-:campos="campos"
+            :campos="campos"
             @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
@@ -93,20 +93,12 @@
           <v-text-field label="Direccion" v-model="item.dir"></v-text-field>
           <v-layout row>
             <v-flex>
-            <v-text-field
-              label="Latitud"
-              v-model="item.lat"
-              :rules="[rules.num]"
-              validate-on-blur
-            ></v-text-field>
+              <v-text-field label="Latitud" v-model="item.lat" readonly>
+              </v-text-field>
             </v-flex>
             <v-flex>
-            <v-text-field
-              label="Longitud"
-              v-model="item.lng"
-              :rules="[rules.num]"
-              validate-on-blur
-            ></v-text-field>
+              <v-text-field label="Longitud" v-model="item.lng" readonly>
+              </v-text-field>
             </v-flex>
           </v-layout>
           <div id="map-wrap" style="height: 200px; width: 100%">
@@ -240,45 +232,29 @@ export default {
       this.item.lng = e.lng
     },
     initMap() {
-      if ((this.item.lat) && (this.item.lat!='')) {
-        this.center = [this.item.lat, this.item.lng]
+      if (this.item.lat && this.item.lat != '') {
+        //this.center = [this.item.lat, this.item.lng]
         this.marker = [this.item.lat, this.item.lng]
         this.zoom = 13
-      }else{
-        this.item.lat=''
-        this.item.lng=''
+      } else {
+        this.item.lat = ''
+        this.item.lng = ''
+        this.marker = this.center
       }
-      this.$refs.mymap.mapObject.invalidateSize().setView(this.center, 13)
+      this.$refs.mymap.mapObject.invalidateSize().setView(this.marker, 13)
     },
-   beforeOpen(accion, data = {}) {
-     if (accion=='add'){
-       data.lat=''
-       data.lng=''
-     }
+    beforeOpen(accion, data = {}) {
+      if (accion == 'add') {
+        data.lat = ''
+        data.lng = ''
+      }
       setTimeout(() => {
         this.initMap()
       }, 100)
     },
   },
-
-  // async asyncData({ store }) {
-  //   let lEntidades = await store.dispatch('auth/loadData', {
-  //     url: 'Entidades',
-  //     campos: 'id,name',
-  //   })
-  //   let lDistritos = await store.dispatch('auth/loadData', {
-  //     url: 'Distritos',
-  //     campos: 'id,name',
-  //   })
-  //   return {
-  //     lEntidades: lEntidades,
-  //     lDistritos: lDistritos,
-  //   }
-  // },
   async mounted() {
-    this.lRutas = await this.getListaBackend('Rutas', 'id,name',
-     'rutas_id'
-     )
+    this.lRutas = await this.getListaBackend('Rutas', 'id,name', 'rutas_id')
     this.lEntidades = await this.getListaBackend(
       'Entidades',
       'id,name',
