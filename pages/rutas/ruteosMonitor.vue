@@ -164,6 +164,9 @@
               <v-list-tile-title>
                 <v-layout row wrap>
                   <v-flex>
+                    <span class="caption">
+                      {{ ruta.id }}
+                    </span>
                     <span class="title text-capitalize">
                       {{ getDataLista(lRutas, ruta.rutas_id) }}</span
                     >
@@ -230,6 +233,9 @@
                 <v-list-tile-title>
                   <v-layout row wrap>
                     <v-flex>
+                      <span class="caption">
+                        {{ ruteo.id }}
+                      </span>
                       <span class="title text-capitalize">
                         {{ getDataLista(lRutas, ruteo.rutas_id) }}
                       </span>
@@ -241,13 +247,18 @@
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
-
-                <v-btn icon color="primary" @click.stop="" large v-if="getDataLista(
-                            lRutas,
-                            ruteo.rutas_id,
-                            'id',
-                            'beneficiarios'
-                          ).length - ruteo.evaluaciones.length>0">
+                <v-btn
+                  icon
+                  color="primary"
+                  @click.stop=""
+                  large
+                  v-if="
+                    getDataLista(lRutas, ruteo.rutas_id, 'id', 'beneficiarios')
+                      .length -
+                      ruteo.evaluaciones.length >
+                    0
+                  "
+                >
                   <v-badge :value="true" color="green" overlap>
                     <template v-slot:badge>
                       <span>
@@ -264,8 +275,14 @@
                     <v-icon large>groups</v-icon>
                   </v-badge>
                 </v-btn>
-                <v-btn v-else icon color="primary" @click.stop="getPosition(setClose,ruteo.id)" large >
-                    <v-icon large>fact_check</v-icon>
+                <v-btn
+                  v-else
+                  icon
+                  color="primary"
+                  @click.stop="getPosition(setClose, ruteo.id)"
+                  large
+                >
+                  <v-icon large>fact_check</v-icon>
                 </v-btn>
               </v-list-tile-action>
             </v-list-tile>
@@ -327,7 +344,7 @@
       <!-- Rutas Atrasadas  -->
       <v-card>
         <v-toolbar color="red darken-4" dark>
-          <v-icon>pin_drop</v-icon>
+          <v-icon>fmd_bad</v-icon>
           <v-toolbar-title>Rutas Atrasadas </v-toolbar-title>
         </v-toolbar>
         <v-list two-line dense>
@@ -371,6 +388,9 @@
                 <v-list-tile-title>
                   <v-layout row wrap>
                     <v-flex>
+                      <span class="caption">
+                        {{ ruteo1.id }}
+                      </span>
                       <span class="title text-capitalize">
                         {{ getDataLista(lRutas, ruteo1.rutas_id) }}
                       </span>
@@ -459,54 +479,43 @@
       <!-- Rutas Cerradas -->
       <v-card>
         <v-toolbar color="blue darken-4" dark>
-          <v-icon>add_location_alt</v-icon>
-          <v-toolbar-title>Rutas Cerradas</v-toolbar-title>
+          <v-icon>where_to_vote</v-icon>
+          <v-toolbar-title>Rutas Cerradas en estas 2 semanas</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-        <v-list two-line>
+        <v-list tree-line>
           <v-list-tile
             v-for="rutaC in lRuteos.closed.data"
             :key="rutaC.id"
             href="#"
           >
-            <v-list-tile-avatar>
-              <v-btn icon flat color="success" @click="verMapa(rutaC, true)">
-                <v-badge
-                  :value="
-                    getDataLista(lRutas, rutaC.rutas_id, 'id', 'beneficiarios')
-                  "
-                  color="cyan"
-                  overlap
-                >
-                  <template v-slot:badge>
-                    <span>
-                      {{
-                        getDataLista(
-                          lRutas,
-                          rutaC.rutas_id,
-                          'id',
-                          'beneficiarios'
-                        ).length
-                      }}</span
-                    >
-                  </template>
-                  <v-icon large>map</v-icon>
-                </v-badge>
-              </v-btn>
-            </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title>
                 <v-layout row wrap>
                   <v-flex>
+                    <span class="caption">
+                      {{ rutaC.id }}
+                    </span>
                     <span class="title text-capitalize">
-                      {{ getDataLista(lRutas, rutaC.rutas_id) }}</span
-                    >
+                      {{ getDataLista(lRutas, rutaC.rutas_id) }}
+                    </span>
+                    <span class="caption">
+                      {{
+                        getDataLista(lRutas, rutaC.rutas_id, 'id', 'descrip')
+                      }}
+                    </span>
                   </v-flex>
                 </v-layout>
               </v-list-tile-title>
-              <v-list-tile-sub-title class="caption">{{
-                getDataLista(lRutas, rutaC.rutas_id, 'id', 'descrip')
-              }}</v-list-tile-sub-title>
+              <v-list-tile-sub-title class="caption">
+                Abierto el:
+                {{ rutaC.created_at }}
+              </v-list-tile-sub-title>
+              <v-list-tile-sub-title class="caption">
+                Cerrado el:
+                {{ rutaC.fec_cerrado }}
+              </v-list-tile-sub-title>
+              
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -808,7 +817,7 @@ export default {
       jsonData: [],
       jsonLine: [],
       item: { respuestas: {} },
-      callBack:false
+      callBack: false,
     }
   },
   methods: {
@@ -1135,11 +1144,15 @@ export default {
 
       if (!google) {
         this.markers = [0, bene]
-        this.jsonData = [{
+        this.jsonData = [
+          {
             type: 'LineString',
-            coordinates: [[this.coordenadas.longitude, this.coordenadas.latitude],
-           [benef.lng, benef.lat]]
-        }]
+            coordinates: [
+              [this.coordenadas.longitude, this.coordenadas.latitude],
+              [benef.lng, benef.lat],
+            ],
+          },
+        ]
 
         this.tituloModal = 'Ubicacion de ' + benef.name
         //this.jsonData = null
@@ -1191,14 +1204,14 @@ export default {
     change(e) {
       this.item.usuarios_id = this.lRutas.find((el) => el.id === e).usuarios_id
     },
-    getPosition(callBack=false,id=-1) {
+    getPosition(callBack = false, id = -1) {
       let options = {
         enableHighAccuracy: true,
         timeout: 6000,
         maximumAge: 10,
       }
       this.callBack = callBack
-      this.location=id
+      this.location = id
       navigator.geolocation.getCurrentPosition(
         this.successGps,
         this.errorGps,
@@ -1216,11 +1229,11 @@ export default {
         console.log('Localizado', this.callBack)
         this.ordBeneficiarios(this.lRutas)
       }
-      if (this.callBack!=false){
-          this.callBack(this.location)
+      if (this.callBack != false) {
+        this.callBack(this.location)
       }
       this.location = true
-      this.callBack=false
+      this.callBack = false
     },
     errorGps(error) {
       this.location = false

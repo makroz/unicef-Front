@@ -185,16 +185,14 @@ export default {
       lEstados: [
         'Abierto',
         'En progreso',
-        'Terminado',
-        'Verificado',
         'Cerrado',
+        'Verificado',
       ],
       lColor: [
         'red--text',
         'green--text text--lighten-3',
         'green--text text--lighten-1',
         'green--text',
-        'green--text text--darken-4',
       ],
       lRutas: [],
     }
@@ -232,9 +230,13 @@ export default {
       let me = this
       if (accion == 'add') {
         this.getPosition()
-        data.lng = ''
+        data.lat = ''
         data.lng = ''
         data.usuarios_id = null
+      }else{
+        let coord=data.gps_open.split(' ')
+        data.lat = coord[0]
+        data.lng = coord[1]
       }
 
       // me.lBeneficiarios = await me.getListaBackend(

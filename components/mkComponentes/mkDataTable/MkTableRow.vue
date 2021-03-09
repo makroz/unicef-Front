@@ -93,7 +93,12 @@ export default {
       }
     },
     showItem(lista, datos) {
-      let valor = datos.item[lista.value]
+      let id=(lista.value+'.').split('.')
+      let valor = datos.item[id[0]]
+      for (let i = 1; i < id.length-1; i++) {
+        valor = valor[id[i]]
+      }
+      
 
       if (lista.type == 'concat') {
         valor=''

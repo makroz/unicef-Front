@@ -89,7 +89,7 @@ export default {
         },
         {
           text: 'Ruta',
-          value: 'rutas_id',
+          value: 'ruteo.rutas_id',
           align: 'left',
           width: '100px',
           headers: true,
@@ -116,8 +116,8 @@ export default {
         },
 
         {
-          text: 'Beneficiarios',
-          value: 'beneficiarios',
+          text: 'Beneficiario',
+          value: 'beneficiario.name',
           width: '100px',
           headers: true,
           type: 'text',
@@ -202,12 +202,12 @@ export default {
   async mounted() {
     this.setOptionTable('add').visible=false;
     this.lUsuarios = await this.getListaBackend('monitores', '','usuarios_id')
-    this.lRuteos = await this.getListaBackend('Ruteos', '','ruteos_id')
-    this.lBeneficiarios = await this.getListaBackend('Beneficiarios', '','beneficiarios_id')
+//    this.lRuteos = await this.getListaBackend('Ruteos', '','ruteos_id')
+//    this.lBeneficiarios = await this.getListaBackend('Beneficiarios', '','beneficiarios_id')
     this.lRutas = await this.getListaBackend(
       'Rutas',
-      'id,name,usuarios_id',
-      'rutas_id'
+      'id,name',
+      'ruteo.rutas_id'
     )
     
   },

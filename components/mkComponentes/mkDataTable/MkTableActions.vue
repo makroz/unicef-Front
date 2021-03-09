@@ -21,7 +21,7 @@
           dark
           small
           :color="opt.color"
-          @click="callAction(opt, item)"
+          @click.stop="callAction(opt, item)"
         >
           <v-icon>{{ opt.icon }}</v-icon>
         </v-btn>
@@ -37,7 +37,7 @@
           flat
           :color="opt.color"
           small
-          @click="callAction(opt, item)"
+          @click.stop="callAction(opt, item)"
         >
           <v-icon>{{ opt.icon }}</v-icon>
         </v-btn>
