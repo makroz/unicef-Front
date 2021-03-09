@@ -227,7 +227,6 @@ export default {
   },
   methods: {
     updateMaker(e) {
-      //console.log(e)
       this.item.lat = e.lat
       this.item.lng = e.lng
     },
