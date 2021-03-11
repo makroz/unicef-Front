@@ -281,6 +281,7 @@
                   color="primary"
                   @click.stop="getPosition(setClose, ruteo.id)"
                   large
+                  title="Cerrar Ruteo"
                 >
                   <v-icon large>fact_check</v-icon>
                 </v-btn>

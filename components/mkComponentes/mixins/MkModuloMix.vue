@@ -685,7 +685,10 @@ export default {
       })
       return temp
     },
-    setOptionTable(id) {
+    getOptionTable(id) {
+      return this.dataTable.acciones.find((e) => e.id == id)
+    },
+    setOptionTable(id,option) {
       return this.dataTable.acciones.find((e) => e.id == id)
     },
     addOptionTable(option) {

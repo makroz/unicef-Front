@@ -61,16 +61,6 @@
             label="Monitor Asignado"
             :readonly="item.id<0"
           ></v-select>
-          <v-text-field
-            label="Latitud"
-            v-model="item.lat"
-            disabled
-          ></v-text-field>
-          <v-text-field
-            label="longitud"
-            v-model="item.lng"
-            disabled
-          ></v-text-field>
         </v-container>
         
       </mk-form>
@@ -225,18 +215,17 @@ export default {
     errorGps(error) {
       console.warn('ERROR(' + error.code + '): ' + error.message)
     },
-
     beforeOpen(accion, data = {}) {
       let me = this
       if (accion == 'add') {
         this.getPosition()
-        data.lat = ''
-        data.lng = ''
+        // data.lat = ''
+        // data.lng = ''
         data.usuarios_id = null
       }else{
-        let coord=data.gps_open.split(' ')
-        data.lat = coord[0]
-        data.lng = coord[1]
+        // let coord=data.gps_open.split(' ')
+        // data.lat = coord[0]
+        // data.lng = coord[1]
       }
 
       // me.lBeneficiarios = await me.getListaBackend(
@@ -256,6 +245,11 @@ export default {
         grupos: ['action', 'topbar'],
         orden:5
       })
+      let edit=this.getOptionTable('edit')
+      edit.color='black'
+      edit.visibleRow=(valor)=> valor>=2?false:true
+
+      
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
     this.lRutas = await this.getListaBackend(
       'Rutas',
