@@ -98,6 +98,15 @@ export default {
           lista: 'lRutas',
         },
         {
+          text: 'Ruteo',
+          value: 'ruteos_id',
+          align: 'left',
+          width: '50px',
+          headers: true,
+          type: 'num',
+          search: true,
+        },
+        {
           text: 'Monitor',
           value: 'usuarios_id',
           align: 'left',
@@ -137,18 +146,16 @@ export default {
       ],
       lUsuarios: [],
       lEstados: [
-        'Abierto',
-        'En progreso',
+        'Pendiente',
         'Terminado',
-        'Verificado',
+        'No se Realizo',
         'Cerrado',
       ],
       lColor: [
-        'red--text',
+        'grey--text',
         'green--text text--lighten-3',
-        'green--text text--lighten-1',
+        'red--text text--lighten-1',
         'green--text',
-        'green--text text--darken-4',
       ],
       lRutas: [],
 

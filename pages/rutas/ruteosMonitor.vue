@@ -320,6 +320,7 @@
 
               <v-list-tile-content>
                 <v-list-tile-title>
+                  <span class="caption"> {{ ruteo.id }}</span>
                   {{ getDataLista(lBeneficiarios, bene.id) }}
                 </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
@@ -840,7 +841,7 @@ export default {
         obs: this.item.obs,
         lat: this.coordenadas.latitude,
         lng: this.coordenadas.longitude,
-        estado: this.estado ? 1 : 0,
+        estado: this.estado ? 2 : 1,
         usuarios_id: this.$store.state.auth.authUser.id,
         ruteos_id: this.item.ruteos_id,
         beneficiarios_id: this.item.beneficiarios_id,
@@ -976,7 +977,7 @@ export default {
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
       }
-      this.estado = this.item.estado == 0 ? false : true
+      this.estado = this.item.estado <= 1 ? false : true
 
       this.$refs.mkFormEval.$refs.form.resetValidation()
       this.tituloModal =
