@@ -31,7 +31,7 @@
           autofocus
           validate-on-blur
           ref="focus"
-        ></v-text-field>
+        :readonly="accion=='show'" ></v-text-field>
         <v-text-field
           label="Slug"
           v-model="item.slug"
@@ -40,8 +40,8 @@
           ref="slug"
           counter
           maxlength="20"
-        ></v-text-field>
-        <v-text-field label="Descripcion" v-model="item.descrip"></v-text-field>
+        :readonly="accion=='show'" ></v-text-field>
+        <v-text-field label="Descripcion" v-model="item.descrip":readonly="accion=='show'" ></v-text-field>
       </mk-form>
     </v-container>
   </div>

@@ -34,12 +34,12 @@
             :rules="[rules.required]"
             validate-on-blur
             ref="focus"
-          ></v-text-field>
+          :readonly="accion=='show'" ></v-text-field>
 
           <v-text-field
             label="Descripcion"
             v-model="item.descrip"
-          ></v-text-field>
+          :readonly="accion=='show'" ></v-text-field>
           <v-select
             v-model="item.usuarios_id"
             :items="lUsuarios"

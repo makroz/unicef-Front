@@ -30,7 +30,7 @@
             label="Descripcion"
             v-model="item.obs"
             ref="focus"
-          ></v-text-field>
+          :readonly="accion=='show'" ></v-text-field>
           <v-select
             v-model="item.rutas_id"
             :items="lRutas"
@@ -39,7 +39,8 @@
             item-value="id"
             label="Ruta Asignada"
             @change="change"
-          ></v-select>
+          :readonly="accion=='show'" 
+></v-select>
           <v-select
             v-model="item.usuarios_id"
             :items="lUsuarios"
@@ -47,17 +48,18 @@
             item-text="name"
             item-value="id"
             label="Monitor Asignado"
-          ></v-select>
+          :readonly="accion=='show'" 
+></v-select>
           <v-text-field
             label="Latitud"
             v-model="item.lat"
             disabled
-          ></v-text-field>
+          :readonly="accion=='show'" ></v-text-field>
           <v-text-field
             label="longitud"
             v-model="item.lng"
             disabled
-          ></v-text-field>
+          :readonly="accion=='show'" ></v-text-field>
         </v-container>
       </mk-form>
     </v-container>

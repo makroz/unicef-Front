@@ -30,14 +30,14 @@
           :rules="[rules.required]"
           validate-on-blur
           ref="focus"
-        ></v-text-field>
+        :readonly="accion=='show'" ></v-text-field>
         <v-text-field
           label="eMail"
           v-model="item.email"
           :rules="[rules.required,rules.email,rules.unique('email')]"
           ref="email"
           validate-on-blur
-        ></v-text-field>
+        :readonly="accion=='show'" ></v-text-field>
       </mk-form>
     </v-container>
   </div>

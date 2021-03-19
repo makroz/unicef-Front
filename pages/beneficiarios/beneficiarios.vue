@@ -34,6 +34,7 @@
             :rules="[rules.required]"
             validate-on-blur
             ref="focus"
+            :readonly="accion == 'show'"
           ></v-text-field>
           <v-layout row>
             <v-flex>
@@ -43,6 +44,7 @@
                 v-model="item.epsa"
                 :rules="[rules.required, rules.num]"
                 validate-on-blur
+                :readonly="accion == 'show'"
               ></v-text-field>
             </v-flex>
             <v-flex>
@@ -53,6 +55,7 @@
                 item-text="name"
                 item-value="id"
                 label="Entidad"
+                :readonly="accion == 'show'"
               ></v-select>
             </v-flex>
             <v-flex>
@@ -63,6 +66,7 @@
                 item-text="name"
                 item-value="id"
                 label="Distrito"
+                :readonly="accion == 'show'"
               ></v-select>
             </v-flex>
           </v-layout>
@@ -72,6 +76,7 @@
                 v-model="item.protec"
                 value="1"
                 label="Programa de Protección"
+                :readonly="accion == 'show'"
               ></v-checkbox>
             </v-flex>
             <v-flex>
@@ -79,6 +84,7 @@
                 v-model="item.autoriza"
                 value="1"
                 label="Autoriza Monitoreo"
+                :readonly="accion == 'show'"
               ></v-checkbox>
             </v-flex>
           </v-layout>
@@ -88,9 +94,14 @@
             item-text="name"
             item-value="id"
             label="Ruta de Monitoreo"
+            :readonly="accion == 'show'"
           ></v-select>
 
-          <v-text-field label="Direccion" v-model="item.dir"></v-text-field>
+          <v-text-field
+            label="Direccion"
+            v-model="item.dir"
+            :readonly="accion == 'show'"
+          ></v-text-field>
           <v-layout row>
             <v-flex>
               <v-text-field label="Latitud" v-model="item.lat" readonly>
@@ -116,7 +127,7 @@
                 ></l-tile-layer>
                 <l-marker
                   :lat-lng="marker"
-                  :draggable="true"
+                  :draggable="accion != 'show'"
                   @update:latLng="updateMaker"
                 ></l-marker>
               </l-map>

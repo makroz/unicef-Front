@@ -1,4 +1,4 @@
-export default async function(ctx) {
+export default async function (ctx) {
     //console.log('authAcces:',ctx)
     ctx.store.commit("auth/setRutaBack", ctx.route.fullPath);
     let access = ctx.route.matched.find(
@@ -10,7 +10,7 @@ export default async function(ctx) {
         return ctx.redirect("/login");
     } else {
 
-        if (!ctx.store.getters["auth/tienePermiso"]('ver', access)) {
+        if (!ctx.store.getters["auth/tienePermiso"]('show', access)) {
             ctx.error({ statusCode: 403, message: 'No tiene Permisos a este Modulo ' + access });
         }
     }

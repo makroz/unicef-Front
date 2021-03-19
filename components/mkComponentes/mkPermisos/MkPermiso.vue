@@ -1,9 +1,8 @@
 <template>
   <tr>
-    <td
-      class="text-xs-left"
-      @dblclick="selPermiso()"
-    >{{'('+permiso.slug+') '+permiso.name}} {{permiso.valor}}</td>
+    <td class="text-xs-left" @dblclick="selPermiso()">
+      {{ '(' + permiso.slug + ') ' + permiso.name }} {{ permiso.valor }}
+    </td>
     <td>
       <v-checkbox
         class="d-inline-flex"
@@ -13,8 +12,16 @@
         value="1"
         hide-details
         disabled
+        :readonly="accion == 'show'"
       ></v-checkbox>
-      <v-checkbox class="d-inline-flex" v-model="datos" color="cyan" value="1" hide-details></v-checkbox>
+      <v-checkbox
+        class="d-inline-flex"
+        v-model="datos"
+        color="cyan"
+        value="1"
+        hide-details
+        :readonly="accion == 'show'"
+      ></v-checkbox>
     </td>
     <td>
       <v-checkbox
@@ -25,8 +32,16 @@
         value="2"
         hide-details
         disabled
+        :readonly="accion == 'show'"
       ></v-checkbox>
-      <v-checkbox class="d-inline-flex" v-model="datos" color="amber" value="2" hide-details></v-checkbox>
+      <v-checkbox
+        class="d-inline-flex"
+        v-model="datos"
+        color="amber"
+        value="2"
+        hide-details
+        :readonly="accion == 'show'"
+      ></v-checkbox>
     </td>
     <td>
       <v-checkbox
@@ -37,8 +52,16 @@
         value="4"
         hide-details
         disabled
+        :readonly="accion == 'show'"
       ></v-checkbox>
-      <v-checkbox class="d-inline-flex" v-model="datos" color="green" value="4" hide-details></v-checkbox>
+      <v-checkbox
+        class="d-inline-flex"
+        v-model="datos"
+        color="green"
+        value="4"
+        hide-details
+        :readonly="accion == 'show'"
+      ></v-checkbox>
     </td>
     <td>
       <v-checkbox
@@ -49,71 +72,83 @@
         value="8"
         hide-details
         disabled
+        :readonly="accion == 'show'"
       ></v-checkbox>
-      <v-checkbox class="d-inline-flex" v-model="datos" color="red" value="8" hide-details></v-checkbox>
+      <v-checkbox
+        class="d-inline-flex"
+        v-model="datos"
+        color="red"
+        value="8"
+        hide-details
+        :readonly="accion == 'show'"
+      ></v-checkbox>
     </td>
   </tr>
 </template>
 <script>
 export default {
-  name: "mkPermiso",
+  name: 'mkPermiso',
   props: {
-    permiso:{
-      type: [Array,Object],
-      default: null
+    permiso: {
+      type: [Array, Object],
+      default: null,
+    },
+    accion: {
+      type: String,
+      default: '',
     },
     permisoGrupos: {
-      type: [Array,Object],
-      default: null
+      type: [Array, Object],
+      default: null,
     },
     index: {
-      type: [Number,String],
-      default: 0
-    }
+      type: [Number, String],
+      default: 0,
+    },
   },
   data() {
-    return {};
+    return {}
   },
   computed: {
     datos: {
-      get: function() {
-        let p = [];
-        if ((this.permiso.valor & 1) == 1) p.push("1");
-        if ((this.permiso.valor & 2) == 2) p.push("2");
-        if ((this.permiso.valor & 4) == 4) p.push("4");
-        if ((this.permiso.valor & 8) == 8) p.push("8");
-        return p;
+      get: function () {
+        let p = []
+        if ((this.permiso.valor & 1) == 1) p.push('1')
+        if ((this.permiso.valor & 2) == 2) p.push('2')
+        if ((this.permiso.valor & 4) == 4) p.push('4')
+        if ((this.permiso.valor & 8) == 8) p.push('8')
+        return p
       },
-      set: function(v) {
-        let p = 0;
-        v.forEach(i => {
-          p = p + parseInt(i);
-        });
-        this.$emit("onChangePermiso", p, this.index);
-      }
+      set: function (v) {
+        let p = 0
+        v.forEach((i) => {
+          p = p + parseInt(i)
+        })
+        this.$emit('onChangePermiso', p, this.index)
+      },
     },
     datosGrupo: {
-      get: function() {
-        let p = [];
-        if ((this.permisoGrupos.valor & 1) == 1) p.push("1");
-        if ((this.permisoGrupos.valor & 2) == 2) p.push("2");
-        if ((this.permisoGrupos.valor & 4) == 4) p.push("4");
-        if ((this.permisoGrupos.valor & 8) == 8) p.push("8");
-        return p;
+      get: function () {
+        let p = []
+        if ((this.permisoGrupos.valor & 1) == 1) p.push('1')
+        if ((this.permisoGrupos.valor & 2) == 2) p.push('2')
+        if ((this.permisoGrupos.valor & 4) == 4) p.push('4')
+        if ((this.permisoGrupos.valor & 8) == 8) p.push('8')
+        return p
       },
-      set: function(v) {}
-    }
+      set: function (v) {},
+    },
   },
   methods: {
     selPermiso() {
       if (this.datos.length == 4) {
-        this.datos = [];
+        this.datos = []
       } else {
-        this.datos = ["1", "2", "4", "8"];
+        this.datos = ['1', '2', '4', '8']
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 <style >
 .v-input--selection-controls__input {

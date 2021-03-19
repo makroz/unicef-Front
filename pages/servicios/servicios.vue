@@ -36,7 +36,7 @@
                 autofocus
                 counter
                 maxlength="20"
-              ></v-text-field>
+              :readonly="accion=='show'" ></v-text-field>
             </v-flex>
             <v-flex shrink>
               <v-switch v-model="item.cant" label="Admite Cantidades" value="1" color="success"></v-switch>
@@ -47,7 +47,7 @@
             label="Observacion"
             v-model="item.obs"
             
-          ></v-text-field>
+          :readonly="accion=='show'" ></v-text-field>
         </v-container>
       </mk-form>
     </v-container>

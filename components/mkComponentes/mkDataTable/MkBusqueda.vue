@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-select class="width-min" :items="lcriterio" box label="Campo" v-model="criterio"></v-select>
+    <v-select class="width-min" :items="lcriterio" box label="Campo" v-model="criterio":readonly="accion=='show'" 
+></v-select>
     <v-text-field
       flat
       solo

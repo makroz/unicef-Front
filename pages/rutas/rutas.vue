@@ -6,7 +6,7 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-:campos="campos"
+            :campos="campos"
             @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
@@ -34,13 +34,13 @@
             :rules="[rules.required]"
             validate-on-blur
             ref="focus"
-            :readonly="item.id<0"
+            :readonly="accion == 'show'"
           ></v-text-field>
 
           <v-text-field
             label="Descripcion"
             v-model="item.descrip"
-            :readonly="item.id<0"
+            :readonly="accion == 'show'"
           ></v-text-field>
           <v-select
             v-model="item.usuarios_id"
@@ -49,7 +49,7 @@
             item-text="name"
             item-value="id"
             label="Monitor Asignado"
-            :readonly="item.id<0"
+            :readonly="accion == 'show'"
           ></v-select>
           <v-layout wrap>
             <v-flex sx12 sm12 md6>
@@ -63,12 +63,12 @@
                 item-value="id"
                 item-avatar="id"
                 multiple
-                :clearable="item.id>=0"
+                :clearable="item.id >= 0"
                 chips
                 deletable-chips
                 solo-inverted
                 counter
-                :readonly="item.id<0"
+                :readonly="accion == 'show'"
               >
               </v-autocomplete>
             </v-flex>
@@ -157,7 +157,7 @@ export default {
         {
           text: 'Beneficiarios',
           value: 'beneficiarios',
-           width: '50px',
+          width: '50px',
           headers: true,
           type: 'count',
           search: true,
@@ -224,7 +224,7 @@ export default {
     async beforeOpen(accion, data = {}) {
       let me = this
       me.lBeneficiarios = await me.getListaBackend(
-        'Rutas/beneficiarios/' + data.id,
+        'Rutas/beneficiarios/' + data.id
       )
 
       setTimeout(() => {
@@ -247,15 +247,6 @@ export default {
 
   async mounted() {
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id') //ver si se uede sacr los parametros del headers o campos
-    this.addOptionTable({
-        id: 'ver',
-        color: 'green',
-        icon: 'visibility',
-        visible: this.can('ver'),
-        action: 'openDialog',
-        grupos: ['action', 'topbar'],
-        orden:5
-      })
   },
 }
 </script>

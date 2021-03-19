@@ -6,7 +6,7 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-:campos="campos"
+            :campos="campos"
             @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
@@ -30,12 +30,14 @@
           :rules="[rules.required]"
           validate-on-blur
           ref="focus"
+          :readonly="accion == 'show'"
         ></v-text-field>
         <v-text-field
           label="Orden"
           v-model="item.orden"
-          :rules="[rules.required,rules.num]"
+          :rules="[rules.required, rules.num]"
           validate-on-blur
+          :readonly="accion == 'show'"
         ></v-text-field>
         <v-select
           v-model="item.categ_id"
@@ -44,6 +46,7 @@
           label="Categoria"
           item-text="name"
           item-value="id"
+          :readonly="accion == 'show'"
         ></v-select>
         <v-select
           v-model="item.tipo"
@@ -52,9 +55,8 @@
           label="Tipo de Pregunta"
           item-text="name"
           item-value="id"
-        >
-
-        </v-select>
+          :readonly="accion == 'show'"
+        ></v-select>
       </mk-form>
     </v-container>
   </div>
@@ -71,16 +73,16 @@ export default {
     return {
       //urlModulo: '',
       //titModulo: '',
-      lCateg:[],
-      lTipos:[
+      lCateg: [],
+      lTipos: [
         {
           name: 'si/no',
-          id:'1'
+          id: '1',
         },
         {
           name: 'numerico',
-          id:'2'
-        }
+          id: '2',
+        },
       ],
       campos: [
         {
@@ -90,14 +92,14 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true
+          search: true,
         },
         {
           text: 'Pregunta',
           value: 'pregunta',
           headers: true,
           type: 'text',
-          search: true
+          search: true,
         },
         {
           text: 'Orden',
@@ -126,9 +128,8 @@ export default {
           type: 'num',
           search: true,
           lista: this.lTipos,
-        }
+        },
       ],
-      
     }
   },
   methods: {
@@ -142,18 +143,18 @@ export default {
       //     (e) => e.id == me.item.sucursales_id
       //   ).empresas_id
       // }
-    }
+    },
   },
-  
+
   async mounted() {
     let me = this
-    me.lCateg  = await me.$store.dispatch('auth/loadData', {
+    me.lCateg = await me.$store.dispatch('auth/loadData', {
       url: 'Categ',
-      campos: 'id,name'
+      campos: 'id,name',
     })
-     me.updateListCol('categ_id', me.lCateg)
-     me.updateListCol('tipo', me.lTipos)
-   }
+    me.updateListCol('categ_id', me.lCateg)
+    me.updateListCol('tipo', me.lTipos)
+  },
 }
 </script>
 

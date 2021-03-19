@@ -33,13 +33,13 @@
           autofocus
           counter
           maxlength="20"
-        ></v-text-field>
+        :readonly="accion=='show'" ></v-text-field>
         <v-text-field
           label="Orden"
           v-model="item.orden"
           :rules="[rules.required, rules.num]"
           validate-on-blur
-        ></v-text-field>
+        :readonly="accion=='show'" ></v-text-field>
       </mk-form>
     </v-container>
   </div>

@@ -16,7 +16,11 @@
       <template v-for="opt in acciones">
         <v-btn
           :key="opt.value"
-          v-if="opt.visible && opt.grupos.includes(grupo) && (!opt.visibleRow?true:opt.visibleRow(item))"
+          v-if="
+            opt.visible &&
+            opt.grupos.includes(grupo) &&
+            (!opt.visibleRow ? true : opt.visibleRow(item))
+          "
           fab
           dark
           small
@@ -28,20 +32,22 @@
       </template>
     </v-speed-dial>
     <v-layout v-else>
-      <template v-for="opt in acciones" >
-      <v-flex :key="opt.value"  v-if="opt.visible && opt.grupos.includes(grupo)" >
-        <v-btn
-          class="pa-0 ma-0"
-         
-          icon
-          flat
-          :color="opt.color"
-          small
-          @click.stop="callAction(opt, item)"
+      <template v-for="opt in acciones">
+        <v-flex
+          :key="opt.value"
+          v-if="opt.visible && opt.grupos.includes(grupo)"
         >
-          <v-icon>{{ opt.icon }}</v-icon>
-        </v-btn>
-      </v-flex>
+          <v-btn
+            class="pa-0 ma-0"
+            icon
+            flat
+            :color="opt.color"
+            small
+            @click.stop="callAction(opt, item)"
+          >
+            <v-icon>{{ opt.icon }}</v-icon>
+          </v-btn>
+        </v-flex>
       </template>
     </v-layout>
   </v-container>
@@ -51,13 +57,12 @@
 export default {
   name: 'mkTableActions',
   components: {},
-  props: ['item', 'acciones','tipo'],
+  props: ['item', 'acciones', 'tipo'],
   data() {
     return {
       fab: false,
-      type:this.tipo,
-      transition:"slide-x-reverse-transition"
-
+      type: this.tipo,
+      transition: 'slide-x-reverse-transition',
     }
   },
   inject: ['Auth', 'can'],
@@ -65,21 +70,25 @@ export default {
     callAction(opt, item) {
       this.$emit('callAction', opt, item)
     },
-    mostrar(opt,item){
-    return opt.visible && opt.grupos.includes(this.grupo) && (!opt.visibleRow?true:opt.visibleRow(item))
-    }
+    mostrar(opt, item) {
+      return (
+        opt.visible &&
+        opt.grupos.includes(this.grupo) &&
+        (!opt.visibleRow ? true : opt.visibleRow(item))
+      )
+    },
   },
   computed: {
     grupo() {
       return this.Auth.recycled ? 'recycled' : 'action'
     },
     direction() {
-      return this.$store.state.config.tbl_opts_p?'left':'right'
+      return this.$store.state.config.tbl_opts_p ? 'left' : 'right'
     },
   },
   mounted() {
-    if (!this.type){
-      this.type=this.$store.state.config.tbl_opts_type;
+    if (!this.type) {
+      this.type = this.$store.state.config.tbl_opts_type
     }
 
     //this.direction=this.$store.state.config.tbl_opts_p?'left':'right'

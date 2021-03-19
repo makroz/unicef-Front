@@ -6,7 +6,7 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-:campos="campos"
+            :campos="campos"
             @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
@@ -34,20 +34,22 @@
           <v-tab-item>
             <v-text-field
               label="Nombre"
-              name='name'
-              id='name'
+              name="name"
+              id="name"
               v-model="item.name"
               :rules="[rules.required]"
               validate-on-blur
               ref="focus"
+              :readonly="accion == 'show'"
             ></v-text-field>
 
             <v-text-field
               label="eMail"
               v-model="item.email"
-              :rules="[rules.required,rules.email,rules.unique('email')]"
+              :rules="[rules.required, rules.email, rules.unique('email')]"
               ref="email"
               validate-on-blur
+              :readonly="accion == 'show'"
             ></v-text-field>
             <v-layout row>
               <v-flex shrink pa-1>
@@ -55,7 +57,7 @@
               </v-flex>
               <v-flex grow pa-1>
                 <v-text-field
-                  v-if="!item.id>0"
+                  v-if="!item.id > 0"
                   :append-icon="showPass ? 'visibility' : 'visibility_off'"
                   :rules="[rules.required, rules.min(8)]"
                   :type="showPass ? 'text' : 'password'"
@@ -63,6 +65,7 @@
                   label="Password"
                   validate-on-blur
                   @click:append="showPass = !showPass"
+                  :readonly="accion == 'show'"
                 ></v-text-field>
                 <v-select
                   v-model="item.roles_id"
@@ -71,6 +74,7 @@
                   item-text="name"
                   item-value="id"
                   label="Rol"
+                  :readonly="accion == 'show'"
                 ></v-select>
               </v-flex>
             </v-layout>
@@ -86,13 +90,15 @@
               label="Grupos de Permisos"
               multiple
               @change="onChange"
+              :readonly="accion == 'show'"
             ></v-select>
 
             <mk-permisos
-              style="max-height:170px; overflow-y:auto"
+              style="max-height: 170px; overflow-y: scroll"
               :permisos="permisos"
               :permisoGrupos="permisoGrupos"
               @onChangePermisos="onChangePermisos"
+              :accion="accion"
             ></mk-permisos>
           </v-tab-item>
         </v-tabs-items>
@@ -110,7 +116,7 @@ export default {
   //middleware: ['authAccess'],
   mixins: [MkImgMix, MkModuloMix],
   components: {
-    MkPermisos
+    MkPermisos,
   },
   name: 'Usuarios',
   data() {
@@ -126,7 +132,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true
+          search: true,
         },
         {
           text: 'Nombre',
@@ -134,9 +140,9 @@ export default {
           width: '250px',
           headers: true,
           type: 'text',
-          search: true
+          search: true,
         },
-                {
+        {
           text: 'Rol',
           value: 'roles_id',
           align: 'left',
@@ -151,15 +157,15 @@ export default {
           align: 'left',
           headers: true,
           type: 'text',
-          search: true
-        }
+          search: true,
+        },
       ],
 
       showPass: false,
-      lGrupos:[],
-      lRoles:[],
+      lGrupos: [],
+      lRoles: [],
       permisos: [],
-      permisoGrupos: null
+      permisoGrupos: null,
     }
   },
   methods: {
@@ -168,13 +174,13 @@ export default {
       let url = me.urlModulo + '/permisosGrupos/0,' + v
       me.$axios
         .post(url + this.getCt(url), { grupos: v })
-        .then(function(response) {
+        .then(function (response) {
           me.permisoGrupos = me.getDataCache(response.data, url)
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error)
         })
-        .finally(function() {
+        .finally(function () {
           me.loading = false
         })
     },
@@ -188,26 +194,26 @@ export default {
         delete me.item.pass
       }
 
-      if (JSON.stringify(me.dirty.permisos)!=JSON.stringify(me.permisos)){
-      let permiso = []
-      for (const obj in me.permisos) {
-        if (me.permisos[obj].valor > 0) {
-          permiso.push({
-            id: me.permisos[obj].id,
-            valor: me.permisos[obj].valor
-          })
+      if (JSON.stringify(me.dirty.permisos) != JSON.stringify(me.permisos)) {
+        let permiso = []
+        for (const obj in me.permisos) {
+          if (me.permisos[obj].valor > 0) {
+            permiso.push({
+              id: me.permisos[obj].id,
+              valor: me.permisos[obj].valor,
+            })
+          }
         }
-      }
-      me.paramsExtra.permisos = permiso
-      }else{
-        delete me.paramsExtra.permisos;
-      }
-
-      if (JSON.stringify(me.dirty.grupos)==JSON.stringify(me.paramsExtra.grupos)){
-        delete me.paramsExtra.grupos;
+        me.paramsExtra.permisos = permiso
+      } else {
+        delete me.paramsExtra.permisos
       }
 
-
+      if (
+        JSON.stringify(me.dirty.grupos) == JSON.stringify(me.paramsExtra.grupos)
+      ) {
+        delete me.paramsExtra.grupos
+      }
     },
     beforeOpen(accion, data = {}) {
       let me = this
@@ -218,7 +224,7 @@ export default {
       me.paramsExtra.grupos = []
       if (me.item.grupos) {
         me.paramsExtra.grupos = me.item.grupos
-        me.dirty.grupos=me.paramsExtra.grupos
+        me.dirty.grupos = me.paramsExtra.grupos
       }
 
       let url = me.urlModulo + '/permisos/' + me.item.id
@@ -229,19 +235,19 @@ export default {
         JSON.stringify(me.paramsExtra)
       me.$axios
         .post(url + me.getCt(url2, false, 2), me.paramsExtra)
-        .then(function(response) {
+        .then(function (response) {
           me.permisos = me.getDataCache(response.data, url2, false)
           me.permisoGrupos = me.getDataCache(response.data.msg, url2, false, 2)
-          me.dirty.permisos=Object.assign(me.permisos);
+          me.dirty.permisos = Object.assign(me.permisos)
           //me.dirty.permisoGrupos=Object.assign(me.permisoGrupos);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error)
         })
-        .finally(function() {
+        .finally(function () {
           me.loading = false
         })
-    }
+    },
   },
 
   // async asyncData({ store }) {
@@ -260,7 +266,7 @@ export default {
   // },
   async mounted() {
     this.lGrupos = await this.getListaBackend('Grupos', '', 'grupos_id')
-    this.lRoles = await this.getListaBackend('Roles','','roles_id')
+    this.lRoles = await this.getListaBackend('Roles', '', 'roles_id')
   },
 }
 </script>

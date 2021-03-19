@@ -6,7 +6,7 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-:campos="campos"
+            :campos="campos"
             @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
@@ -31,10 +31,19 @@
           autofocus
           validate-on-blur
           ref="focus"
+          :readonly="accion == 'show'"
         ></v-text-field>
 
-        <v-text-field label="Descripcion" v-model="item.descrip"></v-text-field>
-        <mk-permisos :permisos="permisos" @onChangePermisos="onChangePermisos"></mk-permisos>
+        <v-text-field
+          label="Descripcion"
+          v-model="item.descrip"
+          :readonly="accion == 'show'"
+        ></v-text-field>
+        <mk-permisos
+          :permisos="permisos"
+          @onChangePermisos="onChangePermisos"
+          :accion="accion"
+        ></mk-permisos>
       </mk-form>
     </v-container>
   </div>
@@ -47,7 +56,7 @@ import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
 export default {
   mixins: [MkModuloMix],
   components: {
-    MkPermisos
+    MkPermisos,
   },
   name: 'Grupos',
   data() {
@@ -62,7 +71,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true
+          search: true,
         },
         {
           text: 'Grupo',
@@ -70,7 +79,7 @@ export default {
           width: '250px',
           headers: true,
           type: 'text',
-          search: true
+          search: true,
         },
         {
           text: 'Descripcion',
@@ -78,29 +87,29 @@ export default {
           align: 'left',
           headers: true,
           type: 'num',
-          search: true
-        }
+          search: true,
+        },
       ],
-      permisos: []
+      permisos: [],
     }
   },
   methods: {
     onChangePermisos(newPermisos) {
-       //let me = this
-       //me.permisos = Object.assign([], newPermisos)
+      //let me = this
+      //me.permisos = Object.assign([], newPermisos)
     },
     beforeSave(me) {
-      if (me.dirty.permisos!=JSON.stringify(me.permisos)){
-      let permiso = []
-      for (const obj in me.permisos) {
-        permiso[obj] = {
-          id: me.permisos[obj].id,
-          valor: me.permisos[obj].valor
+      if (me.dirty.permisos != JSON.stringify(me.permisos)) {
+        let permiso = []
+        for (const obj in me.permisos) {
+          permiso[obj] = {
+            id: me.permisos[obj].id,
+            valor: me.permisos[obj].valor,
+          }
         }
-      }
-      me.paramsExtra.permisos = permiso
-      }else{
-        delete me.paramsExtra.permisos;
+        me.paramsExtra.permisos = permiso
+      } else {
+        delete me.paramsExtra.permisos
       }
     },
     beforeOpen(accion, data = {}) {
@@ -109,17 +118,17 @@ export default {
       me.loading = true
       me.$axios
         .post(url + this.getCt(url), [])
-        .then(function(response) {
+        .then(function (response) {
           me.permisos = me.getDataCache(response.data, url)
-          me.dirty.permisos=JSON.stringify(me.permisos);
+          me.dirty.permisos = JSON.stringify(me.permisos)
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error)
         })
-        .finally(function() {
+        .finally(function () {
           me.loading = false
         })
-    }
-  }
+    },
+  },
 }
 </script>

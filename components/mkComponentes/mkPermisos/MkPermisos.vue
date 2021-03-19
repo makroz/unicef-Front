@@ -12,10 +12,11 @@
       </tr>
       <mk-permiso
         v-for="(permiso, index) in permisos"
-        :permisoGrupos="permisoGrupos?permisoGrupos[index]:null"
+        :permisoGrupos="permisoGrupos ? permisoGrupos[index] : null"
         :key="permiso.name"
         :permiso="permiso"
         :index="index"
+        :accion="accion"
         @onChangePermiso="onChangePermiso"
       ></mk-permiso>
     </table>
@@ -23,50 +24,57 @@
 </template>
 
 <script>
-import MkPermiso from "@/components/mkComponentes/mkPermisos/MkPermiso";
+import MkPermiso from '@/components/mkComponentes/mkPermisos/MkPermiso'
 export default {
-  name: "mkPermisos",
+  name: 'mkPermisos',
   components: {
-    MkPermiso
+    MkPermiso,
   },
   props: {
-    permisos:{
-      type: [Array,Object],
-      default: null
+    permisos: {
+      type: [Array, Object],
+      default: null,
+    },
+    accion: {
+      type: String,
+      default: '',
     },
     permisoGrupos: {
-      type: [Array,Object],
-      default: null
-    }
+      type: [Array, Object],
+      default: null,
+    },
   },
   data() {
     return {
-      curPermisos: []
-    };
+      curPermisos: [],
+    }
   },
   computed: {},
   methods: {
     selPermisos(permiso) {
-      this.curPermisos = Object.assign([], this.permisos);
-      const sel = (this.curPermisos[0].valor & permiso) == permiso;
-      this.curPermisos.forEach(element => {
+      if (this.accion == 'show') {
+        return false
+      }
+      this.curPermisos = Object.assign([], this.permisos)
+      const sel = (this.curPermisos[0].valor & permiso) == permiso
+      this.curPermisos.forEach((element) => {
         if (!sel) {
-          element.valor = element.valor | permiso;
+          element.valor = element.valor | permiso
         } else {
-          element.valor = (element.valor | permiso) ^ permiso;
+          element.valor = (element.valor | permiso) ^ permiso
         }
-      });
-      this.$emit("onChangePermisos", this.curPermisos);
+      })
+      this.$emit('onChangePermisos', this.curPermisos)
     },
     onChangePermiso(permiso, id = -1) {
       if (id > -1) {
-        this.curPermisos = Object.assign([], this.permisos);
-        this.curPermisos[id].valor = permiso;
-        this.$emit("onChangePermisos", this.curPermisos);
+        this.curPermisos = Object.assign([], this.permisos)
+        this.curPermisos[id].valor = permiso
+        this.$emit('onChangePermisos', this.curPermisos)
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 <style >
 table.tabla_permisos th {

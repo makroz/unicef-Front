@@ -45,7 +45,7 @@
             label="Epsa"
             v-model="itemData.epsa"
             disabled
-          ></v-text-field>
+          :readonly="accion=='show'" ></v-text-field>
 
           <v-card v-if="!!!item.id">
             <v-toolbar color="primary" dark dense>
@@ -66,7 +66,8 @@
                     <v-checkbox
                       v-model="item.selected"
                       color="deep-purple accent-4"
-                    ></v-checkbox>
+                    :readonly="accion=='show'" 
+></v-checkbox>
                   </v-list-tile-action>
 
                   <v-list-tile-content>
@@ -92,7 +93,7 @@
                         padding-bottom: 0;
                         padding-top: 12px;
                       "
-                    ></v-text-field>
+                    :readonly="accion=='show'" ></v-text-field>
                   </v-list-tile-avatar>
                 </v-list-tile>
               </template>
@@ -117,14 +118,14 @@
                   label="Servicio"
                   :value="getNameLista(item.servicios_id, lServicios)"
                   readonly
-                ></v-text-field>
+                :readonly="accion=='show'" ></v-text-field>
               </v-flex>
               <v-flex md2>
                 <v-text-field
                   label="Cantidad"
                   :value="item.cant"
                   readonly
-                ></v-text-field>
+                :readonly="accion=='show'" ></v-text-field>
               </v-flex>
             </v-layout>
           </v-card>

@@ -17,10 +17,7 @@
           >
             <template slot="detalle" slot-scope="props">
               <v-card flat>
-                <v-card-text>
-                  Descripcion: {{props.item.obs}}
-
-                </v-card-text>
+                <v-card-text> Descripcion: {{ props.item.obs }} </v-card-text>
               </v-card>
             </template>
           </mk-data-table>
@@ -39,7 +36,7 @@
           <v-text-field
             label="Descripcion"
             v-model="item.obs"
-            :readonly="item.id<0"
+            :readonly="accion == 'show'"
             ref="focus"
           ></v-text-field>
           <v-select
@@ -50,7 +47,7 @@
             item-value="id"
             label="Ruta Asignada"
             @change="change"
-            :readonly="item.id<0"
+            :readonly="accion == 'show'"
           ></v-select>
           <v-select
             v-model="item.usuarios_id"
@@ -59,10 +56,9 @@
             item-text="name"
             item-value="id"
             label="Monitor Asignado"
-            :readonly="item.id<0"
+            :readonly="accion == 'show'"
           ></v-select>
         </v-container>
-        
       </mk-form>
     </v-container>
   </div>
@@ -149,14 +145,14 @@ export default {
           type: 'count',
           search: false,
         },
-                {
+        {
           text: 'Benef./Eval.',
           value: 'benefEval',
           width: '100px',
           headers: true,
           type: 'concat',
-          concat:['beneficiarios','evaluaciones'],
-          separator:'/',
+          concat: ['beneficiarios', 'evaluaciones'],
+          separator: '/',
           search: false,
         },
 
@@ -172,12 +168,7 @@ export default {
         },
       ],
       lUsuarios: [],
-      lEstados: [
-        'Abierto',
-        'En progreso',
-        'Cerrado',
-        'Verificado',
-      ],
+      lEstados: ['Abierto', 'En progreso', 'Cerrado', 'Verificado'],
       lColor: [
         'red--text',
         'green--text text--lighten-3',
@@ -222,7 +213,7 @@ export default {
         // data.lat = ''
         // data.lng = ''
         data.usuarios_id = null
-      }else{
+      } else {
         // let coord=data.gps_open.split(' ')
         // data.lat = coord[0]
         // data.lng = coord[1]
@@ -236,27 +227,16 @@ export default {
   },
 
   async mounted() {
-        this.addOptionTable({
-        id: 'ver',
-        color: 'green',
-        icon: 'visibility',
-        visible: this.can('ver'),
-        action: 'openDialog',
-        grupos: ['action', 'topbar'],
-        orden:5
-      })
-      let edit=this.getOptionTable('edit')
-      edit.color='black'
-      edit.visibleRow=(valor)=> valor>=2?false:true
+    let edit = this.getOptionTable('edit')
+    edit.color = 'black'
+    edit.visibleRow = (valor) => (valor >= 2 ? false : true)
 
-      
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
     this.lRutas = await this.getListaBackend(
       'Rutas',
       'id,name,usuarios_id',
       'rutas_id'
     )
-    
   },
 }
 </script>

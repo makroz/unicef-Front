@@ -30,16 +30,16 @@
           :rules="[rules.required]"
           validate-on-blur
           ref="focus"
-        ></v-text-field>
+        :readonly="accion=='show'" ></v-text-field>
         <v-text-field
           label="eMail"
           v-model="item.email"
           :rules="[rules.required,rules.email,rules.unique('email')]"
           ref="email"
           validate-on-blur
-        ></v-text-field>
-        <v-text-field label="Direccion" v-model="item.dir" validate-on-blur></v-text-field>
-        <v-text-field label="Telefonos" v-model="item.tel" validate-on-blur></v-text-field>
+        :readonly="accion=='show'" ></v-text-field>
+        <v-text-field label="Direccion" v-model="item.dir" validate-on-blur:readonly="accion=='show'" ></v-text-field>
+        <v-text-field label="Telefonos" v-model="item.tel" validate-on-blur:readonly="accion=='show'" ></v-text-field>
         <v-select
           v-model="item.empresas_id"
           :items="lEmpresas"
@@ -47,7 +47,8 @@
           label="Empresa"
           item-text="name"
           item-value="id"
-        ></v-select>
+        :readonly="accion=='show'" 
+></v-select>
       </mk-form>
     </v-container>
   </div>

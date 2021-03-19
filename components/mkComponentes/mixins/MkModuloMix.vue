@@ -44,7 +44,7 @@ export default {
       created: true,
       urlModulo: this.$options.name,
       titModulo: getTitFromName(this.$options.name),
-      accion:'',
+      accion: '',
 
       //filtros y busqueda
 
@@ -214,7 +214,7 @@ export default {
           me.created == true
         })
     },
-    isOk(data, url='') {
+    isOk(data, url = '') {
       if (data._warning) {
         data._warning.forEach((e) => {
           c(e[0], e[2], e[1], e[3])
@@ -298,7 +298,7 @@ export default {
         me.item.paramsExtra = me.paramsExtra
       }
 
-      if ((me.item.id !== null)&&(me.item.id > 0)) {
+      if (me.item.id !== null && me.item.id > 0) {
         if (!this.can('edit', true)) {
           return false
         }
@@ -313,7 +313,7 @@ export default {
           //   JSON.stringify(me.dirty.permisos),
           //   JSON.stringify(me.permisos)
           // )
-          console.log(me.item,me.dirty.item);
+          console.log(me.item, me.dirty.item)
           for (const el in me.item) {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
@@ -332,8 +332,8 @@ export default {
         } else {
           itemData = me.item
         }
-        if (me.item._noData){
-          itemData._noData=me.item._noData    
+        if (me.item._noData) {
+          itemData._noData = me.item._noData
         }
         me.$axios
           .put(url + this.getCt(url), itemData)
@@ -382,7 +382,6 @@ export default {
             me.dataTable.loading = false
             me.afterSave(me, isError)
           })
-        
       }
     },
     callAction(opt, item) {
@@ -497,41 +496,38 @@ export default {
       if (accion == 'add') {
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
-      } 
+      }
 
-      if (accion=='edit'){
+      if (accion == 'edit') {
         if (_dirty) {
           //this.dirty.item = Object.assign({}, this.item)
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
         this.tituloModal = 'Editar ' + this.titModulo
         this.$nextTick(this.$refs.focus.focus)
-        }
-        
-        if (accion=='show'){
-          this.item.id = this.item.id*-1
-          this.tituloModal = 'Ver ' + this.titModulo
-        }
+      }
 
+      if (accion == 'show') {
+        this.item.id = this.item.id * -1
+        this.tituloModal = 'Ver ' + this.titModulo
+      }
 
       // let f=document.getElementById('form').getElementsByTagName('input');
       // for (let i = 0; i < f.length; i++) {
       //   console.log(f[i]);
       //   f[i].setAttribute('readonly','readonly')
-        
+
       // }
-     
 
       this.afterOpen(accion, data)
       this.modal = true
-      
     },
-    setParams(name = '', value = '',encrypt = false) {
+    setParams(name = '', value = '', encrypt = false) {
       if (name == '') {
         name = 'paginator'
         value = this.dataTable.paginator
       }
-      setCache(this.$options.name + '.Params.' + name,value,encrypt)
+      setCache(this.$options.name + '.Params.' + name, value, encrypt)
       //console.log('Guardando:',this.$options.name+".Params."+name, value);
       // try {
       //   value = JSON.stringify(value)
@@ -540,8 +536,8 @@ export default {
       //   console.error(error)
       // }
     },
-    getParams(name = '', def = false,encrypt = false) {
-      return getCache(this.$options.name + '.Params.' + name,def,encrypt)
+    getParams(name = '', def = false, encrypt = false) {
+      return getCache(this.$options.name + '.Params.' + name, def, encrypt)
       // let params = def
       // try {
       //   params = JSON.parse(
@@ -632,24 +628,23 @@ export default {
       })
       //console.error('updatelist',me.campos)
     },
-    async getListaBackend(url, campos='', item = null) {
+    async getListaBackend(url, campos = '', item = null) {
       let lista = await this.$store.dispatch('auth/loadData', {
         url: url,
         campos: campos,
       })
       if (item) {
         if (item.isArray) {
-          item.forEach((e=> this.updateListCol(e, lista) ))
-        }else
-        this.updateListCol(item, lista)
+          item.forEach((e) => this.updateListCol(e, lista))
+        } else this.updateListCol(item, lista)
       }
       return lista
     },
-    async getDataBackend(url, campos='', param = null) {
+    async getDataBackend(url, campos = '', param = null) {
       let data = await this.$store.dispatch('auth/loadData', {
         url: url,
         campos: campos,
-        param:param
+        param: param,
       })
       return data
     },
@@ -690,12 +685,12 @@ export default {
     getOptionTable(id) {
       return this.dataTable.acciones.find((e) => e.id == id)
     },
-    setOptionTable(id,option) {
+    setOptionTable(id, option) {
       return this.dataTable.acciones.find((e) => e.id == id)
     },
     addOptionTable(option) {
-       this.dataTable.acciones.push(option)
-       return true
+      this.dataTable.acciones.push(option)
+      return true
     },
   },
   watch: {
@@ -727,16 +722,16 @@ export default {
     this.created = 2
   },
   mounted() {
-    if (this.campos){
-    this.campos=this.getParams('headers')||this.campos
-      this.campos.map(e => {
-        if (typeof e.lista === 'string'){
-          e.lista=this[e.lista]
+    if (this.campos) {
+      this.campos = this.getParams('headers') || this.campos
+      this.campos.map((e) => {
+        if (typeof e.lista === 'string') {
+          e.lista = this[e.lista]
         }
-        if (typeof e.lColor === 'string'){
-          e.lColor=this[e.lColor]
+        if (typeof e.lColor === 'string') {
+          e.lColor = this[e.lColor]
         }
-      });
+      })
     }
     //console.log('campos',this.campos)
 
@@ -749,7 +744,7 @@ export default {
         visible: this.can('add'),
         action: 'openDialog',
         grupos: ['topbar'],
-        orden:1
+        orden: 1,
       },
       {
         id: 'edit',
@@ -758,7 +753,7 @@ export default {
         visible: this.can('edit'),
         action: 'openDialog',
         grupos: ['action', 'topbar'],
-        orden:2
+        orden: 2,
       },
       {
         id: 'del',
@@ -767,7 +762,7 @@ export default {
         visible: this.can('del'),
         action: 'deleteItem',
         grupos: ['action', 'topbar', 'recycled'],
-        orden:3
+        orden: 3,
       },
       {
         id: 'restore',
@@ -776,7 +771,16 @@ export default {
         visible: this.can('del'),
         action: 'restoreItem',
         grupos: ['topbar', 'recycled'],
-        orden:4
+        orden: 4,
+      },
+      {
+        id: 'show',
+        color: 'green',
+        icon: 'visibility',
+        visible: this.can('show'),
+        action: 'openDialog',
+        grupos: ['action', 'topbar'],
+        orden: 5,
       },
     ]
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
