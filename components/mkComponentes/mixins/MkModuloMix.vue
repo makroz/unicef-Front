@@ -44,6 +44,7 @@ export default {
       created: true,
       urlModulo: this.$options.name,
       titModulo: getTitFromName(this.$options.name),
+      accion:'',
 
       //filtros y busqueda
 
@@ -468,7 +469,7 @@ export default {
       if (!this.can(accion, true)) {
         return false
       }
-      //this.item = Object.assign({}, data)
+      this.accion = accion
       if (this.beforeOpen(accion, data) === false) {
         return false
       }
@@ -496,20 +497,22 @@ export default {
       if (accion == 'add') {
         this.item.id = null
         this.tituloModal = 'Registrar ' + this.titModulo
-      } else {
-        if (accion=='edit'){
+      } 
+
+      if (accion=='edit'){
         if (_dirty) {
           //this.dirty.item = Object.assign({}, this.item)
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
         this.tituloModal = 'Editar ' + this.titModulo
         this.$nextTick(this.$refs.focus.focus)
-        }else{
+        }
+        
+        if (accion=='show'){
           this.item.id = this.item.id*-1
           this.tituloModal = 'Ver ' + this.titModulo
         }
 
-      }
 
       // let f=document.getElementById('form').getElementsByTagName('input');
       // for (let i = 0; i < f.length; i++) {
@@ -537,7 +540,6 @@ export default {
       //   console.error(error)
       // }
     },
-
     getParams(name = '', def = false,encrypt = false) {
       return getCache(this.$options.name + '.Params.' + name,def,encrypt)
       // let params = def
