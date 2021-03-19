@@ -243,7 +243,7 @@
                   </v-layout>
                 </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
-                  {{ getSubHeader(ruteo) }}
+                  Abierto: {{ formatDT(ruteo['created_at']) }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
@@ -511,13 +511,12 @@
               </v-list-tile-title>
               <v-list-tile-sub-title class="caption">
                 Abierto el:
-                {{ rutaC.created_at }}
+                {{ formatDT(rutaC.created_at) }}
               </v-list-tile-sub-title>
               <v-list-tile-sub-title class="caption">
                 Cerrado el:
-                {{ rutaC.fec_cerrado }}
+                {{ formatDT(rutaC.fec_cerrado) }}
               </v-list-tile-sub-title>
-              
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -985,8 +984,28 @@ export default {
       this.modalEval = true
       //this.$nextTick(this.$refs.focus.focus)
     },
-    getSubHeader(data) {
-      return 'Abierto:' + new Date(data.created_at).toString()
+    formatDT(d) {
+      //return new Date(data).toString().split
+      let data = new Date(d)
+      let year = data.getFullYear().toString()
+      let month = (data.getMonth() + 101).toString().substring(1)
+      let day = (data.getDate() + 100).toString().substring(1)
+      let hour = (data.getHours() + 100).toString().substring(1)
+      let minute = (data.getMinutes() + 100).toString().substring(1)
+      let secons = (data.getSeconds() + 100).toString().substring(1)
+      return (
+        year +
+        '/' +
+        month +
+        '/' +
+        day +
+        ' ' +
+        hour +
+        ':' +
+        minute +
+        ':' +
+        secons
+      )
     },
     async getRutasOptimizada(ruta) {
       let store = [

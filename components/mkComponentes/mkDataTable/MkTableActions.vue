@@ -16,7 +16,7 @@
       <template v-for="opt in acciones">
         <v-btn
           :key="opt.value"
-          v-if="opt.visible && opt.grupos.includes(grupo)"
+          v-if="opt.visible && opt.grupos.includes(grupo) && (!opt.visibleRow?true:opt.visibleRow(item))"
           fab
           dark
           small
@@ -65,6 +65,9 @@ export default {
     callAction(opt, item) {
       this.$emit('callAction', opt, item)
     },
+    mostrar(opt,item){
+    return opt.visible && opt.grupos.includes(this.grupo) && (!opt.visibleRow?true:opt.visibleRow(item))
+    }
   },
   computed: {
     grupo() {
