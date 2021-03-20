@@ -1,8 +1,9 @@
 <template>
   <tr @click="isExpanded?datos.expanded = !datos.expanded:null" @dblclick="onEdit(datos.item)">
-    <td width="50px" style="padding: 0 12px">
+    <td  style="padding: 0 0 0 12px">
       <v-checkbox
-        class="pa-0 pm-0"
+        v-if="rowVisible(acciones.find((e) => e.id == 'sel'),datos.item)"
+        pa-0 ma-0
         primary
         hide-details
         v-model="datos.selected"
@@ -11,7 +12,7 @@
 
     <td
       v-if="!$store.state.config.tbl_opts_p && (can('edit') || can('del'))"
-      class="text-xs-center pa-0 ma-0"
+      class="text-xs-center pa-0 ma-0" 
     >
       <mk-table-actions
         :acciones="acciones"
@@ -84,11 +85,18 @@ export default {
     callAction(opt, item) {
       this.$emit('callAction', opt, item)
     },
+    rowVisible(opt, item) {
+      let r = true
+      if (typeof opt.visibleRow === 'function') {
+        r = opt.visibleRow(item)
+      }
+      r = this.can(opt.id) && opt.visible && r
+      return r
+    },
     onEdit(item) {
-      if (
-        this.can('edit') &&
-        this.acciones.find((e) => e.id == 'edit').visible
-      ) {
+      let opt=this.acciones.find((e) => e.id == 'edit')
+     
+      if (this.rowVisible(opt,item)) {
         this.$emit('callAction', { id: 'edit', action: 'openDialog' }, item)
       }
     },
@@ -112,9 +120,16 @@ export default {
       }
       if (lista.type == 'date') {
         valor = new Date(valor);
+        return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear();
+        //return new Date(valor).toLocaleString().split(',')[0]
+      }
+
+      if (lista.type == 'datetime') {
+        valor = new Date(valor);
         return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear()+ " " + valor.getHours()+ ":" + ("00" +valor.getMinutes()).slice(-2)+ ":" + ("00" +valor.getSeconds()).slice(-2);
         //return new Date(valor).toLocaleString().split(',')[0]
       }
+
       if (lista.type == 'check') {
         if (valor == lista.options[0]) {
           valor = lista.options[1]

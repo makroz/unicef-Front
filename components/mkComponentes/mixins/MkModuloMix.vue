@@ -737,6 +737,12 @@ export default {
 
     this.dataTable.acciones = [
       {
+        id: 'sel',
+        visible: true,
+        grupos: [''],
+        orden: 0,
+      },
+      {
         id: 'add',
         color: 'primary',
         icon: 'add',

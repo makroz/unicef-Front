@@ -28,9 +28,10 @@
         <template slot="headers" slot-scope="props">
           <tr>
             <th 
-                style="width:50px;padding:0 12px">
+                style="width:10px;padding:0 0 0 12px">
               <v-checkbox
-                
+                ma-0 pa-0
+                style="ma-0 pa-0"
                 :input-value="props.all"
                 :indeterminate="props.indeterminate"
                 primary
@@ -38,7 +39,7 @@
                 @click.stop="toggleAll"
               ></v-checkbox>
             </th>
-            <th  v-if="(!$store.state.config.tbl_opts_p)&&((can('edit') || can('del')))"
+            <th  v-if="(!$store.state.config.tbl_opts_p)"
                 key="__act__"
                 :class="['column', 'text-xs-center','pa-0','ma-0']"
                 style="width:52px;padding:0 12px"
@@ -61,7 +62,7 @@
                 style="width:50px;padding:0 12px"
              >
                 Status</th>
-            <th  v-if="($store.state.config.tbl_opts_p)&&((can('edit') || can('del')))"
+            <th  v-if="($store.state.config.tbl_opts_p)"
                 key="__act__"
                 :class="['column', 'text-xs-center','pa-0','ma-0']"
                 style="width:52px;padding:0 12px"
@@ -146,12 +147,12 @@ export default {
       this.$emit('callAction', opt, item)
       //this.$emit(opt.action, opt.id,item)
     },
-    deleteItem(action,item) {
-      this.$emit('deleteItem',action, item)
-    },
-    openDialog(accion, data = {}) {
-      this.$emit('openDialog', accion, data)
-    },
+    // deleteItem(action,item) {
+    //   this.$emit('deleteItem',action, item)
+    // },
+    // openDialog(accion, data = {}) {
+    //   this.$emit('openDialog', accion, data)
+    // },
     setStatus(id, newStatus) {
       this.$emit('setStatus', id, newStatus)
     },

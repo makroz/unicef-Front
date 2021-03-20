@@ -82,13 +82,13 @@ export default {
           text: 'Id',
           value: 'id',
           align: 'left',
-          width: '100px',
+          width: '50px',
           headers: true,
           type: 'num',
           search: true,
         },
         {
-          text: 'Abierto',
+          text: 'Fecha',
           value: 'created_at',
           align: 'left',
           width: '100px',
@@ -127,7 +127,7 @@ export default {
         {
           text: 'Beneficiarios',
           value: 'beneficiarios',
-          width: '100px',
+          width: '10px',
           headers: false,
           type: 'count',
           search: false,
@@ -140,7 +140,7 @@ export default {
         {
           text: 'Evaluaciones',
           value: 'evaluaciones',
-          width: '100px',
+          width: '10px',
           headers: false,
           type: 'count',
           search: false,
@@ -148,7 +148,7 @@ export default {
         {
           text: 'Benef./Eval.',
           value: 'benefEval',
-          width: '100px',
+          width: '50px',
           headers: true,
           type: 'concat',
           concat: ['beneficiarios', 'evaluaciones'],
@@ -159,7 +159,7 @@ export default {
         {
           text: 'Estado',
           value: 'estado',
-          width: '100px',
+          width: '50px',
           headers: true,
           type: 'num',
           search: true,
@@ -229,7 +229,15 @@ export default {
   async mounted() {
     let edit = this.getOptionTable('edit')
     edit.color = 'black'
-    edit.visibleRow = (valor) => (valor >= 2 ? false : true)
+    edit.visibleRow = function (e) {
+      console.log('visiblerow:', e.evaluaciones.length)
+      return e.estado > 1 || e.evaluaciones.length>0 ? false : true
+    }
+
+    let del = this.getOptionTable('del')
+    del.visibleRow = edit.visibleRow 
+    let sel = this.getOptionTable('sel')
+    sel.visibleRow = edit.visibleRow 
 
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
     this.lRutas = await this.getListaBackend(

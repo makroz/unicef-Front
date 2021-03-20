@@ -16,11 +16,7 @@
       <template v-for="opt in acciones">
         <v-btn
           :key="opt.value"
-          v-if="
-            opt.visible &&
-            opt.grupos.includes(grupo) &&
-            (!opt.visibleRow ? true : opt.visibleRow(item))
-          "
+          v-if="rowVisible(opt, item)"
           fab
           dark
           small
@@ -33,10 +29,7 @@
     </v-speed-dial>
     <v-layout v-else>
       <template v-for="opt in acciones">
-        <v-flex
-          :key="opt.value"
-          v-if="opt.visible && opt.grupos.includes(grupo)"
-        >
+        <v-flex :key="opt.value" v-if="rowVisible(opt, item)" pa-0 ma-0 shrink >
           <v-btn
             class="pa-0 ma-0"
             icon
@@ -67,6 +60,14 @@ export default {
   },
   inject: ['Auth', 'can'],
   methods: {
+    rowVisible(opt, item) {
+      let r = true
+      if (typeof opt.visibleRow === 'function') {
+        r = opt.visibleRow(item)
+      }
+      r = opt.visible && opt.grupos.includes(this.grupo) && r
+      return r
+    },
     callAction(opt, item) {
       this.$emit('callAction', opt, item)
     },
