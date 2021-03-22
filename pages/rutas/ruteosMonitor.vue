@@ -596,7 +596,7 @@
         ref="mkFormEval"
         :modal="modalEval"
         :tit="tituloModal"
-        :accion="item.id"
+        :accion="accion"
         @closeDialog="modalEval = false"
         @grabarItem="grabarEval"
       >
@@ -750,6 +750,7 @@ import { TargomoClient } from '@targomo/core'
 import {
   getDataLista,
   getDistancia,
+  formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { icon } from 'leaflet'
 import {
@@ -984,28 +985,8 @@ export default {
       this.modalEval = true
       //this.$nextTick(this.$refs.focus.focus)
     },
-    formatDT(d) {
-      //return new Date(data).toString().split
-      let data = new Date(d)
-      let year = data.getFullYear().toString()
-      let month = (data.getMonth() + 101).toString().substring(1)
-      let day = (data.getDate() + 100).toString().substring(1)
-      let hour = (data.getHours() + 100).toString().substring(1)
-      let minute = (data.getMinutes() + 100).toString().substring(1)
-      let secons = (data.getSeconds() + 100).toString().substring(1)
-      return (
-        year +
-        '/' +
-        month +
-        '/' +
-        day +
-        ' ' +
-        hour +
-        ':' +
-        minute +
-        ':' +
-        secons
-      )
+    formatDT(d,time=true) {
+      return formatDT(d,time)
     },
     async getRutasOptimizada(ruta) {
       let store = [

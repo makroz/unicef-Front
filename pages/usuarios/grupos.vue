@@ -20,7 +20,7 @@
         ref="mkForm"
         :modal="modal"
         :tit="tituloModal"
-        :accion="item.id"
+        :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >

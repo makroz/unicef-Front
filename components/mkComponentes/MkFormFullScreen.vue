@@ -19,17 +19,20 @@
             <v-btn icon dark @click.stop="$emit('closeDialog')">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{ tit }}</v-toolbar-title>
+            <v-toolbar-title>
+              {{ titulo }} 
+              <span v-if="caption!=''" class="caption">&nbsp;&nbsp;{{ caption }}</span>
+              </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <!-- <v-btn dark flat @click="modalMap = false">Volver</v-btn> -->
                <v-btn color="dark flat" flat @click.stop="$emit('closeDialog')">Volver</v-btn>
-          <v-btn v-if="accion>=0"
+          <v-btn v-if="accion!='show'"
             :disabled="!formValid"
             color="flat green--text"
             flat
             @click.stop="$emit('grabarItem')"
-            v-text="accion > 0 ? 'Actualizar' : 'Grabar'"
+            v-text="accion == 'edit' ? 'Actualizar' : 'Grabar'"
           ></v-btn>
             </v-toolbar-items>
           </v-toolbar>
@@ -55,8 +58,8 @@ export default {
       default: ''
     },
     accion: {
-      type: Number,
-      default: 0
+      type: String,
+      default: 'show'
     },
     classContent:{
       type: String,
@@ -69,7 +72,15 @@ export default {
     return {
       formValid: false
     }
-  }
+  },
+  computed: {
+    titulo() {
+    return (this.tit+'|').split('|')[0]
+    },
+    caption() {
+    return (this.tit+'|').split('|')[1];
+    },
+  },
 }
 </script>
 

@@ -47,7 +47,7 @@ export function getTitFromName(msg) {
 
 export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def = false) {
     let r = def
-        //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
+    //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
     let o = lista.find(el => el[busco] === valor)
     if (o) {
         if (devuelvo == '*') {
@@ -69,4 +69,24 @@ export function getDistancia(lat1, lon1, lat2, lon2) {
         (1 - Math.cos(dLon)) / 2;
 
     return R * 2 * Math.asin(Math.sqrt(a));
+}
+
+export function formatDT(d='', time = true) {
+    //return new Date(data).toString().split
+//    console.log('fecha',(d+' ').trim())
+    if (!d || d==''){
+        return ''
+    }
+    let data = new Date(d)
+    let year = data.getFullYear().toString()
+    let month = (data.getMonth() + 101).toString().substring(1)
+    let day = (data.getDate() + 100).toString().substring(1)
+    let hour = (data.getHours() + 100).toString().substring(1)
+    let minute = (data.getMinutes() + 100).toString().substring(1)
+    let secons = (data.getSeconds() + 100).toString().substring(1)
+    let r = year + '/' + month + '/' + day
+    if (time) {
+        r = r + ' ' + hour + ':' + minute + ':' + secons
+    }
+    return r
 }

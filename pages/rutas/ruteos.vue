@@ -28,7 +28,7 @@
         ref="mkForm"
         :modal="modal"
         :tit="tituloModal"
-        :accion="item.id"
+        :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
@@ -60,23 +60,55 @@
           ></v-select>
         </v-container>
       </mk-form>
+
+      <!-- formulario Show FullScreen -->
+      <mk-form-full-screen
+        ref="mkFormShow"
+        :modal="modalShow"
+        :tit="tituloModal"
+        :accion="accion"
+        @closeDialog="modalShow = false"
+        @grabarItem="modalShow = false"
+      >
+        <v-container grid-list-md fluid v-if="accion == 'show'">
+          <v-layout row>
+            <v-flex> Ruta: {{ item.ruta.name }} </v-flex>
+            <v-flex> Monitor: {{ item.monitor.name }} </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex>
+              Abrio: {{ getDataLista(lUsuarios, item.open_id, 'id', 'name') }}
+            </v-flex>
+            <v-flex> Fecha Apertura: {{ formatDT(item.created_at) }} </v-flex>
+            <v-flex>
+              Cerro: {{ getDataLista(lUsuarios, item.close_id, 'id', 'name') }}
+            </v-flex>
+            <v-flex> Fecha Cerrado: {{ formatDT(item.fec_cerrado) }} </v-flex>
+          </v-layout>
+        </v-container>
+      </mk-form-full-screen>
     </v-container>
   </div>
 </template>
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkFormFullScreen from '@/components/mkComponentes/MkFormFullScreen.vue'
+import {
+  getDataLista,
+  formatDT,
+} from '@/components/mkComponentes/lib/MkUtils.js'
 
 export default {
   //middleware: ['authAccess'],
   mixins: [MkModuloMix],
-  components: {},
+  components: { MkFormFullScreen },
   name: 'Ruteos',
   data() {
     return {
       //urlModulo: '',
       //titModulo: '',
-      tabs: 0,
+      modalShow: false,
       campos: [
         {
           text: 'Id',
@@ -179,6 +211,29 @@ export default {
     }
   },
   methods: {
+    openShow(accion, data) {
+      this.accion = accion
+      this.item = Object.assign({}, data)
+      this.item.ruta = getDataLista(this.lRutas, data.rutas_id, 'id', '*')
+      this.item.monitor = getDataLista(
+        this.lUsuarios,
+        data.usuarios_id,
+        'id',
+        '*'
+      )
+
+      this.tituloModal = 'Ver ' + this.titModulo
+      if (data.obs) {
+        this.tituloModal = this.tituloModal + '|' + data.obs
+      }
+      this.modalShow = true
+    },
+    formatDT(d, time = true) {
+      return formatDT(d, time)
+    },
+    getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
+      return getDataLista(lista, valor, busco, devuelvo)
+    },
     change(e) {
       this.item.usuarios_id = this.lRutas.find((el) => el.id === e).usuarios_id
     },
@@ -213,31 +268,32 @@ export default {
         // data.lat = ''
         // data.lng = ''
         data.usuarios_id = null
-      } else {
-        // let coord=data.gps_open.split(' ')
-        // data.lat = coord[0]
-        // data.lng = coord[1]
       }
-
-      // me.lBeneficiarios = await me.getListaBackend(
-      //   'Rutas/beneficiarios/' + data.id,
-      //   ''
-      // )
+      // if (accion == 'show') {
+      //   data.ruta = getDataLista(this.lRutas, data.rutas_id, 'id', '*')
+      //   data.monitor = getDataLista(this.lUsuarios, data.usuarios_id, 'id', '*')
+      // }
     },
+    // afterOpen(accion, data = {}) {
+    //   if (data.obs && accion != 'add') {
+    //     this.tituloModal = this.tituloModal + '|' + data.obs
+    //   }
+    // },
   },
 
   async mounted() {
     let edit = this.getOptionTable('edit')
     edit.color = 'black'
     edit.visibleRow = function (e) {
-      console.log('visiblerow:', e.evaluaciones.length)
-      return e.estado > 1 || e.evaluaciones.length>0 ? false : true
+      return e.estado > 1 || e.evaluaciones.length > 0 ? false : true
     }
 
     let del = this.getOptionTable('del')
-    del.visibleRow = edit.visibleRow 
+    del.visibleRow = edit.visibleRow
     let sel = this.getOptionTable('sel')
-    sel.visibleRow = edit.visibleRow 
+    sel.visibleRow = edit.visibleRow
+    let show = this.getOptionTable('show')
+    show.action = 'openShow'
 
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
     this.lRutas = await this.getListaBackend(

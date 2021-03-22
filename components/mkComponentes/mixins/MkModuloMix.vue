@@ -504,7 +504,10 @@ export default {
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
         this.tituloModal = 'Editar ' + this.titModulo
-        this.$nextTick(this.$refs.focus.focus)
+        if (this.$refs.focus){
+          this.$nextTick(this.$refs.focus.focus)
+        }
+        
       }
 
       if (accion == 'show') {

@@ -57,6 +57,7 @@
 <script>
 import MkStatus from '@/components/mkComponentes/MkDataTable/MkStatus'
 import MkTableActions from '@/components/mkComponentes/MkDataTable/MkTableActions'
+import { formatDT, } from '@/components/mkComponentes/lib/MkUtils.js'
 export default {
   name: 'mkTableRow',
   components: { MkStatus, MkTableActions },
@@ -119,15 +120,15 @@ export default {
         return valor
       }
       if (lista.type == 'date') {
-        valor = new Date(valor);
-        return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear();
-        //return new Date(valor).toLocaleString().split(',')[0]
+        return formatDT(valor,false)
+        //valor = new Date(valor);
+        //return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear();
       }
 
       if (lista.type == 'datetime') {
-        valor = new Date(valor);
-        return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear()+ " " + valor.getHours()+ ":" + ("00" +valor.getMinutes()).slice(-2)+ ":" + ("00" +valor.getSeconds()).slice(-2);
-        //return new Date(valor).toLocaleString().split(',')[0]
+        return formatDT(valor,true)
+        // valor = new Date(valor);
+        // return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear()+ " " + valor.getHours()+ ":" + ("00" +valor.getMinutes()).slice(-2)+ ":" + ("00" +valor.getSeconds()).slice(-2);
       }
 
       if (lista.type == 'check') {
