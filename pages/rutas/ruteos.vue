@@ -23,7 +23,7 @@
           </mk-data-table>
         </v-flex>
       </v-layout>
-
+      <!-- formulario Show Edit-->
       <mk-form
         ref="mkForm"
         :modal="modal"
@@ -71,6 +71,7 @@
         @grabarItem="modalShow = false"
       >
         <v-container grid-list-md fluid v-if="accion == 'show'">
+          <!-- Datos Basicos -->
           <v-layout row wrap>
             <v-flex xs6
               ><span class="font-weight-black">Ruta:</span> {{ item.ruta.name }}
@@ -91,8 +92,9 @@
             </v-flex>
           </v-layout>
           <v-layout row wrap>
-            <!-- evaluaciones column -->
+            <!-- Columna Evaluaciones -->
             <v-flex xs6>
+              <!-- grafico Benef/eval -->
               <v-card>
                 <v-card-text>
                   <div
@@ -100,16 +102,8 @@
                   >
                     <div class="text-box">
                       <div class="subheading pb-2">Benef/Eval</div>
-                      <span class="grey--text"
-                        >{{
-                          getDataLista(
-                            lRutas,
-                            item.rutas_id,
-                            'id',
-                            'beneficiarios'
-                          ).length
-                        }}
-                        / {{ item.evaluaciones.length }}
+                      <span class="grey--text">
+                        {{ item.nBenef }} / {{ item.evaluaciones.length }}
                         <v-icon small color="green">groups</v-icon>
                       </span>
                     </div>
@@ -118,36 +112,23 @@
                         :size="50"
                         :width="5"
                         :rotate="360"
-                        :value="
-                          (item.evaluaciones.length * 100) /
-                          getDataLista(
-                            lRutas,
-                            item.rutas_id,
-                            'id',
-                            'beneficiarios'
-                          ).length
-                        "
+                        :value="(item.evaluaciones.length * 100) / item.nBenef"
                         color="success"
                       >
-                        <span style="font-size: 10px"
-                          >{{
+                        <span style="font-size: 10px">
+                          {{
                             (
                               (item.evaluaciones.length * 100) /
-                              getDataLista(
-                                lRutas,
-                                item.rutas_id,
-                                'id',
-                                'beneficiarios'
-                              ).length
+                              item.nBenef
                             ).toFixed(1)
-                          }}%</span
-                        >
+                          }}%
+                        </span>
                       </v-progress-circular>
                     </div>
                   </div>
                 </v-card-text>
               </v-card>
-
+              <!-- grafico evaluaciones -->
               <v-card v-if="modalShow">
                 <v-card-title>Evaluaciones</v-card-title>
                 <e-chart
@@ -182,7 +163,7 @@
                 >
                 </e-chart>
               </v-card>
-
+              <!-- grafico Respuestas -->
               <v-card v-if="modalShow">
                 <!-- <v-card-title>Respuestas</v-card-title> -->
                 <v-select
@@ -204,7 +185,7 @@
                 </e-chart>
               </v-card>
             </v-flex>
-            <!-- Servicios column -->
+            <!-- Columna Servicios -->
             <v-flex xs6>
               <v-card>
                 <v-card-text>
@@ -375,18 +356,18 @@ export default {
   methods: {
     getOptionPregunta() {
       let preg = getDataLista(this.lPreguntas, this.item.pregunta, 'id', '*')
-      console.log(preg.nResp);
+      console.log(preg.nResp)
       let r = [
         ['dataset.source', preg.nResp],
         [
           'color',
           [
-              this.color.indigo.base,
-              this.color.pink.base,
-              this.color.green.base,
-              this.color.teal.base,
-              this.color.purple.base,
-              this.color.amber.base,
+            this.color.indigo.base,
+            this.color.pink.base,
+            this.color.green.base,
+            this.color.teal.base,
+            this.color.purple.base,
+            this.color.amber.base,
           ],
         ],
         ['legend.orient', 'horizontal'],
@@ -500,7 +481,7 @@ export default {
         }
         if (e.tipo == '2') {
           e.nResp = [
-            { product:'Producto', '=1': 0, '>1': 0,'Total': 0 },
+            { product: 'Producto', '=1': 0, '>1': 0, Total: 0 },
             //            ['Cantidad',0,5,10]
           ]
         }
