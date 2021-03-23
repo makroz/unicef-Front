@@ -129,15 +129,17 @@
                         "
                         color="success"
                       >
-                        <span class="caption"
+                        <span style="font-size: 10px"
                           >{{
-                            (item.evaluaciones.length * 100) /
-                            getDataLista(
-                              lRutas,
-                              item.rutas_id,
-                              'id',
-                              'beneficiarios'
-                            ).length
+                            (
+                              (item.evaluaciones.length * 100) /
+                              getDataLista(
+                                lRutas,
+                                item.rutas_id,
+                                'id',
+                                'beneficiarios'
+                              ).length
+                            ).toFixed(1)
                           }}%</span
                         >
                       </v-progress-circular>
@@ -170,7 +172,7 @@
                     ['series[0].type', 'pie'],
                     ['series[0].avoidLabelOverlap', true],
                     ['series[0].label.position', 'outer'],
-                    ['series[0].label.formatter', '{b}:<br/>{d} %'],
+                    ['series[0].label.formatter', '{b}:\n {d} %'],
                     ['series[0].label.alignTo', 'edge'],
                     ['series[0].label.fontSize.', '10px'],
                     ['series[0].radius', ['50%', '70%']],
@@ -193,35 +195,10 @@
                   dense
                   small
                 ></v-select>
-                <e-chart 
-                v-if="showRespuesta"
-                  :path-option="[
-                    ['dataset.source', getDataLista(lPreguntas,item.pregunta,'id','nResp')],
-                    [
-                      'color',
-                      [
-                        color.indigo.base,
-                        color.pink.base,
-                        color.green.base,
-                        color.teal.base,
-                        color.purple.base,
-                        color.amber.base,
-                      ],
-                    ],
-                    ['legend.orient', 'horizontal'],
-                    ['legend.show',getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?false:true],
-                    ['legend.y', 'bottom'],
-                    ['xAxis.show', getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?false:true],
-                    ['yAxis.show', getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?false:true],
-                    ['series[0].type', getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?'pie':'bar'],
-                    ['series[0].avoidLabelOverlap',true],
-                    ['series[0].label.show', true],
-                    ['series[0].label.formatter', '{b}:<br/>{d} %'],
-                    ['series[0].label.position', getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?'outer':'inner'],
-                    ['series[0].label.alignTo', 'edge'],
-                    ['series[0].label.fontSize.', '10px'],
-                  ]"
-                  height="150px"
+                <e-chart
+                  v-if="showRespuesta"
+                  :path-option="getOptionPregunta()"
+                  height="100px"
                   width="100%"
                 >
                 </e-chart>
@@ -249,8 +226,10 @@
                         :value="(item.nServicios * 100) / item.nBenef"
                         color="blue"
                       >
-                        <span class="caption"
-                          >{{ (item.nServicios * 100) / item.nBenef }}%</span
+                        <span style="font-size: 10px"
+                          >{{
+                            ((item.nServicios * 100) / item.nBenef).toFixed(1)
+                          }}%</span
                         >
                       </v-progress-circular>
                     </div>
@@ -388,18 +367,76 @@ export default {
       lPreguntas: [],
       item: {
         nEval: [],
-        respuesta:0,
+        respuesta: 0,
       },
-      showRespuesta:false
+      showRespuesta: false,
     }
   },
   methods: {
-    changePregunta(){
-      this.showRespuesta=false
+    getOptionPregunta() {
+      let preg = getDataLista(this.lPreguntas, this.item.pregunta, 'id', '*')
+      console.log(preg.nResp);
+      let r = [
+        ['dataset.source', preg.nResp],
+        [
+          'color',
+          [
+              this.color.indigo.base,
+              this.color.pink.base,
+              this.color.green.base,
+              this.color.teal.base,
+              this.color.purple.base,
+              this.color.amber.base,
+          ],
+        ],
+        ['legend.orient', 'horizontal'],
+        ['legend.show', false],
+        ['legend.y', 'bottom'],
+        ['xAxis.show', false],
+        ['yAxis.show', false],
+        ['series[0].type', 'pie'],
+        ['series[0].label.show', true],
+        ['series[0].label.formatter', '{b}: \n {d} %'],
+        ['series[0].label.position', 'inside'],
+        ['series[0].label.fontSize.', '10px'],
+      ]
+      if (preg.tipo == 2) {
+        r = [
+          ['dataset.source', preg.nResp],
+          [
+            'color',
+            [
+              this.color.indigo.base,
+              this.color.pink.base,
+              this.color.green.base,
+              this.color.teal.base,
+              this.color.purple.base,
+              this.color.amber.base,
+            ],
+          ],
+          ['legend.orient', 'horizontal'],
+          ['legend.show', true],
+          ['legend.y', 'bottom'],
+          ['xAxis.show', true],
+          ['yAxis.show', false],
+          ['series[0].type', 'bar'],
+          ['series[0].label.show', true],
+
+          ['series[1].type', 'bar'],
+          ['series[1].label.show', true],
+
+          ['series[2].type', 'bar'],
+          ['series[2].label.show', true],
+        ]
+      }
+
+      return r
+    },
+    changePregunta() {
+      this.showRespuesta = false
       setTimeout(() => {
-          this.showRespuesta=true
-        }, 100)
-      
+        this.showRespuesta = true
+      }, 100)
     },
     openShow(accion, data) {
       this.accion = accion
@@ -463,8 +500,8 @@ export default {
         }
         if (e.tipo == '2') {
           e.nResp = [
-            ['product','Total'],
-            ['Cantidad',0]
+            { product:'Producto', '=1': 0, '>1': 0,'Total': 0 },
+            //            ['Cantidad',0,5,10]
           ]
         }
       })
@@ -475,13 +512,19 @@ export default {
             preg.nResp[e1.r_s * 1].value++
           }
           if (preg.tipo == '2') {
-            preg.nResp[1][1]= preg.nResp[1][1] + e1.r_s * 1
+            //preg.nResp[1][1]= preg.nResp[1][1] + e1.r_s * 1
+            preg.nResp[0]['Total'] = preg.nResp[0]['Total'] + e1.r_s * 1
+            if (e1.r_s * 1 == 1) {
+              preg.nResp[0]['=1']++
+            } else {
+              preg.nResp[0]['>1']++
+            }
           }
         })
       })
 
-      this.item.pregunta=this.lPreguntas[0].id
-      this.showRespuesta=true
+      this.item.pregunta = this.lPreguntas[0].id
+      this.showRespuesta = true
 
       this.tituloModal = 'Ver ' + this.titModulo
       if (data.obs) {
