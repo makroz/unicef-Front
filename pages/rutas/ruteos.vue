@@ -71,19 +71,193 @@
         @grabarItem="modalShow = false"
       >
         <v-container grid-list-md fluid v-if="accion == 'show'">
-          <v-layout row>
-            <v-flex> Ruta: {{ item.ruta.name }} </v-flex>
-            <v-flex> Monitor: {{ item.monitor.name }} </v-flex>
+          <v-layout row wrap>
+            <v-flex xs6
+              ><span class="font-weight-black">Ruta:</span> {{ item.ruta.name }}
+            </v-flex>
+            <v-flex xs6
+              ><span class="font-weight-black">Monitor:</span>
+              {{ item.monitor.name }}
+            </v-flex>
+            <v-flex>
+              <span class="font-weight-black">Abrio:</span>
+              {{ getDataLista(lUsuarios, item.open_id, 'id', 'name') }},
+              {{ formatDT(item.created_at) }}
+            </v-flex>
+            <v-flex v-if="item.fec_cerrado">
+              <span class="font-weight-black">Cerro:</span>
+              {{ getDataLista(lUsuarios, item.close_id, 'id', 'name') }},
+              {{ formatDT(item.fec_cerrado) }}
+            </v-flex>
           </v-layout>
-          <v-layout row>
-            <v-flex>
-              Abrio: {{ getDataLista(lUsuarios, item.open_id, 'id', 'name') }}
+          <v-layout row wrap>
+            <!-- evaluaciones column -->
+            <v-flex xs6>
+              <v-card>
+                <v-card-text>
+                  <div
+                    class="layout row ma-0 align-center justify-space-between"
+                  >
+                    <div class="text-box">
+                      <div class="subheading pb-2">Benef/Eval</div>
+                      <span class="grey--text"
+                        >{{
+                          getDataLista(
+                            lRutas,
+                            item.rutas_id,
+                            'id',
+                            'beneficiarios'
+                          ).length
+                        }}
+                        / {{ item.evaluaciones.length }}
+                        <v-icon small color="green">groups</v-icon>
+                      </span>
+                    </div>
+                    <div class="chart">
+                      <v-progress-circular
+                        :size="50"
+                        :width="5"
+                        :rotate="360"
+                        :value="
+                          (item.evaluaciones.length * 100) /
+                          getDataLista(
+                            lRutas,
+                            item.rutas_id,
+                            'id',
+                            'beneficiarios'
+                          ).length
+                        "
+                        color="success"
+                      >
+                        <span class="caption"
+                          >{{
+                            (item.evaluaciones.length * 100) /
+                            getDataLista(
+                              lRutas,
+                              item.rutas_id,
+                              'id',
+                              'beneficiarios'
+                            ).length
+                          }}%</span
+                        >
+                      </v-progress-circular>
+                    </div>
+                  </div>
+                </v-card-text>
+              </v-card>
+
+              <v-card v-if="modalShow">
+                <v-card-title>Evaluaciones</v-card-title>
+                <e-chart
+                  :path-option="[
+                    ['dataset.source', item.nEval],
+                    [
+                      'color',
+                      [
+                        color.amber.base,
+                        color.indigo.base,
+                        color.pink.base,
+                        color.green.base,
+                        color.teal.base,
+                        color.purple.base,
+                      ],
+                    ],
+                    ['legend.orient', 'horizontal'],
+                    ['legend.y', 'none'],
+                    ['legend.show', false],
+                    ['xAxis.show', false],
+                    ['yAxis.show', false],
+                    ['series[0].type', 'pie'],
+                    ['series[0].avoidLabelOverlap', true],
+                    ['series[0].label.position', 'outer'],
+                    ['series[0].label.formatter', '{b}:<br/>{d} %'],
+                    ['series[0].label.alignTo', 'edge'],
+                    ['series[0].label.fontSize.', '10px'],
+                    ['series[0].radius', ['50%', '70%']],
+                  ]"
+                  height="150px"
+                  width="100%"
+                >
+                </e-chart>
+              </v-card>
+
+              <v-card v-if="modalShow">
+                <!-- <v-card-title>Respuestas</v-card-title> -->
+                <v-select
+                  v-model="item.pregunta"
+                  :items="lPreguntas"
+                  item-text="pregunta"
+                  item-value="id"
+                  label="Pregunta"
+                  @change="changePregunta"
+                  dense
+                  small
+                ></v-select>
+                <e-chart 
+                v-if="showRespuesta"
+                  :path-option="[
+                    ['dataset.source', getDataLista(lPreguntas,item.pregunta,'id','nResp')],
+                    [
+                      'color',
+                      [
+                        color.indigo.base,
+                        color.pink.base,
+                        color.green.base,
+                        color.teal.base,
+                        color.purple.base,
+                        color.amber.base,
+                      ],
+                    ],
+                    ['legend.orient', 'horizontal'],
+                    ['legend.show',getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?false:true],
+                    ['legend.y', 'bottom'],
+                    ['xAxis.show', getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?false:true],
+                    ['yAxis.show', getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?false:true],
+                    ['series[0].type', getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?'pie':'bar'],
+                    ['series[0].avoidLabelOverlap',true],
+                    ['series[0].label.show', true],
+                    ['series[0].label.formatter', '{b}:<br/>{d} %'],
+                    ['series[0].label.position', getDataLista(lPreguntas,item.pregunta,'id','tipo')==1?'outer':'inner'],
+                    ['series[0].label.alignTo', 'edge'],
+                    ['series[0].label.fontSize.', '10px'],
+                  ]"
+                  height="150px"
+                  width="100%"
+                >
+                </e-chart>
+              </v-card>
             </v-flex>
-            <v-flex> Fecha Apertura: {{ formatDT(item.created_at) }} </v-flex>
-            <v-flex>
-              Cerro: {{ getDataLista(lUsuarios, item.close_id, 'id', 'name') }}
+            <!-- Servicios column -->
+            <v-flex xs6>
+              <v-card>
+                <v-card-text>
+                  <div
+                    class="layout row ma-0 align-center justify-space-between"
+                  >
+                    <div class="text-box">
+                      <div class="subheading pb-2">Benef/Solic.Serv</div>
+                      <span class="grey--text"
+                        >{{ item.nBenef }} / {{ item.nServicios }}
+                        <v-icon small color="blue">handyman</v-icon>
+                      </span>
+                    </div>
+                    <div class="chart">
+                      <v-progress-circular
+                        :size="50"
+                        :width="5"
+                        :rotate="360"
+                        :value="(item.nServicios * 100) / item.nBenef"
+                        color="blue"
+                      >
+                        <span class="caption"
+                          >{{ (item.nServicios * 100) / item.nBenef }}%</span
+                        >
+                      </v-progress-circular>
+                    </div>
+                  </div>
+                </v-card-text>
+              </v-card>
             </v-flex>
-            <v-flex> Fecha Cerrado: {{ formatDT(item.fec_cerrado) }} </v-flex>
           </v-layout>
         </v-container>
       </mk-form-full-screen>
@@ -92,23 +266,26 @@
 </template>
 
 <script>
+import EChart from '@/components/chart/echart'
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkFormFullScreen from '@/components/mkComponentes/MkFormFullScreen.vue'
 import {
   getDataLista,
   formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
+import Material from 'vuetify/es5/util/colors'
 
 export default {
   //middleware: ['authAccess'],
   mixins: [MkModuloMix],
-  components: { MkFormFullScreen },
+  components: { MkFormFullScreen, EChart },
   name: 'Ruteos',
   data() {
     return {
       //urlModulo: '',
       //titModulo: '',
       modalShow: false,
+      color: Material,
       campos: [
         {
           text: 'Id',
@@ -208,9 +385,22 @@ export default {
         'green--text',
       ],
       lRutas: [],
+      lPreguntas: [],
+      item: {
+        nEval: [],
+        respuesta:0,
+      },
+      showRespuesta:false
     }
   },
   methods: {
+    changePregunta(){
+      this.showRespuesta=false
+      setTimeout(() => {
+          this.showRespuesta=true
+        }, 100)
+      
+    },
     openShow(accion, data) {
       this.accion = accion
       this.item = Object.assign({}, data)
@@ -221,6 +411,77 @@ export default {
         'id',
         '*'
       )
+      this.item.nBenef = getDataLista(
+        this.lRutas,
+        data.rutas_id,
+        'id',
+        'beneficiarios'
+      ).length
+      this.item.nServicios = 0
+      this.item.evaluaciones.forEach((e) => {
+        if (e.servicios.length > 0) {
+          this.item.nServicios++
+        }
+      })
+
+      this.item.nEvalVal = [0, 0, 0]
+      this.item.evaluaciones.forEach((e) => {
+        this.item.nEvalVal[e.estado * 1]++
+      })
+      //console.log('neval',this.item.nEvalVal);
+      this.item.nEvalVal[0] =
+        this.item.evaluaciones.length -
+        (this.item.nEvalVal[1] + this.item.nEvalVal[2])
+
+      this.item.nEval = [
+        {
+          Evaluaciones: 'No Realizadas',
+          value: this.item.nEvalVal[0],
+        },
+        {
+          Evaluaciones: 'Respondidas',
+          value: this.item.nEvalVal[1],
+        },
+        {
+          Evaluaciones: 'No Respondidas',
+          value: this.item.nEvalVal[2],
+        },
+      ]
+
+      this.lPreguntas.forEach((e) => {
+        if (e.tipo == '1') {
+          e.nResp = [
+            {
+              Respuesta: 'No',
+              value: 0,
+            },
+            {
+              Respuesta: 'Si',
+              value: 0,
+            },
+          ]
+        }
+        if (e.tipo == '2') {
+          e.nResp = [
+            ['product','Total'],
+            ['Cantidad',0]
+          ]
+        }
+      })
+      this.item.evaluaciones.forEach((e) => {
+        e.respuestas.forEach((e1) => {
+          let preg = getDataLista(this.lPreguntas, e1.preguntas_id, 'id', '*')
+          if (preg.tipo == '1') {
+            preg.nResp[e1.r_s * 1].value++
+          }
+          if (preg.tipo == '2') {
+            preg.nResp[1][1]= preg.nResp[1][1] + e1.r_s * 1
+          }
+        })
+      })
+
+      this.item.pregunta=this.lPreguntas[0].id
+      this.showRespuesta=true
 
       this.tituloModal = 'Ver ' + this.titModulo
       if (data.obs) {
@@ -296,6 +557,8 @@ export default {
     show.action = 'openShow'
 
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
+    this.lServicios = await this.getListaBackend('Servicios')
+    this.lPreguntas = await this.getListaBackend('Preguntas')
     this.lRutas = await this.getListaBackend(
       'Rutas',
       'id,name,usuarios_id',
