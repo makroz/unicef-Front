@@ -132,32 +132,7 @@
               <v-card v-if="modalShow">
                 <v-card-title>Evaluaciones</v-card-title>
                 <e-chart
-                  :path-option="[
-                    ['dataset.source', item.nEval],
-                    [
-                      'color',
-                      [
-                        color.amber.base,
-                        color.indigo.base,
-                        color.pink.base,
-                        color.green.base,
-                        color.teal.base,
-                        color.purple.base,
-                      ],
-                    ],
-                    ['legend.orient', 'horizontal'],
-                    ['legend.y', 'none'],
-                    ['legend.show', false],
-                    ['xAxis.show', false],
-                    ['yAxis.show', false],
-                    ['series[0].type', 'pie'],
-                    ['series[0].avoidLabelOverlap', true],
-                    ['series[0].label.position', 'outer'],
-                    ['series[0].label.formatter', '{b}:\n {d} %'],
-                    ['series[0].label.alignTo', 'edge'],
-                    ['series[0].label.fontSize.', '10px'],
-                    ['series[0].radius', ['50%', '70%']],
-                  ]"
+                  :path-option="getOptionsEvaluaciones()"
                   height="150px"
                   width="100%"
                 >
@@ -354,9 +329,40 @@ export default {
     }
   },
   methods: {
+    getOptionsEvaluaciones() {
+      return [
+        ['dataset.source', this.item.nEval],
+        [
+          'color',
+          [
+            this.color.grey.base,
+            this.color.green.base,
+            this.color.pink.base,
+            this.color.indigo.base,
+            this.color.teal.base,
+            this.color.purple.base,
+          ],
+        ],
+        ['legend.orient', 'vertical'],
+        ['legend.left', 'left'],
+        ['legend.padding', 2],
+        ['legend.itemGap', 2],
+        ['legend.itemWidth', 15],
+        ['legend.itemHeight', 5],
+        ['legend.textStyle.fontSize', 10],
+        ['legend.show', true],
+        ['xAxis.show', false],
+        ['yAxis.show', false],
+        ['series[0].type', 'pie'],
+        ['series[0].radius', '70%'],
+        ['series[0].center', ['70%', '50%']],
+        ['series[0].label.position', 'inside'],
+        ['series[0].label.formatter', '{d}%'],
+        ['series[0].label.fontSize.', '10px'],
+      ]
+    },
     getOptionPregunta() {
       let preg = getDataLista(this.lPreguntas, this.item.pregunta, 'id', '*')
-      console.log(preg.nResp)
       let r = [
         ['dataset.source', preg.nResp],
         [
@@ -402,15 +408,12 @@ export default {
           ['yAxis.show', false],
           ['series[0].type', 'bar'],
           ['series[0].label.show', true],
-
           ['series[1].type', 'bar'],
           ['series[1].label.show', true],
-
           ['series[2].type', 'bar'],
           ['series[2].label.show', true],
         ]
       }
-
       return r
     },
     changePregunta() {
@@ -446,7 +449,6 @@ export default {
       this.item.evaluaciones.forEach((e) => {
         this.item.nEvalVal[e.estado * 1]++
       })
-      //console.log('neval',this.item.nEvalVal);
       this.item.nEvalVal[0] =
         this.item.evaluaciones.length -
         (this.item.nEvalVal[1] + this.item.nEvalVal[2])
@@ -481,7 +483,7 @@ export default {
         }
         if (e.tipo == '2') {
           e.nResp = [
-            { product: 'Producto', '=1': 0, '>1': 0, Total: 0 },
+            { product: 'Cant.', '=1': 0, '>1': 0, Total: 0 },
             //            ['Cantidad',0,5,10]
           ]
         }
@@ -493,11 +495,11 @@ export default {
             preg.nResp[e1.r_s * 1].value++
           }
           if (preg.tipo == '2') {
-            //preg.nResp[1][1]= preg.nResp[1][1] + e1.r_s * 1
             preg.nResp[0]['Total'] = preg.nResp[0]['Total'] + e1.r_s * 1
             if (e1.r_s * 1 == 1) {
               preg.nResp[0]['=1']++
-            } else {
+            }
+            if (e1.r_s * 1 > 1) {
               preg.nResp[0]['>1']++
             }
           }
@@ -550,20 +552,9 @@ export default {
       let me = this
       if (accion == 'add') {
         this.getPosition()
-        // data.lat = ''
-        // data.lng = ''
         data.usuarios_id = null
       }
-      // if (accion == 'show') {
-      //   data.ruta = getDataLista(this.lRutas, data.rutas_id, 'id', '*')
-      //   data.monitor = getDataLista(this.lUsuarios, data.usuarios_id, 'id', '*')
-      // }
     },
-    // afterOpen(accion, data = {}) {
-    //   if (data.obs && accion != 'add') {
-    //     this.tituloModal = this.tituloModal + '|' + data.obs
-    //   }
-    // },
   },
 
   async mounted() {
