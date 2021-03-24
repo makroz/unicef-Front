@@ -438,13 +438,24 @@ export default {
         'id',
         'beneficiarios'
       ).length
+      
+      this.item.nServ = []
       this.item.nServicios = 0
+      
+      this.lServicios.forEach((e) => {
+          this.item.nServ.push({Servicio:e.name,value:0,id:e.id})
+      })
+      
       this.item.evaluaciones.forEach((e) => {
         if (e.servicios.length > 0) {
           this.item.nServicios++
+          e.servicios.forEach((s)=>{
+            let ser=getDataLista(this.item.nServ, s.servicios_id, 'id', '*')
+            ser.value=ser.value+(s.cant*1)
+          })
         }
       })
-
+      log
       this.item.nEvalVal = [0, 0, 0]
       this.item.evaluaciones.forEach((e) => {
         this.item.nEvalVal[e.estado * 1]++
