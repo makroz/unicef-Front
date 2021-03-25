@@ -70,7 +70,7 @@
         @closeDialog="modalShow = false"
         @grabarItem="modalShow = false"
       >
-        <v-container grid-list-md fluid v-if="accion == 'show'">
+        <v-container grid-list-md fluid v-if="accion == 'show'" pb-0 white >
           <!-- Datos Basicos -->
           <v-layout row wrap>
             <v-flex xs6
@@ -162,6 +162,7 @@
             </v-flex>
             <!-- Columna Servicios -->
             <v-flex xs6>
+              <!-- grafico benef/serv -->
               <v-card>
                 <v-card-text>
                   <div
@@ -192,6 +193,17 @@
                   </div>
                 </v-card-text>
               </v-card>
+              <!-- grafico Servivicios -->
+              <v-card v-if="modalShow">
+                <v-card-title>Servicios</v-card-title>
+                <e-chart
+                  :path-option="getOptionsServicios()"
+                  height="150px"
+                  width="100%"
+                >
+                </e-chart>
+              </v-card>
+
             </v-flex>
           </v-layout>
         </v-container>
@@ -329,6 +341,38 @@ export default {
     }
   },
   methods: {
+        getOptionsServicios() {
+      return [
+        ['dataset.source', this.item.nServ],
+        [
+          'color',
+          [
+            this.color.grey.base,
+            this.color.green.base,
+            this.color.pink.base,
+            this.color.indigo.base,
+            this.color.teal.base,
+            this.color.purple.base,
+          ],
+        ],
+        ['legend.orient', 'vertical'],
+        ['legend.left', 'left'],
+        ['legend.padding', 2],
+        ['legend.itemGap', 2],
+        ['legend.itemWidth', 15],
+        ['legend.itemHeight', 5],
+        ['legend.textStyle.fontSize', 10],
+        ['legend.show', true],
+        ['xAxis.show', false],
+        ['yAxis.show', false],
+        ['series[0].type', 'pie'],
+        ['series[0].radius', '70%'],
+        ['series[0].center', ['70%', '50%']],
+        ['series[0].label.position', 'inside'],
+        ['series[0].label.formatter', '{@[1]}'],
+        ['series[0].label.fontSize.', '10px'],
+      ]
+    },
     getOptionsEvaluaciones() {
       return [
         ['dataset.source', this.item.nEval],
@@ -455,7 +499,7 @@ export default {
           })
         }
       })
-      log
+      //console.log(this.item.nServ);
       this.item.nEvalVal = [0, 0, 0]
       this.item.evaluaciones.forEach((e) => {
         this.item.nEvalVal[e.estado * 1]++
