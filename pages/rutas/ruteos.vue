@@ -203,6 +203,48 @@
                 >
                 </e-chart>
               </v-card>
+              <!-- mapa de ruteo -->
+              <div id="map-wrap" style="height: 150%; width: 100%">
+            <client-only>
+              <l-map
+                :zoom="zoom"
+                :center="center"
+                style="height: 100%; width: 100%"
+                ref="mymap"
+              >
+                <l-tile-layer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+                  :useCors="false"
+                ></l-tile-layer>
+                <l-polyline
+                  v-if="jsonLine"
+                  :lat-lngs="jsonLine"
+                  color="blue"
+                ></l-polyline>
+                <l-geo-json
+                  v-if="jsonData"
+                  :geojson="jsonData"
+                  :options-style="styleFunction"
+                />
+                <div v-if="modalMap && markers && markers.length > 0">
+                  <l-marker
+                    v-for="(marker, index) in markers"
+                    :key="index"
+                    :lat-lng="getMarker(marker, item, index)"
+                    :draggable="false"
+                    :visible="true"
+                    :icon="getIcon(marker)"
+                  >
+                    <l-tooltip>{{
+                      getDataLista(lBeneficiarios, marker, 'id', 'name') ||
+                      'Tu ubicacion Actual'
+                    }}</l-tooltip>
+                  </l-marker>
+                </div>
+              </l-map>
+            </client-only>
+          </div>
 
             </v-flex>
           </v-layout>
@@ -221,6 +263,7 @@ import {
   formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import Material from 'vuetify/es5/util/colors'
+import { icon } from 'leaflet'
 
 export default {
   //middleware: ['authAccess'],
@@ -338,6 +381,26 @@ export default {
         respuesta: 0,
       },
       showRespuesta: false,
+      // 
+      center: [-17.783373986957255, -63.18209478792436],
+      zoom: 13,
+      coordenadas: {},
+      markers: [],
+      icon1: icon({
+        iconUrl: require('~/static/img/icon1.png'),
+        iconSize: [32, 32],
+        iconAnchor: [16, 30],
+        tooltipAnchor: [16, -22],
+      }),
+      icon2: icon({
+        iconUrl: require('~/static/img/icon2.png'),
+        iconSize: [32, 32],
+        iconAnchor: [16, 30],
+        tooltipAnchor: [16, -22],
+      }),
+      styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
+      jsonData: [],
+      jsonLine: [],
     }
   },
   methods: {
@@ -466,7 +529,7 @@ export default {
         this.showRespuesta = true
       }, 100)
     },
-    openShow(accion, data) {
+    async openShow(accion, data) {
       this.accion = accion
       this.item = Object.assign({}, data)
       this.item.ruta = getDataLista(this.lRutas, data.rutas_id, 'id', '*')
@@ -562,6 +625,23 @@ export default {
       })
 
       this.item.pregunta = this.lPreguntas[0].id
+
+      let benef=await this.getListaBackend('Beneficiarios', '', 'usuarios_id')
+      //TODO: aqui hacer una funcion en el controlador del ruteo que me responda con la lista de beneficiarios especificos
+      this.markers = [0, bene]
+        this.jsonData = [
+          {
+            type: 'LineString',
+            coordinates: [
+              [this.coordenadas.longitude, this.coordenadas.latitude],
+              [benef.lng, benef.lat],
+            ],
+          },
+        ]
+
+
+
+
       this.showRespuesta = true
 
       this.tituloModal = 'Ver ' + this.titModulo
