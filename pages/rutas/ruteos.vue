@@ -140,7 +140,6 @@
               </v-card>
               <!-- grafico Respuestas -->
               <v-card v-if="modalShow">
-                <!-- <v-card-title>Respuestas</v-card-title> -->
                 <v-select
                   v-model="item.pregunta"
                   :items="lPreguntas"
@@ -154,7 +153,7 @@
                 <e-chart
                   v-if="showRespuesta"
                   :path-option="getOptionPregunta()"
-                  height="100px"
+                  height="150px"
                   width="100%"
                 >
                 </e-chart>
@@ -204,7 +203,8 @@
                 </e-chart>
               </v-card>
               <!-- mapa de ruteo -->
-              <div id="map-wrap" style="height: 150%; width: 100%">
+              <v-card style="margin-top:5px">
+              <div id="map-wrap" style="height: 214px; width: 100%">
             <client-only>
               <l-map
                 :zoom="zoom"
@@ -225,9 +225,9 @@
                 <l-geo-json
                   v-if="jsonData"
                   :geojson="jsonData"
-                  :options-style="styleFunction"
+                  :options-style="getStyles"
                 />
-                <div v-if="modalMap && markers && markers.length > 0">
+                <div v-if="modalShow && markers && markers.length > 0">
                   <l-marker
                     v-for="(marker, index) in markers"
                     :key="index"
@@ -236,15 +236,15 @@
                     :visible="true"
                     :icon="getIcon(marker)"
                   >
-                    <l-tooltip>{{
-                      getDataLista(lBeneficiarios, marker, 'id', 'name') ||
-                      'Tu ubicacion Actual'
-                    }}</l-tooltip>
+                    <l-tooltip>
+                      {{ marker.name ||'Tu ubicacion Actual' }} {{ marker.posi?' ('+marker.posi+')':'' }}
+                    </l-tooltip>
                   </l-marker>
                 </div>
               </l-map>
             </client-only>
           </div>
+          </v-card>
 
             </v-flex>
           </v-layout>
@@ -264,6 +264,7 @@ import {
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import Material from 'vuetify/es5/util/colors'
 import { icon } from 'leaflet'
+import beneficiariosVue from '../beneficiarios/beneficiarios.vue'
 
 export default {
   //middleware: ['authAccess'],
@@ -394,11 +395,18 @@ export default {
       }),
       icon2: icon({
         iconUrl: require('~/static/img/icon2.png'),
+        iconSize: [16, 16],
+        iconAnchor: [8, 14],
+        tooltipAnchor: [16, -12],
+      }),
+      icon0: icon({
+        iconUrl: require('~/static/img/icon0.png'),
         iconSize: [32, 32],
         iconAnchor: [16, 30],
         tooltipAnchor: [16, -22],
       }),
-      styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
+
+      //styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
       jsonData: [],
       jsonLine: [],
     }
@@ -626,20 +634,77 @@ export default {
 
       this.item.pregunta = this.lPreguntas[0].id
 
-      let benef=await this.getListaBackend('Beneficiarios', '', 'usuarios_id')
-      //TODO: aqui hacer una funcion en el controlador del ruteo que me responda con la lista de beneficiarios especificos
-      this.markers = [0, bene]
-        this.jsonData = [
+      this.markers = []
+      this.jsonData =[]
+      let gps=[]
+      let orig=[]
+      if (data.gps_open){
+        gps=data.gps_open.split(' ')
+        orig=[gps[1], gps[0]]
+        //this.markers.push([gps[0], gps[1]])
+      }
+        //let orig=[[gps[1], gps[0]]]
+
+        // this.jsonData.push(
+        //   {
+        //     type: 'LineString',
+        //     coordinates: [
+        //       orig,
+        //       [benef.lng, benef.lat],
+        //     ],
+        //   },
+        // )
+
+        let posi=1;
+      data.evaluaciones.forEach((e)=>{
+          gps=e.coord.split(' ')
+          this.markers.push({...e.beneficiario_coord,icon:0,posi:posi})
+          this.markers.push({id:e.beneficiario_coord.id,name:e.beneficiario_coord.name,lat:gps[0],lng:gps[1],icon:1,posi:posi})
+          this.jsonData.push(
           {
             type: 'LineString',
             coordinates: [
-              [this.coordenadas.longitude, this.coordenadas.latitude],
-              [benef.lng, benef.lat],
+              [e.beneficiario_coord.lng,e.beneficiario_coord.lat],
+              [gps[1], gps[0]],
             ],
-          },
-        ]
+            color:0
+           })
+
+           this.jsonData.push(
+          {
+            type: 'LineString',
+            coordinates: [
+              orig,
+              [gps[1], gps[0]],
+            ],
+            color:1
+           })
+          posi++
+          orig=[gps[1], gps[0]]
+      })
 
 
+
+      if (data.gps_open){
+        gps=data.gps_open.split(' ')
+        this.markers.push({id:0,name:'Inicio',lat:gps[0],lng:gps[1],icon:2})
+        //this.markers.push([gps[0], gps[1]])
+      }
+
+      if (data.gps_close){
+        gps=data.gps_close.split(' ')
+        this.markers.push({id:0,name:'Fin',lat:gps[0],lng:gps[1],icon:2})
+
+        this.jsonData.push(
+          {
+            type: 'LineString',
+            coordinates: [
+              orig,
+              [gps[1], gps[0]],
+            ],
+            color:1
+           })
+      }
 
 
       this.showRespuesta = true
@@ -688,6 +753,73 @@ export default {
       if (accion == 'add') {
         this.getPosition()
         data.usuarios_id = null
+      }
+    },
+    //metodos del mapa
+    getIcon(item) {
+      if (item.icon==0){
+        return  this.icon0
+      }
+      if (item.icon == 1) {
+        return this.icon1
+      } else {
+        return this.icon2
+      }
+    },
+    getStyles(features){
+      if (features.geometry.color==1){
+        return { color: 'blue', weight: 2, opacity: 0.6 }  
+      }
+      return { color: 'red', weight: 5, opacity: 0.3 }  
+      //console.log(features);
+    },
+    getMarker(id, item, index) {
+//      console.log('id:',id);
+      let marker = this.center
+      // if (id.id > 0) {
+        // let lmarker = this.lBeneficiarios.filter((e) => e.id == id)
+        // if (lmarker.length > 0) {
+          marker = [id.lat, id.lng]
+        // }
+      // } else {
+      //   marker = [this.coordenadas.latitude, this.coordenadas.longitude]
+      // }
+      // if (!item.beneficiarios) {
+      //   return marker
+      // }
+
+      if (index == this.markers.length - 1) {
+        console.log('index');
+        setTimeout(() => {
+          this.fitMapBounds()
+        }, 1500)
+      }
+      return marker
+    },
+    initMap() {
+      this.zoom = 13
+      this.$refs.mymap.mapObject.invalidateSize().setView(this.center)
+      this.fitMapBounds()
+    },
+    fitMapBounds() {
+      let map = this.$refs.mymap.mapObject
+      const visibleMarkers = []
+      map.eachLayer(function (layer) {
+        if (layer instanceof L.Marker) {
+          visibleMarkers.push(layer)
+        }
+      })
+
+      if (visibleMarkers.length > 0) {
+        const markersBounds = L.latLngBounds([visibleMarkers[0].getLatLng()])
+        visibleMarkers.forEach((marker) => {
+          markersBounds.extend(marker.getLatLng())
+        })
+
+        map.flyToBounds(markersBounds, {
+          padding: L.point(36, 36),
+          animate: true,
+        })
       }
     },
   },
