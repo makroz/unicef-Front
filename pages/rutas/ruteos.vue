@@ -17,30 +17,34 @@
           >
             <template slot="detalle" slot-scope="props">
               <v-card class="pa-2 black">
-                   <v-card>
-                   <v-layout align-center
-                    v-for="(evalua,index) in props.item.evaluaciones" :key="evalua.id"
-                     row 
-                     :class="index%2==0?'indigo lighten-4':'orange lighten-5'"
-                    >
+                <v-card>
+                  <v-layout
+                    align-center
+                    v-for="(evalua, index) in props.item.evaluaciones"
+                    :key="evalua.id"
+                    row
+                    :class="
+                      index % 2 == 0 ? 'indigo lighten-4' : 'orange lighten-5'
+                    "
+                  >
                     <v-flex xs1>
-                     <v-btn
-                  icon
-                  color="indigo"
-                  small
-                  @click="openEval(ruteo, bene.id)"
-                >
-                  <v-icon small>assignment</v-icon>
-                </v-btn>
+                      <v-btn
+                        icon
+                        color="indigo"
+                        small
+                        @click="openEval(evalua)"
+                      >
+                        <v-icon small>assignment</v-icon>
+                      </v-btn>
                     </v-flex>
-                     <v-flex grow>
-                     {{ evalua.beneficiario_coord.name }}
+                    <v-flex grow>
+                      {{ evalua.beneficiario_coord.name }}
                     </v-flex>
-                     <v-flex shrink>
-                     {{ formatDT(evalua.created_at) }}
+                    <v-flex shrink>
+                      {{ formatDT(evalua.created_at) }}
                     </v-flex>
-                   </v-layout>
-                  </v-card>
+                  </v-layout>
+                </v-card>
               </v-card>
             </template>
           </mk-data-table>
@@ -84,7 +88,7 @@
         </v-container>
       </mk-form>
 
-      <!-- formulario Show FullScreen -->
+      <!-- formulario verRuteo FullScreen -->
       <mk-form-full-screen
         ref="mkFormShow"
         :modal="modalShow"
@@ -93,7 +97,7 @@
         @closeDialog="modalShow = false"
         @grabarItem="modalShow = false"
       >
-        <v-container grid-list-md fluid v-if="accion == 'show'" pb-0 white >
+        <v-container grid-list-md fluid v-if="modalShow && accion == 'show'" pb-0 white>
           <!-- Datos Basicos -->
           <v-layout row wrap>
             <v-flex xs6
@@ -226,51 +230,209 @@
                 </e-chart>
               </v-card>
               <!-- mapa de ruteo -->
-              <v-card style="margin-top:5px">
-              <div id="map-wrap" style="height: 214px; width: 100%">
-            <client-only>
-              <l-map
-                :zoom="zoom"
-                :center="center"
-                style="height: 100%; width: 100%"
-                ref="mymap"
-              >
-                <l-tile-layer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
-                  :useCors="false"
-                ></l-tile-layer>
-                <l-polyline
-                  v-if="jsonLine"
-                  :lat-lngs="jsonLine"
-                  color="blue"
-                ></l-polyline>
-                <l-geo-json
-                  v-if="jsonData"
-                  :geojson="jsonData"
-                  :options-style="getStyles"
-                />
-                <div v-if="modalShow && markers && markers.length > 0">
-                  <l-marker
-                    v-for="(marker, index) in markers"
-                    :key="index"
-                    :lat-lng="getMarker(marker, item, index)"
-                    :draggable="false"
-                    :visible="true"
-                    :icon="getIcon(marker)"
-                  >
-                    <l-tooltip>
-                      {{ marker.name ||'Tu ubicacion Actual' }} {{ marker.posi?' ('+marker.posi+')':'' }}
-                    </l-tooltip>
-                  </l-marker>
+              <v-card style="margin-top: 5px">
+                <div id="map-wrap" style="height: 214px; width: 100%">
+                  <client-only>
+                    <l-map
+                      :zoom="zoom"
+                      :center="center"
+                      style="height: 100%; width: 100%"
+                      ref="mymap"
+                    >
+                      <l-tile-layer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+                        :useCors="false"
+                      ></l-tile-layer>
+                      <l-polyline
+                        v-if="jsonLine"
+                        :lat-lngs="jsonLine"
+                        color="blue"
+                      ></l-polyline>
+                      <l-geo-json
+                        v-if="jsonData"
+                        :geojson="jsonData"
+                        :options-style="getStyles"
+                      />
+                      <div v-if="modalShow && markers && markers.length > 0">
+                        <l-marker
+                          v-for="(marker, index) in markers"
+                          :key="index"
+                          :lat-lng="getMarker(marker, item, index)"
+                          :draggable="false"
+                          :visible="true"
+                          :icon="getIcon(marker)"
+                        >
+                          <l-tooltip>
+                            {{ marker.name || 'Tu ubicacion Actual' }}
+                            {{ marker.posi ? ' (' + marker.posi + ')' : '' }}
+                          </l-tooltip>
+                        </l-marker>
+                      </div>
+                    </l-map>
+                  </client-only>
                 </div>
-              </l-map>
-            </client-only>
-          </div>
-          </v-card>
-
+              </v-card>
             </v-flex>
           </v-layout>
+        </v-container>
+      </mk-form-full-screen>
+
+      <!-- formulario Evaluaciones FullScreen -->
+      <mk-form-full-screen
+        ref="mkFormEval"
+        :modal="modalEval"
+        :tit="tituloModal"
+        :accion="accion"
+        @closeDialog="modalEval = false"
+        @grabarItem="modalEval = false"
+      >
+        <v-container grid-list-md fluid class="white">
+          <span v-if="!item.estado" class="danger title"
+            >No se realizó la Evaluación</span
+          >
+          <v-text-field
+            v-if="item.obs"
+            label="Notas de la Evaluacion"
+            :value="item.obs"
+            readonly
+          ></v-text-field>
+
+          <template v-if="item.estado && modalEval">
+            <v-tabs centered color="indigo" dark icons-and-text>
+              <v-tabs-slider color="yellow"></v-tabs-slider>
+
+              <v-tab href="#tab-1" elevation-10>
+                Encuesta
+                <v-icon>content_paste</v-icon>
+              </v-tab>
+
+              <v-tab href="#tab-2" elevation-10>
+                Servicios
+                <v-icon>plumbing</v-icon>
+              </v-tab>
+
+              <v-tab-item value="tab-1">
+                <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
+                  <v-toolbar color="secondary" dark dense>
+                    <v-toolbar-side-icon></v-toolbar-side-icon>
+                    <v-toolbar-title> {{ categ.name }}</v-toolbar-title>
+                  </v-toolbar>
+
+                  <div
+                    v-for="pregunta in lPregCateg(categ.id)"
+                    :key="pregunta.id"
+                  >
+                    <v-layout row wrap pa-1 ma-0 align-center>
+                      <v-flex grow pa-0 ma-0>
+                        <span class="text-capitalize">
+                          {{ pregunta.pregunta }}
+                        </span>
+                      </v-flex>
+                      <v-flex shrink pa-0 ma-0>
+                        <v-text-field
+                         v-if="pregunta.tipo == 2"
+                          pa-0
+                          ma-0
+                          label="Valor"
+                          :value="
+                            getDataLista(
+                              item.respuestas,
+                              pregunta.id,
+                              'preguntas_id',
+                              'r_s'
+                            )
+                          "
+                          type="number"
+                          style="width: 50px"
+                          readonly
+                        ></v-text-field>
+
+                        <v-radio-group
+                          pa-0
+                          ma-0
+                          v-if="pregunta.tipo == 1"
+                          :value="
+                            getDataLista(
+                              item.respuestas,
+                              pregunta.id,
+                              'preguntas_id',
+                              'r_s'
+                            )
+                          "
+                          row
+                          readonly
+                        >
+                          <v-radio
+                            v-if="
+                              getDataLista(
+                                item.respuestas,
+                                pregunta.id,
+                                'preguntas_id',
+                                'r_s'
+                              ) == 1
+                            "
+                            color="green"
+                            label="Si"
+                            value="1"
+                          ></v-radio>
+                          <v-radio
+                            v-else
+                            color="red"
+                            label="No"
+                            value="0"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-flex>
+                    </v-layout>
+                    <v-divider></v-divider>
+                  </div>
+                </v-card>
+              </v-tab-item>
+              <v-tab-item value="tab-2">
+                <v-card>
+                  <div v-for="servicio in item.servicios" :key="servicio.id">
+                    <v-layout row wrap pa-1 ma-0 align-center>
+                      <v-flex grow pa-0 ma-0>
+                        <span class="text-capitalize">
+                          {{
+                            getDataLista(
+                              lServicios,
+                              servicio.servicios_id,
+                              'id',
+                              'name'
+                            )
+                          }}
+                          <span style="font-size: 10px">
+                            {{
+                              getDataLista(
+                                lServicios,
+                                servicio.servicios_id,
+                                'id',
+                                'obs'
+                              )
+                            }}
+                          </span>
+                        </span>
+                      </v-flex>
+                      <v-flex shrink pa-0 ma-0>
+                        <v-text-field
+                          pa-0
+                          ma-0
+                          label="Cant"
+                          :value="servicio.cant"
+                          type="number"
+                          style="width: 50px"
+                          readonly
+                        ></v-text-field>
+                      </v-flex>
+                    </v-layout>
+                    <v-divider></v-divider>
+                  </div>
+                </v-card>
+              </v-tab-item>
+            </v-tabs>
+          </template>
         </v-container>
       </mk-form-full-screen>
     </v-container>
@@ -299,6 +461,7 @@ export default {
       //urlModulo: '',
       //titModulo: '',
       modalShow: false,
+      modalEval: false,
       color: Material,
       campos: [
         {
@@ -405,7 +568,7 @@ export default {
         respuesta: 0,
       },
       showRespuesta: false,
-      // 
+      //
       center: [-17.783373986957255, -63.18209478792436],
       zoom: 13,
       coordenadas: {},
@@ -429,13 +592,12 @@ export default {
         tooltipAnchor: [16, -22],
       }),
 
-      //styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
       jsonData: [],
       jsonLine: [],
     }
   },
   methods: {
-        getOptionsServicios() {
+    getOptionsServicios() {
       return [
         ['dataset.source', this.item.nServ],
         [
@@ -576,20 +738,20 @@ export default {
         'id',
         'beneficiarios'
       ).length
-      
+
       this.item.nServ = []
       this.item.nServicios = 0
-      
+
       this.lServicios.forEach((e) => {
-          this.item.nServ.push({Servicio:e.name,value:0,id:e.id})
+        this.item.nServ.push({ Servicio: e.name, value: 0, id: e.id })
       })
-      
+
       this.item.evaluaciones.forEach((e) => {
         if (e.servicios.length > 0) {
           this.item.nServicios++
-          e.servicios.forEach((s)=>{
-            let ser=getDataLista(this.item.nServ, s.servicios_id, 'id', '*')
-            ser.value=ser.value+(s.cant*1)
+          e.servicios.forEach((s) => {
+            let ser = getDataLista(this.item.nServ, s.servicios_id, 'id', '*')
+            ser.value = ser.value + s.cant * 1
           })
         }
       })
@@ -658,77 +820,84 @@ export default {
       this.item.pregunta = this.lPreguntas[0].id
 
       this.markers = []
-      this.jsonData =[]
-      let gps=[]
-      let orig=[]
-      if (data.gps_open){
-        gps=data.gps_open.split(' ')
-        orig=[gps[1], gps[0]]
+      this.jsonData = []
+      let gps = []
+      let orig = []
+      if (data.gps_open) {
+        gps = data.gps_open.split(' ')
+        orig = [gps[1], gps[0]]
         //this.markers.push([gps[0], gps[1]])
       }
-        //let orig=[[gps[1], gps[0]]]
+      //let orig=[[gps[1], gps[0]]]
 
-        // this.jsonData.push(
-        //   {
-        //     type: 'LineString',
-        //     coordinates: [
-        //       orig,
-        //       [benef.lng, benef.lat],
-        //     ],
-        //   },
-        // )
+      // this.jsonData.push(
+      //   {
+      //     type: 'LineString',
+      //     coordinates: [
+      //       orig,
+      //       [benef.lng, benef.lat],
+      //     ],
+      //   },
+      // )
 
-        let posi=1;
-      data.evaluaciones.forEach((e)=>{
-          gps=e.coord.split(' ')
-          this.markers.push({...e.beneficiario_coord,icon:0,posi:posi})
-          this.markers.push({id:e.beneficiario_coord.id,name:e.beneficiario_coord.name,lat:gps[0],lng:gps[1],icon:1,posi:posi})
-          this.jsonData.push(
-          {
-            type: 'LineString',
-            coordinates: [
-              [e.beneficiario_coord.lng,e.beneficiario_coord.lat],
-              [gps[1], gps[0]],
-            ],
-            color:0
-           })
+      let posi = 1
+      data.evaluaciones.forEach((e) => {
+        gps = e.coord.split(' ')
+        this.markers.push({ ...e.beneficiario_coord, icon: 0, posi: posi })
+        this.markers.push({
+          id: e.beneficiario_coord.id,
+          name: e.beneficiario_coord.name,
+          lat: gps[0],
+          lng: gps[1],
+          icon: 1,
+          posi: posi,
+        })
+        this.jsonData.push({
+          type: 'LineString',
+          coordinates: [
+            [e.beneficiario_coord.lng, e.beneficiario_coord.lat],
+            [gps[1], gps[0]],
+          ],
+          color: 0,
+        })
 
-           this.jsonData.push(
-          {
-            type: 'LineString',
-            coordinates: [
-              orig,
-              [gps[1], gps[0]],
-            ],
-            color:1
-           })
-          posi++
-          orig=[gps[1], gps[0]]
+        this.jsonData.push({
+          type: 'LineString',
+          coordinates: [orig, [gps[1], gps[0]]],
+          color: 1,
+        })
+        posi++
+        orig = [gps[1], gps[0]]
       })
 
-
-
-      if (data.gps_open){
-        gps=data.gps_open.split(' ')
-        this.markers.push({id:0,name:'Inicio',lat:gps[0],lng:gps[1],icon:2})
+      if (data.gps_open) {
+        gps = data.gps_open.split(' ')
+        this.markers.push({
+          id: 0,
+          name: 'Inicio',
+          lat: gps[0],
+          lng: gps[1],
+          icon: 2,
+        })
         //this.markers.push([gps[0], gps[1]])
       }
 
-      if (data.gps_close){
-        gps=data.gps_close.split(' ')
-        this.markers.push({id:0,name:'Fin',lat:gps[0],lng:gps[1],icon:2})
+      if (data.gps_close) {
+        gps = data.gps_close.split(' ')
+        this.markers.push({
+          id: 0,
+          name: 'Fin',
+          lat: gps[0],
+          lng: gps[1],
+          icon: 2,
+        })
 
-        this.jsonData.push(
-          {
-            type: 'LineString',
-            coordinates: [
-              orig,
-              [gps[1], gps[0]],
-            ],
-            color:1
-           })
+        this.jsonData.push({
+          type: 'LineString',
+          coordinates: [orig, [gps[1], gps[0]]],
+          color: 1,
+        })
       }
-
 
       this.showRespuesta = true
 
@@ -737,6 +906,13 @@ export default {
         this.tituloModal = this.tituloModal + '|' + data.obs
       }
       this.modalShow = true
+    },
+    openEval(data) {
+      this.accion='show'
+      this.item = Object.assign({}, data)
+      this.item.estado = this.item.estado <= 1 ? false : true
+      this.tituloModal = 'Evaluacion de ' + data.beneficiario_coord.name
+      this.modalEval = true
     },
     formatDT(d, time = true) {
       return formatDT(d, time)
@@ -780,8 +956,8 @@ export default {
     },
     //metodos del mapa
     getIcon(item) {
-      if (item.icon==0){
-        return  this.icon0
+      if (item.icon == 0) {
+        return this.icon0
       }
       if (item.icon == 1) {
         return this.icon1
@@ -789,30 +965,18 @@ export default {
         return this.icon2
       }
     },
-    getStyles(features){
-      if (features.geometry.color==1){
-        return { color: 'blue', weight: 2, opacity: 0.6 }  
+    getStyles(features) {
+      if (features.geometry.color == 1) {
+        return { color: 'blue', weight: 2, opacity: 0.6 }
       }
-      return { color: 'red', weight: 5, opacity: 0.3 }  
+      return { color: 'red', weight: 5, opacity: 0.3 }
       //console.log(features);
     },
     getMarker(id, item, index) {
-//      console.log('id:',id);
       let marker = this.center
-      // if (id.id > 0) {
-        // let lmarker = this.lBeneficiarios.filter((e) => e.id == id)
-        // if (lmarker.length > 0) {
-          marker = [id.lat, id.lng]
-        // }
-      // } else {
-      //   marker = [this.coordenadas.latitude, this.coordenadas.longitude]
-      // }
-      // if (!item.beneficiarios) {
-      //   return marker
-      // }
-
+      marker = [id.lat, id.lng]
       if (index == this.markers.length - 1) {
-        console.log('index');
+        console.log('index')
         setTimeout(() => {
           this.fitMapBounds()
         }, 1500)
@@ -846,7 +1010,12 @@ export default {
       }
     },
   },
-
+  computed: {
+    lPregCateg: (app) => (categ) => {
+      let l = app.lPreguntas.filter((e) => e.categ_id == categ)
+      return l
+    },
+  },
   async mounted() {
     let edit = this.getOptionTable('edit')
     edit.color = 'black'
@@ -863,12 +1032,22 @@ export default {
 
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
     this.lServicios = await this.getListaBackend('Servicios')
-    this.lPreguntas = await this.getListaBackend('Preguntas')
+
     this.lRutas = await this.getListaBackend(
       'Rutas',
       'id,name,usuarios_id',
       'rutas_id'
     )
+
+    this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
+    this.lPreguntas = await this.getListaBackend('Preguntas')
+    this.lCateg.sort(function (a, b) {
+      return a.orden - b.orden
+    })
+
+    this.lPreguntas.sort(function (a, b) {
+      return a.orden - b.orden
+    })
   },
 }
 </script>

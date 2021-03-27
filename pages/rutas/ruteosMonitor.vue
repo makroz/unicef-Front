@@ -600,7 +600,7 @@
         @closeDialog="modalEval = false"
         @grabarItem="grabarEval"
       >
-        <v-container grid-list-md fluid>
+        <v-container grid-list-md fluid class="white">
           <v-switch
             v-model="estado"
             label="Se Puede resalizar la evaluacion?"
