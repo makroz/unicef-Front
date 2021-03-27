@@ -763,6 +763,7 @@ export default {
         action: 'openDialog',
         grupos: ['action', 'topbar'],
         orden: 2,
+        dblClic:true,
       },
       {
         id: 'del',

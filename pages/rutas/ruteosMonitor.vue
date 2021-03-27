@@ -324,7 +324,7 @@
                   {{ getDataLista(lBeneficiarios, bene.id) }}
                 </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
-                  {{ bene.distancia }}
+                  {{ (bene.distancia * 1.0).toFixed(2) }} Km
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action> </v-list-tile-action>
@@ -459,7 +459,7 @@
                   {{ getDataLista(lBeneficiarios, bene.id) }}
                 </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
-                  {{ bene.distancia }}
+                  {{ (bene.distancia * 1.0).toFixed(2) }} Km
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action> </v-list-tile-action>
@@ -527,7 +527,7 @@
         ref="mkForm"
         :modal="modal"
         :tit="tituloModal"
-        :accion="0"
+        :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
@@ -544,7 +544,7 @@
         ref="mkFormMap"
         :modal="modalMap"
         :tit="tituloModal"
-        :accion="-1"
+        accion="show"
         @closeDialog="modalMap = false"
       >
         <v-container grid-list-md fluid ma-o pa-0>
@@ -987,6 +987,9 @@ export default {
     },
     formatDT(d,time=true) {
       return formatDT(d,time)
+    },
+    getSubHeader(data) {
+      return 'Abierto:' + this.formatDT(data.created_at)
     },
     async getRutasOptimizada(ruta) {
       let store = [

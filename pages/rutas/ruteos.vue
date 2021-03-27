@@ -16,8 +16,31 @@
             :isExpanded="true"
           >
             <template slot="detalle" slot-scope="props">
-              <v-card flat>
-                <v-card-text> Descripcion: {{ props.item.obs }} </v-card-text>
+              <v-card class="pa-2 black">
+                   <v-card>
+                   <v-layout align-center
+                    v-for="(evalua,index) in props.item.evaluaciones" :key="evalua.id"
+                     row 
+                     :class="index%2==0?'indigo lighten-4':'orange lighten-5'"
+                    >
+                    <v-flex xs1>
+                     <v-btn
+                  icon
+                  color="indigo"
+                  small
+                  @click="openEval(ruteo, bene.id)"
+                >
+                  <v-icon small>assignment</v-icon>
+                </v-btn>
+                    </v-flex>
+                     <v-flex grow>
+                     {{ evalua.beneficiario_coord.name }}
+                    </v-flex>
+                     <v-flex shrink>
+                     {{ formatDT(evalua.created_at) }}
+                    </v-flex>
+                   </v-layout>
+                  </v-card>
               </v-card>
             </template>
           </mk-data-table>

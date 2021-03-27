@@ -101,7 +101,8 @@
           </v-card>
           <v-card v-else>
             <v-toolbar color="primary" dark dense>
-              <v-toolbar-title>
+
+              <v-toolbar-title v-if="accion!='show'">
                 Cambiar Estado Actual de
                 <span :class="lColor[item.estado]">
                   {{ lEstados[item.estado]  }}
@@ -111,20 +112,25 @@
                   {{ lEstados[item.estado*1 +1 ] }}
                 </span>
               </v-toolbar-title>
+              <v-toolbar-title v-else>
+                Estado Actual
+                <span :class="lColor[item.estado]">
+                  {{ lEstados[item.estado]  }}
+                </span>
+              </v-toolbar-title>
+
             </v-toolbar>
             <v-layout row pa-2>
               <v-flex md10>
                 <v-text-field
                   label="Servicio"
                   :value="getNameLista(item.servicios_id, lServicios)"
-                  readonly
                 :readonly="accion=='show'" ></v-text-field>
               </v-flex>
               <v-flex md2>
                 <v-text-field
                   label="Cantidad"
                   :value="item.cant"
-                  readonly
                 :readonly="accion=='show'" ></v-text-field>
               </v-flex>
             </v-layout>
@@ -236,15 +242,6 @@ export default {
         'Comercial',
         'Completado',
       ],
-
-      // lEstados: [
-      //   { id: 1, name: 'Pendiente' },
-      //   { id: 2, name: 'Realizado' },
-      //   { id: 3, name: 'Verificado' },
-      //   { id: 4, name: 'Autorizado' },
-      //   { id: 5, name: 'Comercial' },
-      //   { id: 6, name: 'Completado' },
-      // ],
       lColor: [
         'grey--text',
         'green--text text--lighten-3',
@@ -280,7 +277,6 @@ export default {
         if (data.estado >= 5) {
           return false
         }
-
         //data.estado =(data.estado*1)+1;
       }
     },
@@ -315,6 +311,9 @@ export default {
   },
 
   async mounted() {
+    let edit = this.getOptionTable('edit')
+    edit.dblClic =false
+
     this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id_1') //ver si se uede sacr los parametros del headers o campos
     this.lBeneficiarios = await this.getListaBackend(
       'Beneficiarios',

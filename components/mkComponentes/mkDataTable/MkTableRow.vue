@@ -97,6 +97,9 @@ export default {
     onEdit(item) {
       let opt=this.acciones.find((e) => e.id == 'edit')
      
+      if (!opt.dblClic){
+        return false
+      }
       if (this.rowVisible(opt,item)) {
         this.$emit('callAction', { id: 'edit', action: 'openDialog' }, item)
       }
