@@ -9,8 +9,8 @@ export const state = () => ({
     authUser: null,
     acceso: false,
     rutaBack: null,
-    cacheActive: false,
-    encryptActive: false,
+    cacheActive: true,
+    encryptActive: true,
     permisos: {
         view: 1,
         ver: 1,
@@ -224,7 +224,7 @@ export const mutations = {
 };
 
 export const actions = {
-    async loadData({ getters, dispatch }, datos) {
+    async loadData({ commit,getters, dispatch }, datos) {
         let url = datos.url + '?page=1&per_page=-1&cols=' + datos.campos + '&disabled=1'
         if (datos.filter) {
             url = url + '&filter=' + datos.filter
@@ -238,7 +238,10 @@ export const actions = {
 
         //console.log('authloaddata', response);
         if (response.data.ok < -1) {
+            commit("setRutaBack", this.$router.history._startLocation);
+            console.log('loaddata:',this.$router.history._startLocation);
             dispatch('logout')
+            return false;
         }
         return getters.getDataCache(response.data, url)
     },
@@ -254,7 +257,7 @@ export const actions = {
         return per;
     },
     async login({ commit, getters }, auth) {
-        console.log("this:", this.state.auth.rutaBack);
+        //console.log("this rutaBAck:", this.state.auth.rutaBack);
         try {
             getters.tienePermiso('view', 'usuarios', true);
 
@@ -295,6 +298,8 @@ export const actions = {
         me.$axios.defaults.headers.common["Authorization"] = "";
         commit("SET_USER", null);
         commit("setAcceso", false);
+        commit("setRutaBack", this.$router.history._startLocation);
+        console.log('loaddata:',this.$router.history._startLocation);
         setTimeout(() => {
             me.$router.push("/login");
         }, 300)

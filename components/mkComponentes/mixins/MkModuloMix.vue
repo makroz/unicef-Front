@@ -215,6 +215,7 @@ export default {
         })
     },
     isOk(data, url = '') {
+      console.log('Entro a isok',data);
       if (data._warning) {
         data._warning.forEach((e) => {
           c(e[0], e[2], e[1], e[3])
@@ -229,8 +230,10 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         })
-        if (data.ok == -1001) {
+        if (data.ok == -401) {
           //c(data.msg,'LOGING','error','error')
+          console.log('isOk:',this);
+          this.$store.commit("auth/setRutaBack", this.urlModulo);
           this.$store.dispatch('auth/logout')
         }
         return false

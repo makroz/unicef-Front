@@ -60,7 +60,9 @@
 		C1349.2,528.8,1401.1,525.5,1400.3,498.2z" class="st3"></path><g _ngcontent-bjc-c218=""><g _ngcontent-bjc-c218=""><path _ngcontent-bjc-c218="" d="M1283.3,236.9c-4.2,21.7-13.8,65.6,1.3,80c0,0-5.9,22-46.2,22c-44.3,0-21.2-22-21.2-22
 				c24.2-5.8,23.5-23.7,19.3-40.5L1283.3,236.9z" class="st3"></path></g></g><g _ngcontent-bjc-c218=""><g _ngcontent-bjc-c218=""><path _ngcontent-bjc-c218="" d="M1347.5,325.2c15.2,3.3,35.6,59.1,35.6,59.1l-64,36.9c0,0-18.7-43.8-11.5-62.6
 				C1315.2,339,1329.6,321.3,1347.5,325.2z" class="st11"></path></g></g></g></svg> -->
-    <v-container grid-list-md fluid>
+    <v-container grid-list-md fluid
+    v-if="lRuteos.dispon"
+    >
       <v-layout row wrap>
         <v-flex xs12>
           <v-card>
