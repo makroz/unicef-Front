@@ -238,8 +238,9 @@ export const actions = {
 
         //console.log('authloaddata', response);
         if (response.data.ok < -1) {
-            commit("setRutaBack", this.$router.history._startLocation);
-            console.log('loaddata:',this.$router.history._startLocation);
+            //console.log('auth loaddata');
+            //commit("setRutaBack", this.$router.history._startLocation);
+            //console.log('loaddata:',this.$router.history._startLocation);
             dispatch('logout')
             return false;
         }
@@ -252,7 +253,7 @@ export const actions = {
         );
         modulo = modulo.components.default.options.authAccess || modulo.components.default.options.name;
         let per = getters.tienePermiso(act, modulo);
-        console.log('can:', modulo, ':', act, '//', per);
+        //console.log('can:', modulo, ':', act, '//', per);
         commit("setAcceso", per);
         return per;
     },
@@ -266,10 +267,11 @@ export const actions = {
                 commit("SET_USER", data.data);
                 commit("setAuthToken", data._sid_);
                 this.$axios.defaults.headers.common["Authorization"] = data._sid_;
-                if (this.state.auth.rutaBack == null) {
-                    commit("setRutaBack", "/");
-                }
-                this.$router.push(this.state.auth.rutaBack);
+                // if (this.state.auth.rutaBack == null) {
+                //     commit("setRutaBack", "/");
+                // }
+                //this.$router.push(this.state.auth.rutaBack);
+                this.$router.back();
                 return true;
             } else {
                 commit("setAuthToken", null);
@@ -298,8 +300,8 @@ export const actions = {
         me.$axios.defaults.headers.common["Authorization"] = "";
         commit("SET_USER", null);
         commit("setAcceso", false);
-        commit("setRutaBack", this.$router.history._startLocation);
-        console.log('loaddata:',this.$router.history._startLocation);
+        //commit("setRutaBack", this.$router.history._startLocation);
+        //console.log('logout:',this.$router.history._startLocation);
         setTimeout(() => {
             me.$router.push("/login");
         }, 300)

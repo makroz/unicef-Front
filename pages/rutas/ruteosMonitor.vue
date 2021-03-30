@@ -1143,12 +1143,7 @@ export default {
     verMapaBene(bene, google = false) {
       this.getPosition()
       let benef = getDataLista(this.lBeneficiarios, bene, 'id', '*')
-      console.log(
-        'hola',
-        [this.coordenadas.latitude, this.coordenadas.longitude],
-        [benef.lat, benef.lng]
-      )
-
+      
       if (!google) {
         this.markers = [0, bene]
         this.jsonData = [
@@ -1233,7 +1228,7 @@ export default {
         this.coordenadas = position.coords
         this.item.lat = this.coordenadas.latitude
         this.item.lng = this.coordenadas.longitude
-        console.log('Localizado', this.callBack)
+        //console.log('Localizado', this.callBack)
         this.ordBeneficiarios(this.lRutas)
       }
       if (this.callBack != false) {
@@ -1457,12 +1452,13 @@ export default {
     lPregCateg: (app) => (categ) => {
       let l = app.lPreguntas.filter((e) => e.categ_id == categ)
 
-      console.log('categ:', categ, l)
+      //console.log('categ:', categ, l)
       return l
     },
   },
   watch: {},
   async mounted() {
+    //console.log('monted monitor');
     this.getPosition()
 
     this.lUsuarios = await this.getListaBackend('monitores')

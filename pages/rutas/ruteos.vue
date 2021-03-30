@@ -976,7 +976,7 @@ export default {
       let marker = this.center
       marker = [id.lat, id.lng]
       if (index == this.markers.length - 1) {
-        console.log('index')
+        //console.log('index')
         setTimeout(() => {
           this.fitMapBounds()
         }, 1500)

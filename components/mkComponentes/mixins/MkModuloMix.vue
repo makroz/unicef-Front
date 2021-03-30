@@ -215,7 +215,7 @@ export default {
         })
     },
     isOk(data, url = '') {
-      console.log('Entro a isok',data);
+      //console.log('Entro a isok',data);
       if (data._warning) {
         data._warning.forEach((e) => {
           c(e[0], e[2], e[1], e[3])
@@ -232,8 +232,8 @@ export default {
         })
         if (data.ok == -401) {
           //c(data.msg,'LOGING','error','error')
-          console.log('isOk:',this);
-          this.$store.commit("auth/setRutaBack", this.urlModulo);
+          //console.log('isOk:',this);
+          //this.$store.commit("auth/setRutaBack", this.urlModulo);
           this.$store.dispatch('auth/logout')
         }
         return false
@@ -316,7 +316,7 @@ export default {
           //   JSON.stringify(me.dirty.permisos),
           //   JSON.stringify(me.permisos)
           // )
-          console.log(me.item, me.dirty.item)
+          //console.log(me.item, me.dirty.item)
           for (const el in me.item) {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
@@ -728,6 +728,7 @@ export default {
     this.created = 2
   },
   mounted() {
+    //console.log('mounted mix');
     if (this.campos) {
       this.campos = this.getParams('headers') || this.campos
       this.campos.map((e) => {

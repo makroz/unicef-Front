@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     async onLogin(v) {
+      console.log('onLogin:',v,this);
       try {
         await this.$store.dispatch("auth/login", this.auth);
         this.auth.username = "";
@@ -65,6 +66,7 @@ export default {
       }
     },
     async logout() {
+      console.log('onLogout');
       try {
         await this.$store.dispatch("auth/logout");
       } catch (e) {
@@ -72,6 +74,9 @@ export default {
       }
     }
   },
-  mounted() {}
+  mounted() {
+    console.log('mounted login:',this.$route);
+    console.log('mounted 2 login:',window.history.length);
+  }
 };
 </script>
