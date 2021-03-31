@@ -540,6 +540,7 @@ export default {
           concat: ['beneficiarios', 'evaluaciones'],
           separator: '/',
           search: false,
+          sortable:false,
         },
 
         {

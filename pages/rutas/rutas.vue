@@ -145,7 +145,7 @@ export default {
           search: true,
         },
         {
-          text: 'Monitor.',
+          text: 'Monitor',
           value: 'usuarios_id',
           align: 'left',
           width: '150px',
@@ -157,10 +157,12 @@ export default {
         {
           text: 'Beneficiarios',
           value: 'beneficiarios',
+          sortBy: 'nBene',
           width: '50px',
           headers: true,
           type: 'count',
-          search: true,
+          search: false,
+
         },
       ],
       lUsuarios: [],

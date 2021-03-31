@@ -4,7 +4,7 @@ import MkForm from '@/components/mkComponentes/MkFormulario'
 import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import Swal from 'sweetalert2'
-import { c, getTitFromName } from '@/components/mkComponentes/lib/MkUtils.js'
+import { c, getDataLista, getTitFromName } from '@/components/mkComponentes/lib/MkUtils.js'
 import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
 
 const _storage = process.env.mkConfig.storageUrl
@@ -174,7 +174,14 @@ export default {
       }
 
       if (sortBy != '') {
+        let sBy=getDataLista(this.campos, sortBy,'value','*');
         sortBy = '&sortBy=' + sortBy
+        if (sBy){
+          if (sBy.sortBy){
+            sortBy = '&sortBy=' + sBy.sortBy
+          }
+        }
+        
         if (order == true) {
           sortBy = sortBy + '&order=desc'
         } else {

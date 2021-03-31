@@ -129,6 +129,7 @@ export default {
         {
           text: 'Beneficiario',
           value: 'beneficiario.name',
+          sortBy: 'beneficiarios.name',
           width: '100px',
           headers: true,
           type: 'text',
