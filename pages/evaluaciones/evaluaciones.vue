@@ -91,7 +91,7 @@ export default {
         },
         {
           text: 'Ruta',
-          value: 'ruteo.rutas_id',
+          value: 'ruteos.rutas_id',
           align: 'left',
           width: '100px',
           headers: true,
@@ -216,7 +216,7 @@ export default {
     this.lRutas = await this.getListaBackend(
       'Rutas',
       'id,name',
-      'ruteo.rutas_id'
+      'ruteos.rutas_id'
     )
     
   },

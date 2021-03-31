@@ -2,9 +2,7 @@
   <div>
     <v-dialog v-model="modal" scrollable persistent max-width="70%">
       <v-card>
-        <v-card-title>
-          <span class="headline">{{ titulo }} </span>
-          <span v-if="caption!=''" class="caption">&nbsp;&nbsp;{{ caption }}</span>
+        <v-card-title class="headline" v-html="titulo">
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text :class="classContent">
@@ -69,10 +67,13 @@ export default {
   },
   computed: {
     titulo() {
-    return (this.tit+'|').split('|')[0]
-    },
-    caption() {
-    return (this.tit+'|').split('|')[1];
+      let tit=(this.tit+'|').split('|');
+      let caption=tit[1]
+      tit=tit[0]
+      if (caption) {
+        tit=tit+'<span class="caption">&nbsp;&nbsp;'+caption+'</span>'
+      }
+      return tit
     },
   },
   mounted() {

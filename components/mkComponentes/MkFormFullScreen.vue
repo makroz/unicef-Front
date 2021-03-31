@@ -1,15 +1,12 @@
 <template>
   <div>
     <v-form ref="form" v-on:submit.prevent v-model="formValid" lazy-validation>
-
      <v-dialog
         v-model="modal"
         fullscreen
         hide-overlay
         transition="dialog-bottom-transition"
-        
       >
-                
         <v-card
           height="100%"
           style="display: flex; flex-direction: column"
@@ -19,10 +16,7 @@
             <v-btn icon dark @click.stop="$emit('closeDialog')">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>
-              {{ titulo }} 
-              <span v-if="caption!=''" class="caption">&nbsp;&nbsp;{{ caption }}</span>
-              </v-toolbar-title>
+            <v-toolbar-title v-html="titulo"></v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <!-- <v-btn dark flat @click="modalMap = false">Volver</v-btn> -->
@@ -75,10 +69,13 @@ export default {
   },
   computed: {
     titulo() {
-    return (this.tit+'|').split('|')[0]
-    },
-    caption() {
-    return (this.tit+'|').split('|')[1];
+      let tit=(this.tit+'|').split('|');
+      let caption=tit[1]
+      tit=tit[0]
+      if (caption) {
+        tit=tit+'<span class="caption">&nbsp;&nbsp;'+caption+'</span>'
+      }
+      return tit
     },
   },
 }

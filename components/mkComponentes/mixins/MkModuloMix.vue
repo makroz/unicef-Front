@@ -506,7 +506,7 @@ export default {
           //this.dirty.item = Object.assign({}, this.item)
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
-        this.tituloModal = 'Editar ' + this.titModulo
+        this.tituloModal ='('+this.item.id+') '+'Editar ' + this.titModulo
         if (this.$refs.focus){
           this.$nextTick(this.$refs.focus.focus)
         }
@@ -514,8 +514,8 @@ export default {
       }
 
       if (accion == 'show') {
-        this.item.id = this.item.id * -1
-        this.tituloModal = 'Ver ' + this.titModulo
+        //this.item.id = this.item.id * -1
+        this.tituloModal ='<span class="caption">('+this.item.id+') </span>'+ 'Ver ' + this.titModulo
       }
 
       // let f=document.getElementById('form').getElementsByTagName('input');
