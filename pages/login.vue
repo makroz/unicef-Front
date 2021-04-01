@@ -75,8 +75,8 @@ export default {
     }
   },
   mounted() {
-    console.log('mounted login:',this.$route);
-    console.log('mounted 2 login:',window.history.length);
+    // console.log('mounted login:',this.$route);
+    // console.log('mounted 2 login:',window.history.length);
   }
 };
 </script>

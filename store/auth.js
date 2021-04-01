@@ -241,7 +241,9 @@ export const actions = {
             //console.log('auth loaddata');
             //commit("setRutaBack", this.$router.history._startLocation);
             //console.log('loaddata:',this.$router.history._startLocation);
-            dispatch('logout')
+            if (response.data.ok == -1001) {
+                dispatch('logout')
+            }
             return false;
         }
         return getters.getDataCache(response.data, url)
@@ -270,7 +272,7 @@ export const actions = {
                 // if (this.state.auth.rutaBack == null) {
                 //     commit("setRutaBack", "/");
                 // }
-                //this.$router.push(this.state.auth.rutaBack);
+                // this.$router.push(this.state.auth.rutaBack);
                 this.$router.back();
                 return true;
             } else {

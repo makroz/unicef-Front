@@ -1470,23 +1470,33 @@ export default {
       'id,name,usuarios_id,descrip'
     )
 
-    this.lRutas = this.ordBeneficiarios(rutas)
+    if (rutas.length > 0){
+      this.lRutas = this.ordBeneficiarios(rutas)
+    }
+    
 
     this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
     this.lPreguntas = await this.getListaBackend('Preguntas')
+
+    if (this.lCateg.length > 0){
     this.lCateg.sort(function (a, b) {
       return a.orden - b.orden
     })
+    }
 
+    if (this.lPreguntas.length > 0){
     this.lPreguntas.sort(function (a, b) {
       return a.orden - b.orden
     })
+    }
 
     let services = await this.getDataBackend('Servicios')
+    if (services.length > 0){
     services.forEach((e) => {
       e.cantidad = 1
       e.selected = false
     })
+    }
     this.lServicios = services
     //this.setOptionTable('del').visible=false;
   },
