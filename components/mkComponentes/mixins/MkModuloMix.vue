@@ -237,10 +237,7 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         })
-        if (data.ok == -401) {
-          //c(data.msg,'LOGING','error','error')
-          //console.log('isOk:',this);
-          //this.$store.commit("auth/setRutaBack", this.urlModulo);
+        if (data.ok == -401 || data.ok == -1001) {
           this.$store.dispatch('auth/logout')
         }
         return false
