@@ -1,6 +1,6 @@
 <template>
   <div id="pageTable">
-    <v-container grid-list-xl fluid>
+    <v-container grid-list-md fluid>
       <v-layout row wrap>
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
@@ -41,7 +41,6 @@
         ></v-text-field>
         <mk-permisos
           :permisos="permisos"
-          @onChangePermisos="onChangePermisos"
           :accion="accion"
         ></mk-permisos>
       </mk-form>
@@ -94,10 +93,6 @@ export default {
     }
   },
   methods: {
-    onChangePermisos(newPermisos) {
-      //let me = this
-      //me.permisos = Object.assign([], newPermisos)
-    },
     beforeSave(me) {
       if (me.dirty.permisos != JSON.stringify(me.permisos)) {
         let permiso = []
@@ -112,22 +107,10 @@ export default {
         delete me.paramsExtra.permisos
       }
     },
-    beforeOpen(accion, data = {}) {
-      let me = this
-      let url = me.urlModulo + '/permisos/' + me.item.id
-      me.loading = true
-      me.$axios
-        .post(url + this.getCt(url), [])
-        .then(function (response) {
-          me.permisos = me.getDataCache(response.data, url)
-          me.dirty.permisos = JSON.stringify(me.permisos)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-        .finally(function () {
-          me.loading = false
-        })
+    async beforeOpen(accion, data = {}) {
+      let url = this.urlModulo + '/permisos/' + data.id
+      this.permisos= await this.getDataBackend(url)
+      this.dirty.permisos = JSON.stringify(this.permisos)
     },
   },
 }

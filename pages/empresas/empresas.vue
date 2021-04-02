@@ -1,6 +1,6 @@
 <template>
   <div id="pageTable">
-    <v-container grid-list-xl fluid>
+    <v-container grid-list-md fluid>
       <v-layout row wrap>
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>

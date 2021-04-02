@@ -169,20 +169,22 @@ export default {
     }
   },
   methods: {
-    onChange(v) {
-      let me = this
-      let url = me.urlModulo + '/permisosGrupos/0,' + v
-      me.$axios
-        .post(url + this.getCt(url), { grupos: v })
-        .then(function (response) {
-          me.permisoGrupos = me.getDataCache(response.data, url)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-        .finally(function () {
-          me.loading = false
-        })
+    async onChange(v) {
+      let url = this.urlModulo + '/permisosGrupos/0,' + v
+      this.permisoGrupos= await this.getDataBackend(url,'',{ grupos: v })
+      // let me = this
+      // let url = me.urlModulo + '/permisosGrupos/0,' + v
+      // me.$axios
+      //   .post(url + this.getCt(url), { grupos: v })
+      //   .then(function (response) {
+      //     me.permisoGrupos = me.getDataCache(response.data, url)
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error)
+      //   })
+      //   .finally(function () {
+      //     me.loading = false
+      //   })
     },
 
     onChangePermisos(newPermisos) {
@@ -215,38 +217,27 @@ export default {
         delete me.paramsExtra.grupos
       }
     },
-    beforeOpen(accion, data = {}) {
+    async beforeOpen(accion, data = {}) {
       let me = this
       me.tabs = 0
 
       me.item.pass = ''
       me.rulesUnico.old = data.email
       me.paramsExtra.grupos = []
-      if (me.item.grupos) {
-        me.paramsExtra.grupos = me.item.grupos
+      if (data.grupos) {
+        me.paramsExtra.grupos = data.grupos
         me.dirty.grupos = me.paramsExtra.grupos
       }
 
-      let url = me.urlModulo + '/permisos/' + me.item.id
-      let url2 =
-        me.urlModulo +
-        '/permisos/' +
-        me.item.id +
-        JSON.stringify(me.paramsExtra)
-      me.$axios
-        .post(url + me.getCt(url2, false, 2), me.paramsExtra)
-        .then(function (response) {
-          me.permisos = me.getDataCache(response.data, url2, false)
-          me.permisoGrupos = me.getDataCache(response.data.msg, url2, false, 2)
-          me.dirty.permisos = Object.assign(me.permisos)
-          //me.dirty.permisoGrupos=Object.assign(me.permisoGrupos);
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-        .finally(function () {
-          me.loading = false
-        })
+      let url = me.urlModulo + '/permisos/' + data.id
+      let url2 = url + JSON.stringify(me.paramsExtra)
+      let response = await me.$axios.post(
+        url + me.getCt(url2, false, 2),
+        me.paramsExtra
+      )
+      me.permisos = me.getDataCache(response.data, url2, false)
+      me.permisoGrupos = me.getDataCache(response.data.msg, url2, false, 2)
+      me.dirty.permisos = Object.assign(me.permisos)
     },
   },
 

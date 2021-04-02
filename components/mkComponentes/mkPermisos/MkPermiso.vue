@@ -1,7 +1,7 @@
 <template>
   <tr>
     <td class="text-xs-left" @dblclick="selPermiso()">
-      {{ '(' + permiso.slug + ') ' + permiso.name }} {{ permiso.valor }}
+      {{ permiso.name }}
     </td>
     <td>
       <v-checkbox
