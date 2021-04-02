@@ -449,7 +449,6 @@ import {
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import Material from 'vuetify/es5/util/colors'
 import { icon } from 'leaflet'
-import beneficiariosVue from '../beneficiarios/beneficiarios.vue'
 
 export default {
   //middleware: ['authAccess'],

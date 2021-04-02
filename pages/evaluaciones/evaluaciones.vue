@@ -16,63 +16,181 @@
           ></mk-data-table>
         </v-flex>
       </v-layout>
-
-      <mk-form
+       <!-- formulario Evaluaciones FullScreen -->
+      <mk-form-full-screen
         ref="mkForm"
         :modal="modal"
         :tit="tituloModal"
         :accion="accion"
-        @closeDialog="closeDialog"
-        @grabarItem="grabarItem"
+        @closeDialog="modal = false"
+        @grabarItem="modal = false"
       >
-        <v-container grid-list-md fluid>
+        <v-container grid-list-md fluid class="white">
+          <span v-if="!estado" class="danger title"
+            >No se realizó la Evaluación</span
+          >
           <v-text-field
-            label="Descripcion"
-            v-model="item.obs"
-            ref="focus"
-          :readonly="accion=='show'" ></v-text-field>
-          <v-select
-            v-model="item.rutas_id"
-            :items="lRutas"
-            :rules="[rules.required]"
-            item-text="name"
-            item-value="id"
-            label="Ruta Asignada"
-            @change="change"
-          :readonly="accion=='show'" 
-></v-select>
-          <v-select
-            v-model="item.usuarios_id"
-            :items="lUsuarios"
-            :rules="[rules.required]"
-            item-text="name"
-            item-value="id"
-            label="Monitor Asignado"
-          :readonly="accion=='show'" 
-></v-select>
-          <v-text-field
-            label="Latitud"
-            v-model="item.lat"
-            disabled
-          :readonly="accion=='show'" ></v-text-field>
-          <v-text-field
-            label="longitud"
-            v-model="item.lng"
-            disabled
-          :readonly="accion=='show'" ></v-text-field>
+            v-if="item.obs"
+            label="Notas de la Evaluacion"
+            :value="item.obs"
+            readonly
+          ></v-text-field>
+
+          <template v-if="estado && modal">
+            <v-tabs centered color="indigo" dark icons-and-text>
+              <v-tabs-slider color="yellow"></v-tabs-slider>
+
+              <v-tab href="#tab-1" elevation-10>
+                Encuesta
+                <v-icon>content_paste</v-icon>
+              </v-tab>
+
+              <v-tab href="#tab-2" elevation-10>
+                Servicios
+                <v-icon>plumbing</v-icon>
+              </v-tab>
+
+              <v-tab-item value="tab-1">
+                <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
+                  <v-toolbar color="secondary" dark dense>
+                    <v-toolbar-side-icon></v-toolbar-side-icon>
+                    <v-toolbar-title> {{ categ.name }}</v-toolbar-title>
+                  </v-toolbar>
+
+                  <div
+                    v-for="pregunta in lPregCateg(categ.id)"
+                    :key="pregunta.id"
+                  >
+                    <v-layout row wrap pa-1 ma-0 align-center>
+                      <v-flex grow pa-0 ma-0>
+                        <span class="text-capitalize">
+                          {{ pregunta.pregunta }}
+                        </span>
+                      </v-flex>
+                      <v-flex shrink pa-0 ma-0>
+                        <v-text-field
+                         v-if="pregunta.tipo == 2"
+                          pa-0
+                          ma-0
+                          label="Valor"
+                          :value="
+                            getDataLista(
+                              item.respuestas,
+                              pregunta.id,
+                              'preguntas_id',
+                              'r_s'
+                            )
+                          "
+                          type="number"
+                          style="width: 50px"
+                          readonly
+                        ></v-text-field>
+
+                        <v-radio-group
+                          pa-0
+                          ma-0
+                          v-if="pregunta.tipo == 1"
+                          :value="
+                            getDataLista(
+                              item.respuestas,
+                              pregunta.id,
+                              'preguntas_id',
+                              'r_s'
+                            )
+                          "
+                          row
+                          readonly
+                        >
+                          <v-radio
+                            v-if="
+                              getDataLista(
+                                item.respuestas,
+                                pregunta.id,
+                                'preguntas_id',
+                                'r_s'
+                              ) == 1
+                            "
+                            color="green"
+                            label="Si"
+                            value="1"
+                          ></v-radio>
+                          <v-radio
+                            v-else
+                            color="red"
+                            label="No"
+                            value="0"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-flex>
+                    </v-layout>
+                    <v-divider></v-divider>
+                  </div>
+                </v-card>
+              </v-tab-item>
+              <v-tab-item value="tab-2">
+                <v-card>
+                  <div v-for="servicio in item.servicios" :key="servicio.id">
+                    <v-layout row wrap pa-1 ma-0 align-center>
+                      <v-flex grow pa-0 ma-0>
+                        <span class="text-capitalize">
+                          {{
+                            getDataLista(
+                              lServicios,
+                              servicio.servicios_id,
+                              'id',
+                              'name'
+                            )
+                          }}
+                          <span style="font-size: 10px">
+                            {{
+                              getDataLista(
+                                lServicios,
+                                servicio.servicios_id,
+                                'id',
+                                'obs'
+                              )
+                            }}
+                          </span>
+                        </span>
+                      </v-flex>
+                      <v-flex shrink pa-0 ma-0>
+                        <v-text-field
+                          pa-0
+                          ma-0
+                          label="Cant"
+                          :value="servicio.cant"
+                          type="number"
+                          style="width: 50px"
+                          readonly
+                        ></v-text-field>
+                      </v-flex>
+                    </v-layout>
+                    <v-divider></v-divider>
+                  </div>
+                </v-card>
+              </v-tab-item>
+            </v-tabs>
+          </template>
         </v-container>
-      </mk-form>
+      </mk-form-full-screen>
     </v-container>
   </div>
 </template>
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkFormFullScreen from '@/components/mkComponentes/MkFormFullScreen.vue'
+import {
+  getDataLista,
+  formatDT,
+} from '@/components/mkComponentes/lib/MkUtils.js'
+// import { icon } from 'leaflet'
+
 
 export default {
   //middleware: ['authAccess'],
   mixins: [MkModuloMix],
-  components: {},
+  components: {MkFormFullScreen},
   name: 'Evaluaciones',
   data() {
     return {
@@ -150,75 +268,78 @@ export default {
       lUsuarios: [],
       lEstados: [
         'Pendiente',
-        'Terminado',
         'No se Realizo',
+        'Terminado',
         'Cerrado',
       ],
       lColor: [
         'grey--text',
-        'green--text text--lighten-3',
         'red--text text--lighten-1',
+        'green--text text--lighten-3',
         'green--text',
       ],
       lRutas: [],
+      lPreguntas:[],
+      estado:false,
 
     }
   },
   methods: {
-    change(e) {
-      this.item.usuarios_id = this.lRutas.find((el) => el.id === e).usuarios_id
-    },
-    getPosition() {
-      let options = {
-        enableHighAccuracy: true,
-        timeout: 6000,
-        maximumAge: 0,
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        this.successGps,
-        this.errorGps,
-        options
-      )
-    },
-    successGps(position) {
-      var coordenadas = position.coords
-      this.item.lat = coordenadas.latitude
-      this.item.lng = coordenadas.longitude
-      //console.log('Tu posición actual es:')
-      //console.log(position)
-    },
-
-    errorGps(error) {
-      console.warn('ERROR(' + error.code + '): ' + error.message)
-    },
-
     beforeOpen(accion, data = {}) {
-      let me = this
-      if (accion == 'add') {
-        this.getPosition()
-        data.lng = ''
-        data.lng = ''
-        data.usuarios_id = null
-      }
+      this.accion='show'
+      this.estado = data.estado <= 1 ? false : true
+      this.tituloModal = 'Evaluacion de ' + data.beneficiario.name
+    },
+    getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
+      return getDataLista(lista, valor, busco, devuelvo)
+    },
 
-      // me.lBeneficiarios = await me.getListaBackend(
-      //   'Rutas/beneficiarios/' + data.id,
-      //   ''
-      // )
+  },
+  computed: {
+    lPregCateg: (app) => (categ) => {
+      let l = app.lPreguntas.filter((e) => e.categ_id == categ)
+      return l
     },
   },
 
   async mounted() {
-    this.setOptionTable('add').visible=false;
+    this.setOptionTable('add').visible=false
+    this.setOptionTable('edit').visible=false
+    this.setOptionTable('del').visibleRow = function (e) {
+      return e.estado == 0? true : false
+    }
+
     this.lUsuarios = await this.getListaBackend('monitores', '','usuarios_id')
-//    this.lRuteos = await this.getListaBackend('Ruteos', '','ruteos_id')
-//    this.lBeneficiarios = await this.getListaBackend('Beneficiarios', '','beneficiarios_id')
     this.lRutas = await this.getListaBackend(
       'Rutas',
       'id,name',
       'ruteos.rutas_id'
     )
+
+    this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
+    this.lPreguntas = await this.getListaBackend('Preguntas')
+
+    if (this.lCateg.length > 0){
+    this.lCateg.sort(function (a, b) {
+      return a.orden - b.orden
+    })
+    }
+
+    if (this.lPreguntas.length > 0){
+    this.lPreguntas.sort(function (a, b) {
+      return a.orden - b.orden
+    })
+    }
+
+    let services = await this.getDataBackend('Servicios')
+    if (services.length > 0){
+    services.forEach((e) => {
+      e.cantidad = 1
+      e.selected = false
+    })
+    }
+    this.lServicios = services
+
     
   },
 }
