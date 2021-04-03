@@ -105,10 +105,18 @@ export default {
       }
     },
     showItem(lista, datos) {
+
       let id=(lista.value+'.').split('.')
       let valor = datos.item[id[0]]
+
+      console.log('showitem:',lista,datos,id,valor);
       for (let i = 1; i < id.length-1; i++) {
-        valor = valor[id[i]]
+        try {
+          valor = valor[id[i]]  
+        } catch (error) {
+          valor='n/d'
+        }
+        
       }
       
 

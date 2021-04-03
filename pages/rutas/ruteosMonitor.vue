@@ -186,6 +186,8 @@
                 </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
                   Abierto: {{ formatDT(ruteo['created_at']) }}
+                   {{ getDataLista(lRutas, ruteo.rutas_id, 'id', 'beneficiarios').length  }} -
+                      {{ ruteo.evaluaciones.length }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
@@ -275,7 +277,8 @@
                 <v-btn
                   icon
                   :color="getColorEval(ruteo, bene.id)"
-                  @click="openEval(ruteo, bene.id)"
+                  @dblclick="openEval(ruteo, bene.id)"
+
                 >
                   <v-icon>assignment</v-icon>
                 </v-btn>
@@ -410,7 +413,8 @@
                 <v-btn
                   icon
                   :color="getColorEval(ruteo1, bene.id)"
-                  @click="openEval(ruteo1, bene.id)"
+                  @dblclick="openEval(ruteo1, bene.id)"
+
                 >
                   <v-icon>assignment</v-icon>
                 </v-btn>
@@ -924,7 +928,7 @@ export default {
       this.$refs.mkFormEval.$refs.form.resetValidation()
       this.tituloModal =
         'Evaluacion de ' + getDataLista(this.lBeneficiarios, bene) //colocar computada de acuerdo al tamano
-      this.modalEval = true
+      if (!this.modalEval) this.modalEval = true
       //this.$nextTick(this.$refs.focus.focus)
     },
     formatDT(d,time=true) {

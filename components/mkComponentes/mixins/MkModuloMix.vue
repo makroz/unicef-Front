@@ -74,9 +74,24 @@ export default {
         proteger: this.$options.middleware || '',
         _updateData: this._updateData,
       },
+      lOnces:[],
     }
   },
   methods: {
+    async initOnce(id){
+      console.log('once Veirificar:'+id);
+      if (this.lOnces[id] && this.lOnces[id]==true){
+        console.log('once:'+id+' ya esta en ejecucion.');
+        return true
+      }
+      this.lOnces[id]=true;
+      return false;
+    },
+    endOnce(id){
+      console.log('once End:'+id);
+      //setTimeout(() => (this.lOnces[id]=false), 2000)
+      return false
+    },
     onBuscar(datos, quitarbuscar = false) {
       //console.log('OnBuscar Mix:', datos, this.busqueda)
       this.dataTable.paginator.page = 1
