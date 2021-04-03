@@ -3,6 +3,7 @@ import MkHead from '@/components/mkComponentes/MkHead'
 import MkForm from '@/components/mkComponentes/MkFormulario'
 import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
+import MkOncesMix from '@/components/mkComponentes/mixins/MkOncesMix'
 import Swal from 'sweetalert2'
 import { c, getDataLista, getTitFromName } from '@/components/mkComponentes/lib/MkUtils.js'
 import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
@@ -19,7 +20,7 @@ export default {
     MkForm,
     MkDataTable,
   },
-  mixins: [MkRulesMix],
+  mixins: [MkRulesMix,MkOncesMix],
   data() {
     return {
       dataTable: {
@@ -74,24 +75,9 @@ export default {
         proteger: this.$options.middleware || '',
         _updateData: this._updateData,
       },
-      lOnces:[],
     }
   },
   methods: {
-    async initOnce(id){
-      console.log('once Veirificar:'+id);
-      if (this.lOnces[id] && this.lOnces[id]==true){
-        console.log('once:'+id+' ya esta en ejecucion.');
-        return true
-      }
-      this.lOnces[id]=true;
-      return false;
-    },
-    endOnce(id){
-      console.log('once End:'+id);
-      //setTimeout(() => (this.lOnces[id]=false), 2000)
-      return false
-    },
     onBuscar(datos, quitarbuscar = false) {
       //console.log('OnBuscar Mix:', datos, this.busqueda)
       this.dataTable.paginator.page = 1
@@ -116,8 +102,11 @@ export default {
     },
     fillTable(data, url) {
       //console.log('filltable:',data)
-      this.dataTable.lista.items = this.getDataCache(data, url)
-
+      if (data){
+        this.dataTable.lista.items = this.getDataCache(data, url)
+      }else{
+        this.dataTable.lista.items=[]
+      }
       this.dataTable.paginator.total = data.ok
       this.oldBuscar = this.buscar
       let n_page = Math.ceil(data.ok / this.dataTable.paginator.perPage)

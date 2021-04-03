@@ -277,7 +277,7 @@
                 <v-btn
                   icon
                   :color="getColorEval(ruteo, bene.id)"
-                  @dblclick="openEval(ruteo, bene.id)"
+                  @click="openEval(ruteo, bene.id)"
 
                 >
                   <v-icon>assignment</v-icon>
@@ -413,8 +413,7 @@
                 <v-btn
                   icon
                   :color="getColorEval(ruteo1, bene.id)"
-                  @dblclick="openEval(ruteo1, bene.id)"
-
+                  @click="openEval(ruteo1, bene.id)"
                 >
                   <v-icon>assignment</v-icon>
                 </v-btn>
@@ -854,6 +853,9 @@ export default {
         : 'yellow'
     },
     openEval(data, bene) {
+      if (this.initOnce('openEval')){
+        return false
+      }
       if (!this.can('add', true)) {
         return false
       }
@@ -874,7 +876,6 @@ export default {
         'beneficiarios_id',
         '*'
       )
-
       this.item.servicios = {}
       this.lServicios.forEach((e) => {
         e.cantidad = 1

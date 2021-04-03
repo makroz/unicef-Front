@@ -28,7 +28,7 @@
             :disabled="!formValid"
             color="green darken-1"
             flat
-            @click.stop="$emit('grabarItem')"
+            @click.stop="grabar"
             v-text="accion == 'edit' ? 'Actualizar' : 'Grabar'"
             >Actualizar</v-btn
           >
@@ -38,8 +38,10 @@
   </div>
 </template>
 <script>
+import MkOncesMix from '@/components/mkComponentes/mixins/MkOncesMix'
 export default {
   name: 'mkFormulario',
+  mixins: [MkOncesMix],
   props: {
     modal: {
       type: Boolean,
@@ -66,6 +68,13 @@ export default {
     }
   },
   computed: {
+    grabar(){
+      this.timeOnces=5000
+      if (this.initOnce('GrabarForm')){
+        return false
+      }
+      this.$emit('grabarItem')
+    },
     titulo() {
       let tit=(this.tit+'|').split('|');
       let caption=tit[1]

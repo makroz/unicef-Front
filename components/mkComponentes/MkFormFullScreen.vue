@@ -4,6 +4,7 @@
      <v-dialog
         v-model="modal"
         fullscreen
+        persistent
         hide-overlay
         transition="dialog-bottom-transition"
       >
@@ -25,7 +26,7 @@
             :disabled="!formValid"
             color="flat green--text"
             flat
-            @click.stop="$emit('grabarItem')"
+            @click.stop="grabar"
             v-text="accion == 'edit' ? 'Actualizar' : 'Grabar'"
           ></v-btn>
             </v-toolbar-items>
@@ -40,8 +41,10 @@
   </div>
 </template>
 <script>
+import MkOncesMix from '@/components/mkComponentes/mixins/MkOncesMix'
 export default {
   name: 'mkFormFullScreen',
+  mixins: [MkOncesMix],
   props: {
     modal: {
       type: Boolean,
@@ -66,6 +69,15 @@ export default {
     return {
       formValid: false
     }
+  },
+  methods: {
+    grabar(){
+      this.timeOnces=5000
+      if (this.initOnce('GrabarFullForm')){
+        return false
+      }
+      this.$emit('grabarItem')
+    },
   },
   computed: {
     titulo() {
