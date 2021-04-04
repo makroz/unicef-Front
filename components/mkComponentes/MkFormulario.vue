@@ -67,14 +67,17 @@ export default {
       formValid: true
     }
   },
-  computed: {
-    grabar(){
+  methods: {
+        grabar(){
       this.timeOnces=5000
       if (this.initOnce('GrabarForm')){
         return false
       }
       this.$emit('grabarItem')
     },
+
+  },
+  computed: {
     titulo() {
       let tit=(this.tit+'|').split('|');
       let caption=tit[1]

@@ -698,6 +698,8 @@ import {
   formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { icon } from 'leaflet'
+import Swal from 'sweetalert2'
+
 import {
   getCache,
   setCache,
@@ -817,6 +819,17 @@ export default {
       if (!this.can('edit', true)) {
         return false
       }
+       Swal.fire({
+        title: 'Desea Cerrar este Ruteo',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: 'red',
+        reverseButtons: true,
+        confirmButtonText: 'Si deseo Cerrarlo!',
+      }).then((action) => {
+      if (!action.value){ 
+        return false
+      }
       let me = this
       let url = 'RuteosMonitor/setClose'
       me.dataTable.loading = true
@@ -839,6 +852,10 @@ export default {
         .finally(function () {
           me.dataTable.loading = false
         })
+
+
+      })
+
     },
     getColorEval(ruteo, bene) {
       return !getDataLista(
