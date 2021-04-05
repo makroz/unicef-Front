@@ -20,7 +20,7 @@
         @callAction="callAction"
       ></mk-table-actions>
     </td>
-    <template v-for="header in headers">
+    <template v-for="(header, index) in headers">
       <td
         v-if="header.headers && !header.hidden"
         :class="[
@@ -31,7 +31,7 @@
         style="padding: 0 12px"
       >
         <!-- {{ header.lista?colLista(header,datos.item[header.value],datos):datos.item[header.value] }} -->
-        {{ showItem(header, datos) }}
+        {{ showItem(header, datos,index) }}
       </td>
     </template>
     <td class="text-xs-center" style="padding: 0 12px">
@@ -104,12 +104,11 @@ export default {
         this.$emit('callAction', { id: 'edit', action: 'openDialog' }, item)
       }
     },
-    showItem(lista, datos) {
-
+    showItem(lista, datos,index) {
       let id=(lista.value+'.').split('.')
       let valor = datos.item[id[0]]
 
-      console.log('showitem:',lista,datos,id,valor);
+      //console.log('showitem:',lista,datos,id,valor);
       for (let i = 1; i < id.length-1; i++) {
         try {
           valor = valor[id[i]]  
@@ -117,6 +116,10 @@ export default {
           valor='n/d'
         }
         
+      }
+
+      if (lista.showItem){
+        lista.showItem(valor,lista,datos,index)
       }
       
 

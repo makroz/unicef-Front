@@ -16,7 +16,7 @@
           ></mk-data-table>
         </v-flex>
       </v-layout>
-       <!-- formulario Evaluaciones FullScreen -->
+      <!-- formulario Evaluaciones FullScreen -->
       <mk-form-full-screen
         ref="mkForm"
         :modal="modal"
@@ -69,7 +69,7 @@
                       </v-flex>
                       <v-flex shrink pa-0 ma-0>
                         <v-text-field
-                         v-if="pregunta.tipo == 2"
+                          v-if="pregunta.tipo == 2"
                           pa-0
                           ma-0
                           label="Valor"
@@ -186,11 +186,10 @@ import {
 } from '@/components/mkComponentes/lib/MkUtils.js'
 // import { icon } from 'leaflet'
 
-
 export default {
   //middleware: ['authAccess'],
   mixins: [MkModuloMix],
-  components: {MkFormFullScreen},
+  components: { MkFormFullScreen },
   name: 'Evaluaciones',
   data() {
     return {
@@ -266,12 +265,7 @@ export default {
         },
       ],
       lUsuarios: [],
-      lEstados: [
-        'Pendiente',
-        'No se Realizo',
-        'Terminado',
-        'Cerrado',
-      ],
+      lEstados: ['Pendiente', 'No se Realizo', 'Terminado', 'Cerrado'],
       lColor: [
         'grey--text',
         'red--text text--lighten-1',
@@ -279,21 +273,21 @@ export default {
         'green--text',
       ],
       lRutas: [],
-      lPreguntas:[],
-      estado:false,
-
+      lPreguntas: [],
+      estado: false,
     }
   },
   methods: {
     beforeOpen(accion, data = {}) {
-      this.accion='show'
+      this.accion = 'show'
       this.estado = data.estado <= 1 ? false : true
-      this.tituloModal = 'Evaluacion de ' + data.beneficiario.name
+    },
+    alferOpen(accion, data = {}) {
+      this.tituloModal = this.tituloModal +' de ' + data.beneficiario.name
     },
     getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
       return getDataLista(lista, valor, busco, devuelvo)
     },
-
   },
   computed: {
     lPregCateg: (app) => (categ) => {
@@ -303,13 +297,13 @@ export default {
   },
 
   async mounted() {
-    this.setOptionTable('add').visible=false
-    this.setOptionTable('edit').visible=false
+    this.setOptionTable('add').visible = false
+    this.setOptionTable('edit').visible = false
     this.setOptionTable('del').visibleRow = function (e) {
-      return e.estado == 0? true : false
+      return e.estado == 0 ? true : false
     }
 
-    this.lUsuarios = await this.getListaBackend('monitores', '','usuarios_id')
+    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
     this.lRutas = await this.getListaBackend(
       'Rutas',
       'id,name',
@@ -319,28 +313,26 @@ export default {
     this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
     this.lPreguntas = await this.getListaBackend('Preguntas')
 
-    if (this.lCateg.length > 0){
-    this.lCateg.sort(function (a, b) {
-      return a.orden - b.orden
-    })
+    if (this.lCateg.length > 0) {
+      this.lCateg.sort(function (a, b) {
+        return a.orden - b.orden
+      })
     }
 
-    if (this.lPreguntas.length > 0){
-    this.lPreguntas.sort(function (a, b) {
-      return a.orden - b.orden
-    })
+    if (this.lPreguntas.length > 0) {
+      this.lPreguntas.sort(function (a, b) {
+        return a.orden - b.orden
+      })
     }
 
     let services = await this.getDataBackend('Servicios')
-    if (services.length > 0){
-    services.forEach((e) => {
-      e.cantidad = 1
-      e.selected = false
-    })
+    if (services.length > 0) {
+      services.forEach((e) => {
+        e.cantidad = 1
+        e.selected = false
+      })
     }
     this.lServicios = services
-
-    
   },
 }
 </script>

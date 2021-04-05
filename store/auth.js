@@ -9,7 +9,7 @@ export const state = () => ({
     authUser: null,
     acceso: false,
     rutaBack: null,
-    cacheActive: false,
+    cacheActive: true,
     encryptActive: true,
     permisos: {
         view: 1,
@@ -110,7 +110,7 @@ export const getters = {
                 data.data = JSON.parse(
                         localStorage.getItem('cache_' + MD5(url).toString())
                     ) //encriptado1.0
-                    console.log('decruipt:',data.data,data.data.response);
+                    //console.log('decruipt:',data.data,data.data.response);
                     if (data.data.response!=''){
                         data.data = JSON.parse(
                             AES.decrypt(data.data.response, _lap).toString(Utf8)
@@ -127,7 +127,7 @@ export const getters = {
             let response = data.data
             if (state.encryptActive) {
                 url = MD5(url).toString()
-                console.log('no decruipt:',data,_lap);
+                //console.log('no decruipt:',data,_lap);
                 if (data.data){
                 response = AES.encrypt(
                     //JSON.stringify(Object.values(data.data)),
@@ -260,7 +260,7 @@ export const actions = {
             }
             return false;
         }
-        console.log('loadata',response.data, url);
+        //console.log('loadata',response.data, url);
         return getters.getDataCache(response.data, url)
     },
 
