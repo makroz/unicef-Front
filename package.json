@@ -1,8 +1,8 @@
 {
-    "name": "nuxt-material-admin",
+    "name": "saneamiento-unicef",
     "version": "1.0.0",
-    "description": "vue-material-admin integration with Nuxt.js",
-    "author": "Mohamed Eddami",
+    "description": "Sistema de Monitoreo Saneamietno Unicef",
+    "author": "mario Alberto Guzman Mendoza - makroz@hotmail.com",
     "private": true,
     "scripts": {
         "dev": "nuxt",
