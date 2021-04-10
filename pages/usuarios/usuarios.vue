@@ -172,19 +172,6 @@ export default {
     async onChange(v) {
       let url = this.urlModulo + '/permisosGrupos/0,' + v
       this.permisoGrupos= await this.getDataBackend(url,'',{ grupos: v })
-      // let me = this
-      // let url = me.urlModulo + '/permisosGrupos/0,' + v
-      // me.$axios
-      //   .post(url + this.getCt(url), { grupos: v })
-      //   .then(function (response) {
-      //     me.permisoGrupos = me.getDataCache(response.data, url)
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error)
-      //   })
-      //   .finally(function () {
-      //     me.loading = false
-      //   })
     },
 
     onChangePermisos(newPermisos) {
@@ -257,6 +244,9 @@ export default {
   // },
   async mounted() {
     this.lGrupos = await this.getListaBackend('Grupos', '', 'grupos_id')
+    if (this.lGrupos===false){
+      this.lGrupos=[]
+    }
     this.lRoles = await this.getListaBackend('Roles', '', 'roles_id')
   },
 }

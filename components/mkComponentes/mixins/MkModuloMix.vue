@@ -654,11 +654,11 @@ export default {
       }
       return lista
     },
-    async getDataBackend(url, campos = '', param = null) {
+    async getDataBackend(url, campos = '', datos = null) {
       let data = await this.$store.dispatch('auth/loadData', {
         url: url,
         campos: campos,
-        param: param,
+        datos: datos,
       })
       return data
     },
