@@ -54,7 +54,6 @@ export default {
   },
   methods: {
     async onLogin(v) {
-      console.log('onLogin:',v,this);
       try {
         await this.$store.dispatch("auth/login", this.auth);
         this.auth.username = "";
@@ -66,7 +65,7 @@ export default {
       }
     },
     async logout() {
-      console.log('onLogout');
+//      console.log('onLogout');
       try {
         await this.$store.dispatch("auth/logout");
       } catch (e) {

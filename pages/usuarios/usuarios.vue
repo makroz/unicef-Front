@@ -113,7 +113,7 @@ import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
 
 export default {
-  //middleware: ['authAccess'],
+  middleware: ['authAccess'],
   mixins: [MkImgMix, MkModuloMix],
   components: {
     MkPermisos,

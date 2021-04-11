@@ -80,7 +80,8 @@
 import API from '@/api'
 
 export default {
-  layout: 'dashboard',
+	middleware: ['auth'],
+  	layout: 'dashboard',
   components: {
   },
   data: () => ({

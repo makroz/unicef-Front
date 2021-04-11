@@ -145,7 +145,7 @@
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 
 export default {
-  //middleware: ['authAccess'],
+  middleware: ['authAccess'],
   mixins: [MkModuloMix],
   components: {},
   name: 'SolicitudServicios',

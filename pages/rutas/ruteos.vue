@@ -451,7 +451,7 @@ import Material from 'vuetify/es5/util/colors'
 import { icon } from 'leaflet'
 
 export default {
-  //middleware: ['authAccess'],
+  middleware: ['authAccess'],
   mixins: [MkModuloMix],
   components: { MkFormFullScreen, EChart },
   name: 'Ruteos',

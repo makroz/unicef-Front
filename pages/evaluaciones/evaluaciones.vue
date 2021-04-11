@@ -187,7 +187,7 @@ import {
 // import { icon } from 'leaflet'
 
 export default {
-  //middleware: ['authAccess'],
+  middleware: ['authAccess'],
   mixins: [MkModuloMix],
   components: { MkFormFullScreen },
   name: 'Evaluaciones',

@@ -709,7 +709,7 @@ import MkFormFullScreen from '~/components/mkComponentes/MkFormFullScreen.vue'
 const _dirty = process.env.mkConfig.dirty
 
 export default {
-  //middleware: ['authAccess'],
+  middleware: ['authAccess'],
   mixins: [MkModuloMix],
   components: { VWidget, MkSimpleCard, MkFormFullScreen },
   name: 'RuteosMonitor',
