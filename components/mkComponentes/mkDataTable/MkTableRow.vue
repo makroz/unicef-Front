@@ -11,7 +11,7 @@
     </td>
 
     <td
-      v-if="!$store.state.config.tbl_opts_p && (can('edit') || can('del'))"
+      v-if="!$store.state.config.tbl_opts_p "
       class="text-xs-center pa-0 ma-0" 
     >
       <mk-table-actions

@@ -4,13 +4,13 @@ const pkg = require('./package')
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
-    mode: 'spa',
+    ssr: false,
 
     env: {
         mkConfig: {
-            authKey: 'asasasa',
-            dirty: true,
-            storageUrl: 'http://unicef.test/storage/'
+            authKey: process.env.AUTH_KEY,
+            dirty: process.env.DIRTY,
+            storageUrl: process.env.STORAGE_URL,
         },
 
 
@@ -73,7 +73,7 @@ module.exports = {
     modules: ["@nuxtjs/axios", 'nuxt-leaflet', '@nuxtjs/webpackmonitor'],
     axios: {
         // proxyHeaders: false,
-        baseURL: "http://unicef.test/api",
+        baseURL: process.env.API_URL,
         // headers: {
         //     'Accept': 'application/x-www-form-urlencoded',
         //     'Content-Type': 'application/x-www-form-urlencoded',
@@ -87,6 +87,9 @@ module.exports = {
         // }
     },
 
+    buildModules: [
+        '@nuxtjs/dotenv'
+    ],
     /*
      ** Build configuration
      */
