@@ -181,6 +181,9 @@ export const getters = {
         if (!getters.getUser) {
             return false;
         }
+        if (getters.getUser.rol=='superAdmin') {
+            return true;
+        }
         if (permiso) {
             permiso = permiso.toLowerCase().trim();
         }
@@ -244,7 +247,18 @@ export const actions = {
             url = url + '&filter=' + datos.filter
         }
         let response = ''
+        let method='get'
         if ((datos.datos) && (datos.datos.length > 0)) {
+            method='post'
+        }
+        if ((datos.method) && (datos.method =='post')) {
+            method='post'
+        }
+        if ((datos.method) && (datos.method =='get')) {
+            method='get'
+        }
+
+        if (method=='post') {
             response = await this.$axios.post(url + getters.getCt(url), datos.datos)
         } else {
             response = await this.$axios.get(url + getters.getCt(url))

@@ -566,7 +566,7 @@ export default {
       // //console.error('Params ',name,':',params);
       // return params
     },
-    can(val, alertar = false) {
+    can(val, alertar = false,modulo='') {
       //console.info('entro a can!!! :'+val);
       let acceso = ''
       let guard = ''
@@ -578,6 +578,10 @@ export default {
           this.authAccess || this.$options.authAccess || this.$options.name
         guard = this.$options.middleware || ''
       }
+      if (modulo!=''){
+        acceso=modulo
+      }
+      
       val = val.toLowerCase().trim()
       const permisos = this.$store.state.auth.permisos
       if (
@@ -654,11 +658,12 @@ export default {
       }
       return lista
     },
-    async getDataBackend(url, campos = '', datos = null) {
+    async getDataBackend(url, campos = '', datos = null,method='') {
       let data = await this.$store.dispatch('auth/loadData', {
         url: url,
         campos: campos,
         datos: datos,
+        method:method,
       })
       return data
     },

@@ -110,7 +110,7 @@ export default {
     },
     async beforeOpen(accion, data = {}) {
       let url = this.urlModulo + '/permisos/' + data.id
-      this.permisos= await this.getDataBackend(url)
+      this.permisos= await this.getDataBackend(url,'',{},'post')
       this.dirty.permisos = JSON.stringify(this.permisos)
     },
   },

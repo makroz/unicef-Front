@@ -55,7 +55,7 @@
     <mk-busquedas :busquedas="busquedas" @busqueda:avanzada="onBuscar" :campos="headers"></mk-busquedas>
 
     <v-btn 
-     v-if="can('del')&&(getAction('restore','topbar').visible)"
+     v-if="can('del',false,'reciclaje')&&(getAction('restore','topbar').visible)"
     icon fab color="blue" small @click="onRecycled" title="Papelera" >
       <v-icon v-if="Auth.recycled">undo</v-icon>
       <v-icon v-else>restore_from_trash</v-icon>
