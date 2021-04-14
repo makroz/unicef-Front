@@ -92,7 +92,8 @@ module.exports = {
     },
 
     buildModules: [
-        '@nuxtjs/dotenv'
+        '@nuxtjs/dotenv',
+        'nuxt-purgecss'
     ],
     /*
      ** Build configuration
