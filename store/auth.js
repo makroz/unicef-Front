@@ -93,7 +93,7 @@ export const getters = {
         return ct + ct2
     },
     getDataCache: state => (data, url, paginate = false, lista = 1) => {
-        if (!data){
+        if (!data) {
             return []
         }
         if (paginate) {
@@ -111,14 +111,14 @@ export const getters = {
                         localStorage.getItem('cache_' + MD5(url).toString())
                     ) //encriptado1.0
                     //console.log('decruipt:',data.data,data.data.response);
-                    if (data.data.response!=''){
-                        data.data = JSON.parse(
+                if (data.data.response != '') {
+                    data.data = JSON.parse(
                             AES.decrypt(data.data.response, _lap).toString(Utf8)
                         ) //encriptado1.1
-                    }else{
-                        data.data='';
-                    }
-                
+                } else {
+                    data.data = '';
+                }
+
             } else {
                 data.data = JSON.parse(localStorage.getItem('cache_' + url)).response
                     //console.log(url,data.data);
@@ -127,15 +127,15 @@ export const getters = {
             let response = data.data
             if (state.encryptActive) {
                 url = MD5(url).toString()
-                //console.log('no decruipt:',data,_lap);
-                if (data.data){
-                response = AES.encrypt(
-                    //JSON.stringify(Object.values(data.data)),
-                    JSON.stringify(data.data),
-                    _lap
-                ).toString()
-                }else{
-                    response=[]
+                    //console.log('no decruipt:',data,_lap);
+                if (data.data) {
+                    response = AES.encrypt(
+                        //JSON.stringify(Object.values(data.data)),
+                        JSON.stringify(data.data),
+                        _lap
+                    ).toString()
+                } else {
+                    response = []
                 }
             }
             const ct = {
@@ -181,7 +181,7 @@ export const getters = {
         if (!getters.getUser) {
             return false;
         }
-        if (getters.getUser.rol=='superAdmin') {
+        if (getters.getUser.rol == 'superAdmin') {
             return true;
         }
         if (permiso) {
@@ -241,24 +241,24 @@ export const mutations = {
 };
 
 export const actions = {
-    async loadData({ commit,getters, dispatch }, datos) {
+    async loadData({ commit, getters, dispatch }, datos) {
         let url = datos.url + '?page=1&per_page=-1&cols=' + datos.campos + '&disabled=1'
         if (datos.filter) {
             url = url + '&filter=' + datos.filter
         }
         let response = ''
-        let method='get'
+        let method = 'get'
         if ((datos.datos) && (datos.datos.length > 0)) {
-            method='post'
+            method = 'post'
         }
-        if ((datos.method) && (datos.method =='post')) {
-            method='post'
+        if ((datos.method) && (datos.method == 'post')) {
+            method = 'post'
         }
-        if ((datos.method) && (datos.method =='get')) {
-            method='get'
+        if ((datos.method) && (datos.method == 'get')) {
+            method = 'get'
         }
 
-        if (method=='post') {
+        if (method == 'post') {
             response = await this.$axios.post(url + getters.getCt(url), datos.datos)
         } else {
             response = await this.$axios.get(url + getters.getCt(url))
@@ -334,7 +334,7 @@ export const actions = {
         //commit("setRutaBack", this.$router.history._startLocation);
         //console.log('logout:',this.$router.history._startLocation);
         setTimeout(() => {
-            me.$router.push("/login");
+            me.$router.push("/login/");
         }, 300)
 
         return true;

@@ -5,7 +5,7 @@ const Menu = [
             group: 'apps',
             icon: 'dashboard',
             name: 'Dashboard',
-            href: '/dashboard'
+            href: '/dashboard/'
         },
 
         {
@@ -16,7 +16,7 @@ const Menu = [
             items: [{
                 name: 'evaluaciones',
                 title: 'Evaluaciones',
-                href: '/evaluaciones/evaluaciones'
+                href: '/evaluaciones/evaluaciones/'
             }]
         },
         {
@@ -27,17 +27,17 @@ const Menu = [
             items: [{
                     name: 'ruteosMonitor',
                     title: 'Realizar Ruteo',
-                    href: '/rutas/ruteosMonitor'
+                    href: '/rutas/ruteosMonitor/'
                 },
                 {
                     name: 'ruteos',
                     title: 'Ruteos',
-                    href: '/rutas/ruteos'
+                    href: '/rutas/ruteos/'
                 },
                 {
                     name: 'rutas',
                     title: 'Rutas',
-                    href: '/rutas/rutas'
+                    href: '/rutas/rutas/'
                 }
             ]
         },
@@ -50,12 +50,12 @@ const Menu = [
             items: [{
                     name: 'solicitudServicios',
                     title: 'Solicitud de Servicios',
-                    href: '/servicios/solicitudServicios'
+                    href: '/servicios/solicitudServicios/'
                 },
                 {
                     name: 'servicios',
                     title: 'Servicios',
-                    href: '/servicios/servicios'
+                    href: '/servicios/servicios/'
                 }
             ]
         },
@@ -67,18 +67,18 @@ const Menu = [
             items: [{
                     name: 'beneficiarios',
                     title: 'Beneficiarios',
-                    href: '/beneficiarios/beneficiarios'
+                    href: '/beneficiarios/beneficiarios/'
                 },
                 {
                     name: 'entidades',
                     title: 'Entidades',
-                    href: '/beneficiarios/entidades'
+                    href: '/beneficiarios/entidades/'
                 },
                 {
                     name: 'distritos',
                     title: 'Distritos',
                     badge: 'new',
-                    href: '/beneficiarios/distritos'
+                    href: '/beneficiarios/distritos/'
                 }
             ]
         },
@@ -90,13 +90,13 @@ const Menu = [
             items: [{
                     name: 'categ',
                     title: 'Categorias',
-                    href: '/preguntas/categ'
+                    href: '/preguntas/categ/'
                 },
                 {
                     name: 'preguntas',
                     title: 'Preguntas',
                     badge: 'new',
-                    href: '/preguntas/preguntas'
+                    href: '/preguntas/preguntas/'
                 }
             ]
         },
@@ -108,38 +108,38 @@ const Menu = [
             items: [{
                     name: 'roles',
                     title: 'Roles',
-                    href: '/usuarios/roles'
+                    href: '/usuarios/roles/'
                 },
                 {
                     name: 'permisos',
                     title: 'Permisos',
                     badge: 'new',
-                    href: '/usuarios/permisos'
+                    href: '/usuarios/permisos/'
                 },
                 {
                     name: 'grupos',
                     title: 'Grupos',
-                    href: '/usuarios/grupos'
+                    href: '/usuarios/grupos/'
                 },
                 {
                     name: 'usuarios',
                     title: 'Usuarios',
                     badge: 'new',
-                    href: '/usuarios/usuarios'
+                    href: '/usuarios/usuarios/'
                 }
             ]
         },
         { divider: true },
     ]
     // reorder menu
-Menu.forEach((item) => {
-    if (item.items) {
-        item.items.sort((x, y) => {
-            let textA = x.title.toUpperCase()
-            let textB = y.title.toUpperCase()
-            return textA < textB ? -1 : textA > textB ? 1 : 0
-        })
-    }
-})
+    // Menu.forEach((item) => {
+    //     if (item.items) {
+    //         item.items.sort((x, y) => {
+    //             let textA = x.title.toUpperCase()
+    //             let textB = y.title.toUpperCase()
+    //             return textA < textB ? -1 : textA > textB ? 1 : 0
+    //         })
+    //     }
+    // })
 
 export default Menu

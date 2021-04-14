@@ -57,7 +57,7 @@
         this.$router.push({ path: '/' });
       },
       goLogin () {
-        this.$router.push({ path: '/login' });
+        this.$router.push({ path: '/login/' });
       }
 
     },

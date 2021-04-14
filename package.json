@@ -13,7 +13,6 @@
     "dependencies": {
         "@nuxtjs/axios": "^5.12.5",
         "@nuxtjs/dotenv": "^1.4.1",
-        "@nuxtjs/webpackmonitor": "^0.1.0",
         "@targomo/core": "^0.4.2",
         "@targomo/leaflet": "0.0.9",
         "cross-env": "^5.2.0",
@@ -39,6 +38,7 @@
     },
     "devDependencies": {
         "@nuxtjs/vuetify": "^1.5.18",
+        "@nuxtjs/webpackmonitor": "^0.1.0",
         "nodemon": "^1.18.9",
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.2"

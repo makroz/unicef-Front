@@ -87,6 +87,10 @@ module.exports = {
         // }
     },
 
+    router: {
+        trailingSlash: true
+    },
+
     buildModules: [
         '@nuxtjs/dotenv'
     ],
