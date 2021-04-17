@@ -636,8 +636,8 @@ export default {
           'color',
           [
             this.color.grey.base,
-            this.color.green.base,
             this.color.pink.base,
+            this.color.green.base,
             this.color.indigo.base,
             this.color.teal.base,
             this.color.purple.base,
@@ -770,13 +770,14 @@ export default {
           value: this.item.nEvalVal[0],
         },
         {
-          Evaluaciones: 'Respondidas',
+          Evaluaciones: 'No Respondidas',
           value: this.item.nEvalVal[1],
         },
         {
-          Evaluaciones: 'No Respondidas',
+          Evaluaciones: 'Respondidas',
           value: this.item.nEvalVal[2],
         },
+
       ]
 
       this.lPreguntas.forEach((e) => {

@@ -34,8 +34,6 @@
                 ref="focus"
                 validate-on-blur
                 autofocus
-                counter
-                maxlength="20"
               :readonly="accion=='show'" ></v-text-field>
             </v-flex>
             <v-flex shrink>

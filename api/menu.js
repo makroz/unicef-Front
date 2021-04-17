@@ -25,11 +25,6 @@ const Menu = [
             component: 'rutas',
             icon: 'face',
             items: [{
-                    name: 'ruteosMonitor',
-                    title: 'Realizar Ruteo',
-                    href: '/rutas/ruteosMonitor/'
-                },
-                {
                     name: 'ruteos',
                     title: 'Ruteos',
                     href: '/rutas/ruteos/'

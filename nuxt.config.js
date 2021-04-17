@@ -35,7 +35,7 @@ module.exports = {
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
             {
                 rel: 'stylesheet',
-                href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
+                href: 'https://fonts.googleapis.com/css?family=Material+Icons'
             }
         ],
         script: [
@@ -70,7 +70,7 @@ module.exports = {
     /*
      ** Nuxt.js modules
      */
-    modules: ["@nuxtjs/axios", 'nuxt-leaflet', '@nuxtjs/webpackmonitor'],
+    modules: ["@nuxtjs/axios", 'nuxt-leaflet', '@nuxtjs/webpackmonitor', 'nuxt-webfontloader'],
     axios: {
         // proxyHeaders: false,
         baseURL: process.env.API_URL,
@@ -86,14 +86,17 @@ module.exports = {
         //     'Content-Type': 'application/x-www-form-urlencoded'
         // }
     },
-
+    webfontloader: {
+        google: {
+            families: ['Roboto:300,400,500,700']
+        }
+    },
     router: {
         trailingSlash: true
     },
 
     buildModules: [
         '@nuxtjs/dotenv',
-        'nuxt-purgecss'
     ],
     /*
      ** Build configuration

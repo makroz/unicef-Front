@@ -125,13 +125,13 @@
                 <v-text-field
                   label="Servicio"
                   :value="getNameLista(item.servicios_id, lServicios)"
-                :readonly="accion=='show'" ></v-text-field>
+                :readonly=true ></v-text-field>
               </v-flex>
               <v-flex md2>
                 <v-text-field
                   label="Cantidad"
                   :value="item.cant"
-                :readonly="accion=='show'" ></v-text-field>
+                :readonly=true ></v-text-field>
               </v-flex>
             </v-layout>
           </v-card>

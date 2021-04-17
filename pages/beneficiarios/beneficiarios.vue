@@ -39,7 +39,7 @@
           <v-layout row>
             <v-flex>
               <v-text-field
-                label="Epsa"
+                label="Código EPSA"
                 id="epsa"
                 v-model="item.epsa"
                 :rules="[rules.required, rules.num]"
@@ -169,7 +169,7 @@ export default {
           search: true,
         },
         {
-          text: 'cod.epsa',
+          text: 'Cod.EPSA',
           value: 'epsa',
           width: '100px',
           align: 'right',
@@ -178,7 +178,7 @@ export default {
           search: true,
         },
         {
-          text: 'autoriza',
+          text: 'Autoriza',
           value: 'autoriza',
           align: 'left',
           width: '100px',
@@ -188,7 +188,7 @@ export default {
           search: true,
         },
         {
-          text: 'proteccion',
+          text: 'Proteccion',
           value: 'protec',
           align: 'left',
           width: '100px',

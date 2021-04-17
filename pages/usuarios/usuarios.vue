@@ -57,9 +57,8 @@
               </v-flex>
               <v-flex grow pa-1>
                 <v-text-field
-                  v-if="!item.id > 0"
                   :append-icon="showPass ? 'visibility' : 'visibility_off'"
-                  :rules="[rules.required, rules.min(8)]"
+                  :rules="item.id>0?[rules.min(8,true)]:[rules.required, rules.min(8)]"
                   :type="showPass ? 'text' : 'password'"
                   v-model="item.pass"
                   label="Password"
@@ -171,7 +170,7 @@ export default {
   methods: {
     async onChange(v) {
       let url = this.urlModulo + '/permisosGrupos/0,' + v
-      this.permisoGrupos= await this.getDataBackend(url,'',{ grupos: v })
+      this.permisoGrupos= await this.getDataBackend(url,'',{ grupos: v},'post')
     },
 
     onChangePermisos(newPermisos) {
@@ -179,7 +178,8 @@ export default {
     },
     beforeSave(me) {
       delete me.item.grupos
-      if (me.item.id > 0) {
+      //if (me.item.id > 0) {
+      if (me.item.pass == '') {
         delete me.item.pass
       }
 

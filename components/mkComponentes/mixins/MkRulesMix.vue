@@ -12,8 +12,11 @@ export default {
         required: value => !!value || "Dato es Requerido",
         noSpaces: v => (v || "").indexOf(" ") < 0 || "No se admite espacios",
         num: value => !value || !isNaN(value) || "Debe ser un Numerico",
-        min(minNum) {return v =>{
-             return (v || "").length > minNum || "Minimo " + minNum + " caracteres"
+        min(minNum,cero=false) {return v =>{
+            if (cero && (v || "").length == 0){
+              return true
+            }
+             return (v || "").length >= minNum || "Minimo " + minNum + " caracteres"
             };
         },
         max(maxNum) {return v =>{
