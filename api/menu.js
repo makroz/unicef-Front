@@ -125,6 +125,17 @@ const Menu = [
             ]
         },
         { divider: true },
+        {
+            title: 'Importaciones',
+            group: 'importaciones',
+            component: 'importaciones',
+            icon: 'face',
+            items: [{
+                name: 'ImportarBeneficiarios',
+                title: 'Importar Beneficiarios',
+                href: '/importaciones/beneficiarios/'
+            }, ]
+        },
     ]
     // reorder menu
     // Menu.forEach((item) => {
