@@ -2,17 +2,13 @@ const pkg = require('./package')
 
 
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
-const dev = process.env.NODE_ENV !== 'production'
-const STORAGE_URL = dev ? process.env.STORAGE_URL : process.env.PROD_STORAGE_URL
-const BASE_URL = dev ? process.env.API_URL : process.env.PROD_API_URL
-console.log('url:', BASE_URL);
 module.exports = {
     ssr: false,
     env: {
         mkConfig: {
             authKey: process.env.AUTH_KEY,
             dirty: process.env.DIRTY,
-            storageUrl: STORAGE_URL
+            storageUrl: process.env.STORAGE_URL
         },
     },
 
@@ -20,7 +16,7 @@ module.exports = {
      ** Headers of the page
      */
     head: {
-        title: dev ? "Dev Unicef v.0.1" : "Unicef v.0.1",
+        title: "Unicef v.0.1",
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -73,7 +69,7 @@ module.exports = {
     modules: ["@nuxtjs/axios", 'nuxt-leaflet', '@nuxtjs/webpackmonitor', 'nuxt-webfontloader'],
     axios: {
         // proxyHeaders: false,
-        baseURL: BASE_URL,
+        baseURL: process.env.API_URL,
         // headers: {
         //     'Accept': 'application/x-www-form-urlencoded',
         //     'Content-Type': 'application/x-www-form-urlencoded',

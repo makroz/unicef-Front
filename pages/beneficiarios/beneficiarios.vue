@@ -104,11 +104,17 @@
           ></v-text-field>
           <v-layout row>
             <v-flex>
-              <v-text-field label="Latitud" v-model="item.lat" readonly>
+              <v-text-field label="Latitud2" v-model="item.lat"
+              @change="updateLatLng"
+              :readonly="accion == 'show'"
+              >
               </v-text-field>
             </v-flex>
             <v-flex>
-              <v-text-field label="Longitud" v-model="item.lng" readonly>
+              <v-text-field label="Longitud" v-model="item.lng" 
+              @change="updateLatLng"
+              :readonly="accion == 'show'"
+              >
               </v-text-field>
             </v-flex>
           </v-layout>
@@ -119,6 +125,7 @@
                 :center="center"
                 style="height: 200px; width: 100%"
                 ref="mymap"
+                @dblclick="dblMapa"
               >
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -237,13 +244,25 @@ export default {
     }
   },
   methods: {
+    dblMapa(e){
+      this.item.lat = e.latlng.lat
+      this.item.lng = e.latlng.lng
+      this.updateLatLng()
+    return false;
+    },
+    updateLatLng(){
+      if (this.item.lat && this.item.lng && this.item.lat != '' && this.item.lng != '') {
+        this.marker = [this.item.lat, this.item.lng]
+        let zoom=this.$refs.mymap.mapObject.getZoom()
+        this.$refs.mymap.mapObject.setView(this.marker, zoom)
+      }
+    },
     updateMaker(e) {
       this.item.lat = e.lat
       this.item.lng = e.lng
     },
     initMap() {
       if (this.item.lat && this.item.lat != '') {
-        //this.center = [this.item.lat, this.item.lng]
         this.marker = [this.item.lat, this.item.lng]
         this.zoom = 13
       } else {
@@ -251,6 +270,7 @@ export default {
         this.item.lng = ''
         this.marker = this.center
       }
+      this.$refs.mymap.mapObject.doubleClickZoom.disable()
       this.$refs.mymap.mapObject.invalidateSize().setView(this.marker, 13)
     },
     beforeOpen(accion, data = {}) {
