@@ -74,6 +74,12 @@ const Menu = [
                     title: 'Distritos',
                     badge: 'new',
                     href: '/beneficiarios/distritos/'
+                },
+                {
+                    name: 'dptos',
+                    title: 'Departamentos',
+                    badge: 'new',
+                    href: '/beneficiarios/dptos/'
                 }
             ]
         },
