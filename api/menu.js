@@ -142,6 +142,19 @@ const Menu = [
                 href: '/importaciones/beneficiarios/'
             }, ]
         },
+        { divider: true },
+        {
+            title: 'IA CRUD',
+            group: 'ia',
+            component: 'ia',
+            icon: 'face',
+            items: [{
+                name: 'iaCrud',
+                title: 'IA CRUD',
+                href: '/ia/ia/'
+            }, ]
+        },
+
     ]
     // reorder menu
     // Menu.forEach((item) => {

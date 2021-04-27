@@ -45,9 +45,13 @@ export function getTitFromName(msg) {
     return (msg + '').split('/').pop().split(/(?=[A-Z])/).join(' ');
 }
 
+export function getFirstUpperCase(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def = false) {
     let r = def
-    //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
+        //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
     let o = lista.find(el => el[busco] === valor)
     if (o) {
         if (devuelvo == '*') {
@@ -71,10 +75,10 @@ export function getDistancia(lat1, lon1, lat2, lon2) {
     return R * 2 * Math.asin(Math.sqrt(a));
 }
 
-export function formatDT(d='', time = true) {
+export function formatDT(d = '', time = true) {
     //return new Date(data).toString().split
-//    console.log('fecha',(d+' ').trim())
-    if (!d || d==''){
+    //    console.log('fecha',(d+' ').trim())
+    if (!d || d == '') {
         return ''
     }
     let data = new Date(d)
