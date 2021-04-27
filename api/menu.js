@@ -80,8 +80,13 @@ const Menu = [
                     title: 'Departamentos',
                     badge: 'new',
                     href: '/beneficiarios/dptos/'
-                }
-            ]
+                },
+                {
+                     name: 'epsas',
+                     title: 'EPSA',
+                     href: '/beneficiarios/epsas/'
+                 }
+             ]
         },
         {
             title: 'Modulo Preguntas',

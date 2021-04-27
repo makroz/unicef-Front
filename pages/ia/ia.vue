@@ -300,8 +300,13 @@ export default {
         }
 
         if (c.IS_NULLABLE == 'NO') {
-          c.rulesF = Object.assign(c.rulesF, ['required'])
-          c.rulesB = Object.assign(c.rulesB, ['required'])
+          if (c.rulesF.indexOf('required')==-1){
+              c.rulesF.push('required')
+          }
+          if (c.rulesB.indexOf('required')==-1){
+              c.rulesB.push('required')
+          }
+          
         }
       })
     },
