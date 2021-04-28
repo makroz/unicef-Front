@@ -28,40 +28,30 @@
         <v-icon>settings</v-icon>
       </v-btn>
       <v-layout align-center justify-center row fill-height wrap>
-          <v-flex>
-            <v-select
-              v-model="lTabla.moduloB"
-              :items="lDatos.modulos.data"
-              label="Modulo BackEnd"
-            ></v-select>
-
-          </v-flex>
-          <v-flex>
-            <v-select
-              v-model="lTabla.moduloF"
-              :items="lDatos.modulosFront.data"
-              label="Modulo FrontEnd"
-            ></v-select>
-
-          </v-flex>
-           <v-flex md-4>
-            <v-text-field
-              label="Id Modulo"
-              v-model="lTabla.nameMod"
-            >
-            </v-text-field>
-          </v-flex>
-          <v-flex md-4>
-            <v-text-field
-              v-model="lTabla.titMod"
-              label="Titulo del Modulo"
-            >
-            </v-text-field>
-          </v-flex>
-
+        <v-flex>
+          <v-select
+            v-model="lTabla.moduloB"
+            :items="lDatos.modulos.data"
+            label="Modulo BackEnd"
+          ></v-select>
+        </v-flex>
+        <v-flex>
+          <v-select
+            v-model="lTabla.moduloF"
+            :items="lDatos.modulosFront.data"
+            label="Modulo FrontEnd"
+          ></v-select>
+        </v-flex>
+        <v-flex md-4>
+          <v-text-field label="Id Modulo" v-model="lTabla.nameMod">
+          </v-text-field>
+        </v-flex>
+        <v-flex md-4>
+          <v-text-field v-model="lTabla.titMod" label="Titulo del Modulo">
+          </v-text-field>
+        </v-flex>
       </v-layout>
       <v-layout align-center justify-center row fill-height wrap>
-
         <v-flex
           xs-12
           md-6
@@ -179,6 +169,26 @@
             ></v-select>
           </v-flex>
         </v-layout>
+        <v-layout row wrap v-if="item.typeF=='selDB'">
+          <v-flex md-6>
+            <v-select
+              v-model="item.relTable"
+              item-text="name"
+              item-value="name"
+              :items="lDatos.tablas.data"
+              label="Tabla Relacionada"
+            ></v-select>
+          </v-flex>
+          <v-flex md-6>
+            <v-select
+              v-model="item.relField"
+              item-text="COLUMN_NAME"
+              item-value="COLUMN_NAME"
+              :items="getRelFields()"
+              label="Campo a Mostrar"
+            ></v-select>
+          </v-flex>
+        </v-layout>
       </v-container>
     </mk-form>
   </div>
@@ -212,6 +222,7 @@ export default {
           { text: 'Requerido', value: 'required' },
         ],
         int: [
+          { text: 'Numerico', value: 'num' },
           { text: 'Maximo', value: 'max' },
           { text: 'Minimo', value: 'min' },
         ],
@@ -221,6 +232,12 @@ export default {
           { text: 'Ninguna', value: '-1' },
           { text: 'Requerido', value: 'required' },
         ],
+        int: [
+          { text: 'Numerico', value: 'num' },
+          { text: 'Maximo', value: 'max' },
+          { text: 'Minimo', value: 'min' },
+        ],
+
         status: [{ text: 'Status', value: 'status' }],
       },
       lRulesF: [],
@@ -232,23 +249,33 @@ export default {
         { text: 'Centro', value: 'c' },
       ],
       lTypeF: [
-        { text: 'Texto', value: 'alfa' },
-        { text: 'Numero Entero', value: 'num' },
+        { text: 'Texto', value: 'text' },
+        { text: 'Numero', value: 'num' },
         { text: 'Numero Decimal', value: 'dec' },
         { text: 'Seleccion', value: 'sel' },
         { text: 'Seleccion Multiple', value: 'selMul' },
-        { text: 'Seleccion BD', value: 'selBD' },
-        { text: 'Seleccion BD Multiple', value: 'selBDMul' },
+        { text: 'Seleccion DB', value: 'selDB' },
+        { text: 'Seleccion DB Multiple', value: 'selDBMul' },
         { text: 'Check', value: 'check' },
         { text: 'Radio', value: 'radio' },
       ],
     }
   },
   methods: {
+      getRelFields(){
+          console.log('relField:',this.item.relTable);
+          return getDataLista(this.lDatos.tablas.data, this.item.relTable, 'name', 'cols', [])
+      },
+    addRules(regla, reglas) {
+      if (reglas.indexOf(regla) == -1) {
+        reglas.push(regla)
+      }
+      return reglas
+    },
     selTabla(tabla) {
       this.lTabla = tabla
-      this.lTabla.nameMod =this.lTabla.name
-      this.lTabla.titMod =getTitFromName(this.lTabla.name)
+      this.lTabla.nameMod = this.lTabla.name
+      this.lTabla.titMod = getFirstUpperCase(getTitFromName(this.lTabla.name))
       this.lTabla.cols.forEach((c) => {
         if (!c.lList || c.lList == '') {
           c.lList = getFirstUpperCase(c.COLUMN_NAME)
@@ -263,7 +290,7 @@ export default {
         c.align = '-1'
         c.rulesF = []
         c.rulesB = []
-        c.typeF = 'alfa'
+        c.typeF = 'text'
         if (
           ['created_at', 'updated_at', 'deleted_at'].indexOf(c.COLUMN_NAME) > -1
         ) {
@@ -277,37 +304,58 @@ export default {
           c.rulesF = ['ninguna']
           if (c.COLUMN_NAME == 'id') {
             c.rulesB = ['required']
+            c.ancho = '100px'
           }
           if (c.COLUMN_NAME == 'status') {
             c.rulesB = ['status']
           }
         }
         //c.lList=c.DATA_TYPE
-        if (['int','tinyint'].indexOf(c.DATA_TYPE)>-1) {
+        if (['int', 'tinyint'].indexOf(c.DATA_TYPE) > -1) {
+          this.addRules('num', c.rulesF)
+          this.addRules('num', c.rulesB)
+
           c.typeF = 'num'
+          c.typeB = 'num'
           c.align = 'r'
         }
-        if (['char','varchar'].indexOf(c.DATA_TYPE)>-1) {
-          c.typeF = 'alfa'
+        if (['char', 'varchar'].indexOf(c.DATA_TYPE) > -1) {
+          c.typeF = 'text'
           c.align = 'l'
         }
-        if (c.COLUMN_KEY == 'MUL') {
-          //ver si tiene o es un indice
-          c.typeF = 'selDB'
-        }
+       
         if (c.list || c.form) {
           c.search = true
         }
 
         if (c.IS_NULLABLE == 'NO') {
-          if (c.rulesF.indexOf('required')==-1){
-              c.rulesF.push('required')
-          }
-          if (c.rulesB.indexOf('required')==-1){
-              c.rulesB.push('required')
-          }
-          
+          this.addRules('required', c.rulesF)
+          this.addRules('required', c.rulesB)
+          //   if (c.rulesF.indexOf('required')==-1){
+          //       c.rulesF.push('required')
+          //   }
+          //   if (c.rulesB.indexOf('required')==-1){
+          //       c.rulesB.push('required')
+          //   }
         }
+
+        if (c.COLUMN_NAME == 'name') {
+          c.lList = 'Nombre'
+          c.lForm = 'Nombre'
+        }
+
+        if (c.COLUMN_NAME.includes('_id')) {
+          c.lList = getFirstUpperCase(c.COLUMN_NAME.replace('_id',''))
+          c.lForm = c.lList
+        }
+
+        if (c.COLUMN_KEY == 'MUL') {
+          c.typeF = 'selDB'
+          c.relTable=getDataLista(this.lTabla.rels, c.COLUMN_NAME, 'COLUMN_NAME', 'REFERENCED_TABLE_NAME')
+          c.relField='name'
+          c.align = 'l'
+        }
+
       })
     },
     selCol(col) {
@@ -321,8 +369,19 @@ export default {
       if (this.lRulesBack[col.COLUMN_NAME]) {
         this.lRulesB = this.lRulesBack[col.COLUMN_NAME]
       }
+
       this.lRulesF = this.lRulesF.concat(this.lRulesFront.global)
       this.lRulesB = this.lRulesB.concat(this.lRulesBack.global)
+
+      if (['int', 'tinyint'].indexOf(col.DATA_TYPE) > -1) {
+        this.lRulesF = this.lRulesF.concat(this.lRulesFront.int)
+        this.lRulesB = this.lRulesB.concat(this.lRulesBack.int)
+      }
+
+      if (c.typeF == 'selDB'){
+
+      }
+
       this.tituloModal = 'Configurar Campo: ' + col.COLUMN_NAME
       this.modal = true
     },
@@ -351,5 +410,4 @@ export default {
   },
 }
 </script>
-<style scoped>
-</style>
+<style scoped></style>

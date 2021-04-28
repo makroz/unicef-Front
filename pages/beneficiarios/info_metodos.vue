@@ -30,18 +30,14 @@
                     :rules='[rules.required]'
                     validate-on-blur
                     :readonly="accion == 'show'"
-                  ></v-text-field>               <v-select
-                    :items='lMunicipios'
-                    item-text='name'
-                    item-value='id'
-                    label='Municipio'
-                    v-model='item.municipio_id'
+                  ></v-text-field><v-text-field
+                    type='number'
+                    label='Orden'
+                    v-model='item.orden'
                     :rules='[rules.num,rules.required]'
                     validate-on-blur
                     :readonly="accion == 'show'"
-                >
-                </v-select>
-
+                  ></v-text-field>
       </mk-form>
     </v-container>
   </div>
@@ -54,11 +50,11 @@ export default {
   middleware: ['authAccess'],
 
   mixins: [MkModuloMix],
-  name: 'Distritos',
+  name: 'Info_metodos',
   data() {
     return {
       //urlModulo: '',
-      titModulo: 'Distritos',
+      titModulo: 'Metodos de Información',
       campos: [
 
                 {
@@ -82,25 +78,20 @@ export default {
                     
                 },
                 {
-                    text: 'Municipio',
-                    value: 'municipio_id',
-                    align: 'left',
+                    text: 'Orden',
+                    value: 'orden',
+                    align: 'right',
                     
                     headers: true,
                     type: 'num',
                     search: true,
-                    lista: this.lMunicipios,
+                    
                 },
       ],
-
-            lMunicipios: [],
-
     }
   },
   methods: {},
   async mounted() {
-
-    this.lMunicipios = await this.getListaBackend('Municipios', 'id,name', 'municipio_id')
 
   },
 }

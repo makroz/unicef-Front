@@ -54,7 +54,7 @@ export default {
                     text: 'Id',
                     value: 'id',
                     align: 'right',
-                    
+                    width: '100px',
                     headers: true,
                     type: 'num',
                     search: true,
@@ -65,7 +65,7 @@ export default {
                     align: 'left',
                     
                     headers: true,
-                    type: 'alfa',
+                    type: 'text',
                     search: true,
                 },        
       ],

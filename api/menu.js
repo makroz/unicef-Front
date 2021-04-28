@@ -70,21 +70,75 @@ const Menu = [
                     href: '/beneficiarios/entidades/'
                 },
                 {
-                    name: 'distritos',
-                    title: 'Distritos',
-                    badge: 'new',
-                    href: '/beneficiarios/distritos/'
-                },
+                     name: 'descoms',
+                     title: 'Descoms',
+                     href: '/beneficiarios/descoms/'
+                 }
+,
                 {
-                    name: 'dptos',
-                    title: 'Departamentos',
-                    badge: 'new',
-                    href: '/beneficiarios/dptos/'
-                },
+                     name: 'parentescos',
+                     title: 'parentescos',
+                     href: '/beneficiarios/parentescos/'
+                 }
+,
                 {
-                     name: 'epsas',
-                     title: 'EPSA',
-                     href: '/beneficiarios/epsas/'
+                     name: 'est_civiles',
+                     title: 'Estados Civiles',
+                     href: '/beneficiarios/est_civiles/'
+                 }
+,
+                {
+                     name: 'niv_educativos',
+                     title: 'Niveles Educativos',
+                     href: '/beneficiarios/niv_educativos/'
+                 }
+,
+                {
+                     name: 'ocupaciones',
+                     title: 'Ocupaciones',
+                     href: '/beneficiarios/ocupaciones/'
+                 }
+,
+                {
+                     name: 'tipo_banos',
+                     title: 'Tipos de Baños',
+                     href: '/beneficiarios/tipo_banos/'
+                 }
+,
+                {
+                     name: 'doc_firmados',
+                     title: 'Documentos Firmados',
+                     href: '/beneficiarios/doc_firmados/'
+                 }
+,
+                {
+                     name: 'prob_sol_existentes',
+                     title: 'Problemas y Soluciones',
+                     href: '/beneficiarios/prob_sol_existentes/'
+                 }
+,
+                {
+                     name: 'info_metodos',
+                     title: 'Metodos de Información',
+                     href: '/beneficiarios/info_metodos/'
+                 }
+,
+                {
+                     name: 'municipios',
+                     title: 'Municipios',
+                     href: '/beneficiarios/municipios/'
+                 }
+,
+                {
+                     name: 'distritos',
+                     title: 'Distritos',
+                     href: '/beneficiarios/distritos/'
+                 }
+,
+                {
+                     name: 'zonas',
+                     title: 'Zonas',
+                     href: '/beneficiarios/zonas/'
                  }
              ]
         },
