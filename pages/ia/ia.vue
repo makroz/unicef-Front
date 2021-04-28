@@ -22,35 +22,67 @@
     </v-container>
     <v-container grid-list-md fluid v-if="lTabla.name" pa-1>
       <h4 class="mb-2 font-weight-black">
+        <v-btn icon color="grey" title="Regresar" @click="lTabla = []">
+          <v-icon>keyboard_return</v-icon>
+        </v-btn>
         Trabajando con {{ lTabla.name.toUpperCase() }}
-      </h4>
-      <v-btn icon color="red" @click="procesar()">
+              <v-btn dark
+              large
+              absolute
+              top
+              right
+              fab color="red" @click="procesar()" title="Procesar">
         <v-icon>settings</v-icon>
       </v-btn>
-      <v-layout align-center justify-center row fill-height wrap>
-        <v-flex>
-          <v-select
-            v-model="lTabla.moduloB"
-            :items="lDatos.modulos.data"
-            label="Modulo BackEnd"
-          ></v-select>
-        </v-flex>
-        <v-flex>
-          <v-select
-            v-model="lTabla.moduloF"
-            :items="lDatos.modulosFront.data"
-            label="Modulo FrontEnd"
-          ></v-select>
-        </v-flex>
-        <v-flex md-4>
-          <v-text-field label="Id Modulo" v-model="lTabla.nameMod">
-          </v-text-field>
-        </v-flex>
-        <v-flex md-4>
-          <v-text-field v-model="lTabla.titMod" label="Titulo del Modulo">
-          </v-text-field>
-        </v-flex>
-      </v-layout>
+
+      </h4>
+      <v-form
+        ref="form1"
+        id="form1"
+        v-on:submit.prevent
+        v-model="formValid"
+        lazy-validation
+      >
+        <v-layout align-center justify-center row fill-height wrap>
+          <v-flex>
+            <v-select
+              v-model="lTabla.moduloB"
+              :items="lDatos.modulos.data"
+              label="Modulo BackEnd"
+              :rules="[rules.required]"
+              validate-on-blur
+            ></v-select>
+          </v-flex>
+          <v-flex>
+            <v-select
+              v-model="lTabla.moduloF"
+              :items="lDatos.modulosFront.data"
+              label="Modulo FrontEnd"
+              :rules="[rules.required]"
+              validate-on-blur
+            ></v-select>
+          </v-flex>
+          <v-flex md-4>
+            <v-text-field
+              label="Id Modulo"
+              v-model="lTabla.nameMod"
+              :rules="[rules.required]"
+              validate-on-blur
+            >
+            </v-text-field>
+          </v-flex>
+          <v-flex md-4>
+            <v-text-field
+              v-model="lTabla.titMod"
+              label="Titulo del Modulo"
+              :rules="[rules.required]"
+              validate-on-blur
+            >
+            </v-text-field>
+          </v-flex>
+        </v-layout>
+      </v-form>
+
       <v-layout align-center justify-center row fill-height wrap>
         <v-flex
           xs-12
@@ -169,7 +201,7 @@
             ></v-select>
           </v-flex>
         </v-layout>
-        <v-layout row wrap v-if="item.typeF=='selDB'">
+        <v-layout row wrap v-if="item.typeF == 'selDB'">
           <v-flex md-6>
             <v-select
               v-model="item.relTable"
@@ -212,6 +244,7 @@ export default {
   name: 'IA',
   data() {
     return {
+      formValid: true,
       tabs: 0,
       lDatos: [],
       lTabla: {},
@@ -262,10 +295,16 @@ export default {
     }
   },
   methods: {
-      getRelFields(){
-          console.log('relField:',this.item.relTable);
-          return getDataLista(this.lDatos.tablas.data, this.item.relTable, 'name', 'cols', [])
-      },
+    getRelFields() {
+      console.log('relField:', this.item.relTable)
+      return getDataLista(
+        this.lDatos.tablas.data,
+        this.item.relTable,
+        'name',
+        'cols',
+        []
+      )
+    },
     addRules(regla, reglas) {
       if (reglas.indexOf(regla) == -1) {
         reglas.push(regla)
@@ -323,7 +362,7 @@ export default {
           c.typeF = 'text'
           c.align = 'l'
         }
-       
+
         if (c.list || c.form) {
           c.search = true
         }
@@ -345,17 +384,21 @@ export default {
         }
 
         if (c.COLUMN_NAME.includes('_id')) {
-          c.lList = getFirstUpperCase(c.COLUMN_NAME.replace('_id',''))
+          c.lList = getFirstUpperCase(c.COLUMN_NAME.replace('_id', ''))
           c.lForm = c.lList
         }
 
         if (c.COLUMN_KEY == 'MUL') {
           c.typeF = 'selDB'
-          c.relTable=getDataLista(this.lTabla.rels, c.COLUMN_NAME, 'COLUMN_NAME', 'REFERENCED_TABLE_NAME')
-          c.relField='name'
+          c.relTable = getDataLista(
+            this.lTabla.rels,
+            c.COLUMN_NAME,
+            'COLUMN_NAME',
+            'REFERENCED_TABLE_NAME'
+          )
+          c.relField = 'name'
           c.align = 'l'
         }
-
       })
     },
     selCol(col) {
@@ -378,8 +421,7 @@ export default {
         this.lRulesB = this.lRulesB.concat(this.lRulesBack.int)
       }
 
-      if (c.typeF == 'selDB'){
-
+      if (c.typeF == 'selDB') {
       }
 
       this.tituloModal = 'Configurar Campo: ' + col.COLUMN_NAME
@@ -395,6 +437,9 @@ export default {
       this.modal = false
     },
     async procesar() {
+      if (!this.$refs.form1.validate()) {
+        return false
+      }
       let respuesta = await this.getDataBackend(
         'IA',
         '*',
