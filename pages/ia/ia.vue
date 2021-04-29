@@ -10,7 +10,7 @@
       <v-layout align-center justify-center row fill-height wrap>
         <v-flex shrink v-for="tabla in lDatos.tablas.data" :key="tabla.name">
           <v-widget :title="tabla.name">
-            <template slot="widget-header-action" slot-scope="props">
+            <template slot="widget-header-action">
               <v-btn icon color="green" @click="selTabla(tabla)">
                 <v-icon>check</v-icon>
               </v-btn>
@@ -95,7 +95,7 @@
             :title="col.COLUMN_NAME"
             :color="col.list ? (col.form ? 'primary' : 'green') : 'grey'"
           >
-            <template slot="widget-header-action" slot-scope="props">
+            <template slot="widget-header-action">
               <v-btn icon color="green" @click="selCol(col)">
                 <v-icon>settings</v-icon>
               </v-btn>
