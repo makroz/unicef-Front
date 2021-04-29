@@ -946,6 +946,22 @@ export default {
     },
 
     errorGps(error) {
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+            // El usuario denegó el permiso para la Geolocalización.
+            alert('El Usuario denego el permiso de obtener la UBICACION, este Paso necesita que habilite el permiso por Favor')
+            break;
+        case error.POSITION_UNAVAILABLE:
+            // La ubicación no está disponible.
+            break;
+        case error.TIMEOUT:
+            // Se ha excedido el tiempo para obtener la ubicación.
+            alert('El Usuario puede que no otorgo poermisos de UBICACION, este Paso necesita que habilite el permiso por Favor')
+            break;
+        case error.UNKNOWN_ERROR:
+            // Un error desconocido.
+            break;
+    }
       console.warn('ERROR(' + error.code + '): ' + error.message)
     },
     beforeOpen(accion, data = {}) {

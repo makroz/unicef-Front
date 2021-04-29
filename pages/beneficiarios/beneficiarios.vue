@@ -174,6 +174,7 @@ export default {
           headers: true,
           type: 'text',
           search: true,
+          class: this.claseBenef,
         },
         {
           text: 'Cod.EPSA',
@@ -244,6 +245,15 @@ export default {
     }
   },
   methods: {
+    claseBenef(item,datos) {
+      let r='';
+      if (item.value=='name'){
+        if (!datos.lat){
+          r='red--text text--lighten-3'
+        }
+      }
+      return r
+    },
     dblMapa(e){
       this.item.lat = e.latlng.lat
       this.item.lng = e.latlng.lng
@@ -284,6 +294,17 @@ export default {
     },
   },
   async mounted() {
+       this.addOptionTable({
+        id: 'fam',
+        color: 'red',
+        icon: 'group',
+        text: 'Familia',
+        visible: this.can('add'),
+        action: '',
+        grupos: ['action'],
+        orden: 1,
+      },)
+
     this.lRutas = await this.getListaBackend('Rutas', 'id,name', 'rutas_id')
     this.lEntidades = await this.getListaBackend(
       'Entidades',

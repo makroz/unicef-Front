@@ -396,8 +396,10 @@ export default {
       }
     },
     callAction(opt, item) {
-      let f = this[opt.action]
-      f(opt.id, item)
+      if (typeof this[opt.action] === 'function') {
+        let f = this[opt.action]
+        f(opt.id, item)
+      }
     },
     restoreItem(action, item) {
       action = 'restore'
@@ -756,6 +758,12 @@ export default {
     //console.log('campos',this.campos)
 
     this.dataTable.acciones = [
+      {
+        id: 'class',
+        visible: false,
+        grupos: [''],
+        orden: 50,
+      },
       {
         id: 'sel',
         visible: true,

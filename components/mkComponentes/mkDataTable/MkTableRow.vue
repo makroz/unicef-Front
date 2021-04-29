@@ -25,7 +25,9 @@
         v-if="header.headers && !header.hidden"
         :class="[
           header.align ? 'text-xs-' + header.align : 'text-xs-left ',
-          header.lColor ? header.lColor[datos.item[header.value]] : '',
+          header.lColor ? header.lColor[datos.item[header.value]?datos.item[header.value]:0] : '',
+          getClass(header,datos.item),
+          getClassItem(header,datos.item),
         ]"
         :key="header.value"
         style="padding: 0 12px"
@@ -86,6 +88,24 @@ export default {
     callAction(opt, item) {
       this.$emit('callAction', opt, item)
     },
+    getClassItem(item,datos) {
+      if (typeof item.class === 'function') {
+        return  item.class(item,datos)
+      }
+      if (typeof item.class === 'string') {
+        return item.class
+      }
+      return ''
+    },
+
+    getClass(item,datos) {
+      const opt=this.acciones.find((e) => e.id == 'class')
+      let r = ''
+      if (typeof opt.setClass === 'function') {
+        r = opt.setClass(item,datos)
+      }
+      return r
+    },
     rowVisible(opt, item) {
       let r = true
       if (typeof opt.visibleRow === 'function') {
@@ -118,7 +138,7 @@ export default {
         
       }
 
-      if (lista.showItem){
+      if (typeof lista.showItem === 'function') {
         lista.showItem(valor,lista,datos,index)
       }
       
@@ -192,29 +212,21 @@ export default {
       }
       return valor
     },
-    colLista(lista, v, datos) {
-      let valor = null
-      //lista.lista= JSON.parse(lista.lista)
-      try {
-        //console.log('llego1:', lista.value, v, datos)
-
-        if (lista.fromList) {
-          let campoUnion = lista.listField
-          let hijo = this.headers.find((el) => {
-            //console.log('dentro de hijo', el.value, lista.fromList)
-            return el.value == lista.fromList
-          }).lista
-          //console.log('llego2:', hijo)
-          v = hijo.find((el) => el.id == datos.item[lista.fromList])[campoUnion]
-        }
-        //console.log('llego3:', lista.lista, v)
-        valor = lista.lista.find((el) => el.id == v)
-      } catch (error) {
-        //console.error(error);
-      }
-      //lista.lista= JSON.stringify(lista.lista)
-      return valor ? valor.name : ''
-    },
+    // colLista(lista, v, datos) {
+    //   let valor = null
+    //   try {
+    //     if (lista.fromList) {
+    //       let campoUnion = lista.listField
+    //       let hijo = this.headers.find((el) => {
+    //         return el.value == lista.fromList
+    //       }).lista
+    //       v = hijo.find((el) => el.id == datos.item[lista.fromList])[campoUnion]
+    //     }
+    //     valor = lista.lista.find((el) => el.id == v)
+    //   } catch (error) {
+    //   }
+    //   return valor ? valor.name : ''
+    // },
   },
   mounted() {
     //console.log('rowmounted')
