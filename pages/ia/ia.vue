@@ -331,7 +331,7 @@ export default {
         c.rulesB = []
         c.typeF = 'text'
         if (
-          ['created_at', 'updated_at', 'deleted_at'].indexOf(c.COLUMN_NAME) > -1
+          ['created_at', 'updated_at', 'deleted_at','created_by', 'updated_by', 'deleted_by'].indexOf(c.COLUMN_NAME) > -1
         ) {
           c.form = false
           c.list = false
