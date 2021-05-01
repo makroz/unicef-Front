@@ -350,17 +350,27 @@ export default {
           }
         }
         //c.lList=c.DATA_TYPE
-        if (['int', 'tinyint'].indexOf(c.DATA_TYPE) > -1) {
+        if (['int', 'tinyint','decimal'].indexOf(c.DATA_TYPE) > -1) {
+          if (c.DATA_TYPE=='decimal'){
           this.addRules('num', c.rulesF)
           this.addRules('num', c.rulesB)
-
           c.typeF = 'num'
-          c.typeB = 'num'
+          //c.typeB = 'num'
+
+          }else{
+          this.addRules('num', c.rulesF)
+          this.addRules('num', c.rulesB)
+          c.typeF = 'num'
+          //c.typeB = 'num'
+          }
           c.align = 'r'
         }
         if (['char', 'varchar'].indexOf(c.DATA_TYPE) > -1) {
           c.typeF = 'text'
           c.align = 'l'
+          if (c.CHARACTER_MAXIMUM_LENGTH==1){
+            c.typeF = 'check'
+          }
         }
 
         if (c.list || c.form) {
@@ -398,6 +408,15 @@ export default {
           )
           c.relField = 'name'
           c.align = 'l'
+        }
+        if (['point'].indexOf(c.DATA_TYPE) > -1) {
+          c.form = false
+          c.list = false
+          c.rulesF = ['ninguna']
+          c.rulesB = ['ninguna']
+          c.typeF = 'num'
+          //c.typeB = 'num'
+          c.align = 'r'
         }
       })
     },

@@ -5,7 +5,11 @@ import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import MkOncesMix from '@/components/mkComponentes/mixins/MkOncesMix'
 import Swal from 'sweetalert2'
-import { c, getDataLista, getTitFromName } from '@/components/mkComponentes/lib/MkUtils.js'
+import {
+  c,
+  getDataLista,
+  getTitFromName,
+} from '@/components/mkComponentes/lib/MkUtils.js'
 import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
 
 const _storage = process.env.mkConfig.storageUrl
@@ -20,7 +24,7 @@ export default {
     MkForm,
     MkDataTable,
   },
-  mixins: [MkRulesMix,MkOncesMix],
+  mixins: [MkRulesMix, MkOncesMix],
   data() {
     return {
       dataTable: {
@@ -102,10 +106,10 @@ export default {
     },
     fillTable(data, url) {
       //console.log('filltable:',data)
-      if (data){
+      if (data) {
         this.dataTable.lista.items = this.getDataCache(data, url)
-      }else{
-        this.dataTable.lista.items=[]
+      } else {
+        this.dataTable.lista.items = []
       }
       this.dataTable.paginator.total = data.ok
       this.oldBuscar = this.buscar
@@ -178,14 +182,14 @@ export default {
       }
 
       if (sortBy != '') {
-        let sBy=getDataLista(this.campos, sortBy,'value','*');
+        let sBy = getDataLista(this.campos, sortBy, 'value', '*')
         sortBy = '&sortBy=' + sortBy
-        if (sBy){
-          if (sBy.sortBy){
+        if (sBy) {
+          if (sBy.sortBy) {
             sortBy = '&sortBy=' + sBy.sortBy
           }
         }
-        
+
         if (order == true) {
           sortBy = sortBy + '&order=desc'
         } else {
@@ -396,6 +400,7 @@ export default {
       }
     },
     callAction(opt, item) {
+      //console.log('call',opt,extra,item);
       if (typeof this[opt.action] === 'function') {
         let f = this[opt.action]
         f(opt.id, item)
@@ -477,7 +482,7 @@ export default {
       this.tituloModal = ''
       this.modal = false
     },
-    openDialog(accion, data = {}) {
+    openDialog(accion, data = {}, open = true) {
       if (!this.can(accion, true)) {
         return false
       }
@@ -516,16 +521,20 @@ export default {
           //this.dirty.item = Object.assign({}, this.item)
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
-        this.tituloModal ='('+this.item.id+') '+'Editar ' + this.titModulo
-        if (this.$refs.focus){
+        this.tituloModal ='(' + this.item.id + ') ' + 'Editar ' + this.titModulo
+        if (this.$refs.focus) {
           this.$nextTick(this.$refs.focus.focus)
         }
-        
       }
 
       if (accion == 'show') {
         //this.item.id = this.item.id * -1
-        this.tituloModal ='<span class="caption">('+this.item.id+') </span>'+ 'Ver ' + this.titModulo
+        this.tituloModal =
+          '<span class="caption">(' +
+          this.item.id +
+          ') </span>' +
+          'Ver ' +
+          this.titModulo
       }
 
       // let f=document.getElementById('form').getElementsByTagName('input');
@@ -536,7 +545,10 @@ export default {
       // }
 
       this.afterOpen(accion, data)
-      this.modal = true
+      if (open) {
+        this.modal = true
+      }
+      //
     },
     setParams(name = '', value = '', encrypt = false) {
       if (name == '') {
@@ -568,7 +580,7 @@ export default {
       // //console.error('Params ',name,':',params);
       // return params
     },
-    can(val, alertar = false,modulo='') {
+    can(val, alertar = false, modulo = '') {
       //console.info('entro a can!!! :'+val);
       let acceso = ''
       let guard = ''
@@ -580,10 +592,10 @@ export default {
           this.authAccess || this.$options.authAccess || this.$options.name
         guard = this.$options.middleware || ''
       }
-      if (modulo!=''){
-        acceso=modulo
+      if (modulo != '') {
+        acceso = modulo
       }
-      
+
       val = val.toLowerCase().trim()
       const permisos = this.$store.state.auth.permisos
       if (
@@ -660,12 +672,12 @@ export default {
       }
       return lista
     },
-    async getDataBackend(url, campos = '', datos = null,method='') {
+    async getDataBackend(url, campos = '', datos = null, method = '') {
       let data = await this.$store.dispatch('auth/loadData', {
         url: url,
         campos: campos,
         datos: datos,
-        method:method,
+        method: method,
       })
       return data
     },
@@ -788,7 +800,7 @@ export default {
         action: 'openDialog',
         grupos: ['action', 'topbar'],
         orden: 2,
-        dblClic:true,
+        dblClic: true,
       },
       {
         id: 'del',

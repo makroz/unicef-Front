@@ -138,8 +138,13 @@ const Menu = [
                     name: 'prob_sol_existentes',
                     title: 'Problemas y Soluciones',
                     href: '/beneficiarios/prob_sol_existentes/'
-                }
-            ]
+                },
+                {
+                     name: 'familias',
+                     title: 'Familias',
+                     href: '/beneficiarios/familias/'
+                 }
+             ]
         },
         {
             title: 'Modulo Preguntas',
