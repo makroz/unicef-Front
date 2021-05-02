@@ -180,11 +180,6 @@
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkFormFullScreen from '@/components/mkComponentes/MkFormFullScreen.vue'
-import {
-  getDataLista,
-  formatDT,
-} from '@/components/mkComponentes/lib/MkUtils.js'
-// import { icon } from 'leaflet'
 
 export default {
   middleware: ['authAccess'],
@@ -284,9 +279,6 @@ export default {
     },
     alferOpen(accion, data = {}) {
       this.tituloModal = this.tituloModal +' de ' + data.beneficiario.name
-    },
-    getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
-      return getDataLista(lista, valor, busco, devuelvo)
     },
   },
   computed: {

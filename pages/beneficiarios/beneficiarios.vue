@@ -148,7 +148,7 @@
       </mk-form>
       <!-- formularioFull Familia -->
       <mk-form-full-screen
-        ref="mkFormFam"
+        ref="mkForm"
         :modal="modalFam"
         :tit="tituloModal"
         :accion="accion"
@@ -368,6 +368,120 @@
           </v-layout>
 
           <v-card class="pa-2">
+            <v-toolbar color="red" dark dense>
+              <v-toolbar-title class="body-1"
+                >Familiares
+                {{ $vuetify.breakpoint.name }}
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn icon color="green" @click="addFamiliar()" small>
+                <v-icon>add</v-icon>
+              </v-btn>
+            </v-toolbar>
+            <v-layout
+              row
+              wrap
+              fill-height
+              v-for="(fam, index) in item.familiares"
+              :key="index"
+              style="border-bottom: 1px dotted gray"
+            >
+              <v-flex xs12 sm4 md5 lg2>
+                <v-text-field
+                  label="Nombre"
+                  v-model="fam.name"
+                  :rules="[rules.required]"
+                  validate-on-blur
+                  :readonly="accion == 'show'"
+                >
+                </v-text-field>
+              </v-flex>
+              <v-flex xs4 sm2 md1 lg1>
+                <v-text-field
+                  type="number"
+                  label="Edad"
+                  v-model="fam.edad"
+                  :rules="[rules.num, rules.required]"
+                  validate-on-blur
+                  :readonly="accion == 'show'"
+                >
+                </v-text-field>
+              </v-flex>
+              <v-flex xs8 sm3 md3 lg1>
+                <v-select
+                  :items="lGenero"
+                  item-text="name"
+                  item-value="id"
+                  label="Genero"
+                  v-model="fam.genero"
+                  :rules="[rules.required]"
+                  validate-on-blur
+                  :readonly="accion == 'show'"
+                >
+                </v-select>
+              </v-flex>
+              <v-flex xs6 sm3 md3 lg2>
+                <v-select
+                  :items="lParentescos"
+                  item-text="name"
+                  item-value="id"
+                  label="Parentesco"
+                  v-model="fam.parentesco_id"
+                  :rules="[rules.num, rules.required]"
+                  validate-on-blur
+                  :readonly="accion == 'show'"
+                >
+                </v-select>
+              </v-flex>
+              <v-flex xs6 sm3 md3 lg1>
+                <v-select
+                  :items="lEst_civiles"
+                  item-text="name"
+                  item-value="id"
+                  label="Estado Civil"
+                  v-model="fam.est_civil_id"
+                  :rules="[rules.num, rules.required]"
+                  validate-on-blur
+                  :readonly="accion == 'show'"
+                >
+                </v-select>
+              </v-flex>
+              <v-flex xs12 sm3 md3 lg2>
+                <v-select
+                  :items="lNiv_educativos"
+                  item-text="name"
+                  item-value="id"
+                  label="Nivel Educacion"
+                  v-model="fam.niv_educativo_id"
+                  :rules="[rules.num, rules.required]"
+                  validate-on-blur
+                  :readonly="accion == 'show'"
+                >
+                </v-select>
+              </v-flex>
+              <v-flex xs10 sm4 md5 lg2>
+                <v-select
+                  :items="lOcupaciones"
+                  item-text="name"
+                  item-value="id"
+                  label="Ocupacion"
+                  v-model="fam.ocupacion_id"
+                  :rules="[rules.num, rules.required]"
+                  validate-on-blur
+                  :readonly="accion == 'show'"
+                >
+                </v-select>
+              </v-flex>
+
+              <v-flex shrink>
+                <v-btn icon color="red" @click="delFamiliar(index)" small dark>
+                  <v-icon>remove</v-icon>
+                </v-btn>
+              </v-flex>
+            </v-layout>
+          </v-card>
+
+          <v-card class="pa-2">
             <v-toolbar color="indigo" dark dense>
               <v-toolbar-title class="body-1">Contrapartes</v-toolbar-title>
             </v-toolbar>
@@ -537,9 +651,9 @@
               <v-flex pa-4 class="my-auto" grow>
                 {{ doc.orden }} - {{ doc.name }}
               </v-flex>
-              <v-flex shrink>
+              <v-flex shrink v-if="item.firmados">
                 <v-radio-group
-                  v-model="doc.resp"
+                  v-model="item.firmados[doc.id]"
                   row
                   :rules="[rules.required]"
                   validate-on-blur
@@ -549,19 +663,6 @@
                 </v-radio-group>
               </v-flex>
             </v-layout>
-            <!-- <v-flex>
-            <v-select
-              :items="lDoc_firmados"
-              item-text="name"
-              item-value="id"
-              label="Doc_firmado"
-              v-model="item.doc_firmado_id"
-              :rules="[rules.num]"
-              validate-on-blur
-              :readonly="accion == 'show'"
-            >
-            </v-select>
-          </v-flex> -->
           </v-card>
           <v-flex>
             <v-select
@@ -569,7 +670,7 @@
               item-text="name"
               item-value="id"
               label="¿Cómo obtuvo información del proyecto?"
-              v-model="item.info_metodo_id"
+              v-model="item.metodos"
               :rules="[rules.required]"
               validate-on-blur
               multiple
@@ -578,19 +679,47 @@
             >
             </v-select>
           </v-flex>
-          <v-flex>
-            <v-select
-              :items="lProb_sol_existentes"
-              item-text="name"
-              item-value="id"
-              label="Prob_sol_existente"
-              v-model="item.prob_sol_existente_id"
-              :rules="[rules.num]"
-              validate-on-blur
-              :readonly="accion == 'show'"
+          <v-card class="pa-2">
+            <v-toolbar color="indigo" dark dense>
+              <v-toolbar-title class="body-1"
+                >Problemas y Soluciones</v-toolbar-title
+              >
+              <v-spacer></v-spacer>
+              <v-btn icon color="green" @click="addProb()" small>
+                <v-icon>add</v-icon>
+              </v-btn>
+            </v-toolbar>
+            <v-layout
+              row
+              fill-height
+              v-for="(prob, index) in item.problemas"
+              :key="index"
+              style="border-bottom: 1px dotted gray"
             >
-            </v-select>
-          </v-flex>
+              <v-flex class="my-auto" grow>
+                <v-textarea
+                  v-model="prob.problemas"
+                  :rules="[rules.required]"
+                  validate-on-blur
+                  label="Problemas"
+                  rows="2"
+                ></v-textarea>
+              </v-flex>
+              <v-flex class="my-auto" grow>
+                <v-textarea
+                  v-model="prob.soluciones"
+                  label="Soluciones"
+                  rows="2"
+                ></v-textarea>
+              </v-flex>
+
+              <v-flex shrink>
+                <v-btn icon color="red" @click="delProb(index)" small dark>
+                  <v-icon>remove</v-icon>
+                </v-btn>
+              </v-flex>
+            </v-layout>
+          </v-card>
         </v-container>
       </mk-form-full-screen>
     </v-container>
@@ -691,7 +820,7 @@ export default {
       center: [-17.783373986957255, -63.18209478792436],
       marker: [-17.783373986957255, -63.18209478792436],
       zoom: 13,
-      modalFam: true,
+      modalFam: false,
 
       lDistritos: [],
 
@@ -716,11 +845,51 @@ export default {
       lInfo_metodos: [],
 
       lProb_sol_existentes: [],
+      lFirmados: [],
+      lMetodos: [],
+
+      lParentescos: [],
+
+      lEst_civiles: [],
+
+      lNiv_educativos: [],
+
+      lOcupaciones: [],
+      lGenero: [
+        { id: 'M', name: 'Masculino' },
+        { id: 'F', name: 'Femenino' },
+      ],
     }
   },
   methods: {
-    openFam(opt, item) {
-      this.openDialog(opt, item, false)
+    delProb(index) {
+      this.item.problemas.splice(index, 1)
+    },
+    addProb() {
+      this.item.problemas.push({ id: null, problemas: '', soluciones: '' })
+    },
+    delFamiliar(index) {
+      this.item.familiares.splice(index, 1)
+    },
+    addFamiliar() {
+      this.item.familiares.push({})
+    },
+
+    async openFam(opt, item) {
+      let data = await this.getListaBackend('Beneficiarios/' + item.id)
+      let firmados = Object.assign([], this.lFirmados)
+      data.firmados.forEach((e) => {
+        firmados[e] = '1'
+      })
+      data.firmados = Object.assign([], firmados)
+
+      // let metodos = Object.assign([],this.lMetodos)
+      // data.metodos.forEach((e) => {
+      //   metodos[e] = "1"
+      // })
+      // data.metodos = Object.assign([],metodos)
+
+      this.openDialog('edit', data, false)
       this.modalFam = true
     },
     claseBenef(item, datos) {
@@ -769,7 +938,7 @@ export default {
     afterSave(me, isError) {
       this.modalFam = false
     },
-    beforeOpen(accion, data = {}) {
+    async beforeOpen(accion, data = {}) {
       if (accion == 'add') {
         data.lat = ''
         data.lng = ''
@@ -846,22 +1015,43 @@ export default {
       'id,name,orden',
       'doc_firmado_id'
     )
-    if (this.lDoc_firmados.length > 0){
-    this.lDoc_firmados.sort(function (a, b) {
-      return a.orden - b.orden
-    })
+    if (this.lDoc_firmados.length > 0) {
+      this.lDoc_firmados.sort(function (a, b) {
+        return a.orden - b.orden
+      })
     }
-    
+    this.lDoc_firmados.forEach((e) => {
+      this.lFirmados[e.id] = '0'
+    })
+
     this.lInfo_metodos = await this.getListaBackend(
       'Info_metodos',
       'id,name',
       'info_metodo_id'
     )
 
-    this.lProb_sol_existentes = await this.getListaBackend(
-      'Prob_sol_existentes',
+    this.lParentescos = await this.getListaBackend(
+      'Parentescos',
       'id,name',
-      'prob_sol_existente_id'
+      'parentesco_id'
+    )
+
+    this.lEst_civiles = await this.getListaBackend(
+      'Est_civiles',
+      'id,name',
+      'est_civil_id'
+    )
+
+    this.lNiv_educativos = await this.getListaBackend(
+      'Niv_educativos',
+      'id,name',
+      'niv_educativo_id'
+    )
+
+    this.lOcupaciones = await this.getListaBackend(
+      'Ocupaciones',
+      'id,name',
+      'ocupacion_id'
     )
   },
 }

@@ -232,7 +232,6 @@ import VWidget from '@/components/VWidget'
 import Swal from 'sweetalert2'
 import {
   c,
-  getDataLista,
   getTitFromName,
   getFirstUpperCase,
 } from '@/components/mkComponentes/lib/MkUtils.js'
@@ -297,7 +296,7 @@ export default {
   methods: {
     getRelFields() {
       console.log('relField:', this.item.relTable)
-      return getDataLista(
+      return this.getDataLista(
         this.lDatos.tablas.data,
         this.item.relTable,
         'name',
@@ -400,7 +399,7 @@ export default {
 
         if (c.COLUMN_KEY == 'MUL') {
           c.typeF = 'selDB'
-          c.relTable = getDataLista(
+          c.relTable = this.getDataLista(
             this.lTabla.rels,
             c.COLUMN_NAME,
             'COLUMN_NAME',

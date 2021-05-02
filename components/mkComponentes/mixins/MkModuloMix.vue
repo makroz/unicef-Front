@@ -82,6 +82,10 @@ export default {
     }
   },
   methods: {
+    getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def = false) {
+        return getDataLista(lista, valor, busco, devuelvo,def)
+    },
+
     onBuscar(datos, quitarbuscar = false) {
       //console.log('OnBuscar Mix:', datos, this.busqueda)
       this.dataTable.paginator.page = 1
@@ -182,7 +186,7 @@ export default {
       }
 
       if (sortBy != '') {
-        let sBy = getDataLista(this.campos, sortBy, 'value', '*')
+        let sBy = this.getDataLista(this.campos, sortBy, 'value', '*')
         sortBy = '&sortBy=' + sortBy
         if (sBy) {
           if (sBy.sortBy) {

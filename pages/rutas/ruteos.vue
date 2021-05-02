@@ -444,7 +444,6 @@ import EChart from '@/components/chart/echart'
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkFormFullScreen from '@/components/mkComponentes/MkFormFullScreen.vue'
 import {
-  getDataLista,
   formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import Material from 'vuetify/es5/util/colors'
@@ -662,7 +661,7 @@ export default {
       ]
     },
     getOptionPregunta() {
-      let preg = getDataLista(this.lPreguntas, this.item.pregunta, 'id', '*')
+      let preg = this.getDataLista(this.lPreguntas, this.item.pregunta, 'id', '*')
       let r = [
         ['dataset.source', preg.nResp],
         [
@@ -725,14 +724,14 @@ export default {
     async openShow(accion, data) {
       this.accion = accion
       this.item = Object.assign({}, data)
-      this.item.ruta = getDataLista(this.lRutas, data.rutas_id, 'id', '*')
-      this.item.monitor = getDataLista(
+      this.item.ruta = this.getDataLista(this.lRutas, data.rutas_id, 'id', '*')
+      this.item.monitor = this.getDataLista(
         this.lUsuarios,
         data.usuarios_id,
         'id',
         '*'
       )
-      this.item.nBenef = getDataLista(
+      this.item.nBenef = this.getDataLista(
         this.lRutas,
         data.rutas_id,
         'id',
@@ -750,7 +749,7 @@ export default {
         if (e.servicios.length > 0) {
           this.item.nServicios++
           e.servicios.forEach((s) => {
-            let ser = getDataLista(this.item.nServ, s.servicios_id, 'id', '*')
+            let ser = this.getDataLista(this.item.nServ, s.servicios_id, 'id', '*')
             ser.value = ser.value + s.cant * 1
           })
         }
@@ -802,7 +801,7 @@ export default {
       })
       this.item.evaluaciones.forEach((e) => {
         e.respuestas.forEach((e1) => {
-          let preg = getDataLista(this.lPreguntas, e1.preguntas_id, 'id', '*')
+          let preg = this.getDataLista(this.lPreguntas, e1.preguntas_id, 'id', '*')
           if (preg.tipo == '1') {
             preg.nResp[e1.r_s * 1].value++
           }
@@ -917,9 +916,6 @@ export default {
     },
     formatDT(d, time = true) {
       return formatDT(d, time)
-    },
-    getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
-      return getDataLista(lista, valor, busco, devuelvo)
     },
     change(e) {
       this.item.usuarios_id = this.lRutas.find((el) => el.id === e).usuarios_id

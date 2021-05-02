@@ -42,7 +42,7 @@
           </v-autocomplete>
 
           <v-text-field
-            label="Epsa"
+            label="Cod.EPSA"
             v-model="itemData.epsa"
             disabled
           :readonly="accion=='show'" ></v-text-field>
@@ -257,7 +257,14 @@ export default {
   },
   methods: {
     change(e) {
-      this.itemData = this.lBeneficiarios.find((el) => el.id === e)
+      
+      this.itemData = this.lBeneficiarios.find((el) => el.id == e)
+      console.log('cange',e,this.itemData,this.lBeneficiarios);
+      if (!this.itemData){
+        this.itemData= {
+        epsa: '',
+      }
+      }
     },
     getNameLista(e, lista) {
       let valor = lista.find((el) => el.id == e)

@@ -93,7 +93,11 @@
                         :lat-lng="getMarker(marker, item, index)"
                         :draggable="false"
                         :visible="true"
-                      ></l-marker>
+                      >
+                      <l-tooltip>
+                            {{ (lBeneficiarios.filter((e) => e.id == marker))[0].name }}
+                          </l-tooltip>
+                      </l-marker>
                     </div>
                   </l-map>
                 </client-only>
@@ -177,8 +181,7 @@ export default {
       let lmarker = this.lBeneficiarios.filter((e) => e.id == id)
       let marker = this.center
       //console.log('lmarker',lmarker,id,this.lBeneficiarios)
-      if (lmarker.length > 0) {
-        //console.log('lmarker2',lmarker)
+      if (lmarker.length > 0 && lmarker[0].lat!='' && lmarker[0].lat!=null && lmarker[0].lng!='' && lmarker[0].lng!=null ) {
         marker = [lmarker[0].lat, lmarker[0].lng]
       }
 

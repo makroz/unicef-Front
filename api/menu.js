@@ -144,6 +144,12 @@ const Menu = [
                      title: 'Familias',
                      href: '/beneficiarios/familias/'
                  }
+,
+                {
+                     name: 'familiares',
+                     title: 'Familiares',
+                     href: '/beneficiarios/familiares/'
+                 }
              ]
         },
         {

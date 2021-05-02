@@ -693,7 +693,6 @@ import VWidget from '@/components/VWidget'
 import MkSimpleCard from '~/components/mkComponentes/mkCards/mkSimpleCard.vue'
 import { TargomoClient } from '@targomo/core'
 import {
-  getDataLista,
   getDistancia,
   formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
@@ -865,7 +864,7 @@ export default {
         'estado'
       )
         ? 'red'
-        : getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'verif')
+        : this.getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'verif')
         ? 'greem'
         : 'yellow'
     },
@@ -887,7 +886,7 @@ export default {
       this.item.obs = ''
       this.item.id = null
       this.item.estado = 0
-      let evaluacion = getDataLista(
+      let evaluacion = this.getDataLista(
         this.item.evaluaciones,
         bene,
         'beneficiarios_id',
@@ -900,7 +899,7 @@ export default {
         e.estado = 1
 
         if (evaluacion) {
-          let existe = getDataLista(
+          let existe = this.getDataLista(
             evaluacion.servicios,
             e.id,
             'servicios_id',
@@ -920,7 +919,7 @@ export default {
       this.item.respuestas = {}
       this.lPreguntas.forEach((e) => {
         if (evaluacion) {
-          this.item.respuestas[e.id] = getDataLista(
+          this.item.respuestas[e.id] = this.getDataLista(
             evaluacion.respuestas,
             e.id,
             'preguntas_id',
@@ -945,7 +944,7 @@ export default {
 
       this.$refs.mkFormEval.$refs.form.resetValidation()
       this.tituloModal =
-        'Evaluacion de ' + getDataLista(this.lBeneficiarios, bene) //colocar computada de acuerdo al tamano
+        'Evaluacion de ' + this.getDataLista(this.lBeneficiarios, bene) //colocar computada de acuerdo al tamano
       if (!this.modalEval) this.modalEval = true
       //this.$nextTick(this.$refs.focus.focus)
     },
@@ -967,12 +966,12 @@ export default {
       ]
       let orders = ruta.beneficiarios.map((f) => {
         return {
-          uuid: getDataLista(this.lBeneficiarios, f),
+          uuid: this.getDataLista(this.lBeneficiarios, f),
           storeUuid: 'inicio',
           priority: 1,
           address: {
-            lat: getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
-            lng: getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
+            lat: this.getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
+            lng: this.getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
             avgHandlingTime: 1,
           },
         }
@@ -1095,7 +1094,7 @@ export default {
 
       this.$refs.mkForm.$refs.form.resetValidation()
       this.tituloModal =
-        'Abrir Ruteo para ' + getDataLista(this.lRutas, this.item.rutas_id)
+        'Abrir Ruteo para ' + this.getDataLista(this.lRutas, this.item.rutas_id)
       this.modal = true
       this.$nextTick(this.$refs.focus.focus)
     },
@@ -1104,7 +1103,7 @@ export default {
     },
     verMapaBene(bene, google = false) {
       this.getPosition()
-      let benef = getDataLista(this.lBeneficiarios, bene, 'id', '*')
+      let benef = this.getDataLista(this.lBeneficiarios, bene, 'id', '*')
       
       if (!google) {
         this.markers = [0, bene]
@@ -1156,14 +1155,11 @@ export default {
       this.item.obs = ''
       this.item.id = null
       this.tituloModal =
-        'Mapa Ruteo de ' + getDataLista(this.lRutas, this.item.rutas_id)
+        'Mapa Ruteo de ' + this.getDataLista(this.lRutas, this.item.rutas_id)
       this.modalMap = true
       setTimeout(() => {
         this.initMap()
       }, 300)
-    },
-    getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
-      return getDataLista(lista, valor, busco, devuelvo)
     },
     change(e) {
       this.item.usuarios_id = this.lRutas.find((el) => el.id === e).usuarios_id
@@ -1325,12 +1321,12 @@ export default {
         ],
         orders: ruta.beneficiarios.map((f) => {
           return {
-            uuid: getDataLista(this.lBeneficiarios, f),
+            uuid: this.getDataLista(this.lBeneficiarios, f),
             storeUuid: 'inicio',
             priority: 1,
             address: {
-              lat: getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
-              lng: getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
+              lat: this.getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
+              lng: this.getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
               avgHandlingTime: 1,
             },
           }
@@ -1393,7 +1389,7 @@ export default {
           r.push({
             id: el,
             distancia: this.distancia(
-              getDataLista(this.lBeneficiarios, el, 'id', '*')
+              this.getDataLista(this.lBeneficiarios, el, 'id', '*')
             ),
           })
         })
