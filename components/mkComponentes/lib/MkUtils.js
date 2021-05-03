@@ -75,6 +75,25 @@ export function getDistancia(lat1, lon1, lat2, lon2) {
     return R * 2 * Math.asin(Math.sqrt(a));
 }
 
+export function imprimirElemento(nombre, title = 'Impresion') {
+    let elemento = document.getElementById(nombre);
+    let ventana = window.open('', 'PRINT', 'height=400,width=1800');
+    ventana.document.write('<html><head><title>' + title + '</title>');
+    //ventana.document.write('<link rel="stylesheet" href="style.css">'); 
+    ventana.document.write('<script src="/_nuxt/runtime.js"></script><script src="/_nuxt/commons/app.js"></script><script src="/_nuxt/vendors/app.js"></script><script src="/_nuxt/app.js"></script><link data-n-head="1" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">');
+    ventana.document.write('</head><body >');
+    ventana.document.write(elemento.innerHTML);
+    ventana.document.write('</body></html>');
+    ventana.document.close();
+    ventana.focus();
+    ventana.onload = function() {
+        ventana.print();
+        ventana.close();
+    };
+    return true;
+}
+
+
 export function formatDT(d = '', time = true) {
     //return new Date(data).toString().split
     //    console.log('fecha',(d+' ').trim())

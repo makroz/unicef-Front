@@ -52,6 +52,7 @@
                 v-model="item.entidades_id"
                 :items="lEntidades"
                 :rules="[rules.required]"
+                validate-on-blur
                 item-text="name"
                 item-value="id"
                 label="Entidad"
@@ -63,6 +64,7 @@
                 v-model="item.distritos_id"
                 :items="lDistritos"
                 :rules="[rules.required]"
+                validate-on-blur
                 item-text="name"
                 item-value="id"
                 label="Distrito"
@@ -147,6 +149,7 @@
         </v-container>
       </mk-form>
       <!-- formularioFull Familia -->
+      
       <mk-form-full-screen
         ref="mkForm"
         :modal="modalFam"
@@ -156,6 +159,7 @@
         @grabarItem="grabarItem"
       >
         <v-container grid-list-md fluid class="white">
+          
           <v-flex md12>
             <v-text-field
               label="Nombre Beneficiario"
@@ -211,7 +215,7 @@
                 :items="lDescoms"
                 item-text="name"
                 item-value="id"
-                label="Descom"
+                label="Trab. Social o DESCOM"
                 v-model="item.descom_id"
                 :rules="[rules.num]"
                 validate-on-blur
@@ -223,7 +227,7 @@
               <v-checkbox
                 v-model="item.autoriza"
                 value="1"
-                label="Autoriza"
+                label="Autoriza Monitoreo"
                 :readonly="accion == 'show'"
               >
               </v-checkbox>
@@ -232,7 +236,7 @@
               <v-checkbox
                 v-model="item.protec"
                 value="1"
-                label="Protec"
+                label="Programa de Protección"
                 :readonly="accion == 'show'"
               >
               </v-checkbox>
@@ -332,7 +336,7 @@
               </v-flex>
               <v-flex xs12 sm4>
                 <v-text-field
-                  label="Safsi"
+                  label="No. Vivienda SAFSI"
                   v-model="item.safsi"
                   validate-on-blur
                   :readonly="accion == 'show'"
@@ -345,7 +349,7 @@
             <v-flex xs12 sm6>
               <v-text-field
                 type="number"
-                label="Nfamilias"
+                label="No. de Familias que viven en la vivienda"
                 v-model="item.nfamilias"
                 :rules="[rules.num, rules.required]"
                 validate-on-blur
@@ -357,7 +361,7 @@
             <v-flex xs12 sm6>
               <v-text-field
                 type="number"
-                label="Npersonas"
+                label="No. Total de Personas que viven en la vivienda"
                 v-model="item.npersonas"
                 :rules="[rules.num, rules.required]"
                 validate-on-blur
@@ -720,8 +724,10 @@
               </v-flex>
             </v-layout>
           </v-card>
+          
         </v-container>
       </mk-form-full-screen>
+      
     </v-container>
   </div>
 </template>
@@ -890,6 +896,7 @@ export default {
       // data.metodos = Object.assign([],metodos)
 
       this.openDialog('edit', data, false)
+      this.tituloModal='Kardex Familiar'
       this.modalFam = true
     },
     claseBenef(item, datos) {
@@ -938,7 +945,7 @@ export default {
     afterSave(me, isError) {
       this.modalFam = false
     },
-    async beforeOpen(accion, data = {}) {
+    beforeOpen(accion, data = {}) {
       if (accion == 'add') {
         data.lat = ''
         data.lng = ''
@@ -946,6 +953,7 @@ export default {
       setTimeout(() => {
         this.initMap()
       }, 100)
+      
     },
   },
   async mounted() {

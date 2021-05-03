@@ -140,17 +140,11 @@ const Menu = [
                     href: '/beneficiarios/prob_sol_existentes/'
                 },
                 {
-                     name: 'familias',
-                     title: 'Familias',
-                     href: '/beneficiarios/familias/'
-                 }
-,
-                {
-                     name: 'familiares',
-                     title: 'Familiares',
-                     href: '/beneficiarios/familiares/'
-                 }
-             ]
+                    name: 'familiares',
+                    title: 'Familiares',
+                    href: '/beneficiarios/familiares/'
+                }
+            ]
         },
         {
             title: 'Modulo Preguntas',
@@ -199,30 +193,30 @@ const Menu = [
                 }
             ]
         },
-        { divider: true },
-        {
-            title: 'Importaciones',
-            group: 'importaciones',
-            component: 'importaciones',
-            icon: 'face',
-            items: [{
-                name: 'ImportarBeneficiarios',
-                title: 'Importar Beneficiarios',
-                href: '/importaciones/beneficiarios/'
-            }, ]
-        },
-        { divider: true },
-        {
-            title: 'IA CRUD',
-            group: 'ia',
-            component: 'ia',
-            icon: 'face',
-            items: [{
-                name: 'iaCrud',
-                title: 'IA CRUD',
-                href: '/ia/ia/'
-            }, ]
-        },
+        // { divider: true },
+        // {
+        //     title: 'Importaciones',
+        //     group: 'importaciones',
+        //     component: 'importaciones',
+        //     icon: 'face',
+        //     items: [{
+        //         name: 'ImportarBeneficiarios',
+        //         title: 'Importar Beneficiarios',
+        //         href: '/importaciones/beneficiarios/'
+        //     }, ]
+        // },
+        // { divider: true },
+        // {
+        //     title: 'IA CRUD',
+        //     group: 'ia',
+        //     component: 'ia',
+        //     icon: 'face',
+        //     items: [{
+        //         name: 'iaCrud',
+        //         title: 'IA CRUD',
+        //         href: '/ia/ia/'
+        //     }, ]
+        // },
 
     ]
     // reorder menu

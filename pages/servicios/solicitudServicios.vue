@@ -257,9 +257,8 @@ export default {
   },
   methods: {
     change(e) {
-      
       this.itemData = this.lBeneficiarios.find((el) => el.id == e)
-      console.log('cange',e,this.itemData,this.lBeneficiarios);
+      //console.log('cange',e,this.itemData,this.lBeneficiarios);
       if (!this.itemData){
         this.itemData= {
         epsa: '',

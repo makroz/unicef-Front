@@ -9,6 +9,7 @@ import {
   c,
   getDataLista,
   getTitFromName,
+  imprimirElemento
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
 
@@ -82,6 +83,9 @@ export default {
     }
   },
   methods: {
+    imprimirElemento(nombre){
+      imprimirElemento(nombre)
+    },
     getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def = false) {
         return getDataLista(lista, valor, busco, devuelvo,def)
     },
