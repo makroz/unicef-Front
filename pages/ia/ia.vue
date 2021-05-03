@@ -282,6 +282,7 @@ export default {
       ],
       lTypeF: [
         { text: 'Texto', value: 'text' },
+        { text: 'Text Area', value: 'textarea' },
         { text: 'Numero', value: 'num' },
         { text: 'Numero Decimal', value: 'dec' },
         { text: 'Seleccion', value: 'sel' },
@@ -370,6 +371,11 @@ export default {
           if (c.CHARACTER_MAXIMUM_LENGTH==1){
             c.typeF = 'check'
           }
+        }
+
+        if (['text'].indexOf(c.DATA_TYPE) > -1) {
+          c.typeF = 'textarea'
+          c.align = 'l'
         }
 
         if (c.list || c.form) {

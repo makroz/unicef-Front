@@ -62,7 +62,12 @@ const Menu = [
             items: [{
                     name: 'beneficiarios',
                     title: 'Beneficiarios',
-                    href: '/beneficiarios/beneficiarios/'
+                    href: '/beneficiarios/beneficiarios/',
+                    items: [{
+                        name: 'beneficiarios',
+                        title: 'Beneficiarios sub menu',
+                        href: '/beneficiarios/beneficiarios/'
+                    }, ]
                 },
                 {
                     name: 'entidades',
@@ -145,24 +150,16 @@ const Menu = [
                     href: '/beneficiarios/familiares/'
                 }
             ]
-        },
-        {
-            title: 'Modulo Preguntas',
-            group: 'preguntas',
-            component: 'preguntas',
+        }, {
+            title: 'Modulo Capacitaciones',
+            group: 'capacitacioens',
+            component: 'capacitaciones',
             icon: 'face',
             items: [{
-                    name: 'categ',
-                    title: 'Categorias',
-                    href: '/preguntas/categ/'
-                },
-                {
-                    name: 'preguntas',
-                    title: 'Preguntas',
-                    badge: 'new',
-                    href: '/preguntas/preguntas/'
-                }
-            ]
+                name: 'lista_apoyos',
+                title: 'Lista de Apoyos',
+                href: '/capacitaciones/lista_apoyos/'
+            }]
         },
         {
             title: 'Modulo Usuarios',
@@ -205,18 +202,18 @@ const Menu = [
         //         href: '/importaciones/beneficiarios/'
         //     }, ]
         // },
-        // { divider: true },
-        // {
-        //     title: 'IA CRUD',
-        //     group: 'ia',
-        //     component: 'ia',
-        //     icon: 'face',
-        //     items: [{
-        //         name: 'iaCrud',
-        //         title: 'IA CRUD',
-        //         href: '/ia/ia/'
-        //     }, ]
-        // },
+        { divider: true },
+        {
+            title: 'IA CRUD',
+            group: 'ia',
+            component: 'ia',
+            icon: 'face',
+            items: [{
+                name: 'iaCrud',
+                title: 'IA CRUD',
+                href: '/ia/ia/'
+            }, ]
+        },
 
     ]
     // reorder menu
