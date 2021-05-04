@@ -341,7 +341,7 @@ export default {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
             ) {
-              if (me.item[el] !== undefined) {
+              if (me.item[el] !== undefined && el.indexOf('_temp_')==-1) {
                 itemData[el] = me.item[el]
               }
             }

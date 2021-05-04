@@ -61,93 +61,90 @@ const Menu = [
             icon: 'face',
             items: [{
                     name: 'beneficiarios',
-                    title: 'Beneficiarios',
-                    href: '/beneficiarios/beneficiarios/',
+                    title: 'Beneficiasrios',
+                    group: 'beneficiarios',
+                    component: 'beneficiarios',
+                    href: '/beneficiarios/beneficiarios/'
+                },
+                {
+                    name: 'auxiliares',
+                    title: 'Auxiliares',
                     items: [{
-                        name: 'beneficiarios',
-                        title: 'Beneficiarios sub menu',
-                        href: '/beneficiarios/beneficiarios/'
-                    }, ]
-                },
-                {
-                    name: 'entidades',
-                    title: 'Entidades',
-                    href: '/beneficiarios/entidades/'
-                },
-                {
-                    name: 'dptos',
-                    title: 'Dptos',
-                    href: '/beneficiarios/dptos/'
-                },
-                {
-                    name: 'municipios',
-                    title: 'Municipios',
-                    href: '/beneficiarios/municipios/'
-                },
-                {
-                    name: 'distritos',
-                    title: 'Distritos',
-                    href: '/beneficiarios/distritos/'
-                },
-                {
-                    name: 'zonas',
-                    title: 'Zonas',
-                    href: '/beneficiarios/zonas/'
-                },
-                {
-                    name: 'epsas',
-                    title: 'Epsas',
-                    href: '/beneficiarios/epsas/'
-                },
-                {
-                    name: 'descoms',
-                    title: 'Descoms',
-                    href: '/beneficiarios/descoms/'
-                },
-                {
-                    name: 'parentescos',
-                    title: 'Parentescos',
-                    href: '/beneficiarios/parentescos/'
-                },
-                {
-                    name: 'est_civiles',
-                    title: 'Estados Civiles',
-                    href: '/beneficiarios/est_civiles/'
-                },
-                {
-                    name: 'niv_educativos',
-                    title: 'Niveles Educativos',
-                    href: '/beneficiarios/niv_educativos/'
-                },
-                {
-                    name: 'ocupaciones',
-                    title: 'Ocupaciones',
-                    href: '/beneficiarios/ocupaciones/'
-                },
-                {
-                    name: 'tipo_banos',
-                    title: 'Tipos de baños',
-                    href: '/beneficiarios/tipo_banos/'
-                },
-                {
-                    name: 'doc_firmados',
-                    title: 'Doc. Firmados',
-                    href: '/beneficiarios/doc_firmados/'
-                },
-                {
-                    name: 'info_metodos',
-                    title: 'Métodos de Información',
-                    href: '/beneficiarios/info_metodos/'
-                },
-                {
-                    name: 'prob_sol_existentes',
-                    title: 'Problemas y Soluciones',
-                    href: '/beneficiarios/prob_sol_existentes/'
-                },
-                {
-                    name: 'familiares',
-                    title: 'Familiares',
-                    href: '/beneficiarios/familiares/'
+                            name: 'entidades',
+                            title: 'Entidades',
+                            href: '/beneficiarios/entidades/'
+                        },
+                        {
+                            name: 'dptos',
+                            title: 'Dptos',
+                            href: '/beneficiarios/dptos/'
+                        },
+                        {
+                            name: 'municipios',
+                            title: 'Municipios',
+                            href: '/beneficiarios/municipios/'
+                        },
+                        {
+                            name: 'distritos',
+                            title: 'Distritos',
+                            href: '/beneficiarios/distritos/'
+                        },
+                        {
+                            name: 'zonas',
+                            title: 'Zonas',
+                            href: '/beneficiarios/zonas/'
+                        },
+                        {
+                            name: 'epsas',
+                            title: 'Epsas',
+                            href: '/beneficiarios/epsas/'
+                        },
+                        {
+                            name: 'descoms',
+                            title: 'Descoms',
+                            href: '/beneficiarios/descoms/'
+                        },
+                        {
+                            name: 'parentescos',
+                            title: 'Parentescos',
+                            href: '/beneficiarios/parentescos/'
+                        },
+                        {
+                            name: 'est_civiles',
+                            title: 'Estados Civiles',
+                            href: '/beneficiarios/est_civiles/'
+                        },
+                        {
+                            name: 'niv_educativos',
+                            title: 'Niveles Educativos',
+                            href: '/beneficiarios/niv_educativos/'
+                        },
+                        {
+                            name: 'ocupaciones',
+                            title: 'Ocupaciones',
+                            href: '/beneficiarios/ocupaciones/'
+                        },
+                        {
+                            name: 'tipo_banos',
+                            title: 'Tipos de baños',
+                            href: '/beneficiarios/tipo_banos/'
+                        },
+                        {
+                            name: 'doc_firmados',
+                            title: 'Doc. Firmados',
+                            href: '/beneficiarios/doc_firmados/'
+                        },
+                        {
+                            name: 'info_metodos',
+                            title: 'Métodos de Información',
+                            href: '/beneficiarios/info_metodos/'
+                        },
+                        // {
+                        //     name: 'familiares',
+                        //     title: 'Familiares',
+                        //     href: '/beneficiarios/familiares/'
+                        // }
+                    ]
                 }
             ]
         }, {
@@ -156,10 +153,16 @@ const Menu = [
             component: 'capacitaciones',
             icon: 'face',
             items: [{
-                name: 'lista_apoyos',
-                title: 'Lista de Apoyos',
-                href: '/capacitaciones/lista_apoyos/'
-            }]
+                    name: 'lista_apoyos',
+                    title: 'Lista de Apoyos',
+                    href: '/capacitaciones/lista_apoyos/'
+                },
+                {
+                    name: 'sesion_familiares',
+                    title: 'Sesiones Familiares',
+                    href: '/capacitaciones/sesion_familiares/'
+                }
+            ]
         },
         {
             title: 'Modulo Usuarios',

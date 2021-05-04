@@ -153,6 +153,7 @@
       <mk-form-full-screen
         ref="mkForm"
         :modal="modalFam"
+        :menuBottom="true"
         :tit="tituloModal"
         :accion="accion"
         @closeDialog="modalFam = false"
@@ -375,7 +376,6 @@
             <v-toolbar color="red" dark dense>
               <v-toolbar-title class="body-1"
                 >Familiares
-                {{ $vuetify.breakpoint.name }}
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn icon color="green" @click="addFamiliar()" small>
@@ -724,7 +724,6 @@
               </v-flex>
             </v-layout>
           </v-card>
-          
         </v-container>
       </mk-form-full-screen>
       

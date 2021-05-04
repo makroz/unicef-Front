@@ -33,6 +33,21 @@
           </v-toolbar>
 
             <slot>Contenido</slot>
+
+<v-toolbar v-if="menuBottom" dark color="primary" dense>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+               <v-btn color="dark flat" flat @click.stop="$emit('closeDialog')">Volver</v-btn>
+          <v-btn v-if="accion!='show'"
+            :disabled="!formValid"
+            color="flat green--text"
+            flat
+            @click.stop="grabar"
+            v-text="accion == 'edit' ? 'Actualizar' : 'Grabar'"
+          ></v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+
       </v-card>
                 
 
@@ -47,6 +62,10 @@ export default {
   mixins: [MkOncesMix],
   props: {
     modal: {
+      type: Boolean,
+      default: false
+    },
+    menuBottom: {
       type: Boolean,
       default: false
     },
