@@ -61,7 +61,7 @@ const Menu = [
             icon: 'face',
             items: [{
                     name: 'beneficiarios',
-                    title: 'Beneficiasrios',
+                    title: 'Beneficiarios',
                     group: 'beneficiarios',
                     component: 'beneficiarios',
                     href: '/beneficiarios/beneficiarios/'

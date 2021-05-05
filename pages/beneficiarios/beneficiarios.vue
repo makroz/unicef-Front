@@ -149,7 +149,7 @@
         </v-container>
       </mk-form>
       <!-- formularioFull Familia -->
-      
+
       <mk-form-full-screen
         ref="mkForm"
         :modal="modalFam"
@@ -160,7 +160,6 @@
         @grabarItem="grabarItem"
       >
         <v-container grid-list-md fluid class="white">
-          
           <v-flex md12>
             <v-text-field
               label="Nombre Beneficiario"
@@ -371,12 +370,17 @@
               </v-text-field>
             </v-flex>
           </v-layout>
-
+          <v-flex xs12>
+            <v-text-field
+              label="Jefe de Familia"
+              v-model="item.jefe_hogar"
+              :readonly="accion == 'show'"
+            >
+            </v-text-field>
+          </v-flex>
           <v-card class="pa-2">
             <v-toolbar color="red" dark dense>
-              <v-toolbar-title class="body-1"
-                >Familiares
-              </v-toolbar-title>
+              <v-toolbar-title class="body-1">Familiares </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn icon color="green" @click="addFamiliar()" small>
                 <v-icon>add</v-icon>
@@ -485,7 +489,7 @@
             </v-layout>
           </v-card>
 
-          <v-card class="pa-2">
+          <v-card class="pa-2 mt-2">
             <v-toolbar color="indigo" dark dense>
               <v-toolbar-title class="body-1">Contrapartes</v-toolbar-title>
             </v-toolbar>
@@ -625,20 +629,24 @@
             </v-layout>
           </v-card>
 
-          <v-flex>
-            <v-select
-              :items="lTipo_banos"
-              item-text="name"
-              item-value="id"
-              label="¿Qué tipo de solución en saneamiento utiliza la familia antes de su participación en el proyecto?"
-              v-model="item.tipo_bano_id"
-              :rules="[rules.num]"
-              validate-on-blur
-              :readonly="accion == 'show'"
-            >
-            </v-select>
-          </v-flex>
-
+          <v-card class="pa-2 my-2">
+            <v-toolbar color="indigo" dark dense>
+              <v-toolbar-title class="body-1">
+                Tipo de Saneamiento
+              </v-toolbar-title>
+            </v-toolbar>
+              <v-select
+                :items="lTipo_banos"
+                item-text="name"
+                item-value="id"
+                label="¿Qué tipo de solución en saneamiento utiliza la familia antes de su participación en el proyecto?"
+                v-model="item.tipo_bano_id"
+                :rules="[rules.num]"
+                validate-on-blur
+                :readonly="accion == 'show'"
+              >
+              </v-select>
+          </v-card>
           <v-card class="pa-2">
             <v-toolbar color="indigo" dark dense>
               <v-toolbar-title class="body-1"
@@ -726,7 +734,6 @@
           </v-card>
         </v-container>
       </mk-form-full-screen>
-      
     </v-container>
   </div>
 </template>
@@ -895,7 +902,7 @@ export default {
       // data.metodos = Object.assign([],metodos)
 
       this.openDialog('edit', data, false)
-      this.tituloModal='Kardex Familiar'
+      this.tituloModal = 'Kardex Familiar'
       this.modalFam = true
     },
     claseBenef(item, datos) {
