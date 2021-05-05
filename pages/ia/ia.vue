@@ -285,6 +285,9 @@ export default {
         { text: 'Text Area', value: 'textarea' },
         { text: 'Numero', value: 'num' },
         { text: 'Numero Decimal', value: 'dec' },
+        { text: 'Fecha', value: 'date' },
+        { text: 'Hora', value: 'time' },
+        { text: 'Fecha y Hora', value: 'datetime' },
         { text: 'Seleccion', value: 'sel' },
         { text: 'Seleccion Multiple', value: 'selMul' },
         { text: 'Seleccion DB', value: 'selDB' },
@@ -376,6 +379,12 @@ export default {
         if (['text'].indexOf(c.DATA_TYPE) > -1) {
           c.typeF = 'textarea'
           c.align = 'l'
+          c.list = false
+        }
+
+        if (['date','time','datetime'].indexOf(c.DATA_TYPE) > -1) {
+          c.typeF = c.DATA_TYPE
+          c.align = 'c'
         }
 
         if (c.list || c.form) {
@@ -385,12 +394,6 @@ export default {
         if (c.IS_NULLABLE == 'NO') {
           this.addRules('required', c.rulesF)
           this.addRules('required', c.rulesB)
-          //   if (c.rulesF.indexOf('required')==-1){
-          //       c.rulesF.push('required')
-          //   }
-          //   if (c.rulesB.indexOf('required')==-1){
-          //       c.rulesB.push('required')
-          //   }
         }
 
         if (c.COLUMN_NAME == 'name') {
@@ -420,7 +423,6 @@ export default {
           c.rulesF = ['ninguna']
           c.rulesB = ['ninguna']
           c.typeF = 'num'
-          //c.typeB = 'num'
           c.align = 'r'
         }
       })

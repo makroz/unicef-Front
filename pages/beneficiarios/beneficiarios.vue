@@ -952,7 +952,6 @@ export default {
       setTimeout(() => {
         this.initMap()
       }, 100)
-      
     },
   },
   async mounted() {

@@ -27,54 +27,13 @@
         <v-container grid-list-md fluid class="white">
           <v-layout row wrap>
             <v-flex xs8 md6 lg3>
-              <v-dialog
-                v-if="accion != 'show'"
-                ref="fecha_dialog"
-                v-model="item.fecha_modal_temp_"
-                :return-value.sync="item.fecha"
-                persistent
-                lazy
-                full-width
-                width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    ref="fecha"
-                    v-model="item.fecha_temp_"
-                    label="Fecha"
-                    prepend-icon="event"
-                    readonly
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="item.fecha" scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    flat
-                    color="primary"
-                    @click="item.fecha_modal_temp_ = false"
-                    >Cancel</v-btn
-                  >
-                  <v-btn
-                    flat
-                    color="primary"
-                    @click="
-                      $refs.fecha_dialog.save(item.fecha)
-                      item.fecha_temp_ = formatDate(item.fecha)
-                    "
-                    >OK</v-btn
-                  >
-                </v-date-picker>
-              </v-dialog>
-              <v-text-field
-                v-else
-                ref="fecha"
-                v-model="item.fecha_temp_"
+              <mk-date
+                v-model="item.fecha"
                 label="Fecha"
-                prepend-icon="event"
-                readonly
-                v-on="on"
-              ></v-text-field>
+                :rules="[rules.required]"
+                :accion="accion"
+              >
+              </mk-date>
             </v-flex>
             <v-flex xs4 md6 lg2>
               <v-text-field
@@ -102,6 +61,12 @@
             </v-flex>
             <v-flex xs12>
               <v-card class="pa-2">
+                <v-toolbar color="indigo" dark dense>
+                  <v-toolbar-title class="body-1"
+                    >Desarrollo de habilidades en SSD
+                  </v-toolbar-title>
+                </v-toolbar>
+
                 <v-layout row wrap>
                   <v-flex xs12 md6>
                     <v-textarea
@@ -151,6 +116,32 @@
               </v-card>
             </v-flex>
           </v-layout>
+
+          <br />
+          <v-card class="pa-2">
+            <v-toolbar color="indigo" dark dense>
+              <v-toolbar-title class="body-1">
+                La familia requiere apoyo en:
+              </v-toolbar-title>
+            </v-toolbar>
+
+            <v-layout row wrap>
+              <v-flex xs12>
+                <v-select
+                v-if="item.apoyos"
+                  :items="lApoyos"
+                  item-text="name"
+                  item-value="id"
+                  label="Apoyos Disponibles"
+                  v-model="item.apoyos.apoyos"
+                  multiple
+                  chips
+                  :readonly="accion == 'show'"
+                >
+                </v-select>
+              </v-flex>
+            </v-layout>
+          </v-card>
         </v-container>
       </mk-form>
     </v-container>
@@ -159,11 +150,9 @@
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
-import { formatDT } from '@/components/mkComponentes/lib/MkUtils.js'
 
 export default {
   middleware: ['authAccess'],
-
   mixins: [MkModuloMix],
   name: 'Sesion_familiares',
   data() {
@@ -246,23 +235,26 @@ export default {
       ],
       fecha_modal: false,
       lBeneficiarios: [],
+      lApoyos: [],
     }
   },
   methods: {
-    formatDate(date) {
-      if (!date) return null
-      let fecha = (date + ' ').split(' ')[0]
-      const [year, month, day] = fecha.split('-')
-      return `${year}/${month}/${day}`
-    },
-    formatDT(fecha, time = true) {
-      return formatDT(fecha, time)
-    },
     beforeOpen(accion, data = {}) {
-      if (accion == 'add') {
-        //data.fecha=new Date().toISOString().substr(0, 10)
+      if (accion != 'add') {
+        //data.apoyos = Object.assign([],data.apoyos.apoyos)
+      }else{
+//        data.apoyos=[]
+        data.apoyos={apoyos:[]}
       }
-      data.fecha_temp_ = this.formatDate(data.fecha)
+    },
+
+    beforeSave(me) {
+      if (
+        JSON.stringify(me.dirty.item['apoyos']) !=
+        JSON.stringify(me.item['apoyos'])
+      ) {
+        me.item.beneficiario_id_ = me.item.beneficiario_id
+      }
     },
   },
   async mounted() {
@@ -271,6 +263,7 @@ export default {
       'id,name',
       'beneficiario_id'
     )
+    this.lApoyos = await this.getListaBackend('Lista_apoyos', 'id,name')
   },
 }
 </script>

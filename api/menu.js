@@ -149,7 +149,7 @@ const Menu = [
             ]
         }, {
             title: 'Modulo Capacitaciones',
-            group: 'capacitacioens',
+            group: 'capacitaciones',
             component: 'capacitaciones',
             icon: 'face',
             items: [{
@@ -161,6 +161,11 @@ const Menu = [
                     name: 'sesion_familiares',
                     title: 'Sesiones Familiares',
                     href: '/capacitaciones/sesion_familiares/'
+                },
+                {
+                    name: 'sesion_grupales',
+                    title: 'Sesiones Grupales',
+                    href: '/capacitaciones/sesion_grupales/'
                 }
             ]
         },
@@ -205,18 +210,18 @@ const Menu = [
         //         href: '/importaciones/beneficiarios/'
         //     }, ]
         // },
-        { divider: true },
-        {
-            title: 'IA CRUD',
-            group: 'ia',
-            component: 'ia',
-            icon: 'face',
-            items: [{
-                name: 'iaCrud',
-                title: 'IA CRUD',
-                href: '/ia/ia/'
-            }, ]
-        },
+        // { divider: true },
+        // {
+        //     title: 'IA CRUD',
+        //     group: 'ia',
+        //     component: 'ia',
+        //     icon: 'face',
+        //     items: [{
+        //         name: 'iaCrud',
+        //         title: 'IA CRUD',
+        //         href: '/ia/ia/'
+        //     }, ]
+        // },
 
     ]
     // reorder menu

@@ -2,6 +2,7 @@
 import MkHead from '@/components/mkComponentes/MkHead'
 import MkForm from '@/components/mkComponentes/MkFormulario'
 import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
+import MkDate from '@/components/mkComponentes/mkDate'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import MkOncesMix from '@/components/mkComponentes/mixins/MkOncesMix'
 import Swal from 'sweetalert2'
@@ -24,6 +25,7 @@ export default {
     MkHead,
     MkForm,
     MkDataTable,
+    MkDate,
   },
   mixins: [MkRulesMix, MkOncesMix],
   data() {
@@ -83,6 +85,9 @@ export default {
     }
   },
   methods: {
+    formatDT(d = '', time = true) {
+      return formatDT(d, time)
+    },
     imprimirElemento(nombre){
       imprimirElemento(nombre)
     },
@@ -325,6 +330,9 @@ export default {
         if (!this.can('edit', true)) {
           return false
         }
+        if (me.item.id == null) {
+          delete me.item.id
+        }
         me.dataTable.loading = true
         let url = me.urlModulo + '/' + me.item.id
 
@@ -516,7 +524,6 @@ export default {
         this.mkImgData.imgDel = false
       }
       //mkImg
-
       this.$refs.mkForm.$refs.form.resetValidation()
 
       if (accion == 'add') {

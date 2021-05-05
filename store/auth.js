@@ -9,7 +9,7 @@ export const state = () => ({
     authUser: null,
     acceso: false,
     rutaBack: null,
-    cacheActive: true,
+    cacheActive: false,
     encryptActive: true,
     permisos: {
         view: 1,
