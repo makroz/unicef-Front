@@ -28,8 +28,10 @@
 
 
               <v-btn flat value="clearCache" @click="clearCache()">Borrar Cache</v-btn>
+              
 
-              <v-btn flat value="clearParams" @click="clearParams()">Borrar Parametros</v-btn>
+              <v-btn flat value="clearParams" @click="clearParams(true)">Borrar Parametros del Modulo {{ modulo }}</v-btn>
+                            <v-btn flat value="clearParams" @click="clearParams(false)">Borrar Todos Parametros</v-btn>
             </div>
           </div>
           <v-subheader class="px-1 my-2">Color Option</v-subheader>
@@ -77,11 +79,7 @@ export default {
       themeColor: 'indigo',
       sideBarOption: 'light',
       colors: colors,
-      modulo: this.$route.fullPath
-        .split('\\')
-        .pop()
-        .split('/')
-        .pop()
+      modulo: '',
     }
   },
   methods: {
@@ -97,24 +95,19 @@ export default {
       let modulo = ''
       let c1 = 'FrontEnd'
       if (mod) {
-        modulo = this.modulo
-        c1 = this.modulo
-      }
-
-      if (!modulo) {
-        let modulo = string.charAt(0).toUpperCase() + string.slice(1).mod
+        modulo =(this.$route.name+'').split('-').pop(0)
+        modulo =modulo.charAt(0).toUpperCase() + modulo.slice(1)
       }
       for (var key in localStorage) {
         if (key.indexOf(modulo + '.Params.') >= 0) {
           localStorage.removeItem(key)
         }
-        c('Se elimino Parametros del Cache del Front', c1, 'Params', 'warning')
+        c('Se elimino Parametros del Cache del Front '+modulo, c1, 'Params', 'warning')
       }
     }
   },
   mounted() {
-    //console.log('mounted dasboard',this.$route.fullPath.split('\\').pop().split('/').pop())
-    this.modulo = this.modulo.charAt(0).toUpperCase() + this.modulo.slice(1)
+    this.modulo = (this.$route.name+'').split('-').pop(0)
   },
   computed: {
     themeColorOptions() {

@@ -675,6 +675,17 @@ export default {
       })
       //console.error('updatelist',me.campos)
     },
+    async getDatasBackend(mod,listas) {
+      let data = await this.$store.dispatch('auth/loadDatas',{mod:mod,listas:listas})
+      listas.forEach(el => {
+        if (el.item) {
+        if (el.item.isArray) {
+          el.item.forEach((e) => this.updateListCol(e, data[el.mod]))
+        } else this.updateListCol(el.item, data[el.mod])
+      }
+      });
+      return data
+    },
     async getListaBackend(url, campos = '', item = null) {
       let lista = await this.$store.dispatch('auth/loadData', {
         url: url,
@@ -740,6 +751,12 @@ export default {
       this.dataTable.acciones.push(option)
       return true
     },
+    // getCt(url){
+    //   return this.$store.getters['products/getCtOnly'](url)
+    // },
+    // getCache(url,data){
+    //   return this.$store.getters['products/getDataCache'](data,url)
+    // }
   },
   watch: {
     Auth: {

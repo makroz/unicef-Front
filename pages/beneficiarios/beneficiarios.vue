@@ -973,61 +973,43 @@ export default {
       orden: 1,
     })
 
-    // this.lRutas = await this.getListaBackend('Rutas', 'id,name', 'rutas_id')
-    // this.lEntidades = await this.getListaBackend(
-    //   'Entidades',
-    //   'id,name',
-    //   'entidades_id'
-    // )
-    // this.lDistritos = await this.getListaBackend(
-    //   'Distritos',
-    //   'id,name',
-    //   'distritos_id'
-    // )
+    let datos={modulo:'mkBeneficiarios'}
+    let listas= await this.getDatasBackend(this.urlModulo,[
+      {mod:'Distritos',datos:datos,item:'distritos_id'},
+      {mod:'Entidades',datos:datos,item:'entidades_id'},
+      {mod:'Dptos',datos:datos},
+      {mod:'Municipios',datos:datos},
+      {mod:'Zonas',datos:datos},
+      {mod:'Epsas',datos:datos},
+      {mod:'Descoms',datos:datos},
+      {mod:'Tipo_banos',datos:datos},
+      {mod:'Doc_firmados',datos:datos},
+      {mod:'Info_metodos',datos:datos},
+      {mod:'Parentescos',datos:datos},
+      {mod:'Est_civiles',datos:datos},
+      {mod:'Niv_educativos',datos:datos},
+      {mod:'Ocupaciones',datos:datos},
+      {mod:'Rutas',datos:{modulo:'mkRutas'},item:'rutas_id'},
+    ])
 
-    this.lDistritos = await this.getListaBackend(
-      'Distritos',
-      'id,name',
-      'distritos_id'
-    )
+    //console.log('listado benef:',listas);
 
-    this.lEntidades = await this.getListaBackend(
-      'Entidades',
-      'id,name',
-      'entidades_id'
-    )
-
-    this.lRutas = await this.getListaBackend('Rutas', 'id,name', 'rutas_id')
-
-    this.lDptos = await this.getListaBackend('Dptos', 'id,name', 'dpto_id')
-
-    this.lMunicipios = await this.getListaBackend(
-      'Municipios',
-      'id,name',
-      'municipio_id'
-    )
-
-    this.lZonas = await this.getListaBackend('Zonas', 'id,name', 'zona_id')
-
-    this.lDescoms = await this.getListaBackend(
-      'Descoms',
-      'id,name',
-      'descom_id'
-    )
-
-    this.lEpsas = await this.getListaBackend('Epsas', 'id,name', 'epsa_id')
-
-    this.lTipo_banos = await this.getListaBackend(
-      'Tipo_banos',
-      'id,name',
-      'tipo_bano_id'
-    )
-
-    this.lDoc_firmados = await this.getListaBackend(
-      'Doc_firmados',
-      'id,name,orden',
-      'doc_firmado_id'
-    )
+    this.lDistritos = listas.Distritos
+    this.lEntidades = listas.Entidades
+    this.lRutas = listas.Rutas
+    this.lDptos = listas.Dptos
+    this.lMunicipios = listas.Municipios
+    this.lZonas = listas.Zonas
+    this.lDescoms = listas.Descoms
+    this.lEpsas = listas.Epsas
+    this.lTipo_banos = listas.Tipo_banos
+    this.lInfo_metodos = listas.Info_metodos
+    this.lParentescos =listas.Parentescos
+    this.lEst_civiles = listas.Est_civiles
+    this.lNiv_educativos = listas.Niv_educativos
+    this.lOcupaciones = listas.Ocupaciones
+    this.lDoc_firmados = listas.Doc_firmados
+    
     if (this.lDoc_firmados.length > 0) {
       this.lDoc_firmados.sort(function (a, b) {
         return a.orden - b.orden
@@ -1037,35 +1019,7 @@ export default {
       this.lFirmados[e.id] = '0'
     })
 
-    this.lInfo_metodos = await this.getListaBackend(
-      'Info_metodos',
-      'id,name',
-      'info_metodo_id'
-    )
-
-    this.lParentescos = await this.getListaBackend(
-      'Parentescos',
-      'id,name',
-      'parentesco_id'
-    )
-
-    this.lEst_civiles = await this.getListaBackend(
-      'Est_civiles',
-      'id,name',
-      'est_civil_id'
-    )
-
-    this.lNiv_educativos = await this.getListaBackend(
-      'Niv_educativos',
-      'id,name',
-      'niv_educativo_id'
-    )
-
-    this.lOcupaciones = await this.getListaBackend(
-      'Ocupaciones',
-      'id,name',
-      'ocupacion_id'
-    )
+    
   },
 }
 </script>

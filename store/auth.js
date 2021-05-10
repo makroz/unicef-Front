@@ -1,5 +1,5 @@
-import AES from 'crypto-js/aes';
-import Utf8 from 'crypto-js/enc-utf8';
+import AES from 'crypto-js/aes'
+import Utf8 from 'crypto-js/enc-utf8'
 import MD5 from 'crypto-js/md5'
 import { c } from '@/components/mkComponentes/lib/MkUtils.js'
 const _lap = process.env.mkConfig.authKey
@@ -9,7 +9,7 @@ export const state = () => ({
     authUser: null,
     acceso: false,
     rutaBack: null,
-    cacheActive: false,
+    cacheActive: true,
     encryptActive: true,
     permisos: {
         view: 1,
@@ -36,15 +36,25 @@ export const state = () => ({
         restore: 8,
         recycled: 8,
         restaurar: 8,
-        recyclar: 8,
+        recyclar: 8
     }
-
-
-});
+})
 
 export const getters = {
-
-    getCt: state => (url, paginate = false, lista = 1, ) => {
+    getCtOnly: (state) => (url, paginate = false, lista = 1) => {
+        let ct = ''
+        try {
+            if (state.encryptActive) {
+                ct = JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
+            } else {
+                ct = JSON.parse(localStorage.getItem('cache_' + url)).ct
+            }
+        } catch (error) {
+            ct = ''
+        }
+        return ct
+    },
+    getCt: (state, getters) => (url, paginate = false, lista = 1) => {
         if (!state.cacheActive) {
             return ''
         }
@@ -62,37 +72,39 @@ export const getters = {
             ct2 = ''
         }
 
-        try {
-            if (state.encryptActive) {
-                ct =
-                    ct +
-                    JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
-            } else {
-                ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
-            }
-            if (lista != 1) {
-                ct2 = '&_ct2_='
-                if (state.encryptActive) {
-                    ct2 =
-                        ct2 +
-                        JSON.parse(
-                            localStorage.getItem(
-                                'cache_' + MD5(url + '_' + lista).toString()
-                            )
-                        ).ct
-                } else {
-                    ct2 =
-                        ct2 +
-                        JSON.parse(localStorage.getItem('cache_' + url + '_' + lista)).ct
-                }
-            }
-        } catch (error) {
-            ct = ''
-            ct2 = ''
+        ct = ct + getters.getCtOnly(url)
+        if (lista != 1) {
+            ct2 = '&_ct2_=' + ct2 + getters.getCtOnly(url + '_' + lista)
         }
+        // try {
+        //     if (state.encryptActive) {
+        //         ct =
+        //             ct +
+        //             JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
+        //     } else {
+        //         ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
+        //     }
+        //     if (lista != 1) {
+        //         ct2 = '&_ct2_='
+        //         if (state.encryptActive) {
+        //             ct2 =
+        //                 ct2 +
+        //                 JSON.parse(
+        //                     localStorage.getItem('cache_' + MD5(url + '_' + lista).toString())
+        //                 ).ct
+        //         } else {
+        //             ct2 =
+        //                 ct2 +
+        //                 JSON.parse(localStorage.getItem('cache_' + url + '_' + lista)).ct
+        //         }
+        //     }
+        // } catch (error) {
+        //     ct = ''
+        //     ct2 = ''
+        // }
         return ct + ct2
     },
-    getDataCache: state => (data, url, paginate = false, lista = 1) => {
+    getDataCache: (state) => (data, url, paginate = false, lista = 1) => {
         if (!data) {
             return []
         }
@@ -104,8 +116,7 @@ export const getters = {
             url = url + '_' + lista
         }
         if (data.data == '_ct_') {
-
-            c('datos cacheados', (url.split('?'))[0].split('/')[0], 'Cache')
+            c('datos cacheados', url.split('?')[0].split('/')[0], 'Cache')
             if (state.encryptActive) {
                 data.data = JSON.parse(
                         localStorage.getItem('cache_' + MD5(url).toString())
@@ -116,9 +127,8 @@ export const getters = {
                             AES.decrypt(data.data.response, _lap).toString(Utf8)
                         ) //encriptado1.1
                 } else {
-                    data.data = '';
+                    data.data = ''
                 }
-
             } else {
                 data.data = JSON.parse(localStorage.getItem('cache_' + url)).response
                     //console.log(url,data.data);
@@ -146,58 +156,108 @@ export const getters = {
         }
         return data.data
     },
-    getUser: state => {
-        return state.authUser;
-    },
-    getToken: state => {
-        return state.authToken;
-    },
-    rolIs: (state, getters) => rol => {
-        if ((!rol) || (!state.authUser) || !state.authUser.rol) {
-            return false;
+
+    getDataCaches: (state) => (datas, listas) => {
+        if (!datas) {
+            return []
         }
-        rol = rol.toUpperCase().trim();
-        const rolUser = state.authUser.rol.toLowerCase().trim();
-        return rolUser == rol;
+        let resp = {}
+        listas.forEach((lista) => {
+            if (!datas.data[lista.mod]) {
+                resp[lista.mod] = []
+            } else {
+                let data = datas.data[lista.mod]
+                if (data == '_ct_') {
+                    c('Datos cacheados', lista.mod, 'Cache')
+                    if (state.encryptActive) {
+                        data = JSON.parse(
+                            localStorage.getItem('cache_' + MD5(lista.url).toString())
+                        )
+                        if (data.response != '') {
+                            data = JSON.parse(AES.decrypt(data.response, _lap).toString(Utf8))
+                        } else {
+                            data = ''
+                        }
+                    } else {
+                        data = JSON.parse(localStorage.getItem('cache_' + lista.url))
+                            .response
+                    }
+                } else {
+                    let response = data
+                    if (state.encryptActive) {
+                        lista.url = MD5(lista.url).toString()
+                        if (data) {
+                            response = AES.encrypt(JSON.stringify(data), _lap).toString()
+                        } else {
+                            response = []
+                        }
+                    }
+                    const ct = {
+                        ct: MD5(JSON.stringify(data)).toString(),
+                        response: response
+                    }
+                    localStorage.setItem('cache_' + lista.url, JSON.stringify(ct))
+                }
+                //resp.push({ mod: lista.mod, data: data })
+                resp[lista.mod] = data
+            }
+        })
+        return resp
     },
-    getPermiso: state => permiso => {
-        permiso = permiso.toLowerCase().trim();
-        return state.permisos[permiso];
+    getUser: (state) => {
+        return state.authUser
+    },
+    getToken: (state) => {
+        return state.authToken
+    },
+    rolIs: (state, getters) => (rol) => {
+        if (!rol || !state.authUser || !state.authUser.rol) {
+            return false
+        }
+        rol = rol.toUpperCase().trim()
+        const rolUser = state.authUser.rol.toLowerCase().trim()
+        return rolUser == rol
+    },
+    getPermiso: (state) => (permiso) => {
+        permiso = permiso.toLowerCase().trim()
+        return state.permisos[permiso]
     },
     tienePermiso: (state, getters) => {
-        var cacheMkAuth = [];
+        var cacheMkAuth = []
         return (tipo, permiso, clear) => {
-            const key = tipo + permiso;
-            if (clear) { cacheMkAuth = []; }
-            if ((!cacheMkAuth[key]) && (cacheMkAuth[key] !== false)) {
-                cacheMkAuth[key] = getters._tienePermiso(tipo, permiso);
+            const key = tipo + permiso
+            if (clear) {
+                cacheMkAuth = []
             }
-            return cacheMkAuth[key];
+            if (!cacheMkAuth[key] && cacheMkAuth[key] !== false) {
+                cacheMkAuth[key] = getters._tienePermiso(tipo, permiso)
+            }
+            return cacheMkAuth[key]
         }
     },
 
     _tienePermiso: (state, getters) => (tipo, permiso) => {
-        const tipos = state.permisos;
+        const tipos = state.permisos
         if (!getters.getUser) {
-            return false;
+            return false
         }
         if (getters.getUser.rol == 'superAdmin') {
-            return true;
+            return true
         }
         if (permiso) {
-            permiso = permiso.toLowerCase().trim();
+            permiso = permiso.toLowerCase().trim()
         }
         //console.log("antes tienePermisos No:",getters.getUser);
-        let acceso = 0;
+        let acceso = 0
         if (getters.getUser.permisos) {
-            acceso = getters.getUser.permisos[permiso];
+            acceso = getters.getUser.permisos[permiso]
         }
         //const permitido=(acceso && (acceso & tipos[tipo]))==tipos[tipo];
-        const permitido = (acceso && (acceso & tipos[tipo])) == tipos[tipo];
-        //console.log("_permisos:",'('+permiso+')',' Tipo:', tipo, " :", tipos[tipo], "/", acceso,'***',permitido,getters.getUser.permisos);
-        return permitido;
+        const permitido = (acceso && acceso & tipos[tipo]) == tipos[tipo]
+            //console.log("_permisos:",'('+permiso+')',' Tipo:', tipo, " :", tipos[tipo], "/", acceso,'***',permitido,getters.getUser.permisos);
+        return permitido
     }
-};
+}
 export const mutations = {
     toggle_tbl_opts_p(state) {
         state.tbl_opts_p = !state.tbl_opts_p
@@ -209,52 +269,98 @@ export const mutations = {
         state.encrypActive = !state.encrypActive
     },
     setAcceso(state, valor) {
-        state.acceso = valor;
+        state.acceso = valor
     },
     setCacheActive(state, valor) {
-        state.cacheActive = valor;
+        state.cacheActive = valor
     },
 
     setEncriptActive(state, valor) {
-        state.encrypActive = valor;
+        state.encrypActive = valor
     },
     SET_USER(state, user, persist = true) {
-        if ((user != null) && (persist)) {
-            localStorage.setItem("Auth", AES.encrypt(JSON.stringify(user), _lap).toString());
+        if (user != null && persist) {
+            localStorage.setItem(
+                'Auth',
+                AES.encrypt(JSON.stringify(user), _lap).toString()
+            )
         } else {
-            localStorage.removeItem("Auth");
-            localStorage.removeItem("AuthToken");
+            localStorage.removeItem('Auth')
+            localStorage.removeItem('AuthToken')
         }
-        state.authUser = user;
+        state.authUser = user
     },
     setRutaBack(state, val) {
-        state.rutaBack = val;
+        state.rutaBack = val
     },
     setAuthToken(state, val) {
         if (val != null) {
-            localStorage.setItem("AuthToken", AES.encrypt(JSON.stringify(val), _lap).toString());
+            localStorage.setItem(
+                'AuthToken',
+                AES.encrypt(JSON.stringify(val), _lap).toString()
+            )
         } else {
-            localStorage.removeItem("AuthToken");
+            localStorage.removeItem('AuthToken')
         }
-        state.authToken = val;
+        state.authToken = val
     }
-};
+}
 
 export const actions = {
+    async loadDatas({ commit, getters, dispatch }, options) {
+        let listado = []
+        options.listas.forEach((datos) => {
+            let url =
+                datos.mod + '?page=1&per_page=-1&cols=' + datos.campos + '&disabled=1'
+            if (datos.filter) {
+                url = url + '&filter=' + datos.filter
+            }
+            if (datos.rels) {
+                url = url + '&rels=1'
+            }
+            if (datos.relsE) {
+                url = url + '&relsE=1'
+            }
+            if (datos.rel) {
+                url = url + '&rel=' + datos.rel
+            }
+            if (!datos.url) {
+                datos.url = url
+            }
+            listado.push({
+                mod: datos.mod,
+                ct: getters.getCtOnly(url),
+                campos: datos.campos || 'id,name',
+                modulo: datos.datos.modulo
+            })
+        })
+        let response = await this.$axios.post(options.mod + '/listData', {
+            lista: listado
+        })
+        if (response.data.ok < -1) {
+            if (response.data.ok == -1001) {
+                dispatch('logout')
+            }
+            return false
+        }
+        return getters.getDataCaches(response.data, options.listas)
+    },
+
     async loadData({ commit, getters, dispatch }, datos) {
-        let url = datos.url + '?page=1&per_page=-1&cols=' + datos.campos + '&disabled=1'
+        let url =
+            datos.url + '?page=1&per_page=-1&cols=' + datos.campos + '&disabled=1'
         if (datos.filter) {
             url = url + '&filter=' + datos.filter
         }
         let response = ''
         let method = 'get'
-        if ((datos.datos) && (datos.datos.length > 0)) {
+        if (datos.datos && datos.datos.length > 0) {
             method = 'post'
         }
-        if ((datos.method) && (datos.method == 'post')) {
+        if (datos.method && datos.method == 'post') {
             method = 'post'
         }
-        if ((datos.method) && (datos.method == 'get')) {
+        if (datos.method && datos.method == 'get') {
             method = 'get'
         }
 
@@ -264,97 +370,97 @@ export const actions = {
             response = await this.$axios.get(url + getters.getCt(url))
         }
 
-        //console.log('authloaddata', response);
         if (response.data.ok < -1) {
-            //console.log('auth loaddata');
-            //commit("setRutaBack", this.$router.history._startLocation);
-            //console.log('loaddata:',this.$router.history._startLocation);
             if (response.data.ok == -1001) {
                 dispatch('logout')
             }
-            return false;
+            return false
         }
-        //console.log('loadata',response.data, url);
         return getters.getDataCache(response.data, url)
     },
 
     can({ getters, commit }, act) {
         let modulo = this.$router.currentRoute.matched.find(
-            v => v.path == this.$router.currentRoute.path
-        );
-        modulo = modulo.components.default.options.authAccess || modulo.components.default.options.name;
-        let per = getters.tienePermiso(act, modulo);
-        //console.log('can:', modulo, ':', act, '//', per);
-        commit("setAcceso", per);
-        return per;
+            (v) => v.path == this.$router.currentRoute.path
+        )
+        modulo =
+            modulo.components.default.options.authAccess ||
+            modulo.components.default.options.name
+        let per = getters.tienePermiso(act, modulo)
+        commit('setAcceso', per)
+        return per
     },
     async login({ commit, getters }, auth) {
         //console.log("this rutaBAck:", this.state.auth.rutaBack);
         try {
-            getters.tienePermiso('view', 'usuarios', true);
+            getters.tienePermiso('view', 'usuarios', true)
 
-            const { data } = await this.$axios.post("login", auth);
+            const { data } = await this.$axios.post('login', auth)
             if (data.ok > 0) {
-                commit("SET_USER", data.data);
-                commit("setAuthToken", data._sid_);
-                this.$axios.defaults.headers.common["Authorization"] = data._sid_;
-                // if (this.state.auth.rutaBack == null) {
-                //     commit("setRutaBack", "/");
-                // }
-                // this.$router.push(this.state.auth.rutaBack);
-                this.$router.back();
-                return true;
+                commit('SET_USER', data.data)
+                commit('setAuthToken', data._sid_)
+                this.$axios.defaults.headers.common['Authorization'] = data._sid_
+                    // if (this.state.auth.rutaBack == null) {
+                    //     commit("setRutaBack", "/");
+                    // }
+                    // this.$router.push(this.state.auth.rutaBack);
+                this.$router.back()
+                return true
             } else {
-                commit("setAuthToken", null);
-                this.$axios.defaults.headers.common["Authorization"] = "";
-                throw new Error(data.msg);
+                commit('setAuthToken', null)
+                this.$axios.defaults.headers.common['Authorization'] = ''
+                throw new Error(data.msg)
             }
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                commit("setAuthToken", null);
-                this.$axios.defaults.headers.common["Authorization"] = "";
-                throw new Error("Bad credentials");
+                commit('setAuthToken', null)
+                this.$axios.defaults.headers.common['Authorization'] = ''
+                throw new Error('Bad credentials')
             }
-            throw error;
+            throw error
         }
-        return false;
+        return false
     },
     async getUser({ getters, commit, dispatch }) {
         if (!getters.getUser) {
-            return await dispatch('reloadUser', false);
+            return await dispatch('reloadUser', false)
         }
-        return getters.getUser;
+        return getters.getUser
     },
     logout({ commit }) {
         //await this.$axios.post("logout");
         let me = this
-        me.$axios.defaults.headers.common["Authorization"] = "";
-        commit("SET_USER", null);
-        commit("setAcceso", false);
-        //commit("setRutaBack", this.$router.history._startLocation);
-        //console.log('logout:',this.$router.history._startLocation);
+        me.$axios.defaults.headers.common['Authorization'] = ''
+        commit('SET_USER', null)
+        commit('setAcceso', false)
+            //commit("setRutaBack", this.$router.history._startLocation);
+            //console.log('logout:',this.$router.history._startLocation);
         setTimeout(() => {
-            me.$router.push("/login/");
+            me.$router.push('/login/')
         }, 300)
 
-        return true;
+        return true
     },
     reloadUser({ commit }, persist = true) {
-        let user = {};
-        if (localStorage.getItem("Auth")) {
+        let user = {}
+        if (localStorage.getItem('Auth')) {
             try {
-                user = JSON.parse(AES.decrypt(localStorage.getItem("Auth"), _lap).toString(Utf8));
-                let token = JSON.parse(AES.decrypt(localStorage.getItem("AuthToken"), _lap).toString(Utf8));
-                commit("SET_USER", user, persist);
-                commit("setAuthToken", token, persist);
-                this.$axios.defaults.headers.common["Authorization"] = token;
-                //                console.log("reload", user);
-                //return user;
+                user = JSON.parse(
+                    AES.decrypt(localStorage.getItem('Auth'), _lap).toString(Utf8)
+                )
+                let token = JSON.parse(
+                    AES.decrypt(localStorage.getItem('AuthToken'), _lap).toString(Utf8)
+                )
+                commit('SET_USER', user, persist)
+                commit('setAuthToken', token, persist)
+                this.$axios.defaults.headers.common['Authorization'] = token
+                    //                console.log("reload", user);
+                    //return user;
             } catch (e) {
-                console.log("error", e);
-                commit("SET_USER", null);
+                console.log('error', e)
+                commit('SET_USER', null)
             }
         }
-        return user;
+        return user
     }
-};
+}
