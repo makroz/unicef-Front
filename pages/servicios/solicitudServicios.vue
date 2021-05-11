@@ -320,20 +320,16 @@ export default {
     let edit = this.getOptionTable('edit')
     edit.dblClic =false
 
-    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id_1') //ver si se uede sacr los parametros del headers o campos
-    this.lBeneficiarios = await this.getListaBackend(
-      'Beneficiarios',
-      '',
-      'beneficiarios_id'
-    )
-    this.lServicios = await this.getListaBackend(
-      'Servicios',
-      '',
-      'servicios_id'
-    )
-    // this.updateListCol('estado', this.lEstados)
-    // this.updateListCol('estado', this.lColor, 'lColor')
-  },
+ let filtros=[
+            ['roles_id','=','2',],
+            ['status','<>',0]
+        ];
+    let listas= await this.getDatasBackend(this.urlModulo,[
+      {mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id_1'},
+      {mod:'Beneficiarios',campos:'id,name,epsa',item:'beneficiarios_id'},
+      {mod:'Servicios',item:'servicios_id'},
+    ])
+ },
 }
 </script>
 <style scope >
