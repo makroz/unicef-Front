@@ -95,7 +95,7 @@
                         :visible="true"
                       >
                       <l-tooltip>
-                            {{ (lBeneficiarios.filter((e) => e.id == marker))[0].name }}
+                            {{ getNameBene(marker) }}
                           </l-tooltip>
                       </l-marker>
                     </div>
@@ -176,6 +176,13 @@ export default {
     }
   },
   methods: {
+    getNameBene(marker){
+    let name=(this.lBeneficiarios.filter((e) => e.id == marker)) 
+    if (name && name.length>0){
+      return name[0].name
+    }
+    return ''
+    },
     getMarker(id, item, index) {
       //let marker={ lng: lat, lat: lng };
       let lmarker = this.lBeneficiarios.filter((e) => e.id == id)
@@ -227,14 +234,14 @@ export default {
     },
 
     async beforeOpen(accion, data = {}) {
-      let me = this
-      me.lBeneficiarios = await me.getListaBackend(
+      this.lBeneficiarios = await this.getListaBackend(
         'Rutas/beneficiarios/' + data.id
       )
-
+//      console.log(this.lBeneficiarios);
       setTimeout(() => {
-        me.initMap()
+        this.initMap()
       }, 300)
+      return true
     },
     customFilter(item, queryText, itemText) {
       const textOne = ('' + item.name).toLowerCase()
@@ -251,7 +258,7 @@ export default {
   },
 
   async mounted() {
-    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id') //ver si se uede sacr los parametros del headers o campos
+    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
   },
 }
 </script>

@@ -1043,24 +1043,18 @@ export default {
     let show = this.getOptionTable('show')
     show.action = 'openShow'
 
-    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
-    this.lServicios = await this.getListaBackend('Servicios')
 
-    this.lRutas = await this.getListaBackend(
-      'Rutas',
-      'id,name,usuarios_id',
-      'rutas_id'
-    )
-
-    this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
-    this.lPreguntas = await this.getListaBackend('Preguntas')
-    this.lCateg.sort(function (a, b) {
-      return a.orden - b.orden
-    })
-
-    this.lPreguntas.sort(function (a, b) {
-      return a.orden - b.orden
-    })
+    let filtros=[
+            ['roles_id','=','2',],
+            ['status','<>',0]
+        ];
+    let listas= await this.getDatasBackend(this.urlModulo,[
+      {mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id'},
+      {mod:'Rutas',campos:'id,name,usuarios_id',item:'rutas_id',datos:{rel:1}},
+      {mod:'Preguntas',sort:'orden'},
+      {mod:'Categ',campos:'id,name,orden',datos:{modulo:'mkPreguntas'},sort:'orden'},
+      {mod:'Servicios'},
+    ])
   },
 }
 </script>

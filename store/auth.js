@@ -88,7 +88,6 @@ export const getters = {
         if (paginate) {
             url = url + JSON.stringify(paginate)
         }
-
         if (lista != 1) {
             url = url + '_' + lista
         }
@@ -355,7 +354,6 @@ export const actions = {
         } else {
             response = await this.$axios.get(url + getters.getCt(url))
         }
-
         if (response.data.ok < -1) {
             if (response.data.ok == -1001) {
                 dispatch('logout')

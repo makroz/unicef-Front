@@ -714,6 +714,7 @@ export default {
         url: url,
         campos: campos,
       })
+      //console.log('listaMix',lista);
       if (item) {
         if (item.isArray) {
           item.forEach((e) => this.updateListCol(e, lista))
