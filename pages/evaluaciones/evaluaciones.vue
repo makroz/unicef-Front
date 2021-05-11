@@ -300,37 +300,15 @@ export default {
             ['status','<>',0]
         ];
     let listas= await this.getDatasBackend(this.urlModulo,[
-      {mod:'Usuarios',datos:{filtros:filtros},item:'usuarios_id'},
-      {mod:'Rutas',item:'ruteos.rutas_id',datos:{rel:1}},
-      {mod:'Preguntas',campos:'*'},
-      {mod:'Categ',campos:'id,name,orden',item:'rutas_id',datos:{modulo:'mkPreguntas'}},
-      {mod:'Servicios',campos:'*'},
-    ])
-
-    if (listas.Categ.length > 0) {
-      listas.Categ.sort(function (a, b) {
-        return a.orden - b.orden
-      })
-    }
-
-    if (listas.Preguntas.length > 0) {
-      listas.Preguntas.sort(function (a, b) {
-        return a.orden - b.orden
-      })
-    }
-
-    if (listas.Servicios.length > 0) {
-      listas.Servicios.forEach((e) => {
+      {mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id'},
+      {mod:'Rutas',campos:'id,name',item:'ruteos.rutas_id',datos:{rel:1}},
+      {mod:'Preguntas',sort:'orden'},
+      {mod:'Categ',campos:'id,name,orden',item:'rutas_id',datos:{modulo:'mkPreguntas'},sort:'orden'},
+      {mod:'Servicios',each:(e) => {
         e.cantidad = 1
         e.selected = false
-      })
-    }
-
-    this.lServicios = listas.Servicios
-    this.lUsuarios = listas.Usuarios
-    this.lRutas = listas.Rutas
-    this.lCateg = listas.Categ
-    this.lPreguntas = listas.Preguntas
+      }},
+    ])
 
   },
 }

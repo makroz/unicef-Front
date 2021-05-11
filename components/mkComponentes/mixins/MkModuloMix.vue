@@ -10,7 +10,7 @@ import {
   c,
   getDataLista,
   getTitFromName,
-  imprimirElemento
+  imprimirElemento,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
 
@@ -88,11 +88,11 @@ export default {
     formatDT(d = '', time = true) {
       return formatDT(d, time)
     },
-    imprimirElemento(nombre){
+    imprimirElemento(nombre) {
       imprimirElemento(nombre)
     },
     getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def = false) {
-        return getDataLista(lista, valor, busco, devuelvo,def)
+      return getDataLista(lista, valor, busco, devuelvo, def)
     },
 
     onBuscar(datos, quitarbuscar = false) {
@@ -349,7 +349,7 @@ export default {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
             ) {
-              if (me.item[el] !== undefined && el.indexOf('_temp_')==-1) {
+              if (me.item[el] !== undefined && el.indexOf('_temp_') == -1) {
                 itemData[el] = me.item[el]
               }
             }
@@ -536,7 +536,8 @@ export default {
           //this.dirty.item = Object.assign({}, this.item)
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
-        this.tituloModal ='(' + this.item.id + ') ' + 'Editar ' + this.titModulo
+        this.tituloModal =
+          '(' + this.item.id + ') ' + 'Editar ' + this.titModulo
         if (this.$refs.focus) {
           this.$nextTick(this.$refs.focus.focus)
         }
@@ -675,15 +676,37 @@ export default {
       })
       //console.error('updatelist',me.campos)
     },
-    async getDatasBackend(mod,listas) {
-      let data = await this.$store.dispatch('auth/loadDatas',{mod:mod,listas:listas})
-      listas.forEach(el => {
+    async getDatasBackend(mod, listas) {
+      let data = await this.$store.dispatch('auth/loadDatas', {
+        mod: mod,
+        listas: listas,
+      })
+      listas.forEach((el) => {
         if (el.item) {
-        if (el.item.isArray) {
-          el.item.forEach((e) => this.updateListCol(e, data[el.mod]))
-        } else this.updateListCol(el.item, data[el.mod])
-      }
-      });
+          if (el.item.isArray) {
+            el.item.forEach((e) => this.updateListCol(e, data[el.mod]))
+          } else {
+            this.updateListCol(el.item, data[el.mod])
+          }
+        }
+
+        if (typeof el.each === 'function') {
+          data[el.mod].forEach(el.each)
+        }
+
+        let sort=el.sort||false
+        if (sort){
+          data[el.mod].sort(function (a, b) {
+            return a[sort] - b[sort]
+          })
+        }
+        if (!el.lista) {
+          el.lista='l'+el.mod
+        }
+        if (el.lista!='') {
+          this[el.lista]=data[el.mod]
+        }
+      })
       return data
     },
     async getListaBackend(url, campos = '', item = null) {

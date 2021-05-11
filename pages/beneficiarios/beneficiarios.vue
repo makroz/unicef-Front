@@ -975,51 +975,27 @@ export default {
 
     let datos={modulo:'mkBeneficiarios'}
     let listas= await this.getDatasBackend(this.urlModulo,[
-      {mod:'Distritos',datos:datos,item:'distritos_id'},
-      {mod:'Entidades',datos:datos,item:'entidades_id'},
-      {mod:'Dptos',datos:datos},
-      {mod:'Municipios',datos:datos},
-      {mod:'Zonas',datos:datos},
-      {mod:'Epsas',datos:datos},
-      {mod:'Descoms',datos:datos},
-      {mod:'Tipo_banos',datos:datos},
-      {mod:'Doc_firmados',datos:datos},
-      {mod:'Info_metodos',datos:datos},
-      {mod:'Parentescos',datos:datos},
-      {mod:'Est_civiles',datos:datos},
-      {mod:'Niv_educativos',datos:datos},
-      {mod:'Ocupaciones',datos:datos},
-      {mod:'Rutas',datos:{modulo:'mkRutas'},item:'rutas_id'},
+      {mod:'Distritos',campos:'id,name',datos:datos,item:'distritos_id'},
+      {mod:'Entidades',campos:'id,name',datos:datos,item:'entidades_id'},
+      {mod:'Dptos',campos:'id,name',datos:datos},
+      {mod:'Municipios',campos:'id,name',datos:datos},
+      {mod:'Zonas',campos:'id,name',datos:datos},
+      {mod:'Epsas',campos:'id,name',datos:datos},
+      {mod:'Descoms',campos:'id,name',datos:datos},
+      {mod:'Tipo_banos',campos:'id,name',datos:datos},
+      {mod:'Doc_firmados',campos:'id,name,orden',datos:datos,sort:'orden'},
+      {mod:'Info_metodos',campos:'id,name',datos:datos},
+      {mod:'Parentescos',campos:'id,name',datos:datos},
+      {mod:'Est_civiles',campos:'id,name',datos:datos},
+      {mod:'Niv_educativos',campos:'id,name',datos:datos},
+      {mod:'Ocupaciones',campos:'id,name',datos:datos},
+      {mod:'Rutas',campos:'id,name',item:'rutas_id'},
     ])
 
-    //console.log('listado benef:',listas);
-
-    this.lDistritos = listas.Distritos
-    this.lEntidades = listas.Entidades
-    this.lRutas = listas.Rutas
-    this.lDptos = listas.Dptos
-    this.lMunicipios = listas.Municipios
-    this.lZonas = listas.Zonas
-    this.lDescoms = listas.Descoms
-    this.lEpsas = listas.Epsas
-    this.lTipo_banos = listas.Tipo_banos
-    this.lInfo_metodos = listas.Info_metodos
-    this.lParentescos =listas.Parentescos
-    this.lEst_civiles = listas.Est_civiles
-    this.lNiv_educativos = listas.Niv_educativos
-    this.lOcupaciones = listas.Ocupaciones
-    this.lDoc_firmados = listas.Doc_firmados
-    
-    if (this.lDoc_firmados.length > 0) {
-      this.lDoc_firmados.sort(function (a, b) {
-        return a.orden - b.orden
-      })
-    }
-    this.lDoc_firmados.forEach((e) => {
+    listas.Doc_firmados.forEach((e) => {
       this.lFirmados[e.id] = '0'
     })
-
-    
+   
   },
 }
 </script>

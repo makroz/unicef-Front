@@ -315,7 +315,7 @@ export const actions = {
             listado.push({
                 mod: datos.mod,
                 ct: getters.getCtOnly(url),
-                campos: datos.campos || 'id,name',
+                campos: datos.campos || '',
                 modulo: modulo,
                 ...datos.datos
             })
