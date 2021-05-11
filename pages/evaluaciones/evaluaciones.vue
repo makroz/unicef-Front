@@ -295,36 +295,43 @@ export default {
       return e.estado == 0 ? true : false
     }
 
-    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
-    this.lRutas = await this.getListaBackend(
-      'Rutas',
-      'id,name',
-      'ruteos.rutas_id'
-    )
+    let filtros=[
+            ['roles_id','=','2',],
+            ['status','<>',0]
+        ];
+    let listas= await this.getDatasBackend(this.urlModulo,[
+      {mod:'Usuarios',datos:{filtros:filtros},item:'usuarios_id'},
+      {mod:'Rutas',item:'ruteos.rutas_id',datos:{rel:1}},
+      {mod:'Preguntas',campos:'*'},
+      {mod:'Categ',campos:'id,name,orden',item:'rutas_id',datos:{modulo:'mkPreguntas'}},
+      {mod:'Servicios',campos:'*'},
+    ])
 
-    this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
-    this.lPreguntas = await this.getListaBackend('Preguntas')
-
-    if (this.lCateg.length > 0) {
-      this.lCateg.sort(function (a, b) {
+    if (listas.Categ.length > 0) {
+      listas.Categ.sort(function (a, b) {
         return a.orden - b.orden
       })
     }
 
-    if (this.lPreguntas.length > 0) {
-      this.lPreguntas.sort(function (a, b) {
+    if (listas.Preguntas.length > 0) {
+      listas.Preguntas.sort(function (a, b) {
         return a.orden - b.orden
       })
     }
 
-    let services = await this.getDataBackend('Servicios')
-    if (services.length > 0) {
-      services.forEach((e) => {
+    if (listas.Servicios.length > 0) {
+      listas.Servicios.forEach((e) => {
         e.cantidad = 1
         e.selected = false
       })
     }
-    this.lServicios = services
+
+    this.lServicios = listas.Servicios
+    this.lUsuarios = listas.Usuarios
+    this.lRutas = listas.Rutas
+    this.lCateg = listas.Categ
+    this.lPreguntas = listas.Preguntas
+
   },
 }
 </script>
