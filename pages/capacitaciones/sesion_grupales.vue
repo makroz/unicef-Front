@@ -164,11 +164,9 @@ export default {
     },
   },
   async mounted() {
-    this.lBeneficiarios = await this.getListaBackend(
-      'Beneficiarios',
-      'id,name',
-      'beneficiario_id'
-    )
+    let listas= await this.getDatasBackend(this.urlModulo,[
+      {mod:'Beneficiarios',campos:'id,name',item:'beneficiario_id'},
+    ])
   },
 }
 </script>

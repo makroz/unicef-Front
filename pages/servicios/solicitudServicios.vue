@@ -325,7 +325,7 @@ export default {
             ['status','<>',0]
         ];
     let listas= await this.getDatasBackend(this.urlModulo,[
-      {mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id_1'},
+      {mod:'Usuarios',campos:'id,name,email',datos:{filtros:filtros},item:'usuarios_id_1'},
       {mod:'Beneficiarios',campos:'id,name,epsa',item:'beneficiarios_id'},
       {mod:'Servicios',item:'servicios_id'},
     ])
