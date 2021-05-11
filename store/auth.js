@@ -9,7 +9,7 @@ export const state = () => ({
     authUser: null,
     acceso: false,
     rutaBack: null,
-    cacheActive: true,
+    cacheActive: false,
     encryptActive: true,
     permisos: {
         view: 1,
@@ -42,6 +42,9 @@ export const state = () => ({
 
 export const getters = {
     getCtOnly: (state) => (url, paginate = false, lista = 1) => {
+        if (!state.cacheActive) {
+            return ''
+        }
         let ct = ''
         try {
             if (state.encryptActive) {
@@ -76,32 +79,6 @@ export const getters = {
         if (lista != 1) {
             ct2 = '&_ct2_=' + ct2 + getters.getCtOnly(url + '_' + lista)
         }
-        // try {
-        //     if (state.encryptActive) {
-        //         ct =
-        //             ct +
-        //             JSON.parse(localStorage.getItem('cache_' + MD5(url).toString())).ct
-        //     } else {
-        //         ct = ct + JSON.parse(localStorage.getItem('cache_' + url)).ct
-        //     }
-        //     if (lista != 1) {
-        //         ct2 = '&_ct2_='
-        //         if (state.encryptActive) {
-        //             ct2 =
-        //                 ct2 +
-        //                 JSON.parse(
-        //                     localStorage.getItem('cache_' + MD5(url + '_' + lista).toString())
-        //                 ).ct
-        //         } else {
-        //             ct2 =
-        //                 ct2 +
-        //                 JSON.parse(localStorage.getItem('cache_' + url + '_' + lista)).ct
-        //         }
-        //     }
-        // } catch (error) {
-        //     ct = ''
-        //     ct2 = ''
-        // }
         return ct + ct2
     },
     getDataCache: (state) => (data, url, paginate = false, lista = 1) => {
@@ -327,11 +304,20 @@ export const actions = {
             if (!datos.url) {
                 datos.url = url
             }
+
+            let modulo = ''
+            if (datos.datos) {
+                modulo = datos.datos.modulo || 'mk' + datos.mod
+            } else {
+                modulo = 'mk' + datos.mod
+            }
+
             listado.push({
                 mod: datos.mod,
                 ct: getters.getCtOnly(url),
                 campos: datos.campos || 'id,name',
-                modulo: datos.datos.modulo
+                modulo: modulo,
+                ...datos.datos
             })
         })
         let response = await this.$axios.post(options.mod + '/listData', {

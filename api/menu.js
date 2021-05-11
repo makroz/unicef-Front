@@ -61,7 +61,7 @@ const Menu = [
             icon: 'face',
             items: [{
                     name: 'beneficiarios',
-                    title: 'Beneficiarios',
+                    title: 'Beneficiasrios',
                     group: 'beneficiarios',
                     component: 'beneficiarios',
                     href: '/beneficiarios/beneficiarios/'
@@ -138,12 +138,7 @@ const Menu = [
                             name: 'info_metodos',
                             title: 'Métodos de Información',
                             href: '/beneficiarios/info_metodos/'
-                        },
-                        // {
-                        //     name: 'familiares',
-                        //     title: 'Familiares',
-                        //     href: '/beneficiarios/familiares/'
-                        // }
+                        }
                     ]
                 }
             ]
