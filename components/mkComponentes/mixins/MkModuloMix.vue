@@ -11,6 +11,7 @@ import {
   getDataLista,
   getTitFromName,
   imprimirElemento,
+  formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
 
@@ -704,7 +705,9 @@ export default {
           el.lista='l'+el.mod
         }
         if (el.lista!='') {
-          this[el.lista]=data[el.mod]
+          if (this[el.lista]){
+            this[el.lista]=data[el.mod]
+          }
         }
       })
       return data

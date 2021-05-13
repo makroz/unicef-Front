@@ -24,68 +24,118 @@
         :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
+        :bTitulo="bTitulo"
       >
         <v-container grid-list-md fluid>
-          <v-autocomplete
-            v-model="item.beneficiarios_id"
-            :items="lBeneficiarios"
-            :filter="customFilter"
-            @change="change"
-            color="primary"
-            item-text="name"
-            label="Beneficiario"
-            item-value="id"
-            :rules="[rules.required]"
-            ref="focus"
-            :readonly="!!item.id"
-          >
-          </v-autocomplete>
-
-          <v-text-field
-            label="Cod.EPSA"
-            v-model="itemData.epsa"
-            disabled
-          :readonly="accion=='show'" ></v-text-field>
-
-          <v-card v-if="!!!item.id">
+          <v-layout row wrap>
+            <v-flex xs12 sm8 md10>
+              <v-autocomplete
+                v-model="item.beneficiarios_id"
+                :items="lBeneficiarios"
+                :filter="customFilter"
+                @change="change"
+                color="primary"
+                item-text="name"
+                label="Beneficiario"
+                item-value="id"
+                :rules="[rules.required]"
+                ref="focus"
+                :readonly="accion != 'add'"
+              >
+              </v-autocomplete>
+            </v-flex>
+            <v-flex xs12 sm-4 md2>
+              <v-text-field
+                label="Cod.EPSA"
+                v-model="itemData.epsa"
+                disabled
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-card>
             <v-toolbar color="primary" dark dense>
-              <v-toolbar-title>Servicios Disponibles</v-toolbar-title>
+              <v-toolbar-title
+                >Servicios {{ lEstados[item.estado] }}
+              </v-toolbar-title>
             </v-toolbar>
 
-            <v-list style="max-height: 300px; overflow-y: scroll">
-              <template v-for="item in lServicios">
+            <div dark v-if="item.estado > -1" class="grey" style="height: 20px">
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <span v-if="item.estado > -1" style="font-size: 10px">
+                    <div style="width: 48px; display: inline-block"></div>
+
+                    <div style="width: 25px; display: inline-block">Id</div>
+                    <div style="width: 60px; display: inline-block">Fecha</div>
+                    <div style="width: 30px; display: inline-block">Eval</div>
+                    <div style="width: 85px; display: inline-block">
+                      Creado X
+                    </div>
+                  </span>
+                  Servicio
+                  <span style="font-size: 10px; width: 130px">
+                    Observaciones
+                  </span>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </div>
+            <v-list style="max-height: 300px; overflow-y: scroll" dense>
+              <template v-for="(servicio, index) in lServices">
                 <v-list-tile
-                  :key="item.id"
+                  :key="index"
                   :class="
-                    item.selected
+                    servicio.selected
                       ? 'deep-purple lighten-5 deep-purple--text text--accent-4'
                       : ''
                   "
                 >
-                  <v-list-tile-action>
+                  <v-list-tile-action pa-0 ma-0 style="min-width: 34px">
                     <v-checkbox
-                      v-model="item.selected"
+                      v-model="servicio.selected"
                       color="deep-purple accent-4"
-                    :readonly="accion=='show'" 
-></v-checkbox>
+                      :readonly="accion == 'show'"
+                      hide-details
+                    ></v-checkbox>
                   </v-list-tile-action>
 
                   <v-list-tile-content>
                     <v-list-tile-title>
-                      {{ item.name }}
-                      <span style="font-size: 10px">{{ item.obs }}</span>
+                      <span v-if="servicio.estado > -1" style="font-size: 10px">
+                        <div style="width: 25px; display: inline-block">
+                          {{ servicio.sol_id }}
+                        </div>
+                        <div style="width: 60px; display: inline-block">
+                          {{ formatDT(servicio.fecha, false) }}
+                        </div>
+                        <div style="width: 30px; display: inline-block">
+                          {{ servicio.evaluaciones_id?servicio.evaluaciones_id:'--' }}
+                        </div>
+                        <div style="width: 85px; display: inline-block">
+                          {{ servicio.monitor }}
+                        </div>
+                      </span>
+                      {{ servicio.name }}
+                      <span style="font-size: 10px; width: 130px">
+                        {{ servicio.obs }}
+                      </span>
                     </v-list-tile-title>
                   </v-list-tile-content>
-                  <v-list-tile-avatar v-if="item.selected">
+                  <v-list-tile-avatar
+                    v-if="servicio.selected || servicio.estado > -1"
+                  >
                     <v-text-field
-                      v-model="item.cantidad"
+                      v-model="servicio.cantidad"
                       :disabled="
-                        item.selected ? (item.cant ? false : true) : true
+                        servicio.selected && accion == 'add'
+                          ? servicio.cant
+                            ? false
+                            : true
+                          : true
                       "
                       :rules="[rules.required, rules.num, rules.minVal(1)]"
                       validate-on-blur
                       color="primary"
-                      :class="item.selectded ? 'secondary' : ''"
+                      :class="servicio.selectded ? 'secondary' : ''"
                       type="number"
                       min="1"
                       style="
@@ -93,47 +143,12 @@
                         padding-bottom: 0;
                         padding-top: 12px;
                       "
-                    :readonly="accion=='show'" ></v-text-field>
+                      :readonly="accion == 'show'"
+                    ></v-text-field>
                   </v-list-tile-avatar>
                 </v-list-tile>
               </template>
             </v-list>
-          </v-card>
-          <v-card v-else>
-            <v-toolbar color="primary" dark dense>
-
-              <v-toolbar-title v-if="accion!='show'">
-                Cambiar Estado Actual de
-                <span :class="lColor[item.estado]">
-                  {{ lEstados[item.estado]  }}
-                </span>
-                <span class="red--text">>>></span
-                ><span :class="lColor[item.estado * 1 + 1]">
-                  {{ lEstados[item.estado*1 +1 ] }}
-                </span>
-              </v-toolbar-title>
-              <v-toolbar-title v-else>
-                Estado Actual
-                <span :class="lColor[item.estado]">
-                  {{ lEstados[item.estado]  }}
-                </span>
-              </v-toolbar-title>
-
-            </v-toolbar>
-            <v-layout row pa-2>
-              <v-flex md10>
-                <v-text-field
-                  label="Servicio"
-                  :value="getNameLista(item.servicios_id, lServicios)"
-                :readonly=true ></v-text-field>
-              </v-flex>
-              <v-flex md2>
-                <v-text-field
-                  label="Cantidad"
-                  :value="item.cant"
-                :readonly=true ></v-text-field>
-              </v-flex>
-            </v-layout>
           </v-card>
         </v-container>
       </mk-form>
@@ -166,7 +181,7 @@ export default {
         },
         {
           text: 'Fecha',
-          value: 'fecha_1',
+          value: 'created_at',
           width: '100px',
           headers: true,
           type: 'date',
@@ -201,8 +216,8 @@ export default {
         },
 
         {
-          text: 'Monitor',
-          value: 'usuarios_id_1',
+          text: 'Creado X',
+          value: 'created_by',
           align: 'left',
           width: '80px',
           headers: true,
@@ -235,7 +250,9 @@ export default {
       lBeneficiarios: [],
       lServicios: [],
       lEstados: [
+        'Por Revisar',
         'Pendiente',
+        'Asignado',
         'Realizado',
         'Verificado',
         'Autorizado',
@@ -243,71 +260,134 @@ export default {
         'Completado',
       ],
       lColor: [
-        'grey--text',
-        'green--text text--lighten-3',
+        'red--text',
+        'gray--text text--lighten-3',
         'green--text text--lighten-1',
         'green--text',
         'green--text text--darken-2',
+        'green--text text--darken-4',
+        'green--text text--darken-4',
         'green--text text--darken-4',
       ],
       itemData: {
         epsa: '',
       },
+      bTitulo: '',
+      lServices: [],
     }
   },
   methods: {
     change(e) {
       this.itemData = this.lBeneficiarios.find((el) => el.id == e)
       //console.log('cange',e,this.itemData,this.lBeneficiarios);
-      if (!this.itemData){
-        this.itemData= {
-        epsa: '',
-      }
+      if (!this.itemData) {
+        this.itemData = {
+          epsa: '',
+        }
       }
     },
     getNameLista(e, lista) {
       let valor = lista.find((el) => el.id == e)
       return valor ? valor.name : e
     },
-    beforeOpen(accion, data = {}) {
+    async beforeOpen(accion, data = {}) {
+      this.lServices = []
       if (accion == 'add') {
+        this.bTitulo = ''
         this.itemData.epsa = ''
+        data.estado = -1
+
         this.lServicios.forEach((e) => {
-          e.cantidad = 1
-          if (e.selected) {
-            e.selected = null
-          }
+          this.lServices.push({
+            cantidad: 1,
+            estado: -1,
+            selected: null,
+            ...e,
+          })
         })
       } else {
-        this.change(data.beneficiarios_id)
         if (data.estado >= 5) {
           return false
         }
-        //data.estado =(data.estado*1)+1;
+        data.id=1
+
+        this.bTitulo = 'Revisados'
+        let filtros = [
+          ['beneficiarios_id', '=', data.beneficiarios_id],
+          ['estado', '=', data.estado],
+        ]
+        let lSol = await this.getDatasBackend(this.urlModulo, [
+          {
+            mod: this.urlModulo,
+            datos: { filtros: filtros, modulo: 'mkServicios' },
+          },
+        ])
+        lSol.SolicitudServicios.forEach((e) => {
+          
+          let serv = this.getDataLista(
+            this.lServicios,
+            e.servicios_id,
+            'id',
+            '*'
+          )
+
+          if (serv) {
+            this.lServices.push({
+              sol_id: e.id,
+              cantidad: e.cant,
+              fecha: e.created_at,
+              estado: e.estado,
+              evaluaciones_id: e.evaluaciones_id,
+              selected: null,
+              monitor: this.getDataLista(
+                this.lUsuarios,
+                e.created_by,
+                'id',
+                'name'
+              ),
+              ...serv,
+            })
+          }
+        })
+
+        this.change(data.beneficiarios_id)
+        //data.estado =(data.estado*1);
+      }
+    },
+    // listServicios(estado) {
+    //   if (estado == -1) {
+    //     return this.lServicios
+    //   }
+    //   return this.lServicios.filter((e) => e.estado == estado)
+    // },
+    afterOpen(accion, data) {
+      if (accion != 'add') {
+        this.tituloModal = 'Procesar ' + this.titModulo
       }
     },
     beforeSave(me) {
-      //console.log('id',me.item.id)
-      if (!me.item.id) {
-        let servicios = []
-        for (const obj in me.lServicios) {
-          if (me.lServicios[obj].selected === true) {
-            servicios.push({
-              id: me.lServicios[obj].id,
-              cant: me.lServicios[obj].cantidad,
-            })
-          }
+      //console.log('id',me.item)
+      let servicios = []
+      for (const obj in me.lServices) {
+        if (me.lServices[obj].selected === true) {
+          servicios.push({
+            id: me.lServices[obj].id,
+            cant: me.lServices[obj].cantidad,
+            sol_id: me.lServices[obj].sol_id,
+          })
         }
-        me.paramsExtra.servicios = servicios
-      } else {
-        // delete me.paramsExtra.servicios
-        // delete me.items.paramsExtra.servicios
-        me.item.estado = me.item.estado * 1 + 1
       }
+      me.item.servicios = servicios
+      me.item.estado = (me.item.estado * 1) + 1
+      // if (!me.item.id) {
+
+      // } else {
+      //   me.item.estado = me.item.estado * 1 + 1
+      // }
     },
     customFilter(item, queryText, itemText) {
       const textOne = ('' + item.name).toLowerCase()
-      const textTwo = ('' + item.id).toLowerCase()
+      const textTwo = ('' + item.epsa).toLowerCase()
       const searchText = ('' + queryText).toLowerCase()
 
       return (
@@ -318,18 +398,31 @@ export default {
 
   async mounted() {
     let edit = this.getOptionTable('edit')
-    edit.dblClic =false
+    edit.dblClic = false
+    edit.icon = 'fact_check'
+    edit.orden = 10
+    this.setOptionTable('del').visibleRow = function (e) {
+      return e.estado == 0 ? true : false
+    }
 
- let filtros=[
-            ['roles_id','=','2',],
-            ['status','<>',0]
-        ];
-    let listas= await this.getDatasBackend(this.urlModulo,[
-      {mod:'Usuarios',campos:'id,name,email',datos:{filtros:filtros},item:'usuarios_id_1'},
-      {mod:'Beneficiarios',campos:'id,name,epsa',item:'beneficiarios_id'},
-      {mod:'Servicios',item:'servicios_id'},
+    // let filtros = [
+    //   ['status', '<>', 0],
+    // ]
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      {
+        mod: 'Usuarios',
+        campos: 'id,name',
+        //        datos: { filtros: filtros },
+        item: 'created_by',
+      },
+      {
+        mod: 'Beneficiarios',
+        campos: 'id,name,epsa',
+        item: 'beneficiarios_id',
+      },
+      { mod: 'Servicios', item: 'servicios_id' },
     ])
- },
+  },
 }
 </script>
 <style scope >

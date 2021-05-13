@@ -29,7 +29,7 @@
             color="green darken-1"
             flat
             @click.stop="grabar"
-            v-text="accion == 'edit' ? 'Actualizar' : 'Grabar'"
+            v-text="bTitulo!=''?bTitulo:accion == 'edit' ? 'Actualizar' : 'Grabar'"
             >Actualizar</v-btn
           >
         </v-card-actions>
@@ -56,6 +56,10 @@ export default {
       default: 'show'
     },
     classContent:{
+      type: String,
+      default: ''
+    },
+    bTitulo:{
       type: String,
       default: ''
     },

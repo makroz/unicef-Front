@@ -8,20 +8,20 @@
       icon
       fab
       small
-      color="yellow"
+      :color="getAction('edit','topbar').color"
       @click="$emit('callAction',getAction('edit','topbar'),sel[0])"
     >
-      <v-icon>edit</v-icon>
+      <v-icon>{{getAction('edit','topbar').icon}}</v-icon>
     </v-btn>
     <v-btn
       v-if="(sel.length > 0)&&can('del')&&(getAction('del','topbar').visible)"
       icon
       fab
-      color="red"
+      :color="getAction('del','topbar').color"
       small
       @click.prevent="$emit('callAction',getAction('del','topbar'))"
     >
-      <v-icon>delete</v-icon>
+      <v-icon>{{getAction('del','topbar').icon}}</v-icon>
     </v-btn>
     <v-btn
       v-if="(sel.length > 0)&&can('del')&&(Auth.recycled)&&(getAction('restore','recycled').visible)"
@@ -31,7 +31,7 @@
       small
       @click.prevent="$emit('callAction',getAction('restore','topbar'))"
     >
-      <v-icon>restore</v-icon>
+      <v-icon>{{getAction('restore','topbar').icon}}</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
         <div v-if="busquedas">
