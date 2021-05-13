@@ -139,7 +139,7 @@ export default {
       }
 
       if (typeof lista.showItem === 'function') {
-        lista.showItem(valor,lista,datos,index)
+        return lista.showItem(valor,lista,datos,index)
       }
       
 
@@ -155,14 +155,10 @@ export default {
       }
       if (lista.type == 'date') {
         return formatDT(valor,false)
-        //valor = new Date(valor);
-        //return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear();
       }
 
       if (lista.type == 'datetime') {
         return formatDT(valor,true)
-        // valor = new Date(valor);
-        // return ("00" +valor.getDate()).slice(-2) + "/" + ("00" +(valor.getMonth() +1)).slice(-2) + "/" + valor.getFullYear()+ " " + valor.getHours()+ ":" + ("00" +valor.getMinutes()).slice(-2)+ ":" + ("00" +valor.getSeconds()).slice(-2);
       }
 
       if (lista.type == 'check') {
@@ -212,24 +208,8 @@ export default {
       }
       return valor
     },
-    // colLista(lista, v, datos) {
-    //   let valor = null
-    //   try {
-    //     if (lista.fromList) {
-    //       let campoUnion = lista.listField
-    //       let hijo = this.headers.find((el) => {
-    //         return el.value == lista.fromList
-    //       }).lista
-    //       v = hijo.find((el) => el.id == datos.item[lista.fromList])[campoUnion]
-    //     }
-    //     valor = lista.lista.find((el) => el.id == v)
-    //   } catch (error) {
-    //   }
-    //   return valor ? valor.name : ''
-    // },
   },
   mounted() {
-    //console.log('rowmounted')
   },
 }
 </script>

@@ -111,7 +111,7 @@
                           {{ servicio.evaluaciones_id?servicio.evaluaciones_id:'--' }}
                         </div>
                         <div style="width: 85px; display: inline-block">
-                          {{ servicio.monitor }}
+                          {{ servicio.monitor.split(" ")[0] }}
                         </div>
                       </span>
                       {{ servicio.name }}

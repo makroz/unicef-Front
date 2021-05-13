@@ -1044,12 +1044,13 @@ export default {
     show.action = 'openShow'
 
 
-    let filtros=[
-            ['roles_id','=','2',],
-            ['status','<>',0]
-        ];
+    // let filtros=[
+    //         ['roles_slug','=','monitor',],
+    //         ['status','<>',0]
+    //     ];
     let listas= await this.getDatasBackend(this.urlModulo,[
-      {mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id'},
+      //{mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id'},
+      {mod:'Usuarios',campos:'id,name',item:'usuarios_id'},
       {mod:'Rutas',campos:'id,name,usuarios_id',item:'rutas_id',datos:{rel:1}},
       {mod:'Preguntas',sort:'orden'},
       {mod:'Categ',campos:'id,name,orden',datos:{modulo:'mkPreguntas'},sort:'orden'},

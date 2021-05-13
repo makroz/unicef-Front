@@ -258,7 +258,19 @@ export default {
   },
 
   async mounted() {
-    this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
+     let filtros = [
+       ['roles_slug', '=', 'monitor'],
+    ]
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      {
+        mod: 'Usuarios',
+        campos: 'id,name',
+        datos: { filtros: filtros },
+        item: 'usuarios_id',
+      }
+    ])
+
+    //this.lUsuarios = await this.getListaBackend('monitores', '', 'usuarios_id')
   },
 }
 </script>

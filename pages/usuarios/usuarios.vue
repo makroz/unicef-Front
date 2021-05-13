@@ -67,11 +67,11 @@
                   :readonly="accion == 'show'"
                 ></v-text-field>
                 <v-select
-                  v-model="item.roles_id"
+                  v-model="item.roles_slug"
                   :items="lRoles"
                   :rules="[rules.required]"
                   item-text="name"
-                  item-value="id"
+                  item-value="slug"
                   label="Rol"
                   :readonly="accion == 'show'"
                 ></v-select>
@@ -93,7 +93,7 @@
             ></v-select>
 
             <mk-permisos
-              style="max-height: 170px; overflow-y: scroll"
+              style="max-height: 450px; overflow-y: scroll"
               :permisos="permisos"
               :permisoGrupos="permisoGrupos"
               @onChangePermisos="onChangePermisos"
@@ -143,12 +143,12 @@ export default {
         },
         {
           text: 'Rol',
-          value: 'roles_id',
+          value: 'roles_slug',
           align: 'left',
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lRoles,
+          showItem: this.showRoles,
         },
         {
           text: 'Email',
@@ -168,6 +168,10 @@ export default {
     }
   },
   methods: {
+    showRoles(valor,lista,datos,index){
+      valor=this.getDataLista(this.lRoles,valor,'slug','name')
+      return  valor
+    },
     async onChange(v) {
       let url = this.urlModulo + '/permisosGrupos/0,' + v
       this.permisoGrupos= await this.getDataBackend(url,'',{ grupos: v},'post')
@@ -243,11 +247,17 @@ export default {
   //   }
   // },
   async mounted() {
-    this.lGrupos = await this.getListaBackend('Grupos', '', 'grupos_id')
-    if (this.lGrupos===false){
-      this.lGrupos=[]
-    }
-    this.lRoles = await this.getListaBackend('Roles', '', 'roles_id')
+    let listas= await this.getDatasBackend(this.urlModulo,[
+      //{mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id'},
+      {mod:'Grupos',campos:'id,name',item:'grupos_id',datos:{modulo:'mkUsuarios'}},
+      {mod:'Roles',campos:'id,name,slug',datos:{modulo:'mkUsuarios'}},
+    ])
+
+    // this.lGrupos = await this.getListaBackend('Grupos', '', 'grupos_id')
+    // if (this.lGrupos===false){
+    //   this.lGrupos=[]
+    // }
+    // this.lRoles = await this.getListaBackend('Roles', 'id', 'roles_slug')
   },
 }
 </script>

@@ -32,7 +32,15 @@
           validate-on-blur
           autofocus
         :readonly="accion=='show'" ></v-text-field>
-
+<v-text-field
+          label="Slug"
+          v-model="item.slug"
+          :rules="[rules.required, rules.noSpaces,rules.unique('slug')]"
+          validate-on-blur
+          ref="slug"
+          counter
+          maxlength="60"
+        :readonly="accion=='show'" ></v-text-field>
         <v-text-field label="Descripcion" v-model="item.descrip" :readonly="accion=='show'" ></v-text-field>
       </mk-form>
     </v-container>
@@ -59,6 +67,14 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
+          search: true
+        },
+        {
+          text: 'Slug',
+          value: 'slug',
+          width: '150px',
+          headers: true,
+          type: 'text',
           search: true
         },
         {
