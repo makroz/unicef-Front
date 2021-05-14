@@ -7,7 +7,13 @@ const Menu = [
             name: 'Dashboard',
             href: '/dashboard/'
         },
-
+        {
+            title: 'Recolectores',
+            group: 'apps',
+            icon: 'face',
+            name: 'recolector',
+            href: '/recoleccion/recolector/'
+        },
         {
             title: 'Modulo Evaluaciones',
             group: 'evaluaciones',
@@ -142,7 +148,8 @@ const Menu = [
                     ]
                 }
             ]
-        }, {
+        },
+        {
             title: 'Modulo Capacitaciones',
             group: 'capacitaciones',
             component: 'capacitaciones',
@@ -192,7 +199,7 @@ const Menu = [
                     href: '/usuarios/usuarios/'
                 }
             ]
-        },
+        }
         // { divider: true },
         // {
         //     title: 'Importaciones',
@@ -217,7 +224,6 @@ const Menu = [
         //         href: '/ia/ia/'
         //     }, ]
         // },
-
     ]
     // reorder menu
     // Menu.forEach((item) => {

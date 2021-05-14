@@ -5,6 +5,7 @@ import { c } from '@/components/mkComponentes/lib/MkUtils.js'
 const _lap = process.env.mkConfig.authKey
 
 export const state = () => ({
+    pwa: false,
     authToken: null,
     authUser: null,
     acceso: false,
@@ -235,6 +236,9 @@ export const getters = {
     }
 }
 export const mutations = {
+    setPwa(state, valor) {
+        state.pwa = valor
+    },
     toggle_tbl_opts_p(state) {
         state.tbl_opts_p = !state.tbl_opts_p
     },

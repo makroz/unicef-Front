@@ -92,8 +92,9 @@ export default {
     imprimirElemento(nombre) {
       imprimirElemento(nombre)
     },
-    getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def = false) {
-      return getDataLista(lista, valor, busco, devuelvo, def)
+    getDataLista(lista, valor, busco = 'id', devuelvo = 'name', defa = false) {
+      //console.log('Datalist def',defa);
+      return getDataLista(lista, valor, busco, devuelvo, defa)
     },
 
     onBuscar(datos, quitarbuscar = false) {

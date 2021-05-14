@@ -1,33 +1,36 @@
 <template>
   <div id="pageTable">
-    <v-container grid-list-md fluid
-    v-if="lRuteos.dispon"
-    >
+    <v-container grid-list-md fluid v-if="lRuteos.dispon">
       <v-layout row wrap>
         <v-flex xs12>
           <v-card>
             <!-- presentacion -->
-            <v-layout v-bind="binding">
+            <v-layout>
               <v-flex pa-4 class="text-xs-center">
                 <img
-                  style="max-width: 100%; height: auto"
-                  src="~/static/img/hi.gif"
+                  style="max-width: 100%; max-height: 250px; height: auto"
+                  src="~/static/img/recolector.jpg"
                 />
               </v-flex>
               <v-flex>
                 <v-card-title primary-title>
                   <div>
-                    <div class="font-weight-medium">Bienvenido</div>
+                    <div class="font-weight-medium">Bienvenido Recolector</div>
                     <div class="headline primary--text text-uppercase">
                       {{
                         $store.state.auth.authUser
                           ? $store.state.auth.authUser.name
-                          : 'Desconocido'
+                          : 'Guess'
                       }}
                     </div>
-                    <span
-                      >Este es tu panel de control, donde podras visualizar
-                      todas tus Rutas abiertas y Disponibles, ademas de otros
+                    <div v-show="$store.state.auth.pwa">
+                      <v-btn id="buttonInstall" large class="error">
+                        Instalar APPLICACION
+                      </v-btn>
+                    </div>
+                    <span>
+                      Este es tu panel de control, donde podras visualizar todas
+                      tus Recolecciones Disponibles y Activas, ademas de otros
                       datos importantes.</span
                     >
                   </div>
@@ -39,8 +42,8 @@
             <v-card-actions class="pa-3">
               <v-layout align-space-around justify-space-around row fill-height>
                 <mk-simple-card
-                  title="Rutas Disponibles"
-                  :text="lRuteos.dispon ? lRuteos.dispon.ok + '' : '0'"
+                  title="Solicitudes Disponibles"
+                  :text="lSolicitudServicios.length+''"
                   color="red darken-4 grey--text"
                 ></mk-simple-card>
 
@@ -64,63 +67,52 @@
           </v-card>
         </v-flex>
       </v-layout>
-      <!-- Rutas Disponibles -->
+      <!-- Solicitudes Disponibles -->
       <v-card>
         <v-toolbar color="green darken-4" dark>
           <v-icon>add_location_alt</v-icon>
-          <v-toolbar-title>Rutas Disponibles</v-toolbar-title>
+          <v-toolbar-title>Solicitudes Disponibles</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-list two-line>
           <v-list-tile
-            v-for="ruta in lRuteos.dispon.data"
-            :key="ruta.id"
+            v-for="(sol,index) in lDisponBenef"
+            :key="index"
             href="#"
           >
             <v-list-tile-avatar>
-              <v-btn icon flat color="success" @click="verMapa(ruta, true)">
-                <v-badge
-                  :value="
-                    getDataLista(lRutas, ruta.rutas_id, 'id', 'beneficiarios')
-                  "
+              <v-btn icon flat color="success"  @click="verMapaBene(index, false)">
+                <!-- <v-badge
+                  :value="true"
                   color="cyan"
                   overlap
                 >
                   <template v-slot:badge>
                     <span>
-                      {{
-                        getDataLista(
-                          lRutas,
-                          ruta.rutas_id,
-                          'id',
-                          'beneficiarios'
-                        ).length
-                      }}</span
-                    >
-                  </template>
+                      {{ Object.keys(sol.lista).length }}
+                      </span>
+                  </template> -->
                   <v-icon large>map</v-icon>
-                </v-badge>
+                <!-- </v-badge> -->
               </v-btn>
             </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title>
                 <v-layout row wrap>
                   <v-flex>
-                    <span class="caption">
-                      {{ ruta.id }}
-                    </span>
                     <span class="title text-capitalize">
-                      {{ getDataLista(lRutas, ruta.rutas_id) }}</span
-                    >
+                      {{ sol.name?sol.name:'Desconicido' }}
+                      </span>
                   </v-flex>
                 </v-layout>
               </v-list-tile-title>
-              <v-list-tile-sub-title class="caption">{{
-                getDataLista(lRutas, ruta.rutas_id, 'id', 'descrip')
-              }}</v-list-tile-sub-title>
+              <v-list-tile-sub-title class="caption">
+                Cant. Solicitudes: 
+                {{ Object.keys(sol.lista).length }}
+              </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon color="primary" @click="addRuteo(ruta)">
+              <v-btn icon color="primary" @click="aceptarSol(sol,index)">
                 <v-icon>add</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -186,8 +178,12 @@
                 </v-list-tile-title>
                 <v-list-tile-sub-title class="caption">
                   Abierto: {{ formatDT(ruteo['created_at']) }}
-                   {{ getDataLista(lRutas, ruteo.rutas_id, 'id', 'beneficiarios').length  }} -
-                      {{ ruteo.evaluaciones.length }}
+                  {{
+                    getDataLista(lRutas, ruteo.rutas_id, 'id', 'beneficiarios')
+                      .length
+                  }}
+                  -
+                  {{ ruteo.evaluaciones.length }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
@@ -278,7 +274,6 @@
                   icon
                   :color="getColorEval(ruteo, bene.id)"
                   @click="openEval(ruteo, bene.id)"
-
                 >
                   <v-icon>assignment</v-icon>
                 </v-btn>
@@ -468,20 +463,130 @@
       </v-card>
       <br />
       <!-- formulario Principal -->
-      <mk-form
+ <mk-form
         ref="mkForm"
         :modal="modal"
         :tit="tituloModal"
         :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
+        bTitulo="Aceptar"
       >
         <v-container grid-list-md fluid>
-          <v-text-field
-            label="Observaciones"
-            v-model="item.obs"
-            ref="focus"
-          ></v-text-field>
+          <v-layout row wrap>
+            <v-flex xs12 sm8 md10>
+              <v-text-field
+                label="Beneficiario"
+                :value="item.name"
+                disabled
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm-4 md2>
+              <v-text-field
+                label="Cod.EPSA"
+                :value="getDataLista(lBeneficiarios,item.id,'id','epsa',item.id)"
+                disabled
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-card>
+            <v-toolbar color="primary" dark dense>
+              <v-toolbar-title
+                >Servicios {{ lEstados[item.estado] }}
+              </v-toolbar-title>
+            </v-toolbar>
+
+            <div dark v-if="item.estado > -1" class="grey" style="height: 20px">
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <span v-if="item.estado > -1" style="font-size: 10px">
+                    <div style="width: 48px; display: inline-block"></div>
+
+                    <div style="width: 25px; display: inline-block">Id</div>
+                    <div style="width: 60px; display: inline-block">Fecha</div>
+                    <div style="width: 30px; display: inline-block">Eval</div>
+                    <div style="width: 85px; display: inline-block">
+                      Creado X
+                    </div>
+                  </span>
+                  Servicio
+                  <span style="font-size: 10px; width: 130px">
+                    Observaciones
+                  </span>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </div>
+            <v-list style="max-height: 300px; overflow-y: scroll" dense>
+              <template v-for="(servicio, index) in lServices">
+                <v-list-tile
+                  :key="index"
+                  :class="
+                    servicio.selected
+                      ? 'deep-purple lighten-5 deep-purple--text text--accent-4'
+                      : ''
+                  "
+                >
+                  <v-list-tile-action pa-0 ma-0 style="min-width: 34px">
+                    <v-checkbox
+                      v-model="servicio.selected"
+                      color="deep-purple accent-4"
+                      :readonly="accion == 'show'"
+                      hide-details
+                    ></v-checkbox>
+                  </v-list-tile-action>
+
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      <span v-if="servicio.estado > -1" style="font-size: 10px">
+                        <div style="width: 25px; display: inline-block">
+                          {{ servicio.sol_id }}
+                        </div>
+                        <div style="width: 60px; display: inline-block">
+                          {{ formatDT(servicio.fecha, false) }}
+                        </div>
+                        <div style="width: 30px; display: inline-block">
+                          {{ servicio.evaluaciones_id?servicio.evaluaciones_id:'--' }}
+                        </div>
+                        <div style="width: 85px; display: inline-block">
+                          {{ servicio.monitor.split(" ")[0] }}
+                        </div>
+                      </span>
+                      {{ servicio.name }}
+                      <span style="font-size: 10px; width: 130px">
+                        {{ servicio.obs }}
+                      </span>
+                    </v-list-tile-title>
+                  </v-list-tile-content>
+                  <v-list-tile-avatar
+                    v-if="servicio.selected || servicio.estado > -1"
+                  >
+                    <v-text-field
+                      v-model="servicio.cantidad"
+                      :disabled="
+                        servicio.selected && accion == 'add'
+                          ? servicio.cant
+                            ? false
+                            : true
+                          : true
+                      "
+                      :rules="[rules.required, rules.num, rules.minVal(1)]"
+                      validate-on-blur
+                      color="primary"
+                      :class="servicio.selectded ? 'secondary' : ''"
+                      type="number"
+                      min="1"
+                      style="
+                        font-size: 12px;
+                        padding-bottom: 0;
+                        padding-top: 12px;
+                      "
+                      :readonly="accion == 'show'"
+                    ></v-text-field>
+                  </v-list-tile-avatar>
+                </v-list-tile>
+              </template>
+            </v-list>
+          </v-card>
         </v-container>
       </mk-form>
       <!-- formulario Mapa FullScreen -->
@@ -548,12 +653,12 @@
         <v-container grid-list-md fluid class="white">
           <v-switch
             v-model="estado"
-            label="Se Puede resalizar la evaluacion?"
+            label="Se puede realizar la Evaluación?"
             color="indigo"
           >
           </v-switch>
           <v-text-field
-            label="Notas de la Evaluacion"
+            label="Notas de la Evaluación"
             v-model="item.obs"
             ref="focusEval"
             :rules="this.estado ? [] : [this.rules.required]"
@@ -632,7 +737,7 @@
                       >
                         <v-list-tile-action>
                           <v-checkbox
-                            v-if="servicio.estado == 1"
+                            v-if="servicio.estado == 0"
                             v-model="servicio.selected"
                             color="deep-purple accent-4"
                           ></v-checkbox>
@@ -651,7 +756,7 @@
                           <v-text-field
                             v-model="servicio.cantidad"
                             :disabled="
-                              servicio.estado == 1
+                              servicio.estado == 0
                                 ? servicio.cant
                                   ? false
                                   : true
@@ -693,6 +798,7 @@ import VWidget from '@/components/VWidget'
 import MkSimpleCard from '~/components/mkComponentes/mkCards/mkSimpleCard.vue'
 import { TargomoClient } from '@targomo/core'
 import {
+  getDataLista,
   getDistancia,
   formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
@@ -705,20 +811,19 @@ import {
   getCacheKey,
 } from '@/components/mkComponentes/lib/MkCache.js'
 import MkFormFullScreen from '~/components/mkComponentes/MkFormFullScreen.vue'
-const _dirty = process.env.mkConfig.dirty
+//const _dirty = process.env.mkConfig.dirty
 
 export default {
   middleware: ['authAccess'],
   mixins: [MkModuloMix],
   components: { VWidget, MkSimpleCard, MkFormFullScreen },
-  name: 'RuteosMonitor',
+  name: 'Recolector',
   disModTable: true,
   data() {
     return {
-      urlModulo: 'Ruteos',
+      urlModulo: 'SolicitudServicios',
       //titModulo: '',
       location: false,
-      lUsuarios: [],
       lRuteos: {
         dispon: {
           ok: 0,
@@ -745,7 +850,7 @@ export default {
       lPreguntas: [],
       modalMap: false,
       modalEval: false,
-      center: [-17.783373986957255, -63.18209478792436],
+      center: [-17.332269, -63.252798],
       zoom: 13,
       coordenadas: {},
       markers: [],
@@ -766,6 +871,30 @@ export default {
       jsonLine: [],
       item: { respuestas: {} },
       callBack: false,
+      lSolicitudServicios:[],
+      lDisponBenef:{},
+      lEstados: [
+        'Por Revisar',
+        'Pendiente',
+        'Asignado',
+        'Realizado',
+        'Verificado',
+        'Autorizado',
+        'Comercial',
+        'Completado',
+      ],
+      lColor: [
+        'red--text',
+        'gray--text text--lighten-3',
+        'green--text text--lighten-1',
+        'green--text',
+        'green--text text--darken-2',
+        'green--text text--darken-4',
+        'green--text text--darken-4',
+        'green--text text--darken-4',
+      ],
+      lServices: [],
+      lUsuarios: [],
     }
   },
   methods: {
@@ -776,7 +905,7 @@ export default {
 
       this.item.servicios = {}
       this.lServicios.forEach((e) => {
-        if (e.selected && e.estado == 1) {
+        if (e.selected && e.estado == 0) {
           this.item.servicios[e.id] = e.cantidad
         }
       })
@@ -818,7 +947,7 @@ export default {
       if (!this.can('edit', true)) {
         return false
       }
-       Swal.fire({
+      Swal.fire({
         title: 'Desea Cerrar este Ruteo',
         icon: 'warning',
         showCancelButton: true,
@@ -826,35 +955,32 @@ export default {
         reverseButtons: true,
         confirmButtonText: 'Si deseo Cerrarlo!',
       }).then((action) => {
-      if (!action.value){ 
-        return false
-      }
-      let me = this
-      let url = 'RuteosMonitor/setClose'
-      me.dataTable.loading = true
-      me.$axios
-        .post(url + this.getCt(url), {
-          id: id,
-          lat: this.coordenadas.latitude,
-          lng: this.coordenadas.longitude,
-        })
-        .then(function (response) {
-          if (me.isOk(response.data)) {
-            me.afterSave(me, 0)
-          } else {
-            //con error
-          }
-        })
-        .catch(function (error) {
-          console.error(error)
-        })
-        .finally(function () {
-          me.dataTable.loading = false
-        })
-
-
+        if (!action.value) {
+          return false
+        }
+        let me = this
+        let url = 'RuteosMonitor/setClose'
+        //me.dataTable.loading = true
+        me.$axios
+          .post(url + this.getCt(url), {
+            id: id,
+            lat: this.coordenadas.latitude,
+            lng: this.coordenadas.longitude,
+          })
+          .then(function (response) {
+            if (me.isOk(response.data)) {
+              me.afterSave(me, 0)
+            } else {
+              //con error
+            }
+          })
+          .catch(function (error) {
+            console.error(error)
+          })
+          .finally(function () {
+            //me.dataTable.loading = false
+          })
       })
-
     },
     getColorEval(ruteo, bene) {
       return !getDataLista(
@@ -864,12 +990,12 @@ export default {
         'estado'
       )
         ? 'red'
-        : this.getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'verif')
+        : getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'verif')
         ? 'greem'
         : 'yellow'
     },
     openEval(data, bene) {
-      if (this.initOnce('openEval')){
+      if (this.initOnce('openEval')) {
         return false
       }
       if (!this.can('add', true)) {
@@ -886,7 +1012,7 @@ export default {
       this.item.obs = ''
       this.item.id = null
       this.item.estado = 0
-      let evaluacion = this.getDataLista(
+      let evaluacion = getDataLista(
         this.item.evaluaciones,
         bene,
         'beneficiarios_id',
@@ -896,10 +1022,10 @@ export default {
       this.lServicios.forEach((e) => {
         e.cantidad = 1
         e.selected = false
-        e.estado = 1
+        e.estado = 0
 
         if (evaluacion) {
-          let existe = this.getDataLista(
+          let existe = getDataLista(
             evaluacion.servicios,
             e.id,
             'servicios_id',
@@ -909,7 +1035,7 @@ export default {
             e.cantidad = existe.cant
             e.selected = true
             e.estado = existe.estado
-            if (existe.estado == 1) {
+            if (existe.estado == 0) {
               this.item.servicios[e.id] = existe.cant
             }
           }
@@ -919,7 +1045,7 @@ export default {
       this.item.respuestas = {}
       this.lPreguntas.forEach((e) => {
         if (evaluacion) {
-          this.item.respuestas[e.id] = this.getDataLista(
+          this.item.respuestas[e.id] = getDataLista(
             evaluacion.respuestas,
             e.id,
             'preguntas_id',
@@ -936,7 +1062,7 @@ export default {
         this.item.id = evaluacion.id
         this.item.estado = 1 * evaluacion.estado
         this.item.obs = evaluacion.obs
-        if (_dirty) {
+        if (this.$config.dirty) {
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
         }
       }
@@ -944,12 +1070,12 @@ export default {
 
       this.$refs.mkFormEval.$refs.form.resetValidation()
       this.tituloModal =
-        'Evaluacion de ' + this.getDataLista(this.lBeneficiarios, bene) //colocar computada de acuerdo al tamano
+        'Evaluacion de ' + getDataLista(this.lBeneficiarios, bene) //colocar computada de acuerdo al tamano
       if (!this.modalEval) this.modalEval = true
       //this.$nextTick(this.$refs.focus.focus)
     },
-    formatDT(d,time=true) {
-      return formatDT(d,time)
+    formatDT(d, time = true) {
+      return formatDT(d, time)
     },
     getSubHeader(data) {
       return 'Abierto:' + this.formatDT(data.created_at)
@@ -964,16 +1090,21 @@ export default {
           },
         },
       ]
-      let orders = ruta.beneficiarios.map((f) => {
-        return {
-          uuid: this.getDataLista(this.lBeneficiarios, f),
-          storeUuid: 'inicio',
-          priority: 1,
-          address: {
-            lat: this.getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
-            lng: this.getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
-            avgHandlingTime: 1,
-          },
+      let orders = []
+      ruta.beneficiarios.forEach((f) => {
+        let lat = getDataLista(this.lBeneficiarios, f, 'id', 'lat')
+        let lng = getDataLista(this.lBeneficiarios, f, 'id', 'lng')
+        if (lat && lng) {
+          orders.push({
+            uuid: getDataLista(this.lBeneficiarios, f),
+            storeUuid: 'inicio',
+            priority: 1,
+            address: {
+              lat: getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
+              lng: getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
+              avgHandlingTime: 1,
+            },
+          })
         }
       })
 
@@ -1070,33 +1201,67 @@ export default {
       )
     },
     async afterSave(me, isError = 0) {
-      if (isError != 1) {
-        me.lRuteos = await this.getListaBackend('RuteosMonitor')
+      console.log('aftersve',isError)
+      this.lDisponBenef={}
+    let filtros = [['estado', '=', '1']]
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      {
+        mod: 'SolicitudServicios',
+        datos: { modulo: 'mkServicios', rel: 1 ,filtros:filtros},
+        //campos: 'id,nathis,usuarios_id,descrip',
+        each: (e) => {
+          if (this.lDisponBenef[e.beneficiarios_id]){
+            this.lDisponBenef[e.beneficiarios_id].lista[e.id]=e
+          }else{
+            this.lDisponBenef[e.beneficiarios_id]={
+              nathis:this.getDataLista(this.lBeneficiarios,e.beneficiarios_id,'id','nathis',2),
+              lista:{},
+              }
+            this.lDisponBenef[e.beneficiarios_id].lista[e.id]=e
+          }
+         // console.log('dispon:',e.beneficiarios_id,this.lDisponBenef);
+        },
+      },
+    ])
+    //   if (isError != 1) {
+    //     me.lRuteos = await this.getListaBackend('RuteosMonitor')
+    //   }
+    //   if (isError >= 0) {
+    //     this.modalEval = false
+    //     //modalMap=false;
+    //   }
+    //   return true
+     },
+    afterOpen(accion, data) {
+      if (accion != 'add') {
+        this.tituloModal = 'Aceptar ' + this.titModulo
       }
-      if (isError >= 0) {
-        this.modalEval = false
-        //modalMap=false;
-      }
-      return true
     },
-    addRuteo(data) {
-      if (!this.can('add', true)) {
-        return false
+    beforeSave(me) {
+      //console.log('id',me.item)
+      let servicios = []
+      for (const obj in me.lServices) {
+        if (me.lServices[obj].selected === true) {
+          servicios.push({
+            id: me.lServices[obj].id,
+            //cant: me.lServices[obj].cantidad,
+            sol_id: me.lServices[obj].sol_id,
+          })
+        }
       }
-      this.item = Object.assign({}, data)
-      this.item.lat = this.coordenadas.latitude
-      this.item.lng = this.coordenadas.longitude
-      this.item.usuarios_id = this.$store.state.auth.authUser.id
-      this.item.rutas_id = data.id
-      this.item._noData = 1
-      this.item.obs = ''
-      this.item.id = null
+      me.item.servicios = servicios
+      //me.item.estado = (me.item.estado * 1) + 1
+      me.item.estado = 2
+    },
+    aceptarSol(data,id) {
+      // if (!this.can('add', true)) {
+      //   return false
+      // }
+      data.id=id
+      data.estado=1
+      //this.item = Object.assign({}, data)
+      this.openDialog('edit',data)
 
-      this.$refs.mkForm.$refs.form.resetValidation()
-      this.tituloModal =
-        'Abrir Ruteo para ' + this.getDataLista(this.lRutas, this.item.rutas_id)
-      this.modal = true
-      this.$nextTick(this.$refs.focus.focus)
     },
     vermapaGoogle() {
       //
@@ -1104,7 +1269,9 @@ export default {
     verMapaBene(bene, google = false) {
       this.getPosition()
       let benef = this.getDataLista(this.lBeneficiarios, bene, 'id', '*')
-      
+      if (!benef){
+        return false
+      }
       if (!google) {
         this.markers = [0, bene]
         this.jsonData = [
@@ -1116,7 +1283,7 @@ export default {
             ],
           },
         ]
-
+//        console.log('mapa',this.markers,this.jsonData,bene,benef);
         this.tituloModal = 'Ubicacion de ' + benef.name
         //this.jsonData = null
         this.modalMap = true
@@ -1155,12 +1322,15 @@ export default {
       this.item.obs = ''
       this.item.id = null
       this.tituloModal =
-        'Mapa Ruteo de ' + this.getDataLista(this.lRutas, this.item.rutas_id)
+        'Mapa Ruteo de ' + getDataLista(this.lRutas, this.item.rutas_id)
       this.modalMap = true
       setTimeout(() => {
         this.initMap()
       }, 300)
     },
+    // getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
+    //   return getDataLista(lista, valor, busco, devuelvo)
+    // },
     change(e) {
       this.item.usuarios_id = this.lRutas.find((el) => el.id === e).usuarios_id
     },
@@ -1199,9 +1369,65 @@ export default {
       this.location = false
       console.warn('ERROR(' + error.code + '): ' + error.message)
     },
-    beforeOpen(accion, data = {}) {
+    async beforeOpen(accion, data = {}) {
+      data._noData = 1
       data.lat = this.coordenadas.latitude
       data.lng = this.coordenadas.longitude
+      this.lServices = []
+      if (accion == 'add') {
+        this.bTitulo = ''
+        this.itemData.epsa = ''
+        data.estado = -1
+
+        this.lServicios.forEach((e) => {
+          this.lServices.push({
+            cantidad: 1,
+            estado: -1,
+            selected: null,
+            ...e,
+          })
+        })
+      } else {
+        if (data.estado >= 5) {
+          return false
+        }
+        //data.id=1
+
+        this.bTitulo = 'Revisados'
+        let lSol = Object.keys(data.lista)
+        console.log('item',data,this.item);
+        lSol.forEach((el) => {
+          let e=data.lista[el]
+          let serv = this.getDataLista(
+            this.lServicios,
+            e.servicios_id,
+            'id',
+            '*'
+          )
+
+          if (serv) {
+            this.lServices.push({
+              sol_id: e.id,
+              cantidad: e.cant,
+              fecha: e.created_at,
+              estado: e.estado,
+              evaluaciones_id: e.evaluaciones_id,
+              selected: null,
+              monitor: this.getDataLista(
+                this.lUsuarios,
+                e.created_by,
+                'id',
+                'name',''
+              ),
+              ...serv,
+            })
+          }
+        })
+
+       // this.change(data.beneficiarios_id)
+        //data.estado =(data.estado*1);
+        
+      }
     },
     getIcon(id) {
       if (id == 0) {
@@ -1220,6 +1446,7 @@ export default {
       } else {
         marker = [this.coordenadas.latitude, this.coordenadas.longitude]
       }
+      //console.log('marker:',marker,id,item,index);
       if (!item.beneficiarios) {
         return marker
       }
@@ -1321,12 +1548,12 @@ export default {
         ],
         orders: ruta.beneficiarios.map((f) => {
           return {
-            uuid: this.getDataLista(this.lBeneficiarios, f),
+            uuid: getDataLista(this.lBeneficiarios, f),
             storeUuid: 'inicio',
             priority: 1,
             address: {
-              lat: this.getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
-              lng: this.getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
+              lat: getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
+              lng: getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
               avgHandlingTime: 1,
             },
           }
@@ -1389,7 +1616,7 @@ export default {
           r.push({
             id: el,
             distancia: this.distancia(
-              this.getDataLista(this.lBeneficiarios, el, 'id', '*')
+              getDataLista(this.lBeneficiarios, el, 'id', '*',2)
             ),
           })
         })
@@ -1417,46 +1644,52 @@ export default {
   watch: {},
   async mounted() {
     //console.log('monted monitor');
-    this.getPosition()
-
-    this.lUsuarios = await this.getListaBackend('monitores')
-    this.lBeneficiarios = await this.getListaBackend('Beneficiarios', 'id,name')
+    setTimeout(() => {
+      this.getPosition()
+    }, 3000)
     this.lRuteos = await this.getListaBackend('RuteosMonitor')
-
-    let rutas = await this.getListaBackend(
-      'Rutas',
-      'id,name,usuarios_id,descrip'
-    )
-
-    if (rutas.length > 0){
-      this.lRutas = this.ordBeneficiarios(rutas)
-    }
-    
-
-    this.lCateg = await this.getListaBackend('Categ', 'id,name,orden')
-    this.lPreguntas = await this.getListaBackend('Preguntas')
-
-    if (this.lCateg.length > 0){
-    this.lCateg.sort(function (a, b) {
-      return a.orden - b.orden
-    })
-    }
-
-    if (this.lPreguntas.length > 0){
-    this.lPreguntas.sort(function (a, b) {
-      return a.orden - b.orden
-    })
-    }
-
-    let services = await this.getDataBackend('Servicios')
-    if (services.length > 0){
-    services.forEach((e) => {
-      e.cantidad = 1
-      e.selected = false
-    })
-    }
-    this.lServicios = services
-    //this.setOptionTable('del').visible=false;
+    this.lDisponBenef={}
+    let filtros = [['estado', '=', '1']]
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      {mod:'Usuarios',campos:'id,name'},
+      { mod: 'Beneficiarios', campos: 'id,name,epsa', datos: { _customFields: 1 } },
+      {
+        mod: 'Rutas',
+        datos: { rel: 1 },
+        campos: 'id,name,usuarios_id,descrip',
+      },
+      {
+        mod: 'Categ',
+        sort: 'orden',
+        datos: { modulo: 'mkPreguntas' },
+        campos: 'id,name,orden',
+      },
+      { mod: 'Preguntas', sort: 'orden' },
+      {
+        mod: 'Servicios',
+        each: (e) => {
+          e.cantidad = 1
+          e.selected = false
+        },
+      },
+      {
+        mod: 'SolicitudServicios',
+        datos: { modulo: 'mkServicios', rel: 1 ,filtros:filtros},
+        //campos: 'id,name,usuarios_id,descrip',
+        each: (e) => {
+          if (this.lDisponBenef[e.beneficiarios_id]){
+            this.lDisponBenef[e.beneficiarios_id].lista[e.id]=e
+          }else{
+            this.lDisponBenef[e.beneficiarios_id]={
+              name:this.getDataLista(this.lBeneficiarios,e.beneficiarios_id,'id','name',2),
+              lista:{},
+              }
+            this.lDisponBenef[e.beneficiarios_id].lista[e.id]=e
+          }
+        },
+      },
+    ])
+    //console.log('lista:',this.lDisponBenef);
   },
 }
 </script>

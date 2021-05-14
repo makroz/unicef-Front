@@ -49,10 +49,10 @@ export function getFirstUpperCase(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def = false) {
-    let r = def
+export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name', defa = false) {
+    let r = defa
         //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
-    let o = lista.find(el => el[busco] === valor)
+    let o = lista.find(el => el[busco] == valor)
     if (o) {
         if (devuelvo == '*') {
             r = o
@@ -64,6 +64,7 @@ export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name', def 
     return r
 }
 export function getDistancia(lat1, lon1, lat2, lon2) {
+    //console.log('calcula distancia');
     var R = 6371; // Radius of the earth in km
     var dLat = (lat2 - lat1) * Math.PI / 180; // deg2rad below
     var dLon = (lon2 - lon1) * Math.PI / 180;

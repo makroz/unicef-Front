@@ -296,7 +296,7 @@ export default {
     }
 
     let filtros=[
-            ['roles_id','=','2',],
+            ['roles_slug','=','monitor',],
             ['status','<>',0]
         ];
     let listas= await this.getDatasBackend(this.urlModulo,[
