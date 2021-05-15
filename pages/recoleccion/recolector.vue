@@ -43,13 +43,13 @@
               <v-layout align-space-around justify-space-around row fill-height>
                 <mk-simple-card
                   title="Solicitudes Disponibles"
-                  :text="lSolicitudServicios.length+''"
+                  :text="lSolicitudServicios.length + ''"
                   color="red darken-4 grey--text"
                 ></mk-simple-card>
 
                 <mk-simple-card
-                  title="Rutas Abiertas"
-                  :text="lRuteos.open ? lRuteos.open.ok + '' : '0'"
+                  title="Solicitudes Aceptadas"
+                  :text="nAceptadas"
                   color="yellow darken-4"
                 ></mk-simple-card>
 
@@ -75,13 +75,14 @@
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-list two-line>
-          <v-list-tile
-            v-for="(sol,index) in lDisponBenef"
-            :key="index"
-            href="#"
-          >
+          <v-list-tile v-for="(sol, index) in lDispon" :key="index" href="#">
             <v-list-tile-avatar>
-              <v-btn icon flat color="success"  @click="verMapaBene(index, false)">
+              <v-btn
+                icon
+                flat
+                color="success"
+                @click="verMapaBene(index, false)"
+              >
                 <!-- <v-badge
                   :value="true"
                   color="cyan"
@@ -92,7 +93,7 @@
                       {{ Object.keys(sol.lista).length }}
                       </span>
                   </template> -->
-                  <v-icon large>map</v-icon>
+                <v-icon large>map</v-icon>
                 <!-- </v-badge> -->
               </v-btn>
             </v-list-tile-avatar>
@@ -101,18 +102,18 @@
                 <v-layout row wrap>
                   <v-flex>
                     <span class="title text-capitalize">
-                      {{ sol.name?sol.name:'Desconicido' }}
-                      </span>
+                      {{ sol.name ? sol.name : 'Desconicido' }}
+                    </span>
                   </v-flex>
                 </v-layout>
               </v-list-tile-title>
               <v-list-tile-sub-title class="caption">
-                Cant. Solicitudes: 
+                Cant. Solicitudes:
                 {{ Object.keys(sol.lista).length }}
               </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon color="primary" @click="aceptarSol(sol,index)">
+              <v-btn icon color="primary" @click="aceptarSol(sol, index)">
                 <v-icon>add</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -120,17 +121,70 @@
         </v-list>
       </v-card>
       <br />
-      <!-- Rutas Abiertas -->
+      <!-- Solicitudes Aceptadas -->
       <v-card>
         <v-toolbar color="yellow darken-4" dark>
+          <v-icon>add_location_alt</v-icon>
+          <v-toolbar-title>Solicitudes Aceptadas</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list two-line>
+          <v-list-tile v-for="(sol, index) in lAsignadaD" :key="index" href="#">
+            <v-list-tile-avatar>
+              <v-btn
+                icon
+                flat
+                color="success"
+                @click="verMapaBene(sol.id, false)"
+              >
+                <!-- <v-badge
+                  :value="true"
+                  color="cyan"
+                  overlap
+                >
+                  <template v-slot:badge>
+                    <span>
+                      {{ Object.keys(sol.lista).length }}
+                      </span>
+                  </template> -->
+                <v-icon large>map</v-icon>
+                <!-- </v-badge> -->
+              </v-btn>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <v-layout row wrap>
+                  <v-flex>
+                    <span class="title text-capitalize">
+                      {{ lAsignada[sol.id].name ? lAsignada[sol.id].name : 'Desconicido' }}
+                    </span>
+                  </v-flex>
+                </v-layout>
+              </v-list-tile-title>
+              <v-list-tile-sub-title class="caption">
+                Cant. Solicitudes:
+                {{ Object.keys(lAsignada[sol.id].lista).length }} 
+                Distancia: {{ (sol.distancia * 1.0).toFixed(2)  }} Km
+              </v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon color="primary" @click="realizarSol(lAsignada[sol.id], lAsignada[sol.id].id)">
+                <v-icon>add</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+      </v-card>
+      <!-- <v-card>
+        <v-toolbar color="yellow darken-4" dark>
           <v-icon>pin_drop</v-icon>
-          <v-toolbar-title>Rutas Abiertas</v-toolbar-title>
+          <v-toolbar-title>Solicitudes Aceptadas</v-toolbar-title>
         </v-toolbar>
         <v-list two-line dense>
           <v-list-group
-            v-model="ruteo.active"
-            v-for="ruteo in lRuteos.open.data"
-            :key="ruteo.id"
+            v-model="aceptada.active"
+            v-for="(aceptada,index) in lAsignada"
+            :key="index"
             active-class="grey"
           >
             <v-list-tile slot="activator">
@@ -281,7 +335,7 @@
             </v-list-tile>
           </v-list-group>
         </v-list>
-      </v-card>
+      </v-card> -->
       <br />
       <!-- Rutas Atrasadas  -->
       <v-card>
@@ -463,7 +517,7 @@
       </v-card>
       <br />
       <!-- formulario Principal -->
- <mk-form
+      <mk-form
         ref="mkForm"
         :modal="modal"
         :tit="tituloModal"
@@ -484,7 +538,9 @@
             <v-flex xs12 sm-4 md2>
               <v-text-field
                 label="Cod.EPSA"
-                :value="getDataLista(lBeneficiarios,item.id,'id','epsa',item.id)"
+                :value="
+                  getDataLista(lBeneficiarios, item.id, 'id', 'epsa', item.id)
+                "
                 disabled
               ></v-text-field>
             </v-flex>
@@ -545,10 +601,14 @@
                           {{ formatDT(servicio.fecha, false) }}
                         </div>
                         <div style="width: 30px; display: inline-block">
-                          {{ servicio.evaluaciones_id?servicio.evaluaciones_id:'--' }}
+                          {{
+                            servicio.evaluaciones_id
+                              ? servicio.evaluaciones_id
+                              : '--'
+                          }}
                         </div>
                         <div style="width: 85px; display: inline-block">
-                          {{ servicio.monitor.split(" ")[0] }}
+                          {{ servicio.monitor.split(' ')[0] }}
                         </div>
                       </span>
                       {{ servicio.name }}
@@ -648,7 +708,7 @@
         :tit="tituloModal"
         :accion="accion"
         @closeDialog="modalEval = false"
-        @grabarItem="grabarEval"
+        @grabarItem="grabarItem"
       >
         <v-container grid-list-md fluid class="white">
           <v-switch
@@ -842,8 +902,8 @@ export default {
           data: [],
         },
       },
-      lRutas: [],
-      estado: false,
+      // lRutas: [],
+       estado: false,
       lBeneficiarios: [],
       lServicios: [],
       lCateg: [],
@@ -871,8 +931,11 @@ export default {
       jsonLine: [],
       item: { respuestas: {} },
       callBack: false,
-      lSolicitudServicios:[],
-      lDisponBenef:{},
+      
+      lSolicitudServicios: [],
+      lDispon: {},
+      lAsignada: {},
+      lAsignadaD: [],
       lEstados: [
         'Por Revisar',
         'Pendiente',
@@ -895,54 +958,11 @@ export default {
       ],
       lServices: [],
       lUsuarios: [],
+      nAceptadas:0,
     }
   },
   methods: {
-    grabarEval() {
-      if (!this.$refs.mkFormEval.$refs.form.validate()) {
-        return false
-      }
-
-      this.item.servicios = {}
-      this.lServicios.forEach((e) => {
-        if (e.selected && e.estado == 0) {
-          this.item.servicios[e.id] = e.cantidad
-        }
-      })
-
-      let data = {
-        _noData: 1,
-        id: this.item.id,
-        obs: this.item.obs,
-        lat: this.coordenadas.latitude,
-        lng: this.coordenadas.longitude,
-        estado: this.estado ? 2 : 1,
-        usuarios_id: this.$store.state.auth.authUser.id,
-        ruteos_id: this.item.ruteos_id,
-        beneficiarios_id: this.item.beneficiarios_id,
-        respuestas: this.item.respuestas,
-        servicios: this.item.servicios,
-      }
-      if (
-        this.item.id > 0 &&
-        JSON.stringify(this.dirty.item.servicios) !=
-          JSON.stringify(this.item.servicios)
-      ) {
-        data.benef = this.item.beneficiarios_id
-      }
-      //console.log(this.item, data)
-
-      this.item = data
-
-      if (!this.can('add', true)) {
-        return false
-      }
-
-      this.urlModulo = 'Evaluaciones'
-      this.grabarItem()
-      this.urlModulo = 'Ruteos'
-      return true
-    },
+    
     setClose(id) {
       if (!this.can('edit', true)) {
         return false
@@ -1074,9 +1094,6 @@ export default {
       if (!this.modalEval) this.modalEval = true
       //this.$nextTick(this.$refs.focus.focus)
     },
-    formatDT(d, time = true) {
-      return formatDT(d, time)
-    },
     getSubHeader(data) {
       return 'Abierto:' + this.formatDT(data.created_at)
     },
@@ -1200,41 +1217,97 @@ export default {
         d.lng
       )
     },
-    async afterSave(me, isError = 0) {
-      console.log('aftersve',isError)
-      this.lDisponBenef={}
-    let filtros = [['estado', '=', '1']]
-    let listas = await this.getDatasBackend(this.urlModulo, [
-      {
+    getSolicitudServicios(){
+    let user = this.$store.state.auth.authUser.id
+    return [
+        {
         mod: 'SolicitudServicios',
-        datos: { modulo: 'mkServicios', rel: 1 ,filtros:filtros},
-        //campos: 'id,nathis,usuarios_id,descrip',
+        datos: {
+          modulo: 'mkServicios',
+          rel: 1,
+          filtros: [['estado', '=', '1']],
+        },
         each: (e) => {
-          if (this.lDisponBenef[e.beneficiarios_id]){
-            this.lDisponBenef[e.beneficiarios_id].lista[e.id]=e
-          }else{
-            this.lDisponBenef[e.beneficiarios_id]={
-              nathis:this.getDataLista(this.lBeneficiarios,e.beneficiarios_id,'id','nathis',2),
-              lista:{},
+          if (e.estado == 1) {
+            if (this.lDispon[e.beneficiarios_id]) {
+              this.lDispon[e.beneficiarios_id].lista[e.id] = e
+            } else {
+              this.lDispon[e.beneficiarios_id] = {
+                name: this.getDataLista(
+                  this.lBeneficiarios,
+                  e.beneficiarios_id,
+                  'id',
+                  'name',
+                  'Desconocido'
+                ),
+                lista: {},
               }
-            this.lDisponBenef[e.beneficiarios_id].lista[e.id]=e
+              this.lDispon[e.beneficiarios_id].lista[e.id] = e
+            }
           }
-         // console.log('dispon:',e.beneficiarios_id,this.lDisponBenef);
         },
       },
-    ])
-    //   if (isError != 1) {
-    //     me.lRuteos = await this.getListaBackend('RuteosMonitor')
-    //   }
-    //   if (isError >= 0) {
-    //     this.modalEval = false
-    //     //modalMap=false;
-    //   }
-    //   return true
-     },
+      {
+        mod: 'SolicitudServicios',
+        lista: 'Asignado',
+        datos: {
+          modulo: 'mkServicios',
+          rel: 1,
+          filtros: [
+            ['estado', '=', '2'],
+            ['usuarios_id_2', '=', user],
+          ],
+        },
+        each: (e) => {
+          if (e.estado == 2) {
+            if (this.lAsignada[e.beneficiarios_id]) {
+              this.lAsignada[e.beneficiarios_id].lista[e.id] = e
+            } else {
+              this.lAsignada[e.beneficiarios_id] = {
+                name: this.getDataLista(
+                  this.lBeneficiarios,
+                  e.beneficiarios_id,
+                  'id',
+                  'name',
+                  'Desconocido'
+                ),
+                lista: {},
+              }
+              this.lAsignada[e.beneficiarios_id].lista[e.id] = e
+              this.lAsignadaD.push({
+                id:e.beneficiarios_id,
+                distancia:0
+              })
+            }
+          }
+        },
+      },
+      ]
+    },
+    async afterSave(me, isError = 0) {
+      console.log('aftersve', isError)
+      if (isError>-1){
+        
+      this.lDispon = {}
+      this.lAsignada = {}
+      //let filtros = [['OR', ['estado', '=', '1'], ['estado', '=', '2']]]s
+      let listas = await this.getDatasBackend(this.urlModulo, this.getSolicitudServicios())
+      this.nAceptadas=listas.Asignado.length
+console.log('entro aftersve', listas)
+      //   if (isError != 1) {
+      //     me.lRuteos = await this.getListaBackend('RuteosMonitor')
+      //   }
+      //   if (isError >= 0) {
+      //     this.modalEval = false
+      //     //modalMap=false;
+      //   }
+      //   return true
+      }
+      return true
+    },
     afterOpen(accion, data) {
       if (accion != 'add') {
-        this.tituloModal = 'Aceptar ' + this.titModulo
+        this.tituloModal = 'Aceptar Solicitudes'
       }
     },
     beforeSave(me) {
@@ -1253,15 +1326,25 @@ export default {
       //me.item.estado = (me.item.estado * 1) + 1
       me.item.estado = 2
     },
-    aceptarSol(data,id) {
+    aceptarSol(data, id) {
       // if (!this.can('add', true)) {
       //   return false
       // }
-      data.id=id
-      data.estado=1
+      data.id = id
+      data.estado = 1
       //this.item = Object.assign({}, data)
-      this.openDialog('edit',data)
-
+      this.openDialog('edit', data)
+    },
+    realizarSol(data, id) {
+      // if (!this.can('add', true)) {
+      //   return false
+      // }
+      console.log('realizarSol',data,id);
+      return true
+      data.id = id
+      data.estado = 1
+      //this.item = Object.assign({}, data)
+      this.openDialog('edit', data)
     },
     vermapaGoogle() {
       //
@@ -1269,7 +1352,7 @@ export default {
     verMapaBene(bene, google = false) {
       this.getPosition()
       let benef = this.getDataLista(this.lBeneficiarios, bene, 'id', '*')
-      if (!benef){
+      if (!benef) {
         return false
       }
       if (!google) {
@@ -1283,7 +1366,7 @@ export default {
             ],
           },
         ]
-//        console.log('mapa',this.markers,this.jsonData,bene,benef);
+        //        console.log('mapa',this.markers,this.jsonData,bene,benef);
         this.tituloModal = 'Ubicacion de ' + benef.name
         //this.jsonData = null
         this.modalMap = true
@@ -1356,8 +1439,8 @@ export default {
         this.coordenadas = position.coords
         this.item.lat = this.coordenadas.latitude
         this.item.lng = this.coordenadas.longitude
-        //console.log('Localizado', this.callBack)
-        this.ordBeneficiarios(this.lRutas)
+        console.log('Localizado', this.callBack)
+        this.lAsignadaD=this.ordBeneficiarios(this.lAsignada)
       }
       if (this.callBack != false) {
         this.callBack(this.location)
@@ -1395,9 +1478,9 @@ export default {
 
         this.bTitulo = 'Revisados'
         let lSol = Object.keys(data.lista)
-        console.log('item',data,this.item);
+        //console.log('item', data, this.item)
         lSol.forEach((el) => {
-          let e=data.lista[el]
+          let e = data.lista[el]
           let serv = this.getDataLista(
             this.lServicios,
             e.servicios_id,
@@ -1417,16 +1500,16 @@ export default {
                 this.lUsuarios,
                 e.created_by,
                 'id',
-                'name',''
+                'name',
+                ''
               ),
               ...serv,
             })
           }
         })
 
-       // this.change(data.beneficiarios_id)
+        // this.change(data.beneficiarios_id)
         //data.estado =(data.estado*1);
-        
       }
     },
     getIcon(id) {
@@ -1610,22 +1693,25 @@ export default {
       }
     },
     ordBeneficiarios(lista) {
-      lista.forEach((e) => {
-        let r = []
-        e.beneficiarios.forEach((el) => {
-          r.push({
-            id: el,
-            distancia: this.distancia(
-              getDataLista(this.lBeneficiarios, el, 'id', '*',2)
-            ),
-          })
-        })
+      let r=[]
+      for (const index in lista) {
+        if (Object.hasOwnProperty.call(lista, index)) {
+          r.push({id:index,distancia: this.distancia(
+              getDataLista(this.lBeneficiarios, index, 'id', '*')
+          )})
+        }
+      }
+//      console.log('distancia',lista);
+        // lista.forEach((el,index) => {
+        //     el.distancia= this.distancia(
+        //       getDataLista(this.lBeneficiarios, index, 'id', '*')
+        //   )
+        // })
+        
         r.sort(function (a, b) {
           return a.distancia - b.distancia
         })
-        e.beneficiariosD = r
-      })
-      return lista
+      return r
     },
   },
   computed: {
@@ -1643,16 +1729,20 @@ export default {
   },
   watch: {},
   async mounted() {
-    //console.log('monted monitor');
     setTimeout(() => {
       this.getPosition()
     }, 3000)
-    this.lRuteos = await this.getListaBackend('RuteosMonitor')
-    this.lDisponBenef={}
-    let filtros = [['estado', '=', '1']]
+    // this.lRuteos = await this.getListaBackend('RuteosMonitor')
+    this.lDispon = {}
+    this.lAsignada = {}
+    
     let listas = await this.getDatasBackend(this.urlModulo, [
-      {mod:'Usuarios',campos:'id,name'},
-      { mod: 'Beneficiarios', campos: 'id,name,epsa', datos: { _customFields: 1 } },
+      { mod: 'Usuarios', campos: 'id,name' },
+      {
+        mod: 'Beneficiarios',
+        campos: 'id,name,epsa',
+        datos: { _customFields: 1 },
+      },
       {
         mod: 'Rutas',
         datos: { rel: 1 },
@@ -1672,24 +1762,10 @@ export default {
           e.selected = false
         },
       },
-      {
-        mod: 'SolicitudServicios',
-        datos: { modulo: 'mkServicios', rel: 1 ,filtros:filtros},
-        //campos: 'id,name,usuarios_id,descrip',
-        each: (e) => {
-          if (this.lDisponBenef[e.beneficiarios_id]){
-            this.lDisponBenef[e.beneficiarios_id].lista[e.id]=e
-          }else{
-            this.lDisponBenef[e.beneficiarios_id]={
-              name:this.getDataLista(this.lBeneficiarios,e.beneficiarios_id,'id','name',2),
-              lista:{},
-              }
-            this.lDisponBenef[e.beneficiarios_id].lista[e.id]=e
-          }
-        },
-      },
+      ...this.getSolicitudServicios()
     ])
-    //console.log('lista:',this.lDisponBenef);
+    //console.log('lista:',this.lDispon);
+    this.nAceptadas=listas.Asignado.length
   },
 }
 </script>

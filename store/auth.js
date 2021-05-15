@@ -139,13 +139,18 @@ export const getters = {
             return []
         }
         let resp = {}
-        listas.forEach((lista) => {
-            if (!datas.data[lista.mod]) {
-                resp[lista.mod] = []
+        listas.forEach(lista => {
+            let mod = lista.mod;
+            if (lista.lista && lista.lista != '') {
+                mod = lista.lista
+            }
+
+            if (!datas.data[mod]) {
+                resp[mod] = []
             } else {
-                let data = datas.data[lista.mod]
+                let data = datas.data[mod]
                 if (data == '_ct_') {
-                    c('Datos cacheados', lista.mod, 'Cache')
+                    c('Datos cacheados', mod, 'Cache')
                     if (state.encryptActive) {
                         data = JSON.parse(
                             localStorage.getItem('cache_' + MD5(lista.url).toString())
@@ -176,7 +181,7 @@ export const getters = {
                     localStorage.setItem('cache_' + lista.url, JSON.stringify(ct))
                 }
                 //resp.push({ mod: lista.mod, data: data })
-                resp[lista.mod] = data
+                resp[mod] = data
             }
         })
         return resp
@@ -308,20 +313,29 @@ export const actions = {
                 datos.url = url
             }
 
-            let modulo = ''
-            if (datos.datos) {
-                modulo = datos.datos.modulo || 'mk' + datos.mod
-            } else {
-                modulo = 'mk' + datos.mod
-            }
+            // let modulo = ''
+            // if (datos.datos) {
+            //     modulo = datos.datos.modulo || 'mk' + datos.mod
+            // } else {
+            //     modulo = 'mk' + datos.mod
+            // }
 
-            listado.push({
+            let list = {
                 mod: datos.mod,
                 ct: getters.getCtOnly(url),
-                campos: datos.campos || '',
-                modulo: modulo,
                 ...datos.datos
-            })
+            }
+            if (datos.lista) {
+                list.l = datos.lista
+            }
+            if (datos.campos) {
+                list.campos = datos.campos
+            }
+            //   if (datos.modulo) {
+            //     list.modulo = datos.modulo
+            // }
+
+            listado.push(list)
         })
         let response = await this.$axios.post(options.mod + '/listData', {
             lista: listado

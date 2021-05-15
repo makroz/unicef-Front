@@ -684,30 +684,35 @@ export default {
         listas: listas,
       })
       listas.forEach((el) => {
+        let datos={}
+        if (el.lista && el.lista!='') {
+          datos=data[el.lista]
+        }else{
+          datos=data[el.mod]
+          el.lista='l'+el.mod
+        }
+        
         if (el.item) {
           if (el.item.isArray) {
-            el.item.forEach((e) => this.updateListCol(e, data[el.mod]))
+            el.item.forEach((e) => this.updateListCol(e, datos))
           } else {
-            this.updateListCol(el.item, data[el.mod])
+            this.updateListCol(el.item, datos)
           }
         }
 
         if (typeof el.each === 'function') {
-          data[el.mod].forEach(el.each)
+          datos.forEach(el.each)
         }
 
         let sort=el.sort||false
-        if (sort){
-          data[el.mod].sort(function (a, b) {
+        if (sort && Array.isArray(datos)){
+          datos.sort(function (a, b) {
             return a[sort] - b[sort]
           })
         }
-        if (!el.lista) {
-          el.lista='l'+el.mod
-        }
         if (el.lista!='') {
           if (this[el.lista]){
-            this[el.lista]=data[el.mod]
+            this[el.lista]=datos
           }
         }
       })
