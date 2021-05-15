@@ -168,7 +168,7 @@
               </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon color="primary" @click="realizarSol(lAsignada[sol.id], lAsignada[sol.id].id)">
+              <v-btn icon color="primary" @click="realizarSol(lAsignada[sol.id], sol.id)">
                 <v-icon>add</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -548,7 +548,7 @@
           <v-card>
             <v-toolbar color="primary" dark dense>
               <v-toolbar-title
-                >Servicios {{ lEstados[item.estado] }}
+                >Servicios {{ lEstadosSol[item.estado] }}
               </v-toolbar-title>
             </v-toolbar>
 
@@ -854,6 +854,7 @@
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkEstadosMix from '@/components/mkComponentes/mixins/MkEstadosMix'
 import VWidget from '@/components/VWidget'
 import MkSimpleCard from '~/components/mkComponentes/mkCards/mkSimpleCard.vue'
 import { TargomoClient } from '@targomo/core'
@@ -871,11 +872,12 @@ import {
   getCacheKey,
 } from '@/components/mkComponentes/lib/MkCache.js'
 import MkFormFullScreen from '~/components/mkComponentes/MkFormFullScreen.vue'
+
 //const _dirty = process.env.mkConfig.dirty
 
 export default {
   middleware: ['authAccess'],
-  mixins: [MkModuloMix],
+  mixins: [MkModuloMix,MkEstadosMix],
   components: { VWidget, MkSimpleCard, MkFormFullScreen },
   name: 'Recolector',
   disModTable: true,
@@ -936,26 +938,6 @@ export default {
       lDispon: {},
       lAsignada: {},
       lAsignadaD: [],
-      lEstados: [
-        'Por Revisar',
-        'Pendiente',
-        'Asignado',
-        'Realizado',
-        'Verificado',
-        'Autorizado',
-        'Comercial',
-        'Completado',
-      ],
-      lColor: [
-        'red--text',
-        'gray--text text--lighten-3',
-        'green--text text--lighten-1',
-        'green--text',
-        'green--text text--darken-2',
-        'green--text text--darken-4',
-        'green--text text--darken-4',
-        'green--text text--darken-4',
-      ],
       lServices: [],
       lUsuarios: [],
       nAceptadas:0,
@@ -1011,7 +993,7 @@ export default {
       )
         ? 'red'
         : getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'verif')
-        ? 'greem'
+        ? 'green'
         : 'yellow'
     },
     openEval(data, bene) {

@@ -55,7 +55,7 @@
           <v-card>
             <v-toolbar color="primary" dark dense>
               <v-toolbar-title
-                >Servicios {{ lEstados[item.estado] }}
+                >Servicios {{ lEstadosSol[item.estado] }}
               </v-toolbar-title>
             </v-toolbar>
 
@@ -158,10 +158,11 @@
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkEstadosMix from '@/components/mkComponentes/mixins/MkEstadosMix'
 
 export default {
   middleware: ['authAccess'],
-  mixins: [MkModuloMix],
+  mixins: [MkModuloMix,MkEstadosMix],
   components: {},
   name: 'SolicitudServicios',
   data() {
@@ -242,33 +243,13 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: 'lEstados',
-          lColor: 'lColor',
+          lista: 'lEstadosSol',
+          lColor: 'lColorSol',
         },
       ],
       lUsuarios: [],
       lBeneficiarios: [],
       lServicios: [],
-      lEstados: [
-        'Por Revisar',
-        'Pendiente',
-        'Asignado',
-        'Realizado',
-        'Verificado',
-        'Autorizado',
-        'Comercial',
-        'Completado',
-      ],
-      lColor: [
-        'red--text',
-        'gray--text text--lighten-3',
-        'green--text text--lighten-1',
-        'green--text',
-        'green--text text--darken-2',
-        'green--text text--darken-4',
-        'green--text text--darken-4',
-        'green--text text--darken-4',
-      ],
       itemData: {
         epsa: '',
       },
