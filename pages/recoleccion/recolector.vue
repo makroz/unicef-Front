@@ -54,8 +54,8 @@
                 ></mk-simple-card>
 
                 <mk-simple-card
-                  title="Rutas Cerradas"
-                  :text="lRuteos.closed ? lRuteos.closed.ok + '' : '0'"
+                  title="Ordenes de Servicios 7d"
+                  :text="lOrden_servicios.length + ''"
                   color="green darken-4 grey--text"
                 ></mk-simple-card>
 
@@ -156,19 +156,88 @@
                 <v-layout row wrap>
                   <v-flex>
                     <span class="title text-capitalize">
-                      {{ lAsignada[sol.id].name ? lAsignada[sol.id].name : 'Desconicido' }}
+                      {{
+                        lAsignada[sol.id].name
+                          ? lAsignada[sol.id].name
+                          : 'Desconocido'
+                      }}
+                      lasignadas
+                      {{ lAsignada[sol.id] }}
                     </span>
                   </v-flex>
                 </v-layout>
               </v-list-tile-title>
               <v-list-tile-sub-title class="caption">
                 Cant. Solicitudes:
-                {{ Object.keys(lAsignada[sol.id].lista).length }} 
-                Distancia: {{ (sol.distancia * 1.0).toFixed(2)  }} Km
+                {{ Object.keys(lAsignada[sol.id].lista).length }}
+                Distancia: {{ (sol.distancia * 1.0).toFixed(2) }} Km
               </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon color="primary" @click="realizarSol(lAsignada[sol.id], sol.id)">
+              <v-btn
+                icon
+                color="primary"
+                @click="realizarSol(lAsignada[sol.id], sol.id)"
+              >
+                <v-icon>add</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+      </v-card>
+<br />
+      <!-- Solicitudes Realizadas -->
+      <v-card>
+        <v-toolbar color="blue darken-4" dark>
+          <v-icon>add_location_alt</v-icon>
+          <v-toolbar-title>Ordenes de Servicios 7 dias</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list two-line>
+          <v-list-tile v-for="(ordenes, index) in lOrden_servicios" :key="index" href="#">
+            <v-list-tile-avatar>
+              <v-btn
+                icon
+                flat
+                color="success"
+                @click="verMapaBene(ordenes.beneficiario_id, false)"
+              >
+                <!-- <v-badge
+                  :value="true"
+                  color="cyan"
+                  overlap
+                >
+                  <template v-slot:badge>
+                    <span>
+                      {{ Object.keys(sol.lista).length }}
+                      </span>
+                  </template> -->
+                <v-icon large>map</v-icon>
+                <!-- </v-badge> -->
+              </v-btn>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <v-layout row wrap>
+                  <v-flex>
+                    <span class="title text-capitalize">
+                      {{
+                        getDataLista(lBeneficiarios,ordenes.beneficiario_id,'id','name','Desconocido')
+                      }}
+                    </span>
+                  </v-flex>
+                </v-layout>
+              </v-list-tile-title>
+              <v-list-tile-sub-title class="caption">
+Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.created_at) }}
+              </v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn
+                icon
+                color="primary"
+                @click="console.log(servicios)"
+              >
                 <v-icon>add</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -517,7 +586,7 @@
       </v-card>
       <br />
       <!-- formulario Principal -->
-      <mk-form
+      <mk-form-full-screen
         ref="mkForm"
         :modal="modal"
         :tit="tituloModal"
@@ -528,22 +597,69 @@
       >
         <v-container grid-list-md fluid>
           <v-layout row wrap>
-            <v-flex xs12 sm8 md10>
+            <v-flex xs10 sm8 md10>
               <v-text-field
                 label="Beneficiario"
                 :value="item.name"
                 disabled
+                hide-details
+                dense
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm-4 md2>
+            <v-flex xs2 sm4 md2>
               <v-text-field
                 label="Cod.EPSA"
                 :value="
                   getDataLista(lBeneficiarios, item.id, 'id', 'epsa', item.id)
                 "
                 disabled
+                hide-details
+                dense
               ></v-text-field>
             </v-flex>
+            <v-flex xs6>
+              <v-text-field
+                label="Ref.Orden de Servicio"
+                v-model="item.ref"
+                :rules="[rules.required]"
+                validate-on-blur
+                :readonly="accion == 'show'"
+                dense
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs6>
+              <v-select
+                :items="lForma_pagos"
+                item-text="name"
+                item-value="id"
+                label="Metodo de Pago"
+                v-model="item.forma_pago"
+                :rules="[rules.required]"
+                validate-on-blur
+                :readonly="accion == 'show'"
+              >
+              </v-select>
+            </v-flex>
+
+            <v-flex xs12>
+              <v-layout row>
+                <v-flex grow>
+                <v-textarea
+                  label="Observaciones"
+                  v-model="item.obs"
+                  :readonly="accion == 'show'"
+                  rows="4"
+                  hide-details
+                  dense
+                ></v-textarea>
+              </v-flex>
+
+              <v-flex shrink pa-1>
+                <mk-img v-model="mkImgData" :w="180" :h="100"></mk-img>
+              </v-flex>
+              </v-layout>
+            </v-flex>
+            {{ $vuetify.breakpoint.name }}
           </v-layout>
           <v-card>
             <v-toolbar color="primary" dark dense>
@@ -560,25 +676,32 @@
 
                     <div style="width: 25px; display: inline-block">Id</div>
                     <div style="width: 60px; display: inline-block">Fecha</div>
-                    <div style="width: 30px; display: inline-block">Eval</div>
-                    <div style="width: 85px; display: inline-block">
+                    <div
+                      style="width: 30px; display: inline-block"
+                      class="hidden-xs-only"
+                    >
+                      Eval
+                    </div>
+                    <div
+                      style="width: 85px; display: inline-block"
+                      class="hidden-xs-only"
+                    >
                       Creado X
                     </div>
                   </span>
                   Servicio
-                  <span style="font-size: 10px; width: 130px">
-                    Observaciones
-                  </span>
+                  <span style="font-size: 10px"> Observaciones </span>
+                  <div style="float: right; width: 70px">Cant.</div>
                 </v-list-tile-title>
               </v-list-tile-content>
             </div>
-            <v-list style="max-height: 300px; overflow-y: scroll" dense>
+            <v-list dense>
               <template v-for="(servicio, index) in lServices">
                 <v-list-tile
                   :key="index"
                   :class="
                     servicio.selected
-                      ? 'deep-purple lighten-5 deep-purple--text text--accent-4'
+                      ? 'deep-purple lighten-5 deep-purple--text text--accent-4 elevation-3'
                       : ''
                   "
                 >
@@ -600,14 +723,20 @@
                         <div style="width: 60px; display: inline-block">
                           {{ formatDT(servicio.fecha, false) }}
                         </div>
-                        <div style="width: 30px; display: inline-block">
+                        <div
+                          style="width: 30px; display: inline-block"
+                          class="hidden-xs-only"
+                        >
                           {{
                             servicio.evaluaciones_id
                               ? servicio.evaluaciones_id
                               : '--'
                           }}
                         </div>
-                        <div style="width: 85px; display: inline-block">
+                        <div
+                          style="width: 85px; display: inline-block"
+                          class="hidden-xs-only"
+                        >
                           {{ servicio.monitor.split(' ')[0] }}
                         </div>
                       </span>
@@ -617,38 +746,128 @@
                       </span>
                     </v-list-tile-title>
                   </v-list-tile-content>
-                  <v-list-tile-avatar
-                    v-if="servicio.selected || servicio.estado > -1"
-                  >
-                    <v-text-field
-                      v-model="servicio.cantidad"
-                      :disabled="
-                        servicio.selected && accion == 'add'
-                          ? servicio.cant
-                            ? false
-                            : true
-                          : true
-                      "
-                      :rules="[rules.required, rules.num, rules.minVal(1)]"
-                      validate-on-blur
-                      color="primary"
-                      :class="servicio.selectded ? 'secondary' : ''"
-                      type="number"
-                      min="1"
-                      style="
-                        font-size: 12px;
-                        padding-bottom: 0;
-                        padding-top: 12px;
-                      "
-                      :readonly="accion == 'show'"
-                    ></v-text-field>
+                  <v-list-tile-avatar>
+                    {{ servicio.cantidad }}
                   </v-list-tile-avatar>
                 </v-list-tile>
+                <div
+                  :key="index + '_'"
+                  v-if="servicio.selected && servicio.estado > 1"
+                  style="border-bottom: 1px solid #f1f1f1"
+                  class="pa-2"
+                >
+                  <v-layout wrap row>
+                    <v-flex inline style="font-size: 10px" shrink>
+                      <div style="width: 75px; display: inline-block">
+                        Se Realizo?
+                        <v-switch
+                          dense
+                          hide-details
+                          style="font-size: 10px"
+                          height="10"
+                          v-model="servicio.realizado"
+                          :label="servicio.realizado ? 'Si' : 'No'"
+                          color="green accent-4"
+                        ></v-switch>
+                      </div>
+                    </v-flex>
+                    <v-flex grow>
+                      <v-text-field
+                        label="Observaciones"
+                        v-model="servicio.obs"
+                        :rules="servicio.realizado ? [] : [rules.required]"
+                        validate-on-blur
+                        :readonly="accion == 'show'"
+                        dense
+                        :hide-details="servicio.realizado"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-card v-if="servicio.realizado">
+                    <div
+                      class="green white--text elevation-3 pa-1"
+                      style="font-size: 14px"
+                    >
+                      <v-btn
+                        small
+                        flat
+                        icon
+                        color="white"
+                        @click="addMaterial(servicio)"
+                      >
+                        <v-icon>add_circle_outline</v-icon>
+                      </v-btn>
+                      Material usado
+                      <span style="float: right; width: 70px; padding-top: 15px"
+                        >Cant.</span
+                      >
+                    </div>
+                    <v-container grid-list-md fluid>
+                      <v-layout
+                        v-for="(material, i) in servicio.materiales"
+                        :key="i"
+                        row
+                        wrap
+                      >
+                        <v-flex grow>
+                          <v-select
+                            shrink
+                            :items="lMateriales"
+                            item-text="name"
+                            item-value="id"
+                            label="Material"
+                            v-model="material.id"
+                            :rules="[rules.required]"
+                            validate-on-blur
+                            :readonly="accion == 'show'"
+                          >
+                          </v-select>
+                        </v-flex>
+                        <v-flex shrink>
+                          <v-text-field
+                            label="Cant"
+                            v-model="material.cant"
+                            type="number"
+                            style="width: 80px"
+                            :rules="[rules.num, rules.required]"
+                            validate-on-blur
+                            :readonly="accion == 'show'"
+                            :suffix="
+                              getDataLista(
+                                lMedidas,
+                                getDataLista(
+                                  lMateriales,
+                                  material.id,
+                                  'id',
+                                  'medida_id'
+                                ),
+                                'id',
+                                'simbolo',
+                                ''
+                              )
+                            "
+                          ></v-text-field>
+                        </v-flex>
+                        <v-flex shrink>
+                          <v-btn
+                            small
+                            flat
+                            icon
+                            color="red"
+                            @click="delMaterial(servicio, i)"
+                          >
+                            <v-icon>remove_circle_outline</v-icon>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-card>
+                </div>
               </template>
             </v-list>
           </v-card>
         </v-container>
-      </mk-form>
+      </mk-form-full-screen>
       <!-- formulario Mapa FullScreen -->
       <mk-form-full-screen
         ref="mkFormMap"
@@ -855,6 +1074,7 @@
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkEstadosMix from '@/components/mkComponentes/mixins/MkEstadosMix'
+import MkImgMix from '@/components/mkComponentes/mixins/MkImgMix'
 import VWidget from '@/components/VWidget'
 import MkSimpleCard from '~/components/mkComponentes/mkCards/mkSimpleCard.vue'
 import { TargomoClient } from '@targomo/core'
@@ -877,7 +1097,7 @@ import MkFormFullScreen from '~/components/mkComponentes/MkFormFullScreen.vue'
 
 export default {
   middleware: ['authAccess'],
-  mixins: [MkModuloMix,MkEstadosMix],
+  mixins: [MkModuloMix, MkEstadosMix, MkImgMix],
   components: { VWidget, MkSimpleCard, MkFormFullScreen },
   name: 'Recolector',
   disModTable: true,
@@ -905,7 +1125,7 @@ export default {
         },
       },
       // lRutas: [],
-       estado: false,
+      estado: false,
       lBeneficiarios: [],
       lServicios: [],
       lCateg: [],
@@ -933,69 +1153,28 @@ export default {
       jsonLine: [],
       item: { respuestas: {} },
       callBack: false,
-      
+
       lSolicitudServicios: [],
       lDispon: {},
       lAsignada: {},
       lAsignadaD: [],
       lServices: [],
       lUsuarios: [],
-      nAceptadas:0,
+      lMateriales: [],
+      lMedidas: [],
+      lForma_pagos: [],
+      lOrden_servicios:[],
+      nAceptadas: 0,
     }
   },
   methods: {
-    
-    setClose(id) {
-      if (!this.can('edit', true)) {
-        return false
-      }
-      Swal.fire({
-        title: 'Desea Cerrar este Ruteo',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: 'red',
-        reverseButtons: true,
-        confirmButtonText: 'Si deseo Cerrarlo!',
-      }).then((action) => {
-        if (!action.value) {
-          return false
-        }
-        let me = this
-        let url = 'RuteosMonitor/setClose'
-        //me.dataTable.loading = true
-        me.$axios
-          .post(url + this.getCt(url), {
-            id: id,
-            lat: this.coordenadas.latitude,
-            lng: this.coordenadas.longitude,
-          })
-          .then(function (response) {
-            if (me.isOk(response.data)) {
-              me.afterSave(me, 0)
-            } else {
-              //con error
-            }
-          })
-          .catch(function (error) {
-            console.error(error)
-          })
-          .finally(function () {
-            //me.dataTable.loading = false
-          })
-      })
+    addMaterial(item) {
+      item.materiales.push({})
     },
-    getColorEval(ruteo, bene) {
-      return !getDataLista(
-        ruteo.evaluaciones,
-        bene,
-        'beneficiarios_id',
-        'estado'
-      )
-        ? 'red'
-        : getDataLista(ruteo.evaluaciones, bene, 'beneficiarios_id', 'verif')
-        ? 'green'
-        : 'yellow'
+    delMaterial(item, index) {
+      item.materiales.splice(index, 1)
     },
+
     openEval(data, bene) {
       if (this.initOnce('openEval')) {
         return false
@@ -1199,114 +1378,147 @@ export default {
         d.lng
       )
     },
-    getSolicitudServicios(){
-    let user = this.$store.state.auth.authUser.id
-    return [
+    getSolicitudServicios() {
+      let user = this.$store.state.auth.authUser.id
+      let fecha = new Date()
+      fecha.setDate(fecha.getDate() - 7);
+      return [
         {
-        mod: 'SolicitudServicios',
-        datos: {
-          modulo: 'mkServicios',
-          rel: 1,
-          filtros: [['estado', '=', '1']],
-        },
-        each: (e) => {
-          if (e.estado == 1) {
-            if (this.lDispon[e.beneficiarios_id]) {
-              this.lDispon[e.beneficiarios_id].lista[e.id] = e
-            } else {
-              this.lDispon[e.beneficiarios_id] = {
-                name: this.getDataLista(
-                  this.lBeneficiarios,
-                  e.beneficiarios_id,
-                  'id',
-                  'name',
-                  'Desconocido'
-                ),
-                lista: {},
+          mod: 'SolicitudServicios',
+          datos: {
+            modulo: 'mkServicios',
+            rel: 1,
+            filtros: [['estado', '=', '1']],
+          },
+          each: (e) => {
+            if (e.estado == 1) {
+              if (this.lDispon[e.beneficiarios_id]) {
+                this.lDispon[e.beneficiarios_id].lista[e.id] = e
+              } else {
+                this.lDispon[e.beneficiarios_id] = {
+                  name: this.getDataLista(
+                    this.lBeneficiarios,
+                    e.beneficiarios_id,
+                    'id',
+                    'name',
+                    'Desconocido'
+                  ),
+                  lista: {},
+                }
+                this.lDispon[e.beneficiarios_id].lista[e.id] = e
               }
-              this.lDispon[e.beneficiarios_id].lista[e.id] = e
             }
-          }
+          },
         },
-      },
-      {
-        mod: 'SolicitudServicios',
-        lista: 'Asignado',
-        datos: {
-          modulo: 'mkServicios',
-          rel: 1,
-          filtros: [
-            ['estado', '=', '2'],
-            ['usuarios_id_2', '=', user],
-          ],
-        },
-        each: (e) => {
-          if (e.estado == 2) {
-            if (this.lAsignada[e.beneficiarios_id]) {
-              this.lAsignada[e.beneficiarios_id].lista[e.id] = e
-            } else {
-              this.lAsignada[e.beneficiarios_id] = {
-                name: this.getDataLista(
-                  this.lBeneficiarios,
-                  e.beneficiarios_id,
-                  'id',
-                  'name',
-                  'Desconocido'
-                ),
-                lista: {},
+        {
+          mod: 'SolicitudServicios',
+          lista: 'Asignado',
+          datos: {
+            modulo: 'mkServicios',
+            rel: 1,
+            filtros: [
+              ['estado', '=', '2'],
+              ['usuarios_id_2', '=', user],
+            ],
+          },
+          each: (e) => {
+            if (e.estado == 2) {
+              if (this.lAsignada[e.beneficiarios_id]) {
+                this.lAsignada[e.beneficiarios_id].lista[e.id] = e
+              } else {
+                this.lAsignada[e.beneficiarios_id] = {
+                  name: this.getDataLista(
+                    this.lBeneficiarios,
+                    e.beneficiarios_id,
+                    'id',
+                    'name',
+                    'Desconocido'
+                  ),
+                  lista: {},
+                }
+                this.lAsignada[e.beneficiarios_id].lista[e.id] = e
+                this.lAsignadaD.push({
+                  id: e.beneficiarios_id,
+                  distancia: 0,
+                })
               }
-              this.lAsignada[e.beneficiarios_id].lista[e.id] = e
-              this.lAsignadaD.push({
-                id:e.beneficiarios_id,
-                distancia:0
-              })
             }
-          }
+          },
+        }, 
+        {
+          mod: 'Orden_servicios',
+          datos: {
+            modulo: 'mkServicios',
+            rel: 1,
+            filtros: [
+              ['created_at', '>', fecha],
+              ['recolector_id', '=', user],
+            ],
+          },
         },
-      },
       ]
     },
     async afterSave(me, isError = 0) {
-      console.log('aftersve', isError)
-      if (isError>-1){
-        
-      this.lDispon = {}
-      this.lAsignada = {}
-      //let filtros = [['OR', ['estado', '=', '1'], ['estado', '=', '2']]]s
-      let listas = await this.getDatasBackend(this.urlModulo, this.getSolicitudServicios())
-      this.nAceptadas=listas.Asignado.length
-console.log('entro aftersve', listas)
-      //   if (isError != 1) {
-      //     me.lRuteos = await this.getListaBackend('RuteosMonitor')
-      //   }
-      //   if (isError >= 0) {
-      //     this.modalEval = false
-      //     //modalMap=false;
-      //   }
-      //   return true
+      //console.log('aftersve', isError)
+      if (isError > -1) {
+        this.lDispon = {}
+        this.lAsignada = {}
+        this.lAsignadaD = []
+        //let filtros = [['OR', ['estado', '=', '1'], ['estado', '=', '2']]]s
+        let listas = await this.getDatasBackend(
+          this.urlModulo,
+          this.getSolicitudServicios()
+        )
+        this.nAceptadas = listas.Asignado.length
+        //console.log('entro aftersve', listas)
+        //   if (isError != 1) {
+        //     me.lRuteos = await this.getListaBackend('RuteosMonitor')
+        //   }
+        //   if (isError >= 0) {
+        //     this.modalEval = false
+        //     //modalMap=false;
+        //   }
+        //   return true
+      }else{
+        me.item.estado--
       }
       return true
     },
     afterOpen(accion, data) {
-      if (accion != 'add') {
+      if (data.estado == 1) {
         this.tituloModal = 'Aceptar Solicitudes'
+      }
+      if (data.estado == 2) {
+        this.tituloModal = 'Realizar Solicitudes'
       }
     },
     beforeSave(me) {
-      //console.log('id',me.item)
+      console.log('beforesave', me.item)
       let servicios = []
       for (const obj in me.lServices) {
         if (me.lServices[obj].selected === true) {
-          servicios.push({
+          let service = {
             id: me.lServices[obj].id,
             //cant: me.lServices[obj].cantidad,
             sol_id: me.lServices[obj].sol_id,
-          })
+          }
+
+          if (me.item.estado == 2) {
+            service.realizado = me.lServices[obj].realizado
+            if (service.realizado) {
+              service.materiales = me.lServices[obj].materiales
+              service.obs = me.lServices[obj].obs
+            }
+          }
+
+          servicios.push(service)
         }
       }
       me.item.servicios = servicios
+      me.item.beneficiario_id = servicios
       //me.item.estado = (me.item.estado * 1) + 1
-      me.item.estado = 2
+      me.item.estado++
+      
     },
     aceptarSol(data, id) {
       // if (!this.can('add', true)) {
@@ -1321,10 +1533,10 @@ console.log('entro aftersve', listas)
       // if (!this.can('add', true)) {
       //   return false
       // }
-      console.log('realizarSol',data,id);
-      return true
+      console.log('realizarSol', data, id)
+      //return true
       data.id = id
-      data.estado = 1
+      data.estado = 2
       //this.item = Object.assign({}, data)
       this.openDialog('edit', data)
     },
@@ -1422,7 +1634,7 @@ console.log('entro aftersve', listas)
         this.item.lat = this.coordenadas.latitude
         this.item.lng = this.coordenadas.longitude
         console.log('Localizado', this.callBack)
-        this.lAsignadaD=this.ordBeneficiarios(this.lAsignada)
+        this.lAsignadaD = this.ordBeneficiarios(this.lAsignada)
       }
       if (this.callBack != false) {
         this.callBack(this.location)
@@ -1460,7 +1672,7 @@ console.log('entro aftersve', listas)
 
         this.bTitulo = 'Revisados'
         let lSol = Object.keys(data.lista)
-        //console.log('item', data, this.item)
+        console.log('item', data, this.item)
         lSol.forEach((el) => {
           let e = data.lista[el]
           let serv = this.getDataLista(
@@ -1471,6 +1683,15 @@ console.log('entro aftersve', listas)
           )
 
           if (serv) {
+            let serv_ = {}
+            if (e.estado == 2) {
+              serv_ = {
+                realizado: false,
+                obs: '',
+                materiales: [],
+              }
+            }
+
             this.lServices.push({
               sol_id: e.id,
               cantidad: e.cant,
@@ -1478,6 +1699,7 @@ console.log('entro aftersve', listas)
               estado: e.estado,
               evaluaciones_id: e.evaluaciones_id,
               selected: null,
+
               monitor: this.getDataLista(
                 this.lUsuarios,
                 e.created_by,
@@ -1486,6 +1708,7 @@ console.log('entro aftersve', listas)
                 ''
               ),
               ...serv,
+              ...serv_,
             })
           }
         })
@@ -1675,24 +1898,27 @@ console.log('entro aftersve', listas)
       }
     },
     ordBeneficiarios(lista) {
-      let r=[]
+      let r = []
       for (const index in lista) {
         if (Object.hasOwnProperty.call(lista, index)) {
-          r.push({id:index,distancia: this.distancia(
+          r.push({
+            id: index,
+            distancia: this.distancia(
               getDataLista(this.lBeneficiarios, index, 'id', '*')
-          )})
+            ),
+          })
         }
       }
-//      console.log('distancia',lista);
-        // lista.forEach((el,index) => {
-        //     el.distancia= this.distancia(
-        //       getDataLista(this.lBeneficiarios, index, 'id', '*')
-        //   )
-        // })
-        
-        r.sort(function (a, b) {
-          return a.distancia - b.distancia
-        })
+      //      console.log('distancia',lista);
+      // lista.forEach((el,index) => {
+      //     el.distancia= this.distancia(
+      //       getDataLista(this.lBeneficiarios, index, 'id', '*')
+      //   )
+      // })
+
+      r.sort(function (a, b) {
+        return a.distancia - b.distancia
+      })
       return r
     },
   },
@@ -1717,7 +1943,7 @@ console.log('entro aftersve', listas)
     // this.lRuteos = await this.getListaBackend('RuteosMonitor')
     this.lDispon = {}
     this.lAsignada = {}
-    
+
     let listas = await this.getDatasBackend(this.urlModulo, [
       { mod: 'Usuarios', campos: 'id,name' },
       {
@@ -1731,12 +1957,20 @@ console.log('entro aftersve', listas)
         campos: 'id,name,usuarios_id,descrip',
       },
       {
-        mod: 'Categ',
-        sort: 'orden',
-        datos: { modulo: 'mkPreguntas' },
-        campos: 'id,name,orden',
+        mod: 'Materiales',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,name,medida_id',
       },
-      { mod: 'Preguntas', sort: 'orden' },
+      {
+        mod: 'Medidas',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,simbolo',
+      },
+      {
+        mod: 'Forma_pagos',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,name',
+      },
       {
         mod: 'Servicios',
         each: (e) => {
@@ -1744,10 +1978,10 @@ console.log('entro aftersve', listas)
           e.selected = false
         },
       },
-      ...this.getSolicitudServicios()
+      ...this.getSolicitudServicios(),
     ])
     //console.log('lista:',this.lDispon);
-    this.nAceptadas=listas.Asignado.length
+    this.nAceptadas = listas.Asignado.length
   },
 }
 </script>

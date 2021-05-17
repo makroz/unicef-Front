@@ -8,7 +8,7 @@
         :placeholder="'Arrastre o Click'"
         :placeholder-font-size="12"
         :accept="'image/*'"
-        :quality="2"
+        :quality="3"
         :show-remove-button="false"
         :zoom-speed="10"
         title="Arrastre o Click para cargar el Perfil"
@@ -55,6 +55,10 @@ export default {
       type: [Array,Object],
       default: {}
     },
+    circle:{
+      type: Boolean,
+      default: false
+    },
   },
 
   data() {
@@ -81,11 +85,13 @@ export default {
     },
   methods: {
     onImgInit() {
+      if (this.circle){
       this.myImg.addClipPlugin(function (ctx, x, y, w, h) {
         ctx.beginPath()
         ctx.arc(x + w / 2, y + h / 2, w / 2, 0, 2 * Math.PI, true)
         ctx.closePath()
       })
+      }
     },
   }
 };

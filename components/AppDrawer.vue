@@ -11,140 +11,87 @@
     <v-toolbar color="primary darken-1" dark>
       <!-- colocar estos titulos en store o config -->
       <v-toolbar-side-icon @click.stop="toggleDrawer()"></v-toolbar-side-icon>
-      <img src="../static/m.png" height="36" alt="Sistema Unicef v.0.1" />
+      <img src="../static/m.png" height="36" alt="Sistema Unicef" />
       <v-toolbar-title class="ml-0 pl-3"> Unicef </v-toolbar-title>
     </v-toolbar>
     <vue-perfect-scrollbar
       class="drawer-menu--scroll"
       :settings="scrollSettings"
     >
-      <v-list dense expand>
+      <v-list dense>
+        <!-- level 1 begin-->
         <template v-for="(item, i) in menus">
-          <!--group with subitems-->
-          <v-list-group
-            v-if="item.items"
-            :key="item.name"
-            :group="item.group"
-            :prepend-icon="item.icon"
-            no-action="no-action"
-          >
-            <v-list-tile slot="activator" ripple="ripple">
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-
-            <template v-for="(subItem, i) in item.items">
-              <!--sub group-->
-              <v-list-group
-                v-if="subItem.items"
-                :key="subItem.name"
-                :group="subItem.group"
-                sub-group="sub-group"
-              >
-                <v-list-tile slot="activator" ripple="ripple">
-                  <v-list-tile-content>
-                    <!-- submenu 2 -->
-                    <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-
-                <template v-for="grand in subItem.items">
-                  <!--sub 2 group-->
-                  <v-list-group
-                    v-if="grand.items"
-                    :key="grand.name"
-                    :group="grand.group"
-                    sub-group="sub-group1"
-                  >
-                    <v-list-tile slot="activator" ripple="ripple">
-                      <v-list-tile-content>
-                        <v-list-tile-title
-                          >{{ grand.group }}
-                        </v-list-tile-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
-
-                    <v-list-tile
-                      v-for="(sub2, i) in grand.items"
-                      :key="i"
-                      :to="sub2.href ? sub2.href : null"
-                      ripple="ripple"
-                    >
-                      <v-list-tile-content>
-                        <v-list-tile-title
-                          >{{ sub2.title }} 333</v-list-tile-title
-                        >
-                      </v-list-tile-content>
-                    </v-list-tile>
-                  </v-list-group>
-
-                  <!--child item-->
-
-                  <v-list-tile
-                    v-else
-                    :key="grand.name"
-                    :to="grand.href ? grand.href : null"
-                    ripple="ripple"
-                  >
-                    <v-list-tile-content style="padding-left:10px;border-left:1px dotted black">
-                      <!-- item link de submenu 2 -->
-                      <v-list-tile-title >{{
-                        grand.title
-                      }}</v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                </template>
-              </v-list-group>
-              <!--child item-->
-
-              <v-list-tile
-                v-else
-                :key="i"
-                :to="subItem.href ? subItem.href : null"
-                :disabled="subItem.disabled"
-                :target="subItem.target"
-                ripple="ripple"
-              >
-                <v-list-tile-content>
-                  <v-list-tile-title
-                    ><span>{{ subItem.title }} </span></v-list-tile-title
-                  >
-                </v-list-tile-content>
-                <v-list-tile-action v-if="subItem.action">
-                  <v-icon :class="[subItem.actionClass || 'success--text']">{{
-                    subItem.action
-                  }}</v-icon>
-                </v-list-tile-action>
-              </v-list-tile>
-            </template>
-          </v-list-group>
-
-          <v-subheader v-else-if="item.header" :key="i">{{
+          <v-subheader v-if="item.header" :key="i">{{
             item.header
           }}</v-subheader>
           <v-divider v-else-if="item.divider" :key="i"></v-divider>
-          <!--top-level link-->
+
           <v-list-tile
-            v-else
+            :key="i"
+            v-else-if="!item.items"
             :to="item.href ? item.href : null"
             ripple="ripple"
             :disabled="item.disabled"
             :target="item.target"
-            rel="noopener"
-            :key="item.name"
           >
-            <v-list-tile-action v-if="item.icon">
+            <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action v-if="item.subAction">
-              <v-icon class="success--text">{{ item.subAction }}</v-icon>
-            </v-list-tile-action>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
           </v-list-tile>
+          <v-list-group :key="i" v-else :prepend-icon="item.icon">
+            <template v-slot:activator>
+              <v-list-tile>
+                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              </v-list-tile>
+            </template>
+            <!-- level 2 begin -->
+            <template v-for="(item2, i2) in item.items">
+              <v-list-tile
+                :key="i2"
+                v-if="!item2.items"
+                :to="item2.href ? item2.href : null"
+                ripple="ripple"
+                :disabled="item2.disabled"
+                :target="item2.target"
+              >
+                <v-list-tile-action> </v-list-tile-action>
+
+                <v-list-tile-title>{{ item2.title }}</v-list-tile-title>
+                <v-list-tile-action>
+                  <v-icon>{{ item2.icon }}</v-icon>
+                </v-list-tile-action>
+              </v-list-tile>
+              <v-list-group :key="i2" v-else sub-group no-action>
+                <template v-slot:activator>
+                  <v-list-tile>
+                    <v-list-tile-title>{{ item2.title }}</v-list-tile-title>
+                  </v-list-tile>
+                </template>
+                <!-- level 3 bengin -->
+                <v-list-tile
+                  v-for="(item3, i3) in item2.items"
+                  :key="i3"
+                  :to="item3.href ? item3.href : null"
+                  ripple="ripple"
+                  :disabled="item3.disabled"
+                  :target="item3.target"
+                >
+                  <v-list-tile-title
+                    class="pl-21"
+                    v-text="item3.title"
+                  ></v-list-tile-title>
+                  <v-list-tile-action>
+                    <v-icon v-text="item3.icon"></v-icon>
+                  </v-list-tile-action>
+                </v-list-tile>
+                <!-- level 3 end -->
+              </v-list-group>
+            </template>
+            <!-- level 2 end -->
+          </v-list-group>
         </template>
+        <!-- level 1 end -->
       </v-list>
     </vue-perfect-scrollbar>
   </v-navigation-drawer>
@@ -180,9 +127,9 @@ export default {
         this.$store.commit('drawer', val)
       },
     },
-    computeGroupActive() {
-      return true
-    },
+    // computeGroupActive() {
+    //   return true
+    // },
     sideToolbarColor() {
       return this.$vuetify.options.extra.sideNav
     },
@@ -190,15 +137,6 @@ export default {
   methods: {
     toggleDrawer() {
       this.$store.commit('toggleDrawer')
-    },
-    genChildTarget(item, subItem) {
-      if (subItem.href) return
-      if (subItem.component) {
-        return {
-          name: subItem.component,
-        }
-      }
-      return { name: `${item.group}/${subItem.name}` }
     },
   },
 }
