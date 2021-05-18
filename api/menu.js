@@ -52,41 +52,45 @@ const Menu = [
                 href: '/servicios/servicios/'
             },
             {
-                name: 'medidas',
-                title: 'Medidas',
-                href: '/servicios/medidas/'
-            },
-            {
-                name: 'forma_pagos',
-                title: 'Formas de Pago',
-                href: '/servicios/forma_pagos/'
-            },
-            {
-                name: 'control_calidades',
-                title: 'Lista de QA',
-                href: '/servicios/control_calidades/'
-            },
-            {
-                name: 'materiales',
-                title: 'Materiales',
-                href: '/servicios/materiales/'
-            },
-            {
                 name: 'orden_servicios',
                 title: 'Ordenes de Servicios',
                 href: '/servicios/orden_servicios/'
             },
             {
-                name: 'control_solicitudes',
-                title: 'Control QA Solicitudes',
-                href: '/servicios/control_solicitudes/'
-            },
-            {
                 name: 'reprogramados',
                 title: 'Reprogramados',
                 href: '/servicios/reprogramados/'
+            },
+            {
+                name: 'auxiliaresServ',
+                title: 'Auxiliares',
+                items: [{
+                        name: 'medidas',
+                        title: 'Medidas',
+                        href: '/servicios/medidas/'
+                    },
+                    {
+                        name: 'forma_pagos',
+                        title: 'Formas de Pago',
+                        href: '/servicios/forma_pagos/'
+                    },
+                    {
+                        name: 'control_calidades',
+                        title: 'Lista de QA',
+                        href: '/servicios/control_calidades/'
+                    },
+                    {
+                        name: 'materiales',
+                        title: 'Materiales',
+                        href: '/servicios/materiales/'
+                    },
+                    {
+                        name: 'control_solicitudes',
+                        title: 'Control QA Solicitudes',
+                        href: '/servicios/control_solicitudes/'
+                    }
+                ]
             }
-
         ]
     },
     {

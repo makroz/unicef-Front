@@ -55,7 +55,7 @@
 
                 <mk-simple-card
                   title="Ordenes de Servicios 7d"
-                  :text="lOrden_servicios.length + ''"
+                  :text="Object.keys(lOrdenes).length + ''"
                   color="green darken-4 grey--text"
                 ></mk-simple-card>
 
@@ -114,7 +114,7 @@
             </v-list-tile-content>
             <v-list-tile-action>
               <v-btn icon color="primary" @click="aceptarSol(sol, index)">
-                <v-icon>add</v-icon>
+                <v-icon>add_task</v-icon>
               </v-btn>
             </v-list-tile-action>
           </v-list-tile>
@@ -161,8 +161,6 @@
                           ? lAsignada[sol.id].name
                           : 'Desconocido'
                       }}
-                      lasignadas
-                      {{ lAsignada[sol.id] }}
                     </span>
                   </v-flex>
                 </v-layout>
@@ -176,16 +174,17 @@
             <v-list-tile-action>
               <v-btn
                 icon
-                color="primary"
+                color="red"
+                dark
                 @click="realizarSol(lAsignada[sol.id], sol.id)"
               >
-                <v-icon>add</v-icon>
+                <v-icon>plumbing</v-icon>
               </v-btn>
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
       </v-card>
-<br />
+      <br />
       <!-- Solicitudes Realizadas -->
       <v-card>
         <v-toolbar color="blue darken-4" dark>
@@ -194,7 +193,7 @@
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-list two-line>
-          <v-list-tile v-for="(ordenes, index) in lOrden_servicios" :key="index" href="#">
+          <v-list-tile v-for="(ordenes, index) in lOrdenes" :key="index" href="#">
             <v-list-tile-avatar>
               <v-btn
                 icon
@@ -235,176 +234,17 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
             <v-list-tile-action>
               <v-btn
                 icon
-                color="primary"
-                @click="console.log(servicios)"
+                dark
+                
+                color="green"
+                @click="verRealizadas(ordenes)"
               >
-                <v-icon>add</v-icon>
+                <v-icon>visibility</v-icon>
               </v-btn>
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
       </v-card>
-      <!-- <v-card>
-        <v-toolbar color="yellow darken-4" dark>
-          <v-icon>pin_drop</v-icon>
-          <v-toolbar-title>Solicitudes Aceptadas</v-toolbar-title>
-        </v-toolbar>
-        <v-list two-line dense>
-          <v-list-group
-            v-model="aceptada.active"
-            v-for="(aceptada,index) in lAsignada"
-            :key="index"
-            active-class="grey"
-          >
-            <v-list-tile slot="activator">
-              <v-list-tile-avatar>
-                <v-btn
-                  icon
-                  flat
-                  color="success"
-                  @click.stop="
-                    verMapa(
-                      getDataLista(lRutas, ruteo.rutas_id, 'id', '*'),
-                      true
-                    )
-                  "
-                >
-                  <v-badge :value="true" color="cyan" overlap>
-                    <template v-slot:badge>
-                      <span>
-                        {{
-                          getDataLista(
-                            lRutas,
-                            ruteo.rutas_id,
-                            'id',
-                            'beneficiarios'
-                          ).length
-                        }}
-                      </span>
-                    </template>
-                    <v-icon large>map</v-icon>
-                  </v-badge>
-                </v-btn>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  <v-layout row wrap>
-                    <v-flex>
-                      <span class="caption">
-                        {{ ruteo.id }}
-                      </span>
-                      <span class="title text-capitalize">
-                        {{ getDataLista(lRutas, ruteo.rutas_id) }}
-                      </span>
-                    </v-flex>
-                  </v-layout>
-                </v-list-tile-title>
-                <v-list-tile-sub-title class="caption">
-                  Abierto: {{ formatDT(ruteo['created_at']) }}
-                  {{
-                    getDataLista(lRutas, ruteo.rutas_id, 'id', 'beneficiarios')
-                      .length
-                  }}
-                  -
-                  {{ ruteo.evaluaciones.length }}
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-btn
-                  icon
-                  color="primary"
-                  @click.stop=""
-                  large
-                  v-if="
-                    getDataLista(lRutas, ruteo.rutas_id, 'id', 'beneficiarios')
-                      .length -
-                      ruteo.evaluaciones.length >
-                    0
-                  "
-                >
-                  <v-badge :value="true" color="green" overlap>
-                    <template v-slot:badge>
-                      <span>
-                        {{
-                          getDataLista(
-                            lRutas,
-                            ruteo.rutas_id,
-                            'id',
-                            'beneficiarios'
-                          ).length - ruteo.evaluaciones.length
-                        }}
-                      </span>
-                    </template>
-                    <v-icon large>groups</v-icon>
-                  </v-badge>
-                </v-btn>
-                <v-btn
-                  v-else
-                  icon
-                  color="primary"
-                  @click.stop="getPosition(setClose, ruteo.id)"
-                  large
-                  title="Cerrar Ruteo"
-                >
-                  <v-icon large>fact_check</v-icon>
-                </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-list-tile
-              v-for="bene in getDataLista(
-                lRutas,
-                ruteo.rutas_id,
-                'id',
-                'beneficiariosD'
-              )"
-              :key="bene.id"
-              href="#"
-            >
-              <v-list-tile-avatar class="pa-0 pm-0">
-                <v-btn
-                  icon
-                  color="green"
-                  @click="verMapaBene(bene.id)"
-                  small
-                  style="margin: 0; margin-right: 3px"
-                >
-                  <v-icon>person_pin_circle</v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  color="blue"
-                  @click="verMapaBene(bene.id, true)"
-                  small
-                  style="margin: 0; margin-left: 3px"
-                >
-                  <v-icon>directions_car</v-icon>
-                </v-btn>
-              </v-list-tile-avatar>
-
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  <span class="caption"> {{ ruteo.id }}</span>
-                  {{ getDataLista(lBeneficiarios, bene.id) }}
-                </v-list-tile-title>
-                <v-list-tile-sub-title class="caption">
-                  {{ (bene.distancia * 1.0).toFixed(2) }} Km
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action> </v-list-tile-action>
-
-              <v-list-tile-action>
-                <v-btn
-                  icon
-                  :color="getColorEval(ruteo, bene.id)"
-                  @click="openEval(ruteo, bene.id)"
-                >
-                  <v-icon>assignment</v-icon>
-                </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list-group>
-        </v-list>
-      </v-card> -->
       <br />
       <!-- Rutas Atrasadas  -->
       <v-card>
@@ -610,13 +450,15 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
               <v-text-field
                 label="Cod.EPSA"
                 :value="
-                  getDataLista(lBeneficiarios, item.id, 'id', 'epsa', item.id)
+                  getDataLista(lBeneficiarios, item.estado==3?item.beneficiario_id:item.id, 'id', 'epsa', '---')
                 "
                 disabled
                 hide-details
                 dense
               ></v-text-field>
             </v-flex>
+          </v-layout>
+            <v-layout row wrap v-if="item.estado>1">
             <v-flex xs6>
               <v-text-field
                 label="Ref.Orden de Servicio"
@@ -633,7 +475,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                 item-text="name"
                 item-value="id"
                 label="Metodo de Pago"
-                v-model="item.forma_pago"
+                v-model="item.forma_pago_id"
                 :rules="[rules.required]"
                 validate-on-blur
                 :readonly="accion == 'show'"
@@ -654,8 +496,9 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                 ></v-textarea>
               </v-flex>
 
-              <v-flex shrink pa-1>
-                <mk-img v-model="mkImgData" :w="180" :h="100"></mk-img>
+              <v-flex shrink pa-1 v-if="!(item.estado==3 && item.foto==0)">
+                <mk-img  :onlyShow="accion == 'show'" v-model="mkImgData" :w="180" :h="100"></mk-img>
+                
               </v-flex>
               </v-layout>
             </v-flex>
@@ -752,7 +595,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                 </v-list-tile>
                 <div
                   :key="index + '_'"
-                  v-if="servicio.selected && servicio.estado > 1"
+                  v-if="(servicio.selected || accion == 'show') && servicio.estado > 1"
                   style="border-bottom: 1px solid #f1f1f1"
                   class="pa-2"
                 >
@@ -774,7 +617,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                     <v-flex grow>
                       <v-text-field
                         label="Observaciones"
-                        v-model="servicio.obs"
+                        v-model="servicio.obs_sol"
                         :rules="servicio.realizado ? [] : [rules.required]"
                         validate-on-blur
                         :readonly="accion == 'show'"
@@ -789,6 +632,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                       style="font-size: 14px"
                     >
                       <v-btn
+                        v-if="accion != 'show'"
                         small
                         flat
                         icon
@@ -798,9 +642,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                         <v-icon>add_circle_outline</v-icon>
                       </v-btn>
                       Material usado
-                      <span style="float: right; width: 70px; padding-top: 15px"
-                        >Cant.</span
-                      >
+                      
                     </div>
                     <v-container grid-list-md fluid>
                       <v-layout
@@ -850,6 +692,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                         </v-flex>
                         <v-flex shrink>
                           <v-btn
+                          v-if="accion != 'show'"
                             small
                             flat
                             icon
@@ -1081,7 +924,6 @@ import { TargomoClient } from '@targomo/core'
 import {
   getDataLista,
   getDistancia,
-  formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { icon } from 'leaflet'
 import Swal from 'sweetalert2'
@@ -1163,11 +1005,19 @@ export default {
       lMateriales: [],
       lMedidas: [],
       lForma_pagos: [],
-      lOrden_servicios:[],
+      lOrdenes:{},
       nAceptadas: 0,
+      imgPrefix: 'solicitud_servicios',
     }
   },
   methods: {
+    verRealizadas(data){
+      console.log('realizarSol', data)
+      //data.id = beneficiarios_id
+      data.estado = 3
+      //this.accion='show'
+      this.openDialog('edit', data)
+    },
     addMaterial(item) {
       item.materiales.push({})
     },
@@ -1415,7 +1265,6 @@ export default {
           lista: 'Asignado',
           datos: {
             modulo: 'mkServicios',
-            rel: 1,
             filtros: [
               ['estado', '=', '2'],
               ['usuarios_id_2', '=', user],
@@ -1449,11 +1298,48 @@ export default {
           mod: 'Orden_servicios',
           datos: {
             modulo: 'mkServicios',
-            rel: 1,
             filtros: [
               ['created_at', '>', fecha],
               ['recolector_id', '=', user],
             ],
+          },
+          each: (e) => {
+            //console.log('ordenes:',e.id);
+              this.lOrdenes[e.id] = {
+                  name: this.getDataLista(
+                    this.lBeneficiarios,
+                    e.beneficiario_id,
+                    'id',
+                    'name',
+                    'Desconocido'
+                  ),
+                  lista: {},
+                  ...e,
+                }
+          },
+        },
+        {
+          mod: 'SolicitudServicios',
+          lista: 'Realizados',
+          datos: {
+            modulo: 'mkServicios',
+            relations: ['materiales'],
+            filtros: [
+              ['usuarios_id_3', '=', user],
+              ['fecha_3', '>', fecha],
+              ['orden_servicios_id', '>', 0],
+              ['OR',['estado', '=', '3'],['estado', '=', '9']],
+            ],
+          },
+          each: (e) => {
+            
+//            if (e.estado == 3) {
+              
+              if (this.lOrdenes[e.orden_servicios_id]) {
+                console.log(e);
+                this.lOrdenes[e.orden_servicios_id].lista[e.id] = e
+              }
+  //          }
           },
         },
       ]
@@ -1463,6 +1349,7 @@ export default {
       if (isError > -1) {
         this.lDispon = {}
         this.lAsignada = {}
+        this.lOrdenes = {}
         this.lAsignadaD = []
         //let filtros = [['OR', ['estado', '=', '1'], ['estado', '=', '2']]]s
         let listas = await this.getDatasBackend(
@@ -1491,6 +1378,10 @@ export default {
       if (data.estado == 2) {
         this.tituloModal = 'Realizar Solicitudes'
       }
+      if (data.estado == 3) {
+        this.tituloModal = 'Notas de Servicio'
+        this.accion='show'
+      }
     },
     beforeSave(me) {
       console.log('beforesave', me.item)
@@ -1505,9 +1396,9 @@ export default {
 
           if (me.item.estado == 2) {
             service.realizado = me.lServices[obj].realizado
+            service.obs = me.lServices[obj].obs_sol
             if (service.realizado) {
               service.materiales = me.lServices[obj].materiales
-              service.obs = me.lServices[obj].obs
             }
           }
 
@@ -1534,10 +1425,8 @@ export default {
       //   return false
       // }
       console.log('realizarSol', data, id)
-      //return true
       data.id = id
       data.estado = 2
-      //this.item = Object.assign({}, data)
       this.openDialog('edit', data)
     },
     vermapaGoogle() {
@@ -1650,12 +1539,13 @@ export default {
       data._noData = 1
       data.lat = this.coordenadas.latitude
       data.lng = this.coordenadas.longitude
+
       this.lServices = []
       if (accion == 'add') {
         this.bTitulo = ''
         this.itemData.epsa = ''
         data.estado = -1
-
+      
         this.lServicios.forEach((e) => {
           this.lServices.push({
             cantidad: 1,
@@ -1671,6 +1561,7 @@ export default {
         //data.id=1
 
         this.bTitulo = 'Revisados'
+        let sel=null
         let lSol = Object.keys(data.lista)
         console.log('item', data, this.item)
         lSol.forEach((el) => {
@@ -1687,19 +1578,25 @@ export default {
             if (e.estado == 2) {
               serv_ = {
                 realizado: false,
-                obs: '',
+                obs_sol: '',
                 materiales: [],
               }
             }
 
+            if (e.estado == 3 || e.estado==9) {
+              sel=1;
+              serv_ = {
+                realizado: e.estado==3,
+                obs_sol: e.obs,
+                materiales: e.materiales,//aqui
+              }
+            }
             this.lServices.push({
               sol_id: e.id,
               cantidad: e.cant,
               fecha: e.created_at,
               estado: e.estado,
               evaluaciones_id: e.evaluaciones_id,
-              selected: null,
-
               monitor: this.getDataLista(
                 this.lUsuarios,
                 e.created_by,
@@ -1709,7 +1606,9 @@ export default {
               ),
               ...serv,
               ...serv_,
+              selected: sel,
             })
+            console.log('service',this.lServices);
           }
         })
 
@@ -1943,7 +1842,8 @@ export default {
     // this.lRuteos = await this.getListaBackend('RuteosMonitor')
     this.lDispon = {}
     this.lAsignada = {}
-
+    //this.lOrdenes = {}
+    
     let listas = await this.getDatasBackend(this.urlModulo, [
       { mod: 'Usuarios', campos: 'id,name' },
       {

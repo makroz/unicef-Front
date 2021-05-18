@@ -70,15 +70,17 @@
                 </template>
                 <!-- level 3 bengin -->
                 <v-list-tile
+                
                   v-for="(item3, i3) in item2.items"
                   :key="i3"
                   :to="item3.href ? item3.href : null"
                   ripple="ripple"
                   :disabled="item3.disabled"
                   :target="item3.target"
+                  class="blue lighten-5"
                 >
                   <v-list-tile-title
-                    class="pl-21"
+                    class="pl-2"
                     v-text="item3.title"
                   ></v-list-tile-title>
                   <v-list-tile-action>

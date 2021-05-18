@@ -75,8 +75,10 @@ export default {
         grabar(){
       this.timeOnces=5000
       if (this.initOnce('GrabarForm')){
+  //      console.log('initOnce GrabarForm');
         return false
       }
+//      console.log('emitt grabaritem');
       this.$emit('grabarItem')
     },
 

@@ -144,7 +144,7 @@ export default {
           align: 'left',
           
           headers: true,
-          type: 'check',
+          type: 'text',
           search: true,
           
         },
@@ -164,7 +164,7 @@ export default {
           align: 'left',
           
           headers: true,
-          type: 'check',
+          type: 'text',
           search: true,
           
         },

@@ -69,6 +69,7 @@ export default {
       dirty: {
         item: {},
       },
+      formVerif:false,
 
       oldRecycled: false,
       cacheCan: {
@@ -297,18 +298,24 @@ export default {
     afterSave(me, isError = 0) {},
     async grabarItem() {
       let me = this
-      if (!me.$refs.mkForm.$refs.form.validate()) {
+      //if (!me.$refs.mkForm.$refs.form.validate()) {
+      if (!me.formVerif){
+        me.formVerif=me.$refs.mkForm.$refs.form
+      }
+      if (!me.formVerif.validate()) {
         return false
       }
       let isError = 0
+      console.log('grabaritem',me.item);
       me.beforeSave(me)
 
-      if (me.MkImgMix) {
+      if (me.MkImgMix && typeof me.mkImgData.myImg.hasImage === 'function' ) {
         // // me.item.imgDel=me.mkImgData.imgDel;
         // me.item.imgFile='';
+        me.mkImgData.refresh = true
         if (!me.mkImgData.imgDel) {
           if (me.mkImgData.myImg.hasImage()) {
-            me.mkImgData.refresh = true
+        //    me.mkImgData.refresh = true
             me.item.imgFile = this.mkImgData.myImg.generateDataUrl(
               'image/png',
               0.7
@@ -414,6 +421,7 @@ export default {
           .finally(function () {
             me.dataTable.loading = false
             me.afterSave(me, isError)
+            me.formVerif=false
           })
       }
     },
@@ -505,6 +513,12 @@ export default {
         return false
       }
       this.accion = accion
+
+      if (!this.formVerif){
+        this.formVerif=this.$refs.mkForm.$refs.form
+      }
+      this.formVerif.resetValidation()
+
       if (this.beforeOpen(accion, data) === false) {
         return false
       }
@@ -512,10 +526,11 @@ export default {
       //mkImg
       if (this.MkImgMix) {
         this.mkImgData.remove = true
-        var d = new Date()
+        let d = new Date()
+        let prefix=this.imgPrefix||this.$options.name
         this.mkImgData.imgFile =
           _storage +
-          this.$options.name +
+          prefix +
           '_' +
           this.item.id +
           '.png?v=' +
@@ -526,7 +541,7 @@ export default {
         this.mkImgData.imgDel = false
       }
       //mkImg
-      this.$refs.mkForm.$refs.form.resetValidation()
+      
 
       if (accion == 'add') {
         this.item.id = null

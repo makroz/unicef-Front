@@ -111,7 +111,7 @@
                           {{ servicio.evaluaciones_id?servicio.evaluaciones_id:'--' }}
                         </div>
                         <div style="width: 85px; display: inline-block">
-                          {{ servicio.monitor.split(" ")[0] }}
+                          {{ servicio.monitor?(servicio.monitor+' ').split(" ")[0]:'--' }}
                         </div>
                       </span>
                       {{ servicio.name }}
@@ -175,7 +175,7 @@ export default {
           text: 'Id',
           value: 'id',
           align: 'left',
-          width: '80px',
+          width: '50px',
           headers: true,
           type: 'num',
           search: true,
@@ -183,15 +183,15 @@ export default {
         {
           text: 'Fecha',
           value: 'created_at',
-          width: '100px',
+          width: '80px',
           headers: true,
           type: 'date',
           search: true,
         },
         {
-          text: 'Evaluacion',
+          text: 'Eval',
           value: 'evaluaciones_id',
-          width: '50px',
+          width: '30px',
           headers: true,
           type: 'num',
           search: true,
@@ -229,7 +229,7 @@ export default {
         {
           text: 'Cant',
           value: 'cant',
-          width: '50px',
+          width: '40px',
           headers: true,
           type: 'num',
           search: true,
@@ -335,6 +335,15 @@ export default {
         //data.estado =(data.estado*1);
       }
     },
+        async afterSave(me, isError = 0) {
+      //console.log('aftersve', isError)
+      if (isError > -1) {
+      }else{
+        me.item.estado--
+      }
+      return true
+    },
+
     // listServicios(estado) {
     //   if (estado == -1) {
     //     return this.lServicios
@@ -382,6 +391,9 @@ export default {
     edit.dblClic = false
     edit.icon = 'fact_check'
     edit.orden = 10
+    edit.visibleRow = function (e) {
+      return e.estado == 0 ? true : false
+    }
     this.setOptionTable('del').visibleRow = function (e) {
       return e.estado == 0 ? true : false
     }

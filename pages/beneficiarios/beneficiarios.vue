@@ -151,7 +151,7 @@
       <!-- formularioFull Familia -->
 
       <mk-form-full-screen
-        ref="mkForm"
+        ref="mkFormFull"
         :modal="modalFam"
         :menuBottom="true"
         :tit="tituloModal"
@@ -900,6 +900,8 @@ export default {
       //   metodos[e] = "1"
       // })
       // data.metodos = Object.assign([],metodos)
+      this.formVerif=this.$refs.mkFormFull.$refs.form
+      this.formVerif.resetValidation()
 
       this.openDialog('edit', data, false)
       this.tituloModal = 'Kardex Familiar'
@@ -950,6 +952,7 @@ export default {
     },
     afterSave(me, isError) {
       this.modalFam = false
+      this.formVerif= false
     },
     beforeOpen(accion, data = {}) {
       if (accion == 'add') {

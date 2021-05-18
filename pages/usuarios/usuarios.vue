@@ -53,7 +53,7 @@
             ></v-text-field>
             <v-layout row>
               <v-flex shrink pa-1>
-                <mk-img v-model="mkImgData" :w="100" :h="100"></mk-img>
+                <mk-img :onlyShow="accion == 'show'" v-model="mkImgData" :w="100" :h="100"></mk-img>
               </v-flex>
               <v-flex grow pa-1>
                 <v-text-field
@@ -107,13 +107,13 @@
 </template>
 
 <script>
-import MkImgMix from '@/components/mkComponentes/mixins/MkImgMix'
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkImgMix from '@/components/mkComponentes/mixins/MkImgMix'
 import MkPermisos from '@/components/mkComponentes/mkPermisos/MkPermisos'
 
 export default {
   middleware: ['authAccess'],
-  mixins: [MkImgMix, MkModuloMix],
+  mixins: [MkModuloMix,MkImgMix],
   components: {
     MkPermisos,
   },
@@ -252,7 +252,7 @@ export default {
       {mod:'Grupos',campos:'id,name',item:'grupos_id',datos:{modulo:'mkUsuarios'}},
       {mod:'Roles',campos:'id,name,slug',datos:{modulo:'mkUsuarios'}},
     ])
-
+//console.log(mk);
     // this.lGrupos = await this.getListaBackend('Grupos', '', 'grupos_id')
     // if (this.lGrupos===false){
     //   this.lGrupos=[]

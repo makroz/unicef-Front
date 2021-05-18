@@ -10,7 +10,7 @@ export default {
         imgMenu:false,
         imgCanDel:true,
         imgDel:false,
-        myImg: {},
+        myImg: {hasImage:()=>false},
         imgFile:'',
         imgCanEdit:false,
         remove:false,
