@@ -231,33 +231,12 @@ export default {
       me.dirty.permisos = Object.assign(me.permisos)
     },
   },
-
-  // async asyncData({ store }) {
-  //   let lGrupos = await store.dispatch('auth/loadData', {
-  //     url: 'Grupos',
-  //     campos: 'id,name'
-  //   })
-  //   let lRoles = await store.dispatch('auth/loadData', {
-  //     url: 'Roles',
-  //     campos: 'id,name'
-  //   })
-  //   return {
-  //     lRoles: lRoles,
-  //     lGrupos: lGrupos
-  //   }
-  // },
+ 
   async mounted() {
     let listas= await this.getDatasBackend(this.urlModulo,[
-      //{mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id'},
       {mod:'Grupos',campos:'id,name',item:'grupos_id',datos:{modulo:'mkUsuarios'}},
       {mod:'Roles',campos:'id,name,slug',datos:{modulo:'mkUsuarios'}},
     ])
-//console.log(mk);
-    // this.lGrupos = await this.getListaBackend('Grupos', '', 'grupos_id')
-    // if (this.lGrupos===false){
-    //   this.lGrupos=[]
-    // }
-    // this.lRoles = await this.getListaBackend('Roles', 'id', 'roles_slug')
   },
 }
 </script>

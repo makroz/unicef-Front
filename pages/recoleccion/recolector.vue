@@ -246,185 +246,6 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
         </v-list>
       </v-card>
       <br />
-      <!-- Rutas Atrasadas  -->
-      <v-card>
-        <v-toolbar color="red darken-4" dark>
-          <v-icon>fmd_bad</v-icon>
-          <v-toolbar-title>Rutas Atrasadas </v-toolbar-title>
-        </v-toolbar>
-        <v-list two-line dense>
-          <v-list-group
-            v-model="ruteo1.active"
-            v-for="ruteo1 in lRuteos.retrased.data"
-            :key="ruteo1.id"
-            active-class="grey"
-          >
-            <v-list-tile slot="activator">
-              <v-list-tile-avatar>
-                <v-btn
-                  icon
-                  flat
-                  color="success"
-                  @click.stop="
-                    verMapa(
-                      getDataLista(lRutas, ruteo1.rutas_id, 'id', '*'),
-                      true
-                    )
-                  "
-                >
-                  <v-badge :value="true" color="cyan" overlap>
-                    <template v-slot:badge>
-                      <span>
-                        {{
-                          getDataLista(
-                            lRutas,
-                            ruteo1.rutas_id,
-                            'id',
-                            'beneficiarios'
-                          ).length
-                        }}
-                      </span>
-                    </template>
-                    <v-icon large>map</v-icon>
-                  </v-badge>
-                </v-btn>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  <v-layout row wrap>
-                    <v-flex>
-                      <span class="caption">
-                        {{ ruteo1.id }}
-                      </span>
-                      <span class="title text-capitalize">
-                        {{ getDataLista(lRutas, ruteo1.rutas_id) }}
-                      </span>
-                    </v-flex>
-                  </v-layout>
-                </v-list-tile-title>
-                <v-list-tile-sub-title class="caption">
-                  {{ getSubHeader(ruteo1) }}
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-btn icon color="primary" @click.stop="" large>
-                  <v-badge :value="true" color="green" overlap>
-                    <template v-slot:badge>
-                      <span>
-                        {{
-                          getDataLista(
-                            lRutas,
-                            ruteo1.rutas_id,
-                            'id',
-                            'beneficiarios'
-                          ).length - ruteo1.evaluaciones.length
-                        }}
-                      </span>
-                    </template>
-                    <v-icon large>groups</v-icon>
-                  </v-badge>
-                </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-list-tile
-              v-for="bene in getDataLista(
-                lRutas,
-                ruteo1.rutas_id,
-                'id',
-                'beneficiariosD'
-              )"
-              :key="bene.id"
-              href="#"
-            >
-              <v-list-tile-avatar class="pa-0 pm-0">
-                <v-btn
-                  icon
-                  color="green"
-                  @click="verMapaBene(bene.id)"
-                  small
-                  style="margin: 0; margin-right: 3px"
-                >
-                  <v-icon>person_pin_circle</v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  color="blue"
-                  @click="verMapaBene(bene.id, true)"
-                  small
-                  style="margin: 0; margin-left: 3px"
-                >
-                  <v-icon>directions_car</v-icon>
-                </v-btn>
-              </v-list-tile-avatar>
-
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ getDataLista(lBeneficiarios, bene.id) }}
-                </v-list-tile-title>
-                <v-list-tile-sub-title class="caption">
-                  {{ (bene.distancia * 1.0).toFixed(2) }} Km
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action> </v-list-tile-action>
-
-              <v-list-tile-action>
-                <v-btn
-                  icon
-                  :color="getColorEval(ruteo1, bene.id)"
-                  @click="openEval(ruteo1, bene.id)"
-                >
-                  <v-icon>assignment</v-icon>
-                </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list-group>
-        </v-list>
-      </v-card>
-      <br />
-      <!-- Rutas Cerradas -->
-      <v-card>
-        <v-toolbar color="blue darken-4" dark>
-          <v-icon>where_to_vote</v-icon>
-          <v-toolbar-title>Rutas Cerradas en estas 2 semanas</v-toolbar-title>
-          <v-spacer></v-spacer>
-        </v-toolbar>
-        <v-list tree-line>
-          <v-list-tile
-            v-for="rutaC in lRuteos.closed.data"
-            :key="rutaC.id"
-            href="#"
-          >
-            <v-list-tile-content>
-              <v-list-tile-title>
-                <v-layout row wrap>
-                  <v-flex>
-                    <span class="caption">
-                      {{ rutaC.id }}
-                    </span>
-                    <span class="title text-capitalize">
-                      {{ getDataLista(lRutas, rutaC.rutas_id) }}
-                    </span>
-                    <span class="caption">
-                      {{
-                        getDataLista(lRutas, rutaC.rutas_id, 'id', 'descrip')
-                      }}
-                    </span>
-                  </v-flex>
-                </v-layout>
-              </v-list-tile-title>
-              <v-list-tile-sub-title class="caption">
-                Abierto el:
-                {{ formatDT(rutaC.created_at) }}
-              </v-list-tile-sub-title>
-              <v-list-tile-sub-title class="caption">
-                Cerrado el:
-                {{ formatDT(rutaC.fec_cerrado) }}
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-card>
-      <br />
       <!-- formulario Principal -->
       <mk-form-full-screen
         ref="mkForm"
@@ -441,7 +262,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
               <v-text-field
                 label="Beneficiario"
                 :value="item.name"
-                disabled
+                readonly
                 hide-details
                 dense
               ></v-text-field>
@@ -452,7 +273,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                 :value="
                   getDataLista(lBeneficiarios, item.estado==3?item.beneficiario_id:item.id, 'id', 'epsa', '---')
                 "
-                disabled
+                readonly
                 hide-details
                 dense
               ></v-text-field>
@@ -515,7 +336,8 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
               <v-list-tile-content>
                 <v-list-tile-title>
                   <span v-if="item.estado > -1" style="font-size: 10px">
-                    <div style="width: 48px; display: inline-block"></div>
+                    <div v-if="accion != 'show'" style="width: 48px; display: inline-block"></div>
+                    <div v-else style="width: 14px; display: inline-block"></div>
 
                     <div style="width: 25px; display: inline-block">Id</div>
                     <div style="width: 60px; display: inline-block">Fecha</div>
@@ -548,7 +370,9 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                       : ''
                   "
                 >
-                  <v-list-tile-action pa-0 ma-0 style="min-width: 34px">
+                  <v-list-tile-action 
+                  v-show="accion != 'show'"
+                   style="min-width: 34px">
                     <v-checkbox
                       v-model="servicio.selected"
                       color="deep-purple accent-4"
@@ -563,7 +387,8 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                         <div style="width: 25px; display: inline-block">
                           {{ servicio.sol_id }}
                         </div>
-                        <div style="width: 60px; display: inline-block">
+                        <div style="width: 63px; display: inline-block">
+                          {{ servicio.estado }}
                           {{ formatDT(servicio.fecha, false) }}
                         </div>
                         <div
@@ -611,6 +436,7 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
                           v-model="servicio.realizado"
                           :label="servicio.realizado ? 'Si' : 'No'"
                           color="green accent-4"
+                          :readonly="accion == 'show'"
                         ></v-switch>
                       </div>
                     </v-flex>
@@ -1379,7 +1205,7 @@ export default {
         this.tituloModal = 'Realizar Solicitudes'
       }
       if (data.estado == 3) {
-        this.tituloModal = 'Notas de Servicio'
+        this.tituloModal = 'Notas de Servicio '+data.id
         this.accion='show'
       }
     },

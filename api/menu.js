@@ -83,11 +83,6 @@ const Menu = [
                         name: 'materiales',
                         title: 'Materiales',
                         href: '/servicios/materiales/'
-                    },
-                    {
-                        name: 'control_solicitudes',
-                        title: 'Control QA Solicitudes',
-                        href: '/servicios/control_solicitudes/'
                     }
                 ]
             }
