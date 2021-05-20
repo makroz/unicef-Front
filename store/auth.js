@@ -424,6 +424,21 @@ export const actions = {
         return false
     },
     async getUser({ getters, commit, dispatch }) {
+        const token = getters.getToken + ''
+        if (token != 'null') {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            let d = JSON.parse(jsonPayload)
+                //console.log(d, new Date((d.exp + '000') * 1))
+            if (Date.now() > new Date((d.exp + '000') * 1)) {
+                console.log('Sesion Expirada!!!')
+                return false
+            }
+        }
+
         if (!getters.getUser) {
             return await dispatch('reloadUser', false)
         }
