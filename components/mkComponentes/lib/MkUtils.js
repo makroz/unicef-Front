@@ -42,22 +42,34 @@ export function c(msg, m1 = '', m2 = '', tipo = '') {
 }
 
 export function getTitFromName(msg) {
-    return (msg + '').split('/').pop().split(/(?=[A-Z])/).join(' ');
+    return (msg + '')
+        .split('/')
+        .pop()
+        .split(/(?=[A-Z])/)
+        .join(' ')
 }
 
 export function getFirstUpperCase(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name', defa = false) {
+export function getDataLista(
+    lista,
+    valor,
+    busco = 'id',
+    devuelvo = 'name',
+    defa = false
+) {
     let r = defa
-        //console.log('getdatalista:' + valor + ':' + busco + ':' + devuelvo, lista);
-    let o = lista.find(el => el[busco] == valor)
+    if (!lista) {
+        return r
+    }
+    let o = lista.find((el) => el[busco] == valor)
     if (o) {
         if (devuelvo == '*') {
             r = o
         } else {
-            r = o[devuelvo];
+            r = o[devuelvo]
         }
     }
     //console.log('getdatalista resulatdo:' + o);
@@ -65,35 +77,39 @@ export function getDataLista(lista, valor, busco = 'id', devuelvo = 'name', defa
 }
 export function getDistancia(lat1, lon1, lat2, lon2) {
     //console.log('calcula distancia');
-    var R = 6371; // Radius of the earth in km
-    var dLat = (lat2 - lat1) * Math.PI / 180; // deg2rad below
-    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var R = 6371 // Radius of the earth in km
+    var dLat = ((lat2 - lat1) * Math.PI) / 180 // deg2rad below
+    var dLon = ((lon2 - lon1) * Math.PI) / 180
     var a =
-        0.5 - Math.cos(dLat) / 2 +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-        (1 - Math.cos(dLon)) / 2;
+        0.5 -
+        Math.cos(dLat) / 2 +
+        (Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            (1 - Math.cos(dLon))) /
+        2
 
-    return R * 2 * Math.asin(Math.sqrt(a));
+    return R * 2 * Math.asin(Math.sqrt(a))
 }
 
 export function imprimirElemento(nombre, title = 'Impresion') {
-    let elemento = document.getElementById(nombre);
-    let ventana = window.open('', 'PRINT', 'height=400,width=1800');
-    ventana.document.write('<html><head><title>' + title + '</title>');
-    //ventana.document.write('<link rel="stylesheet" href="style.css">'); 
-    ventana.document.write('<script src="/_nuxt/runtime.js"></script><script src="/_nuxt/commons/app.js"></script><script src="/_nuxt/vendors/app.js"></script><script src="/_nuxt/app.js"></script><link data-n-head="1" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">');
-    ventana.document.write('</head><body >');
-    ventana.document.write(elemento.innerHTML);
-    ventana.document.write('</body></html>');
-    ventana.document.close();
-    ventana.focus();
+    let elemento = document.getElementById(nombre)
+    let ventana = window.open('', 'PRINT', 'height=400,width=1800')
+    ventana.document.write('<html><head><title>' + title + '</title>')
+        //ventana.document.write('<link rel="stylesheet" href="style.css">');
+    ventana.document.write(
+        '<script src="/_nuxt/runtime.js"></script><script src="/_nuxt/commons/app.js"></script><script src="/_nuxt/vendors/app.js"></script><script src="/_nuxt/app.js"></script><link data-n-head="1" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">'
+    )
+    ventana.document.write('</head><body >')
+    ventana.document.write(elemento.innerHTML)
+    ventana.document.write('</body></html>')
+    ventana.document.close()
+    ventana.focus()
     ventana.onload = function() {
-        ventana.print();
-        ventana.close();
-    };
-    return true;
+        ventana.print()
+        ventana.close()
+    }
+    return true
 }
-
 
 export function formatDT(d = '', time = true) {
     //return new Date(data).toString().split

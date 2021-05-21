@@ -1,6 +1,6 @@
 <template>
   <div id="pageTable">
-    <v-container grid-list-md fluid v-if="lRuteos.dispon">
+    <v-container grid-list-md fluid>
       <v-layout row wrap>
         <v-flex xs12>
           <v-card>
@@ -83,18 +83,7 @@
                 color="success"
                 @click="verMapaBene(index, false)"
               >
-                <!-- <v-badge
-                  :value="true"
-                  color="cyan"
-                  overlap
-                >
-                  <template v-slot:badge>
-                    <span>
-                      {{ Object.keys(sol.lista).length }}
-                      </span>
-                  </template> -->
                 <v-icon large>map</v-icon>
-                <!-- </v-badge> -->
               </v-btn>
             </v-list-tile-avatar>
             <v-list-tile-content>
@@ -137,18 +126,7 @@
                 color="success"
                 @click="verMapaBene(sol.id, false)"
               >
-                <!-- <v-badge
-                  :value="true"
-                  color="cyan"
-                  overlap
-                >
-                  <template v-slot:badge>
-                    <span>
-                      {{ Object.keys(sol.lista).length }}
-                      </span>
-                  </template> -->
                 <v-icon large>map</v-icon>
-                <!-- </v-badge> -->
               </v-btn>
             </v-list-tile-avatar>
             <v-list-tile-content>
@@ -193,7 +171,11 @@
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-list two-line>
-          <v-list-tile v-for="(ordenes, index) in lOrdenes" :key="index" href="#">
+          <v-list-tile
+            v-for="(ordenes, index) in lOrdenes"
+            :key="index"
+            href="#"
+          >
             <v-list-tile-avatar>
               <v-btn
                 icon
@@ -201,18 +183,7 @@
                 color="success"
                 @click="verMapaBene(ordenes.beneficiario_id, false)"
               >
-                <!-- <v-badge
-                  :value="true"
-                  color="cyan"
-                  overlap
-                >
-                  <template v-slot:badge>
-                    <span>
-                      {{ Object.keys(sol.lista).length }}
-                      </span>
-                  </template> -->
                 <v-icon large>map</v-icon>
-                <!-- </v-badge> -->
               </v-btn>
             </v-list-tile-avatar>
             <v-list-tile-content>
@@ -221,24 +192,25 @@
                   <v-flex>
                     <span class="title text-capitalize">
                       {{
-                        getDataLista(lBeneficiarios,ordenes.beneficiario_id,'id','name','Desconocido')
+                        getDataLista(
+                          lBeneficiarios,
+                          ordenes.beneficiario_id,
+                          'id',
+                          'name',
+                          'Desconocido'
+                        )
                       }}
                     </span>
                   </v-flex>
                 </v-layout>
               </v-list-tile-title>
               <v-list-tile-sub-title class="caption">
-Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.created_at) }}
+                Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha
+                {{ formatDT(ordenes.created_at) }}
               </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn
-                icon
-                dark
-                
-                color="green"
-                @click="verRealizadas(ordenes)"
-              >
+              <v-btn icon dark color="green" @click="verRealizadas(ordenes)">
                 <v-icon>visibility</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -256,286 +228,18 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
         @grabarItem="grabarItem"
         bTitulo="Aceptar"
       >
-        <v-container grid-list-md fluid>
-          <v-layout row wrap>
-            <v-flex xs10 sm8 md10>
-              <v-text-field
-                label="Beneficiario"
-                :value="item.name"
-                readonly
-                hide-details
-                dense
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs2 sm4 md2>
-              <v-text-field
-                label="Cod.EPSA"
-                :value="
-                  getDataLista(lBeneficiarios, item.estado==3?item.beneficiario_id:item.id, 'id', 'epsa', '---')
-                "
-                readonly
-                hide-details
-                dense
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-            <v-layout row wrap v-if="item.estado>1">
-            <v-flex xs6>
-              <v-text-field
-                label="Ref.Orden de Servicio"
-                v-model="item.ref"
-                :rules="[rules.required]"
-                validate-on-blur
-                :readonly="accion == 'show'"
-                dense
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs6>
-              <v-select
-                :items="lForma_pagos"
-                item-text="name"
-                item-value="id"
-                label="Metodo de Pago"
-                v-model="item.forma_pago_id"
-                :rules="[rules.required]"
-                validate-on-blur
-                :readonly="accion == 'show'"
-              >
-              </v-select>
-            </v-flex>
-
-            <v-flex xs12>
-              <v-layout row>
-                <v-flex grow>
-                <v-textarea
-                  label="Observaciones"
-                  v-model="item.obs"
-                  :readonly="accion == 'show'"
-                  rows="4"
-                  hide-details
-                  dense
-                ></v-textarea>
-              </v-flex>
-
-              <v-flex shrink pa-1 v-if="!(item.estado==3 && item.foto==0)">
-                <mk-img  :onlyShow="accion == 'show'" v-model="mkImgData" :w="180" :h="100"></mk-img>
-                
-              </v-flex>
-              </v-layout>
-            </v-flex>
-            {{ $vuetify.breakpoint.name }}
-          </v-layout>
-          <v-card>
-            <v-toolbar color="primary" dark dense>
-              <v-toolbar-title
-                >Servicios {{ lEstadosSol[item.estado] }}
-              </v-toolbar-title>
-            </v-toolbar>
-
-            <div dark v-if="item.estado > -1" class="grey" style="height: 20px">
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  <span v-if="item.estado > -1" style="font-size: 10px">
-                    <div v-if="accion != 'show'" style="width: 48px; display: inline-block"></div>
-                    <div v-else style="width: 14px; display: inline-block"></div>
-
-                    <div style="width: 25px; display: inline-block">Id</div>
-                    <div style="width: 60px; display: inline-block">Fecha</div>
-                    <div
-                      style="width: 30px; display: inline-block"
-                      class="hidden-xs-only"
-                    >
-                      Eval
-                    </div>
-                    <div
-                      style="width: 85px; display: inline-block"
-                      class="hidden-xs-only"
-                    >
-                      Creado X
-                    </div>
-                  </span>
-                  Servicio
-                  <span style="font-size: 10px"> Observaciones </span>
-                  <div style="float: right; width: 70px">Cant.</div>
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </div>
-            <v-list dense>
-              <template v-for="(servicio, index) in lServices">
-                <v-list-tile
-                  :key="index"
-                  :class="
-                    servicio.selected
-                      ? 'deep-purple lighten-5 deep-purple--text text--accent-4 elevation-3'
-                      : ''
-                  "
-                >
-                  <v-list-tile-action 
-                  v-show="accion != 'show'"
-                   style="min-width: 34px">
-                    <v-checkbox
-                      v-model="servicio.selected"
-                      color="deep-purple accent-4"
-                      :readonly="accion == 'show'"
-                      hide-details
-                    ></v-checkbox>
-                  </v-list-tile-action>
-
-                  <v-list-tile-content>
-                    <v-list-tile-title>
-                      <span v-if="servicio.estado > -1" style="font-size: 10px">
-                        <div style="width: 25px; display: inline-block">
-                          {{ servicio.sol_id }}
-                        </div>
-                        <div style="width: 63px; display: inline-block">
-                          {{ servicio.estado }}
-                          {{ formatDT(servicio.fecha, false) }}
-                        </div>
-                        <div
-                          style="width: 30px; display: inline-block"
-                          class="hidden-xs-only"
-                        >
-                          {{
-                            servicio.evaluaciones_id
-                              ? servicio.evaluaciones_id
-                              : '--'
-                          }}
-                        </div>
-                        <div
-                          style="width: 85px; display: inline-block"
-                          class="hidden-xs-only"
-                        >
-                          {{ servicio.monitor.split(' ')[0] }}
-                        </div>
-                      </span>
-                      {{ servicio.name }}
-                      <span style="font-size: 10px; width: 130px">
-                        {{ servicio.obs }}
-                      </span>
-                    </v-list-tile-title>
-                  </v-list-tile-content>
-                  <v-list-tile-avatar>
-                    {{ servicio.cantidad }}
-                  </v-list-tile-avatar>
-                </v-list-tile>
-                <div
-                  :key="index + '_'"
-                  v-if="(servicio.selected || accion == 'show') && servicio.estado > 1"
-                  style="border-bottom: 1px solid #f1f1f1"
-                  class="pa-2"
-                >
-                  <v-layout wrap row>
-                    <v-flex inline style="font-size: 10px" shrink>
-                      <div style="width: 75px; display: inline-block">
-                        Se Realizo?
-                        <v-switch
-                          dense
-                          hide-details
-                          style="font-size: 10px"
-                          height="10"
-                          v-model="servicio.realizado"
-                          :label="servicio.realizado ? 'Si' : 'No'"
-                          color="green accent-4"
-                          :readonly="accion == 'show'"
-                        ></v-switch>
-                      </div>
-                    </v-flex>
-                    <v-flex grow>
-                      <v-text-field
-                        label="Observaciones"
-                        v-model="servicio.obs_sol"
-                        :rules="servicio.realizado ? [] : [rules.required]"
-                        validate-on-blur
-                        :readonly="accion == 'show'"
-                        dense
-                        :hide-details="servicio.realizado"
-                      ></v-text-field>
-                    </v-flex>
-                  </v-layout>
-                  <v-card v-if="servicio.realizado">
-                    <div
-                      class="green white--text elevation-3 pa-1"
-                      style="font-size: 14px"
-                    >
-                      <v-btn
-                        v-if="accion != 'show'"
-                        small
-                        flat
-                        icon
-                        color="white"
-                        @click="addMaterial(servicio)"
-                      >
-                        <v-icon>add_circle_outline</v-icon>
-                      </v-btn>
-                      Material usado
-                      
-                    </div>
-                    <v-container grid-list-md fluid>
-                      <v-layout
-                        v-for="(material, i) in servicio.materiales"
-                        :key="i"
-                        row
-                        wrap
-                      >
-                        <v-flex grow>
-                          <v-select
-                            shrink
-                            :items="lMateriales"
-                            item-text="name"
-                            item-value="id"
-                            label="Material"
-                            v-model="material.id"
-                            :rules="[rules.required]"
-                            validate-on-blur
-                            :readonly="accion == 'show'"
-                          >
-                          </v-select>
-                        </v-flex>
-                        <v-flex shrink>
-                          <v-text-field
-                            label="Cant"
-                            v-model="material.cant"
-                            type="number"
-                            style="width: 80px"
-                            :rules="[rules.num, rules.required]"
-                            validate-on-blur
-                            :readonly="accion == 'show'"
-                            :suffix="
-                              getDataLista(
-                                lMedidas,
-                                getDataLista(
-                                  lMateriales,
-                                  material.id,
-                                  'id',
-                                  'medida_id'
-                                ),
-                                'id',
-                                'simbolo',
-                                ''
-                              )
-                            "
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex shrink>
-                          <v-btn
-                          v-if="accion != 'show'"
-                            small
-                            flat
-                            icon
-                            color="red"
-                            @click="delMaterial(servicio, i)"
-                          >
-                            <v-icon>remove_circle_outline</v-icon>
-                          </v-btn>
-                        </v-flex>
-                      </v-layout>
-                    </v-container>
-                  </v-card>
-                </div>
-              </template>
-            </v-list>
-          </v-card>
-        </v-container>
+        <mk-show-solicitud
+          :item="item"
+          :accion="accion"
+          :lBeneficiarios="lBeneficiarios"
+          :lForma_pagos="lForma_pagos"
+          :lEstadosSol="lEstadosSol"
+          :lMateriales="lMateriales"
+          :lServices="lServices"
+          :lMedidas="lMedidas"
+          :mkImgData="mkImgData"
+        >
+        </mk-show-solicitud>
       </mk-form-full-screen>
       <!-- formulario Mapa FullScreen -->
       <mk-form-full-screen
@@ -589,217 +293,36 @@ Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} - Fecha {{ formatDT(ordenes.
           </div>
         </v-container>
       </mk-form-full-screen>
-      <!-- formulario Evaluaciones FullScreen -->
-      <mk-form-full-screen
-        ref="mkFormEval"
-        :modal="modalEval"
-        :tit="tituloModal"
-        :accion="accion"
-        @closeDialog="modalEval = false"
-        @grabarItem="grabarItem"
-      >
-        <v-container grid-list-md fluid class="white">
-          <v-switch
-            v-model="estado"
-            label="Se puede realizar la Evaluación?"
-            color="indigo"
-          >
-          </v-switch>
-          <v-text-field
-            label="Notas de la Evaluación"
-            v-model="item.obs"
-            ref="focusEval"
-            :rules="this.estado ? [] : [this.rules.required]"
-            validate-on-blur
-          ></v-text-field>
-
-          <template v-if="estado && modalEval">
-            <v-tabs centered color="indigo" dark icons-and-text>
-              <v-tabs-slider color="yellow"></v-tabs-slider>
-
-              <v-tab href="#tab-1" elevation-10>
-                Encuesta
-                <v-icon>content_paste</v-icon>
-              </v-tab>
-
-              <v-tab href="#tab-2" elevation-10>
-                Servicios
-                <v-icon>plumbing</v-icon>
-              </v-tab>
-
-              <v-tab-item value="tab-1">
-                <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
-                  <v-toolbar color="secondary" dark dense>
-                    <v-toolbar-side-icon></v-toolbar-side-icon>
-                    <v-toolbar-title> {{ categ.name }}</v-toolbar-title>
-                  </v-toolbar>
-
-                  <div
-                    v-for="pregunta in lPregCateg(categ.id)"
-                    :key="pregunta.pregunta"
-                  >
-                    <v-layout row wrap pa-2>
-                      <v-flex grow>
-                        <span class="title text-capitalize">
-                          {{ pregunta.pregunta }}
-                        </span>
-                      </v-flex>
-                      <v-flex shrink>
-                        <v-text-field
-                          v-if="pregunta.tipo == 2"
-                          label="valor"
-                          v-model="item.respuestas[pregunta.id]"
-                          :rules="[rules.required, rules.num]"
-                          validate-on-blur
-                          type="number"
-                          style="width: 80px"
-                        ></v-text-field>
-
-                        <v-radio-group
-                          v-if="pregunta.tipo == 1"
-                          v-model="item.respuestas[pregunta.id]"
-                          row
-                          :rules="[rules.required]"
-                          validate-on-blur
-                        >
-                          <v-radio color="green" label="Si" value="1"></v-radio>
-                          <v-radio color="red" label="No" value="0"></v-radio>
-                        </v-radio-group>
-                      </v-flex>
-                    </v-layout>
-                    <v-divider></v-divider>
-                  </div>
-                </v-card>
-              </v-tab-item>
-              <v-tab-item value="tab-2">
-                <v-card>
-                  <v-list>
-                    <template v-for="servicio in lServicios">
-                      <v-list-tile
-                        :key="servicio.id"
-                        :class="
-                          servicio.selected
-                            ? 'deep-purple lighten-5 deep-purple--text text--accent-4'
-                            : ''
-                        "
-                      >
-                        <v-list-tile-action>
-                          <v-checkbox
-                            v-if="servicio.estado == 0"
-                            v-model="servicio.selected"
-                            color="deep-purple accent-4"
-                          ></v-checkbox>
-                        </v-list-tile-action>
-
-                        <v-list-tile-content>
-                          <v-list-tile-title>
-                            {{ servicio.name }}
-                            <span style="font-size: 10px">
-                              {{ servicio.obs }}
-                              {{ servicio.estado }}
-                            </span>
-                          </v-list-tile-title>
-                        </v-list-tile-content>
-                        <v-list-tile-avatar v-if="servicio.selected">
-                          <v-text-field
-                            v-model="servicio.cantidad"
-                            :disabled="
-                              servicio.estado == 0
-                                ? servicio.cant
-                                  ? false
-                                  : true
-                                : true
-                            "
-                            :rules="[
-                              rules.required,
-                              rules.num,
-                              rules.minVal(1),
-                            ]"
-                            validate-on-blur
-                            color="primary"
-                            :class="servicio.selectded ? 'secondary' : ''"
-                            type="number"
-                            min="1"
-                            style="
-                              font-size: 12px;
-                              padding-bottom: 0;
-                              padding-top: 12px;
-                            "
-                          ></v-text-field>
-                        </v-list-tile-avatar>
-                      </v-list-tile>
-                    </template>
-                  </v-list>
-                </v-card>
-              </v-tab-item>
-            </v-tabs>
-          </template>
-        </v-container>
-      </mk-form-full-screen>
     </v-container>
   </div>
 </template>
-
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkEstadosMix from '@/components/mkComponentes/mixins/MkEstadosMix'
 import MkImgMix from '@/components/mkComponentes/mixins/MkImgMix'
-import VWidget from '@/components/VWidget'
 import MkSimpleCard from '~/components/mkComponentes/mkCards/mkSimpleCard.vue'
-import { TargomoClient } from '@targomo/core'
+import MkShowSolicitud from '@/components/mkComponentes/MkShowSolicitud'
 import {
   getDataLista,
   getDistancia,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { icon } from 'leaflet'
-import Swal from 'sweetalert2'
-
-import {
-  getCache,
-  setCache,
-  getCacheKey,
-} from '@/components/mkComponentes/lib/MkCache.js'
 import MkFormFullScreen from '~/components/mkComponentes/MkFormFullScreen.vue'
-
 //const _dirty = process.env.mkConfig.dirty
 
 export default {
   middleware: ['authAccess'],
   mixins: [MkModuloMix, MkEstadosMix, MkImgMix],
-  components: { VWidget, MkSimpleCard, MkFormFullScreen },
+  components: { MkSimpleCard, MkFormFullScreen, MkShowSolicitud },
   name: 'Recolector',
-  disModTable: true,
+  //disModTable: true,
   data() {
     return {
       urlModulo: 'SolicitudServicios',
       //titModulo: '',
+
       location: false,
-      lRuteos: {
-        dispon: {
-          ok: 0,
-          data: [],
-        },
-        open: {
-          ok: 0,
-          data: [],
-        },
-        closed: {
-          ok: 0,
-          data: [],
-        },
-        retrased: {
-          ok: 0,
-          data: [],
-        },
-      },
-      // lRutas: [],
-      estado: false,
-      lBeneficiarios: [],
-      lServicios: [],
-      lCateg: [],
-      lPreguntas: [],
       modalMap: false,
-      modalEval: false,
       center: [-17.332269, -63.252798],
       zoom: 13,
       coordenadas: {},
@@ -819,9 +342,9 @@ export default {
       styleFunction: { color: '#000', weight: 5, opacity: 0.5 },
       jsonData: [],
       jsonLine: [],
-      item: { respuestas: {} },
-      callBack: false,
 
+      lBeneficiarios: [],
+      lServicios: [],
       lSolicitudServicios: [],
       lDispon: {},
       lAsignada: {},
@@ -831,217 +354,26 @@ export default {
       lMateriales: [],
       lMedidas: [],
       lForma_pagos: [],
-      lOrdenes:{},
+      lOrdenes: {},
       nAceptadas: 0,
       imgPrefix: 'solicitud_servicios',
+      callBack: false,
     }
   },
   methods: {
-    verRealizadas(data){
-      console.log('realizarSol', data)
-      //data.id = beneficiarios_id
-      data.estado = 3
-      //this.accion='show'
+    aceptarSol(data, id) {
+      data.id = id
+      data.estado = 1
       this.openDialog('edit', data)
     },
-    addMaterial(item) {
-      item.materiales.push({})
+    realizarSol(data, id) {
+      data.id = id
+      data.estado = 2
+      this.openDialog('edit', data)
     },
-    delMaterial(item, index) {
-      item.materiales.splice(index, 1)
-    },
-
-    openEval(data, bene) {
-      if (this.initOnce('openEval')) {
-        return false
-      }
-      if (!this.can('add', true)) {
-        return false
-      }
-      this.getPosition()
-      this.item = Object.assign({}, data)
-      this.item._noData = 1
-      this.item.lat = this.coordenadas.latitude
-      this.item.beneficiarios_id = bene
-      this.item.lng = this.coordenadas.longitude
-      this.item.usuarios_id = this.$store.state.auth.authUser.id
-      this.item.ruteos_id = data.id
-      this.item.obs = ''
-      this.item.id = null
-      this.item.estado = 0
-      let evaluacion = getDataLista(
-        this.item.evaluaciones,
-        bene,
-        'beneficiarios_id',
-        '*'
-      )
-      this.item.servicios = {}
-      this.lServicios.forEach((e) => {
-        e.cantidad = 1
-        e.selected = false
-        e.estado = 0
-
-        if (evaluacion) {
-          let existe = getDataLista(
-            evaluacion.servicios,
-            e.id,
-            'servicios_id',
-            '*'
-          )
-          if (existe) {
-            e.cantidad = existe.cant
-            e.selected = true
-            e.estado = existe.estado
-            if (existe.estado == 0) {
-              this.item.servicios[e.id] = existe.cant
-            }
-          }
-        }
-      })
-
-      this.item.respuestas = {}
-      this.lPreguntas.forEach((e) => {
-        if (evaluacion) {
-          this.item.respuestas[e.id] = getDataLista(
-            evaluacion.respuestas,
-            e.id,
-            'preguntas_id',
-            'r_s',
-            ''
-          )
-        } else {
-          this.item.respuestas[e.id] = ''
-        }
-      })
-
-      this.dirty.item = null
-      if (evaluacion) {
-        this.item.id = evaluacion.id
-        this.item.estado = 1 * evaluacion.estado
-        this.item.obs = evaluacion.obs
-        if (this.$config.dirty) {
-          this.dirty.item = JSON.parse(JSON.stringify(this.item))
-        }
-      }
-      this.estado = this.item.estado <= 1 ? false : true
-
-      this.$refs.mkFormEval.$refs.form.resetValidation()
-      this.tituloModal =
-        'Evaluacion de ' + getDataLista(this.lBeneficiarios, bene) //colocar computada de acuerdo al tamano
-      if (!this.modalEval) this.modalEval = true
-      //this.$nextTick(this.$refs.focus.focus)
-    },
-    getSubHeader(data) {
-      return 'Abierto:' + this.formatDT(data.created_at)
-    },
-    async getRutasOptimizada(ruta) {
-      let store = [
-        {
-          uuid: 'inicio',
-          address: {
-            lat: this.coordenadas.latitude,
-            lng: this.coordenadas.longitude,
-          },
-        },
-      ]
-      let orders = []
-      ruta.beneficiarios.forEach((f) => {
-        let lat = getDataLista(this.lBeneficiarios, f, 'id', 'lat')
-        let lng = getDataLista(this.lBeneficiarios, f, 'id', 'lng')
-        if (lat && lng) {
-          orders.push({
-            uuid: getDataLista(this.lBeneficiarios, f),
-            storeUuid: 'inicio',
-            priority: 1,
-            address: {
-              lat: getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
-              lng: getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
-              avgHandlingTime: 1,
-            },
-          })
-        }
-      })
-
-      let cacheKey = 'rutasCached_' + getCacheKey([store, orders])
-
-      let cached = getCache(cacheKey)
-      console.log('consultando cacheado:', cacheKey, cached)
-      if (cached) {
-        this.jsonLine = null
-        this.jsonData = cached
-        console.log('rutas recuperadas del cache')
-        //TODO: aqui otra formula para calcular habra que primero calcular elmas cercano del inicio y de ahi calcular todo de nuevo las distancias espaciales recursivamente hasta tener todo ordenado por distancia espacial..
-        // let camino='';
-        // ruta.beneficiarios.map(e=>{
-        //   camino=camino+getDataLista(this.lBeneficiarios, e,'id','lat')+','+getDataLista(this.lBeneficiarios, e,'id','lng')+'/'
-        // })
-        // camino='https://www.google.com/maps/dir/'+camino+'/@'+this.coordenadas.latitude+','+this.coordenadas.longitude+',13z/data=!4m2!4m1!3e0'
-        // console.log('camino',camino)
-
-        return true
-      }
-
-      if (this.$nuxt.isOffline) {
-        return false
-      }
-
-      const client = new TargomoClient('south_america', 'DF6SNYWF3ENCGQGGWEKU')
-      const routingConfig = {
-        optimizationAlgorithm: 'GREEDY_TSP',
-        optimizationTime: 1,
-        stores: store,
-        orders: orders,
-        transports: [
-          {
-            vehicle: {
-              uuid: 'v1',
-              storeUuid: 'inicio',
-              priority: 1,
-            },
-          },
-        ],
-        optimizationMetadata: {
-          geojsonCreation: 'ROUTING_SERVICE',
-          travelOptions: {
-            travelType: 'car',
-            maxEdgeWeight: 1800,
-            serviceUrl: 'https://api.targomo.com/south_america/',
-            serviceKey: client.serviceKey,
-          },
-        },
-      }
-
-      //TODO: aqui otra formula para calcular habra que primero calcular elmas cercano del inicio y de ahi calcular todo de nuevo las distancias espaciales recursivamente hasta tener todo ordenado por distancia espacial..
-      // let camino='';
-      // ruta.beneficiarios.map(e=>{
-      //   camino=camino+getDataLista(this.lBeneficiarios, e,'id','lat')+','+getDataLista(this.lBeneficiarios, e,'id','lng')+'/'
-      // })
-      // camino='https://www.google.com/maps/dir/'+camino+'/@'+this.coordenadas.latitude+','+this.coordenadas.longitude+',13z/data=!4m2!4m1!3e0'
-      // console.log('camino',camino)
-
-      const url = `https://api.targomo.com/fleetplanner/v1/api/key-auth/optimizations?key=${client.serviceKey}`
-      try {
-        const data = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(routingConfig),
-        })
-        const r = await data.json()
-        //  console.log(r)
-
-        let dd = [] //assign.Object([],r.tours[0].featureCollection.features)
-        r.tours[0].featureCollection.features.forEach((d) => {
-          if (d.geometry.type != 'Point') {
-            dd.push(d)
-          }
-        })
-        r.tours[0].featureCollection.features = dd
-        this.jsonLine = null
-        this.jsonData = r.tours[0].featureCollection
-        setCache(cacheKey, this.jsonData)
-      } catch (error) {
-        console.error(error)
-      }
+    verRealizadas(data) {
+      data.estado = 3
+      this.openDialog('edit', data)
     },
     distancia(d) {
       if (!d) {
@@ -1057,7 +389,7 @@ export default {
     getSolicitudServicios() {
       let user = this.$store.state.auth.authUser.id
       let fecha = new Date()
-      fecha.setDate(fecha.getDate() - 7);
+      fecha.setDate(fecha.getDate() - 7)
       return [
         {
           mod: 'SolicitudServicios',
@@ -1119,7 +451,7 @@ export default {
               }
             }
           },
-        }, 
+        },
         {
           mod: 'Orden_servicios',
           datos: {
@@ -1130,18 +462,17 @@ export default {
             ],
           },
           each: (e) => {
-            //console.log('ordenes:',e.id);
-              this.lOrdenes[e.id] = {
-                  name: this.getDataLista(
-                    this.lBeneficiarios,
-                    e.beneficiario_id,
-                    'id',
-                    'name',
-                    'Desconocido'
-                  ),
-                  lista: {},
-                  ...e,
-                }
+            this.lOrdenes[e.id] = {
+              name: this.getDataLista(
+                this.lBeneficiarios,
+                e.beneficiario_id,
+                'id',
+                'name',
+                'Desconocido'
+              ),
+              lista: {},
+              ...e,
+            }
           },
         },
         {
@@ -1154,63 +485,18 @@ export default {
               ['usuarios_id_3', '=', user],
               ['fecha_3', '>', fecha],
               ['orden_servicios_id', '>', 0],
-              ['OR',['estado', '=', '3'],['estado', '=', '9']],
+              ['OR', ['estado', '=', '3'], ['estado', '=', '9']],
             ],
           },
           each: (e) => {
-            
-//            if (e.estado == 3) {
-              
-              if (this.lOrdenes[e.orden_servicios_id]) {
-                console.log(e);
-                this.lOrdenes[e.orden_servicios_id].lista[e.id] = e
-              }
-  //          }
+            if (this.lOrdenes[e.orden_servicios_id]) {
+              this.lOrdenes[e.orden_servicios_id].lista[e.id] = e
+            }
           },
         },
       ]
     },
-    async afterSave(me, isError = 0) {
-      //console.log('aftersve', isError)
-      if (isError > -1) {
-        this.lDispon = {}
-        this.lAsignada = {}
-        this.lOrdenes = {}
-        this.lAsignadaD = []
-        //let filtros = [['OR', ['estado', '=', '1'], ['estado', '=', '2']]]s
-        let listas = await this.getDatasBackend(
-          this.urlModulo,
-          this.getSolicitudServicios()
-        )
-        this.nAceptadas = listas.Asignado.length
-        //console.log('entro aftersve', listas)
-        //   if (isError != 1) {
-        //     me.lRuteos = await this.getListaBackend('RuteosMonitor')
-        //   }
-        //   if (isError >= 0) {
-        //     this.modalEval = false
-        //     //modalMap=false;
-        //   }
-        //   return true
-      }else{
-        me.item.estado--
-      }
-      return true
-    },
-    afterOpen(accion, data) {
-      if (data.estado == 1) {
-        this.tituloModal = 'Aceptar Solicitudes'
-      }
-      if (data.estado == 2) {
-        this.tituloModal = 'Realizar Solicitudes'
-      }
-      if (data.estado == 3) {
-        this.tituloModal = 'Notas de Servicio '+data.id
-        this.accion='show'
-      }
-    },
     beforeSave(me) {
-      console.log('beforesave', me.item)
       let servicios = []
       for (const obj in me.lServices) {
         if (me.lServices[obj].selected === true) {
@@ -1235,28 +521,117 @@ export default {
       me.item.beneficiario_id = servicios
       //me.item.estado = (me.item.estado * 1) + 1
       me.item.estado++
-      
     },
-    aceptarSol(data, id) {
-      // if (!this.can('add', true)) {
-      //   return false
-      // }
-      data.id = id
-      data.estado = 1
-      //this.item = Object.assign({}, data)
-      this.openDialog('edit', data)
+    async afterSave(me, isError = 0) {
+      //console.log('aftersve', isError)
+      if (isError > -1) {
+        this.lDispon = {}
+        this.lAsignada = {}
+        this.lOrdenes = {}
+        this.lAsignadaD = []
+        //let filtros = [['OR', ['estado', '=', '1'], ['estado', '=', '2']]]s
+        let listas = await this.getDatasBackend(
+          this.urlModulo,
+          this.getSolicitudServicios()
+        )
+        this.nAceptadas = listas.Asignado.length
+        this.getPosition()
+      } else {
+        me.item.estado--
+      }
+      return true
     },
-    realizarSol(data, id) {
-      // if (!this.can('add', true)) {
-      //   return false
-      // }
-      console.log('realizarSol', data, id)
-      data.id = id
-      data.estado = 2
-      this.openDialog('edit', data)
+    async beforeOpen(accion, data = {}) {
+      data._noData = 1
+      data.lat = this.coordenadas.latitude
+      data.lng = this.coordenadas.longitude
+
+      this.lServices = []
+      if (accion == 'add') {
+        this.bTitulo = ''
+        this.itemData.epsa = ''
+        data.estado = -1
+        data.foto = 0
+
+        this.lServicios.forEach((e) => {
+          this.lServices.push({
+            cantidad: 1,
+            estado: -1,
+            selected: null,
+            ...e,
+          })
+        })
+      } else {
+        if (data.estado >= 5) {
+          return false
+        }
+        //data.id=1
+
+        this.bTitulo = 'Revisados'
+        let sel = null
+        let lSol = Object.keys(data.lista)
+        lSol.forEach((el) => {
+          let e = data.lista[el]
+          let serv = this.getDataLista(
+            this.lServicios,
+            e.servicios_id,
+            'id',
+            '*'
+          )
+
+          if (serv) {
+            let serv_ = {}
+            if (e.estado == 2) {
+              serv_ = {
+                realizado: false,
+                obs_sol: '',
+                materiales: [],
+              }
+            }
+
+            if (e.estado == 3 || e.estado == 9) {
+              sel = 1
+              serv_ = {
+                realizado: e.estado == 3,
+                obs_sol: e.obs,
+                materiales: e.materiales, //aqui
+              }
+            }
+            this.lServices.push({
+              sol_id: e.id,
+              cantidad: e.cant,
+              fecha: e.created_at,
+              estado: e.estado,
+              evaluaciones_id: e.evaluaciones_id,
+              monitor: this.getDataLista(
+                this.lUsuarios,
+                e.created_by,
+                'id',
+                'name',
+                ''
+              ),
+              ...serv,
+              ...serv_,
+              selected: sel,
+            })
+            //console.log('service', this.lServices)
+          }
+        })
+        data.noImage = !!!data.foto
+        //data.estado =(data.estado*1);
+      }
     },
-    vermapaGoogle() {
-      //
+    afterOpen(accion, data) {
+      if (data.estado == 1) {
+        this.tituloModal = 'Aceptar Solicitudes'
+      }
+      if (data.estado == 2) {
+        this.tituloModal = 'Realizar Solicitudes'
+      }
+      if (data.estado == 3) {
+        this.tituloModal = 'Notas de Servicio ' + data.id
+        this.accion = 'show'
+      }
     },
     verMapaBene(bene, google = false) {
       this.getPosition()
@@ -1296,36 +671,6 @@ export default {
         window.open(url)
       }
     },
-    verMapa(data, posAct = false) {
-      this.jsonData = []
-      this.jsonLine = null
-      this.markers = Object.assign([], data.beneficiarios)
-      this.getRutasOptimizada(data)
-      if (posAct) {
-        this.markers.push(0)
-      }
-      this.item = Object.assign({}, data) //TODO:verificar porque da error al cargar mapa despues cargar evaluacion y volver a cargar mapa en esta sentencia
-
-      this.item.lat = this.coordenadas.latitude
-      this.item.lng = this.coordenadas.longitude
-      this.item.usuarios_id = this.$store.state.auth.authUser.id
-      this.item.rutas_id = data.id
-      this.item._noData = 1
-      this.item.obs = ''
-      this.item.id = null
-      this.tituloModal =
-        'Mapa Ruteo de ' + getDataLista(this.lRutas, this.item.rutas_id)
-      this.modalMap = true
-      setTimeout(() => {
-        this.initMap()
-      }, 300)
-    },
-    // getDataLista(lista, valor, busco = 'id', devuelvo = 'name') {
-    //   return getDataLista(lista, valor, busco, devuelvo)
-    // },
-    change(e) {
-      this.item.usuarios_id = this.lRutas.find((el) => el.id === e).usuarios_id
-    },
     getPosition(callBack = false, id = -1) {
       let options = {
         enableHighAccuracy: true,
@@ -1361,87 +706,7 @@ export default {
       this.location = false
       console.warn('ERROR(' + error.code + '): ' + error.message)
     },
-    async beforeOpen(accion, data = {}) {
-      data._noData = 1
-      data.lat = this.coordenadas.latitude
-      data.lng = this.coordenadas.longitude
 
-      this.lServices = []
-      if (accion == 'add') {
-        this.bTitulo = ''
-        this.itemData.epsa = ''
-        data.estado = -1
-      
-        this.lServicios.forEach((e) => {
-          this.lServices.push({
-            cantidad: 1,
-            estado: -1,
-            selected: null,
-            ...e,
-          })
-        })
-      } else {
-        if (data.estado >= 5) {
-          return false
-        }
-        //data.id=1
-
-        this.bTitulo = 'Revisados'
-        let sel=null
-        let lSol = Object.keys(data.lista)
-        console.log('item', data, this.item)
-        lSol.forEach((el) => {
-          let e = data.lista[el]
-          let serv = this.getDataLista(
-            this.lServicios,
-            e.servicios_id,
-            'id',
-            '*'
-          )
-
-          if (serv) {
-            let serv_ = {}
-            if (e.estado == 2) {
-              serv_ = {
-                realizado: false,
-                obs_sol: '',
-                materiales: [],
-              }
-            }
-
-            if (e.estado == 3 || e.estado==9) {
-              sel=1;
-              serv_ = {
-                realizado: e.estado==3,
-                obs_sol: e.obs,
-                materiales: e.materiales,//aqui
-              }
-            }
-            this.lServices.push({
-              sol_id: e.id,
-              cantidad: e.cant,
-              fecha: e.created_at,
-              estado: e.estado,
-              evaluaciones_id: e.evaluaciones_id,
-              monitor: this.getDataLista(
-                this.lUsuarios,
-                e.created_by,
-                'id',
-                'name',
-                ''
-              ),
-              ...serv,
-              ...serv_,
-              selected: sel,
-            })
-            console.log('service',this.lServices);
-          }
-        })
-
-        // this.change(data.beneficiarios_id)
-        //data.estado =(data.estado*1);
-      }
-    },
     getIcon(id) {
       if (id == 0) {
         return this.icon1
@@ -1497,131 +762,6 @@ export default {
         })
       }
     },
-    getL(ruta) {
-      return false
-      const client = new TargomoClient('south_america', 'DF6SNYWF3ENCGQGGWEKU')
-      let targets = ruta.beneficiarios.map((el) => {
-        let marker = {
-          id: el,
-          lat: this.coordenadas.latitude,
-          lng: this.coordenadas.longitude,
-        }
-        if (el > 0) {
-          let lmarker = this.lBeneficiarios.filter((e) => e.id == el)
-          if (lmarker.length > 0) {
-            marker = { id: el, lat: lmarker[0].lat, lng: lmarker[0].lng }
-          }
-          return marker
-        }
-      })
-
-      let source = {
-        id: 0,
-        lat: this.coordenadas.latitude,
-        lng: this.coordenadas.longitude,
-      }
-      console.log('targets', targets)
-      // The travel options used to determine which routes should be searched for
-      const options = {
-        travelType: 'car',
-        maxEdgeWeight: 900,
-        edgeWeight: 'time',
-        pathSerializer: 'geojson',
-        // yes, "polygon"... this comes from a legacy implementation when polygons were the only service.
-        // Will be changing in the future to a more generalized approach.
-        polygon: {
-          srid: 4326,
-        },
-      }
-
-      // Requesting routes from the Targomo API.
-      client.routes.fetch([source], targets, options).then((result) => {
-        console.log('rrrr:', result)
-        this.jsonData = result
-      })
-    },
-    async getRutas(ruta) {
-      return false
-      if (this.$nuxt.isOffline) {
-        return false
-      }
-      //TODO: hacer cache de peticiones
-      const client = new TargomoClient('south_america', 'DF6SNYWF3ENCGQGGWEKU')
-      const routingConfig = {
-        optimizationAlgorithm: 'GREEDY_TSP',
-        optimizationTime: 1,
-        stores: [
-          {
-            uuid: 'inicio',
-            address: {
-              lat: this.coordenadas.latitude,
-              lng: this.coordenadas.longitude,
-            },
-          },
-        ],
-        orders: ruta.beneficiarios.map((f) => {
-          return {
-            uuid: getDataLista(this.lBeneficiarios, f),
-            storeUuid: 'inicio',
-            priority: 1,
-            address: {
-              lat: getDataLista(this.lBeneficiarios, f, 'id', 'lat'),
-              lng: getDataLista(this.lBeneficiarios, f, 'id', 'lng'),
-              avgHandlingTime: 1,
-            },
-          }
-        }),
-        transports: [
-          {
-            vehicle: {
-              uuid: 'v1',
-              storeUuid: 'inicio',
-              priority: 1,
-            },
-          },
-        ],
-        optimizationMetadata: {
-          geojsonCreation: 'ROUTING_SERVICE',
-          travelOptions: {
-            travelType: 'car',
-            maxEdgeWeight: 1800,
-            serviceUrl: 'https://api.targomo.com/south_america/',
-            serviceKey: client.serviceKey,
-          },
-        },
-      }
-
-      //TODO: aqui otra formula para calcular habra que primero calcular elmas cercano del inicio y de ahi calcular todo de nuevo las distancias espaciales recursivamente hasta tener todo ordenado por distancia espacial..
-      // let camino='';
-      // ruta.beneficiarios.map(e=>{
-      //   camino=camino+getDataLista(this.lBeneficiarios, e,'id','lat')+','+getDataLista(this.lBeneficiarios, e,'id','lng')+'/'
-      // })
-      // camino='https://www.google.com/maps/dir/'+camino+'/@'+this.coordenadas.latitude+','+this.coordenadas.longitude+',13z/data=!4m2!4m1!3e0'
-      // console.log('camino',camino)
-
-      const url = `https://api.targomo.com/fleetplanner/v1/api/key-auth/optimizations?key=${client.serviceKey}`
-      try {
-        const data = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(routingConfig),
-        })
-        const r = await data.json()
-        //  console.log(r)
-
-        let dd = [] //assign.Object([],r.tours[0].featureCollection.features)
-        r.tours[0].featureCollection.features.forEach((d) => {
-          if (d.geometry.type != 'Point') {
-            dd.push(d)
-          }
-        })
-        r.tours[0].featureCollection.features = dd
-
-        this.jsonData = r.tours[0].featureCollection
-      } catch (error) {
-        console.error(error)
-      }
-    },
     ordBeneficiarios(lista) {
       let r = []
       for (const index in lista) {
@@ -1634,42 +774,17 @@ export default {
           })
         }
       }
-      //      console.log('distancia',lista);
-      // lista.forEach((el,index) => {
-      //     el.distancia= this.distancia(
-      //       getDataLista(this.lBeneficiarios, index, 'id', '*')
-      //   )
-      // })
-
       r.sort(function (a, b) {
         return a.distancia - b.distancia
       })
       return r
     },
   },
-  computed: {
-    binding() {
-      const binding = {}
-      if (this.$vuetify.breakpoint.xs) binding.column = true
-      return binding
-    },
-    lPregCateg: (app) => (categ) => {
-      let l = app.lPreguntas.filter((e) => e.categ_id == categ)
-
-      //console.log('categ:', categ, l)
-      return l
-    },
-  },
-  watch: {},
   async mounted() {
     setTimeout(() => {
       this.getPosition()
     }, 3000)
-    // this.lRuteos = await this.getListaBackend('RuteosMonitor')
-    this.lDispon = {}
-    this.lAsignada = {}
-    //this.lOrdenes = {}
-    
+
     let listas = await this.getDatasBackend(this.urlModulo, [
       { mod: 'Usuarios', campos: 'id,name' },
       {
@@ -1706,8 +821,16 @@ export default {
       },
       ...this.getSolicitudServicios(),
     ])
-    //console.log('lista:',this.lDispon);
+  
     this.nAceptadas = listas.Asignado.length
+
+    //TODO: aqui otra formula para calcular habra que primero calcular elmas cercano del inicio y de ahi calcular todo de nuevo las distancias espaciales recursivamente hasta tener todo ordenado por distancia espacial..
+    // let camino='';
+    // ruta.beneficiarios.map(e=>{
+    //   camino=camino+getDataLista(this.lBeneficiarios, e,'id','lat')+','+getDataLista(this.lBeneficiarios, e,'id','lng')+'/'
+    // })
+    // camino='https://www.google.com/maps/dir/'+camino+'/@'+this.coordenadas.latitude+','+this.coordenadas.longitude+',13z/data=!4m2!4m1!3e0'
+    // console.log('camino',camino)
   },
 }
 </script>

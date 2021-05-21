@@ -69,7 +69,7 @@ export default {
       dirty: {
         item: {},
       },
-      formVerif:false,
+      formVerif: false,
 
       oldRecycled: false,
       cacheCan: {
@@ -299,23 +299,23 @@ export default {
     async grabarItem() {
       let me = this
       //if (!me.$refs.mkForm.$refs.form.validate()) {
-      if (!me.formVerif){
-        me.formVerif=me.$refs.mkForm.$refs.form
+      if (!me.formVerif) {
+        me.formVerif = me.$refs.mkForm.$refs.form
       }
       if (!me.formVerif.validate()) {
         return false
       }
       let isError = 0
-      console.log('grabaritem',me.item);
+      console.log('grabaritem', me.item)
       me.beforeSave(me)
 
-      if (me.MkImgMix && typeof me.mkImgData.myImg.hasImage === 'function' ) {
+      if (me.MkImgMix && typeof me.mkImgData.myImg.hasImage === 'function') {
         // // me.item.imgDel=me.mkImgData.imgDel;
         // me.item.imgFile='';
         me.mkImgData.refresh = true
         if (!me.mkImgData.imgDel) {
           if (me.mkImgData.myImg.hasImage()) {
-        //    me.mkImgData.refresh = true
+            //    me.mkImgData.refresh = true
             me.item.imgFile = this.mkImgData.myImg.generateDataUrl(
               'image/png',
               0.7
@@ -421,7 +421,7 @@ export default {
           .finally(function () {
             me.dataTable.loading = false
             me.afterSave(me, isError)
-            me.formVerif=false
+            me.formVerif = false
           })
       }
     },
@@ -514,8 +514,8 @@ export default {
       }
       this.accion = accion
 
-      if (!this.formVerif){
-        this.formVerif=this.$refs.mkForm.$refs.form
+      if (!this.formVerif) {
+        this.formVerif = this.$refs.mkForm.$refs.form
       }
       this.formVerif.resetValidation()
 
@@ -527,21 +527,18 @@ export default {
       if (this.MkImgMix) {
         this.mkImgData.remove = true
         let d = new Date()
-        let prefix=this.imgPrefix||this.$options.name
-        this.mkImgData.imgFile =
-          _storage +
-          prefix +
-          '_' +
-          this.item.id +
-          '.png?v=' +
-          d.getTime()
+        let prefix = this.imgPrefix || this.$options.name
+        this.mkImgData.imgFile = ''
+        if (!this.item.noImage && this.accion != 'add') {
+          this.mkImgData.imgFile =
+            _storage + prefix + '_' + this.item.id + '.png?v=' + d.getTime()
+        }
         this.mkImgData.file = ''
         this.mkImgData.imgCanDel = accion == 'edit'
         this.mkImgData.imgCanEdit = accion == 'edit'
         this.mkImgData.imgDel = false
       }
       //mkImg
-      
 
       if (accion == 'add') {
         this.item.id = null
@@ -699,14 +696,14 @@ export default {
         listas: listas,
       })
       listas.forEach((el) => {
-        let datos={}
-        if (el.lista && el.lista!='') {
-          datos=data[el.lista]
-        }else{
-          datos=data[el.mod]
-          el.lista='l'+el.mod
+        let datos = {}
+        if (el.lista && el.lista != '') {
+          datos = data[el.lista]
+        } else {
+          datos = data[el.mod]
+          el.lista = 'l' + el.mod
         }
-        
+
         if (el.item) {
           if (el.item.isArray) {
             el.item.forEach((e) => this.updateListCol(e, datos))
@@ -719,15 +716,15 @@ export default {
           datos.forEach(el.each)
         }
 
-        let sort=el.sort||false
-        if (sort && Array.isArray(datos)){
+        let sort = el.sort || false
+        if (sort && Array.isArray(datos)) {
           datos.sort(function (a, b) {
             return a[sort] - b[sort]
           })
         }
-        if (el.lista!='') {
-          if (this[el.lista]){
-            this[el.lista]=datos
+        if (el.lista != '') {
+          if (this[el.lista]) {
+            this[el.lista] = datos
           }
         }
       })
