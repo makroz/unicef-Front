@@ -268,6 +268,7 @@ export default {
         'green--text',
       ],
       lRutas: [],
+      lCateg: [],
       lPreguntas: [],
       estado: false,
     }

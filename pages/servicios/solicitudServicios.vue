@@ -359,7 +359,7 @@ export default {
       //console.log('id',me.item)
       let servicios = []
       for (const obj in me.lServices) {
-        if (me.lServices[obj].selected === true) {
+        if (me.lServices[obj].selected == true) {
           servicios.push({
             id: me.lServices[obj].id,
             cant: me.lServices[obj].cantidad,

@@ -226,11 +226,11 @@
         :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
-        bTitulo="Aceptar"
+        :bTitulo="bTitulo"
       >
         <mk-show-solicitud
           :item="item"
-          :accion="accion"
+          :accion="item.accion"
           :lBeneficiarios="lBeneficiarios"
           :lForma_pagos="lForma_pagos"
           :lEstadosSol="lEstadosSol"
@@ -358,21 +358,25 @@ export default {
       nAceptadas: 0,
       imgPrefix: 'solicitud_servicios',
       callBack: false,
+      bTitulo: '',
     }
   },
   methods: {
     aceptarSol(data, id) {
       data.id = id
       data.estado = 1
+      data.accion = 'aceptar'
       this.openDialog('edit', data)
     },
     realizarSol(data, id) {
       data.id = id
       data.estado = 2
+      data.accion = 'realizar'
       this.openDialog('edit', data)
     },
     verRealizadas(data) {
       data.estado = 3
+      data.accion = 'show'
       this.openDialog('edit', data)
     },
     distancia(d) {
@@ -506,7 +510,8 @@ export default {
             sol_id: me.lServices[obj].sol_id,
           }
 
-          if (me.item.estado == 2) {
+          if (me.item.accion == 'realizar') {
+            //if (me.item.estado == 2) {
             service.realizado = me.lServices[obj].realizado
             service.obs = me.lServices[obj].obs_sol
             if (service.realizado) {
@@ -549,9 +554,10 @@ export default {
       this.lServices = []
       if (accion == 'add') {
         this.bTitulo = ''
-        this.itemData.epsa = ''
+        //this.itemData.epsa = ''
         data.estado = -1
         data.foto = 0
+        data.accion = 'add'
 
         this.lServicios.forEach((e) => {
           this.lServices.push({
@@ -567,7 +573,6 @@ export default {
         }
         //data.id=1
 
-        this.bTitulo = 'Revisados'
         let sel = null
         let lSol = Object.keys(data.lista)
         lSol.forEach((el) => {
@@ -622,14 +627,16 @@ export default {
       }
     },
     afterOpen(accion, data) {
-      if (data.estado == 1) {
+      if (data.accion == 'aceptar') {
         this.tituloModal = 'Aceptar Solicitudes'
+        this.bTitulo = 'Aceptar'
       }
-      if (data.estado == 2) {
-        this.tituloModal = 'Realizar Solicitudes'
+      if (data.accion == 'realizar') {
+        this.tituloModal = 'Crear Nota de Servicio'
+        this.bTitulo = 'Realizar'
       }
-      if (data.estado == 3) {
-        this.tituloModal = 'Notas de Servicio ' + data.id
+      if (data.accion == 'show') {
+        this.tituloModal = 'Nota de Servicio ' + data.id
         this.accion = 'show'
       }
     },
@@ -821,7 +828,7 @@ export default {
       },
       ...this.getSolicitudServicios(),
     ])
-  
+
     this.nAceptadas = listas.Asignado.length
 
     //TODO: aqui otra formula para calcular habra que primero calcular elmas cercano del inicio y de ahi calcular todo de nuevo las distancias espaciales recursivamente hasta tener todo ordenado por distancia espacial..

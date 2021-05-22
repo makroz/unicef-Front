@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form ref="form" v-on:submit.prevent v-model="formValid" lazy-validation>
+    <v-form ref="form" v-on:submit.prevent v-model="formValid" lazy-validation >
      <v-dialog
         v-model="modal"
         fullscreen
@@ -27,7 +27,7 @@
             color="flat green--text"
             flat
             @click.stop="grabar"
-            v-text="accion == 'edit' ? 'Actualizar' : 'Grabar'"
+           v-text="bTitulo!=''?bTitulo:accion == 'edit' ? 'Actualizar' : 'Grabar'"
           ></v-btn>
             </v-toolbar-items>
           </v-toolbar>
@@ -43,7 +43,7 @@
             color="flat green--text"
             flat
             @click.stop="grabar"
-            v-text="accion == 'edit' ? 'Actualizar' : 'Grabar'"
+            v-text="bTitulo!=''?bTitulo:accion == 'edit' ? 'Actualizar' : 'Grabar'"
           ></v-btn>
             </v-toolbar-items>
           </v-toolbar>
@@ -78,6 +78,10 @@ export default {
       default: 'show'
     },
     classContent:{
+      type: String,
+      default: ''
+    },
+    bTitulo:{
       type: String,
       default: ''
     },

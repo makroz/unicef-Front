@@ -23,100 +23,43 @@
         :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
+        :bTitulo="bTitulo"
       >
-        <v-flex>
-          <v-text-field
-            label='Ref'
-            v-model='item.ref'
-            :rules='[rules.required]'
-            validate-on-blur
-            :readonly="accion == 'show'"
-          >
-          </v-text-field>
-        </v-flex>
-        <v-flex>
-      <v-checkbox
-        v-model='item.foto'
-        value='1'
-        label='Foto'
-        :readonly="accion == 'show'"
-      >
-      </v-checkbox>
-        </v-flex>
-        <v-flex>
-          <v-text-field
-            label='Observaciones'
-            v-model='item.obs'
-            :rules='[rules.required]'
-            validate-on-blur
-            :readonly="accion == 'show'"
-          >
-          </v-text-field>
-        </v-flex>
-        <v-flex>
-      <v-checkbox
-        v-model='item.estado'
-        value='1'
-        label='Estado'
-        :readonly="accion == 'show'"
-      >
-      </v-checkbox>
-        </v-flex>
-        <v-flex>
-          <v-select
-            :items='lUsuarios'
-            item-text='name'
-            item-value='id'
-            label='Recolector'
-            v-model='item.recolector_id'
-            :rules='[rules.num,rules.required]'
-            validate-on-blur
-            :readonly="accion == 'show'"
-          >
-          </v-select>
-        </v-flex>
-        <v-flex>
-          <v-select
-            :items='lForma_pagos'
-            item-text='name'
-            item-value='id'
-            label='Forma de pago'
-            v-model='item.forma_pago_id'
-            :rules='[rules.num,rules.required]'
-            validate-on-blur
-            :readonly="accion == 'show'"
-          >
-          </v-select>
-        </v-flex>
-        <v-flex>
-          <v-select
-            :items='lBeneficiarios'
-            item-text='name'
-            item-value='id'
-            label='Beneficiario'
-            v-model='item.beneficiario_id'
-            :rules='[rules.num,rules.required]'
-            validate-on-blur
-            :readonly="accion == 'show'"
-          >
-          </v-select>
-        </v-flex>
+        <mk-show-solicitud
+          :item="item"
+          :accion="item.accion"
+          :lBeneficiarios="lBeneficiarios"
+          :lForma_pagos="lForma_pagos"
+          :lEstadosSol="lEstadosSol"
+          :lMateriales="lMateriales"
+          :lServices="lServices"
+          :lMedidas="lMedidas"
+          :lControl_calidades="lControl_calidades"
+          :mkImgData="mkImgData"
+        >
+        </mk-show-solicitud>
+        
       </mk-form>
     </v-container>
   </div>
 </template>
 
 <script>
-import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import MkEstadosMix from '@/components/mkComponentes/mixins/MkEstadosMix'
+import MkImgMix from '@/components/mkComponentes/mixins/MkImgMix'
+import MkShowSolicitud from '@/components/mkComponentes/MkShowSolicitud'
+
 
 export default {
-  middleware: ["authAccess"],
-  mixins: [MkModuloMix],
-  name: "Orden_servicios",
+  middleware: ['authAccess'],
+  mixins: [MkModuloMix,MkEstadosMix, MkImgMix],
+  components: { MkShowSolicitud },
+  name: 'Orden_servicios',
   data() {
     return {
       //urlModulo: '',
-      titModulo: "Ordenes de Servicios",
+      titModulo: 'Ordenes de Servicios',
       campos: [
         {
           text: 'Id',
@@ -126,53 +69,57 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          
         },
         {
           text: 'Ref',
           value: 'ref',
           align: 'left',
-          
+
           headers: true,
           type: 'text',
           search: true,
-          
+        },
+        {
+          text: 'Fecha',
+          value: 'created_at',
+          align: 'center',
+
+          headers: true,
+          type: 'date',
+          search: true,
         },
         {
           text: 'Foto',
           value: 'foto',
           align: 'left',
-          
+
           headers: true,
           type: 'text',
           search: true,
-          
         },
         {
           text: 'Observaciones',
           value: 'obs',
           align: 'left',
-          
+
           headers: true,
           type: 'text',
           search: true,
-          
         },
         {
           text: 'Estado',
           value: 'estado',
           align: 'left',
-          
+
           headers: true,
           type: 'text',
           search: true,
-          
         },
         {
           text: 'Recolector',
           value: 'recolector_id',
           align: 'left',
-          
+
           headers: true,
           type: 'num',
           search: true,
@@ -182,7 +129,7 @@ export default {
           text: 'Forma de pago',
           value: 'forma_pago_id',
           align: 'left',
-          
+
           headers: true,
           type: 'num',
           search: true,
@@ -192,7 +139,7 @@ export default {
           text: 'Beneficiario',
           value: 'beneficiario_id',
           align: 'left',
-          
+
           headers: true,
           type: 'num',
           search: true,
@@ -200,23 +147,223 @@ export default {
         },
       ],
       lUsuarios: [],
-
       lForma_pagos: [],
-
       lBeneficiarios: [],
-
-    };
+      lServicios: [],
+      lSolicitudServicios: [],
+      lDispon: {},
+      lAsignada: {},
+      lAsignadaD: [],
+      lServices: [],
+      lUsuarios: [],
+      lMateriales: [],
+      lMedidas: [],
+      lForma_pagos: [],
+      lControl_calidades:[],
+      lOrdenes: {},
+      nAceptadas: 0,
+      imgPrefix: 'solicitud_servicios',
+      bTitulo:'',
+      grabarDebug:true,
+      }
   },
-  methods: {},
+  methods: {
+    revNota(accion, data) {
+      data.accion = 'verificar'
+      this.openDialog('edit', data)
+    },
+     async beforeOpen(accion, data = {}) {
+      data._noData = 1
+
+      if (accion=='show'){
+        data.accion=accion
+      }
+
+      this.lServices = []
+        let sel = null
+
+        let listas = await this.getDatasBackend(
+          'SolicitudServicios',
+          this.getSolicitudServicios(data.id)
+        )
+        data.lista=listas.Realizados
+        let lSol = Object.keys(data.lista)
+        lSol.forEach((el) => {
+          let e = data.lista[el]
+          let serv = this.getDataLista(
+            this.lServicios,
+            e.servicios_id,
+            'id',
+            '*'
+          )
+
+          if (serv) {
+            let serv_ = {}
+            if (e.estado == 2) {
+              serv_ = {
+                realizado: false,
+                obs_sol: '',
+                materiales: [],
+              }
+            }
+
+            if (e.estado == 3 || e.estado == 9) {
+              let qa={}
+              this.lControl_calidades.forEach(el => {
+                qa[el.id]={selected:false,puntos:''}
+              });
+              sel = 1
+              serv_ = {
+                realizado: e.estado == 3,
+                verificado: false,
+                obs_sol: e.obs,
+                obs_verif: '',
+                materiales: e.materiales, //aqui
+                qa:qa,
+              }
+            }
+            if (e.estado == 4 ) {
+              ser_.verificado= true
+              qa= e.qa
+            }
+            this.lServices.push({
+              sol_id: e.id,
+              cantidad: e.cant,
+              fecha: e.created_at,
+              estado: 3,
+              evaluaciones_id: e.evaluaciones_id,
+              monitor: this.getDataLista(
+                this.lUsuarios,
+                e.created_by,
+                'id',
+                'name',
+                ''
+              ),
+              ...serv,
+              ...serv_,
+              selected: sel,
+            })
+            //console.log('service', this.lServices)
+          }
+        })
+        data.noImage = !!!data.foto
+        //data.estado =(data.estado*1);
+      
+    },
+    afterOpen(accion, data) {
+      if (data.accion == 'verificar') {
+        this.tituloModal = 'Verificar Nota '+data.id
+        this.bTitulo = 'Verificar'
+      }
+      if (data.accion == 'show') {
+        this.tituloModal = 'Nota de Servicio ' + data.id
+      }
+    },
+      beforeSave(me) {
+      let servicios = []
+      //console.log('services',me.lServices);
+      for (const obj in me.lServices) {
+        let serv=me.lServices[obj]
+        console.log('serv',serv);
+        let qa=[]
+        Object.keys(serv.qa).forEach((i) => {
+          if (serv.qa[i].selected==true){
+            qa.push({id:i,puntos:serv.qa[i].puntos})
+          }
+        });
+        if (serv.selected == true) {
+          servicios.push({
+            id: serv.id,
+            verificado: serv.verificado,
+            sol_id: serv.sol_id,
+            obs_verif:serv.obs_verif,
+            qa:qa
+          })
+        }
+      }
+      //console.log('serv',servicios);
+      me.item.servicios = servicios
+      me.item.accion = me.item.accion+'.'
+      //console.log('iteserv',me.item.servicios);
+      //me.item.estado = (me.item.estado * 1) + 1
+    },
+     getSolicitudServicios(id) {
+      //fecha.setDate(fecha.getDate() - 7)
+      return [
+        {
+          mod: 'SolicitudServicios',
+          lista: 'Realizados',
+          datos: {
+            modulo: 'mkServicios',
+            relations: ['materiales'],
+            filtros: [
+              ['orden_servicios_id', '=', id],
+            ],
+          },
+        },
+      ]
+    },
+  },
   async mounted() {
-    this.lUsuarios = await this.getListaBackend('Usuarios', 'id,name', 'recolector_id')
+    this.setOptionTable('add').visible = false
+    let rev = this.addOptionTable({
+      id: 'rev',
+      color: 'red',
+      icon: 'check',
+      visible: this.can('edit'),
+      action: 'revNota',
+      grupos: ['action'],
+      orden: 10,
+      visibleRow: function (e) {
+        return e.estado == 0 ? true : false
+      },
+    })
+    this.setOptionTable('del').visible = false
+    this.setOptionTable('edit').visibleRow = function (e) {
+      return e.estado == 0 ? true : false
+    }
 
-    this.lForma_pagos = await this.getListaBackend('Forma_pagos', 'id,name', 'forma_pago_id')
 
-    this.lBeneficiarios = await this.getListaBackend('Beneficiarios', 'id,name', 'beneficiario_id')
-
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      { mod: 'Usuarios', campos: 'id,name', item: 'recolector_id' },
+      {
+        mod: 'Beneficiarios',
+        campos: 'id,name,epsa',
+        datos: { _customFields: 1 },
+        item: 'beneficiario_id',
+      },
+      {
+        mod: 'Forma_pagos',
+        campos: 'id,name',
+        item: 'forma_pago_id',
+        datos: { modulo: 'mkServicios' },
+      },
+      {
+        mod: 'Materiales',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,name,medida_id',
+      },
+      {
+        mod: 'Medidas',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,simbolo',
+      },
+      {
+        mod: 'Servicios',
+        each: (e) => {
+          e.cantidad = 1
+          e.selected = false
+        },
+      },
+      {
+        mod: 'Control_calidades',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,name,orden',
+        orden:'orden',
+      },
+    ])
   },
-};
+}
 </script>
 
 <style lang="stylus"></style>

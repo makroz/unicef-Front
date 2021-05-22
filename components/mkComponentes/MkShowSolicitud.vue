@@ -4,7 +4,15 @@
       <v-flex xs10 sm8 md10>
         <v-text-field
           label="Beneficiario"
-          :value="item.name"
+          :value="
+            getDataLista(
+              lBeneficiarios,
+              accion == 'show' ? item.beneficiario_id : item.id,
+              'id',
+              'name',
+              'Desconocido'
+            )
+          "
           readonly
           hide-details
           dense
@@ -16,7 +24,7 @@
           :value="
             getDataLista(
               lBeneficiarios,
-              item.estado == 3 ? item.beneficiario_id : item.id,
+              accion == 'show' ? item.beneficiario_id : item.id,
               'id',
               'epsa',
               '---'
@@ -28,18 +36,28 @@
         ></v-text-field>
       </v-flex>
     </v-layout>
-    <v-layout row wrap v-if="item.estado > 1">
-      <v-flex xs6>
+    <v-layout row wrap v-if="accion != 'aceptar'">
+      <v-flex xs4 v-if="accion != 'realizar'">
+        <v-text-field
+          label="Fecha"
+          :value="formatDT(item.created_at)"
+          disabled
+          dense
+        ></v-text-field>
+      </v-flex>
+
+      <v-flex :xs4="accion != 'realizar'" :xs6="accion == 'realizar'">
         <v-text-field
           label="Ref.Orden de Servicio"
           v-model="item.ref"
           :rules="[rules.required]"
           validate-on-blur
-          :readonly="accion == 'show'"
+          :readonly="accion != 'realizar'"
           dense
         ></v-text-field>
       </v-flex>
-      <v-flex xs6>
+
+      <v-flex :xs4="accion != 'realizar'" :xs6="accion == 'realizar'">
         <v-select
           :items="lForma_pagos"
           item-text="name"
@@ -48,7 +66,7 @@
           v-model="item.forma_pago_id"
           :rules="[rules.required]"
           validate-on-blur
-          :readonly="accion == 'show'"
+          :readonly="accion != 'realizar'"
         >
         </v-select>
       </v-flex>
@@ -59,16 +77,16 @@
             <v-textarea
               label="Observaciones"
               v-model="item.obs"
-              :readonly="accion == 'show'"
+              :readonly="accion != 'realizar'"
               rows="4"
               hide-details
               dense
             ></v-textarea>
           </v-flex>
 
-          <v-flex shrink pa-1 v-if="!(item.estado == 3 && item.foto == 0)">
+          <v-flex shrink pa-1 v-if="accion == 'realizar' || item.foto == 1">
             <mk-img
-              :onlyShow="accion == 'show'"
+              :onlyShow="accion != 'realizar'"
               v-model="mkImgData"
               :w="180"
               :h="100"
@@ -76,7 +94,6 @@
           </v-flex>
         </v-layout>
       </v-flex>
-      {{ $vuetify.breakpoint.name }}
     </v-layout>
     <v-card>
       <v-toolbar color="primary" dark dense>
@@ -85,12 +102,12 @@
         </v-toolbar-title>
       </v-toolbar>
 
-      <div dark v-if="item.estado > -1" class="grey" style="height: 20px">
+      <div dark v-if="accion != 'add'" class="grey" style="height: 20px">
         <v-list-tile-content>
           <v-list-tile-title>
-            <span v-if="item.estado > -1" style="font-size: 10px">
+            <span v-if="accion != 'add'" style="font-size: 10px">
               <div
-                v-if="accion != 'show'"
+                v-if="accion != 'show' && accion != 'verificar'"
                 style="width: 48px; display: inline-block"
               ></div>
               <div v-else style="width: 14px; display: inline-block"></div>
@@ -127,7 +144,7 @@
             "
           >
             <v-list-tile-action
-              v-show="accion != 'show'"
+              v-show="accion != 'show' && accion != 'verificar'"
               style="min-width: 34px"
             >
               <v-checkbox
@@ -140,9 +157,9 @@
 
             <v-list-tile-content>
               <v-list-tile-title>
-                <span v-if="servicio.estado > -1" style="font-size: 10px">
+                <span v-if="accion != 'add'" style="font-size: 10px">
                   <div style="width: 25px; display: inline-block">
-                    {{ servicio.sol_id }}
+                    {{ servicio.sol_id }}-{{ servicio.estado }}
                   </div>
                   <div style="width: 63px; display: inline-block">
                     {{ servicio.estado }}
@@ -175,12 +192,49 @@
           </v-list-tile>
           <div
             :key="index + '_'"
-            v-if="
-              (servicio.selected || accion == 'show') && servicio.estado > 1
-            "
+            v-if="servicio.selected && accion != 'aceptar'"
             style="border-bottom: 1px solid #f1f1f1"
             class="pa-2"
           >
+            <v-layout
+              wrap
+              row
+              v-if="accion == 'verificar' || (servicio.estado > 3 && servicio.estado < 8)"
+            >
+              <v-flex shrink>
+                <v-select
+                  style="width: 150px"
+                  shrink
+                  dense
+                  box
+                  color="red accent-4"
+                  :items="servicio.verificado!=4?lOpciones['st' + servicio.estado]:lOpciones['st3']"
+                  item-text="name"
+                  item-value="id"
+                  label="Verificar"
+                  v-model="servicio.verificado"
+                  :rules="[rules.required]"
+                  validate-on-blur
+                  :readonly="accion != 'verificar'"
+                  :hide-details="servicio.verificado == 4"
+                >
+                </v-select>
+              </v-flex>
+              <v-flex grow>
+                <v-text-field
+                  label="Obs. de Verificado"
+                  box
+                  v-model="servicio.obs_verif"
+                  :rules="servicio.verificado == 4 ? [] : [rules.required]"
+                  validate-on-blur
+                  :readonly="accion != 'verificar'"
+                  :hide-details="servicio.verificado == 4"
+                ></v-text-field>
+              </v-flex>
+              <v-flex shrink>
+                <v-btn icon class="error" @click="openQA(servicio)"> QA </v-btn>
+              </v-flex>
+            </v-layout>
             <v-layout wrap row>
               <v-flex inline style="font-size: 10px" shrink>
                 <div style="width: 75px; display: inline-block">
@@ -193,17 +247,18 @@
                     v-model="servicio.realizado"
                     :label="servicio.realizado ? 'Si' : 'No'"
                     color="green accent-4"
-                    :readonly="accion == 'show'"
+                    :readonly="accion != 'realizar'"
                   ></v-switch>
                 </div>
               </v-flex>
               <v-flex grow>
                 <v-text-field
-                  label="Observaciones"
+                  v-if="(accion=='realizar' || servicio.obs_sol )"
+                  label="Obs. de Realizado"
                   v-model="servicio.obs_sol"
                   :rules="servicio.realizado ? [] : [rules.required]"
                   validate-on-blur
-                  :readonly="accion == 'show'"
+                  :readonly="accion != 'realizar'"
                   dense
                   :hide-details="servicio.realizado"
                 ></v-text-field>
@@ -215,7 +270,7 @@
                 style="font-size: 14px"
               >
                 <v-btn
-                  v-if="accion != 'show'"
+                  v-if="accion == 'realizar'"
                   small
                   flat
                   icon
@@ -243,7 +298,7 @@
                       v-model="material.id"
                       :rules="[rules.required]"
                       validate-on-blur
-                      :readonly="accion == 'show'"
+                      :readonly="accion != 'realizar'"
                     >
                     </v-select>
                   </v-flex>
@@ -255,7 +310,7 @@
                       style="width: 80px"
                       :rules="[rules.num, rules.required]"
                       validate-on-blur
-                      :readonly="accion == 'show'"
+                      :readonly="accion != 'realizar'"
                       :suffix="
                         getDataLista(
                           lMedidas,
@@ -274,7 +329,7 @@
                   </v-flex>
                   <v-flex shrink>
                     <v-btn
-                      v-if="accion != 'show'"
+                      v-if="accion == 'realizar'"
                       small
                       flat
                       icon
@@ -291,6 +346,53 @@
         </template>
       </v-list>
     </v-card>
+    <mk-formulario
+      ref="mkForm"
+      :modal="modal"
+      tit="Control de Calidad"
+      :accion="accion"
+      @closeDialog="modal = false"
+      @grabarItem="saveQA"
+    >
+      <template v-for="qa in lControl_calidades">
+      <v-list-tile
+        v-if="qaItem.qa"
+        :key="qa.id"
+        :class="
+            qaItem.qa[qa.id]?qaItem.qa[qa.id].selected
+            ? 'blue lighten-5 blue--text text--accent-4 elevation-3'
+            : '':''
+        "
+      >
+        <v-list-tile-action style="min-width: 34px">
+          <v-checkbox
+            v-model="qaItem.qa[qa.id].selected"
+            color="blue accent-4"
+            :readonly="accion == 'show'"
+            hide-details
+          ></v-checkbox>
+        </v-list-tile-action>
+
+        <v-list-tile-content>
+          <v-list-tile-title>
+            {{ qa.name }}
+          </v-list-tile-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-text-field
+            label="Puntos"
+            style="width: 80px"
+            v-model="qaItem.qa[qa.id].puntos"
+            type="number"
+            :rules="[]"
+            validate-on-blur
+            :readonly="accion != 'verificar'"
+          >
+          </v-text-field>
+        </v-list-tile-action>
+      </v-list-tile>
+      </template>
+    </mk-formulario>
   </v-container>
 </template>
 
@@ -302,12 +404,14 @@ import {
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import MkImg from '@/components/mkComponentes/mkImg/MkImg'
+import MkFormulario from './MkFormulario.vue'
 
 export default {
   name: 'mkHead',
   props: [
     'item',
     'lBeneficiarios',
+    'lControl_calidades',
     'accion',
     'lForma_pagos',
     'lEstadosSol',
@@ -317,11 +421,63 @@ export default {
     'mkImgData',
   ],
   mixins: [MkRulesMix],
-  components: { MkImg },
+  components: { MkImg, MkFormulario },
   data() {
-    return {}
+    return {
+      modal: false,
+      qaItem:{},
+      lOpciones: {
+        st9: [
+          {
+            id: 8,
+            name: 'Anulado',
+          },
+          {
+            id: 1,
+            name: 'Reprogramado',
+          },
+        ],
+        st3: [
+          {
+            id: 1,
+            name: 'Reprogramado',
+          },
+          {
+            id: 2,
+            name: 'Regresado',
+          },
+          {
+            id: 4,
+            name: 'Verificado',
+          },
+          {
+            id: 8,
+            name: 'Anulado',
+          },
+        ],
+      },
+    }
   },
   methods: {
+    openQA(servicio){
+      this.qaItem=servicio
+      console.log('qaitem',this.qaItem)
+      // if (!this.qaItem.qa){
+      //   this.qaItem.qa={}
+      // }
+      // this.lControl_calidades.forEach(e => {
+      //   if (!this.qaItem.qa[e.id]){
+      //     this.qaItem.qa[e.id]={selected:false,puntos:''}
+      //   }else{
+      //     this.qaItem.qa[e.id].selected=true
+      //   }
+      // });
+      this.modal=true
+    },
+    saveQA(servicio){
+      //this.qaItem=servicio.qaItem
+      this.modal=false
+    },
     addMaterial(item) {
       item.materiales.push({})
     },
@@ -336,5 +492,7 @@ export default {
       return getDataLista(lista, valor, busco, devuelvo, defa)
     },
   },
+  mounted() {
+  }
 }
 </script>

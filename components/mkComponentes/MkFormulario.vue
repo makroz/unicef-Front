@@ -8,7 +8,6 @@
         <v-card-text :class="classContent">
           <v-form
             ref="form"
-            id="form"
             v-on:submit.prevent
             v-model="formValid"
             lazy-validation

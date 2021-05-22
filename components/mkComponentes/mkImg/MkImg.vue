@@ -18,7 +18,7 @@
         >
         </croppa>
         <div v-if="value.imgDel || (value.imgCanEdit && !value.myImg.hasImage())" @click="value.imgCanEdit=false;">
-        <img  :width="w" :height="h" :src="value.imgFile"  @error="value.imgCanDel=false;value.imgCanEdit=false;"/>
+        <img :width="w" :height="h" :src="value.imgFile"  @error="value.imgCanDel=false;value.imgCanEdit=false;"/>
         <div v-show="value.imgDel" style="position:absolute;bottom:25px;">
           <v-icon style="position:relative;font-size:100px;" color="red" >close</v-icon>
         </div>
@@ -79,7 +79,9 @@ export default {
       'value.remove':function(val){
          // this.value.myImg=this.myImg;
           if (val==true){
-            this.value.myImg.remove()
+            if (this.value.myImg.remove){
+              this.value.myImg.remove()
+            }
             this.value.remove=false
             //console.log('vlaue refresh',val);
 

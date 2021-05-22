@@ -84,6 +84,7 @@ export default {
         proteger: this.$options.middleware || '',
         _updateData: this._updateData,
       },
+      grabarDebug:false,
     }
   },
   methods: {
@@ -306,7 +307,10 @@ export default {
         return false
       }
       let isError = 0
-      console.log('grabaritem', me.item)
+      if (this.grabarDebug){
+        console.log('grabaritem', me.item)
+      }
+      
       me.beforeSave(me)
 
       if (me.MkImgMix && typeof me.mkImgData.myImg.hasImage === 'function') {
@@ -337,6 +341,7 @@ export default {
 
       if (me.item.id !== null && me.item.id > 0) {
         if (!this.can('edit', true)) {
+          //console.log('no per,misos edit');
           return false
         }
         if (me.item.id == null) {
@@ -348,12 +353,6 @@ export default {
         let itemData = {}
 
         if (_dirty) {
-          // console.log(
-          //   'permisos',
-          //   JSON.stringify(me.dirty.permisos),
-          //   JSON.stringify(me.permisos)
-          // )
-          //console.log(me.item, me.dirty.item)
           for (const el in me.item) {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
@@ -366,7 +365,9 @@ export default {
           if (Object.keys(itemData).length === 0) {
             me.closeDialog()
             me.afterSave(me, 1)
-            //alert('esta vacio',me.item)
+          if (this.grabarDebug) {    
+            alert('esta vacio',me.item)
+          }
             return false
           }
         } else {
@@ -374,6 +375,14 @@ export default {
         }
         if (me.item._noData) {
           itemData._noData = me.item._noData
+        }
+        if (this.grabarDebug===true) {
+          console.log('url:', url + this.getCt(url))
+          console.log('datos', itemData)
+          me.dataTable.loading = false
+          me.afterSave(me, isError)
+          me.formVerif = false
+          return true
         }
         me.$axios
           .put(url + this.getCt(url), itemData)
@@ -401,6 +410,14 @@ export default {
 
         me.dataTable.loading = true
         let url = me.urlModulo
+        if (this.grabarDebug===true) {
+          console.log('url:', url + this.getCt(url))
+          console.log('datos', itemData)
+          me.dataTable.loading = false
+          me.afterSave(me, isError)
+          me.formVerif = false
+          return true
+        }
 
         me.$axios
           .post(url + this.getCt(url), me.item)
