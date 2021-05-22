@@ -1,5 +1,6 @@
 export default async function(ctx) {
     //console.log('authAcces:',ctx)
+    return false
     ctx.store.commit("auth/setRutaBack", ctx.route.fullPath);
     let access = ctx.route.matched.find(
         v => v.path == ctx.route.fullPath
@@ -7,7 +8,8 @@ export default async function(ctx) {
     access = access.components.default.options.authAccess || access.components.default.options.name;
     const user = await ctx.store.dispatch('auth/getUser');
     if (!user || !user.id) {
-        return ctx.redirect("/login/");
+        ctx.redirect("/login/");
+        return false
     } else {
 
         if (!ctx.store.getters["auth/tienePermiso"]('show', access)) {

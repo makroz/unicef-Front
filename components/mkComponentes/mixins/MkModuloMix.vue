@@ -308,10 +308,11 @@ export default {
       }
       let isError = 0
       if (this.grabarDebug){
-        console.log('grabaritem', me.item)
+        console.log('item antes de Grabar:', me.item)
       }
       
       me.beforeSave(me)
+
 
       if (me.MkImgMix && typeof me.mkImgData.myImg.hasImage === 'function') {
         // // me.item.imgDel=me.mkImgData.imgDel;
@@ -341,11 +342,7 @@ export default {
 
       if (me.item.id !== null && me.item.id > 0) {
         if (!this.can('edit', true)) {
-          //console.log('no per,misos edit');
           return false
-        }
-        if (me.item.id == null) {
-          delete me.item.id
         }
         me.dataTable.loading = true
         let url = me.urlModulo + '/' + me.item.id
@@ -357,6 +354,7 @@ export default {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
             ) {
+              console.log('dirty enttro:',el,JSON.stringify(me.dirty.item[el]),JSON.stringify(me.item[el]),JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el]))
               if (me.item[el] !== undefined && el.indexOf('_temp_') == -1) {
                 itemData[el] = me.item[el]
               }
@@ -406,6 +404,9 @@ export default {
       } else {
         if (!this.can('add', true)) {
           return false
+        }
+        if (me.item.id == null) {
+          delete me.item.id
         }
 
         me.dataTable.loading = true
@@ -536,10 +537,12 @@ export default {
       }
       this.formVerif.resetValidation()
 
-      if (this.beforeOpen(accion, data) === false) {
+      this.item = Object.assign({}, data)
+
+      if (this.beforeOpen(accion,this.item) === false) {
         return false
       }
-      this.item = Object.assign({}, data)
+      
       //mkImg
       if (this.MkImgMix) {
         this.mkImgData.remove = true
@@ -562,17 +565,22 @@ export default {
         this.tituloModal = 'Registrar ' + this.titModulo
       }
 
-      if (accion == 'edit') {
+      this.dirty.item={}
+      if (accion != 'add') {
         if (_dirty) {
-          //this.dirty.item = Object.assign({}, this.item)
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
+          //console.log('before dirty ditty',this.dirty.item);
         }
+        if (accion == 'edit') {
         this.tituloModal =
           '(' + this.item.id + ') ' + 'Editar ' + this.titModulo
-        if (this.$refs.focus) {
-          this.$nextTick(this.$refs.focus.focus)
         }
       }
+
+        if (this.$refs.focus) {
+          this.$nextTick(this.$refs.focus.focus())
+        }
+
 
       if (accion == 'show') {
         //this.item.id = this.item.id * -1
@@ -849,7 +857,7 @@ export default {
     this.created = 2
   },
   mounted() {
-    //console.log('mounted mix');
+    console.log('mounted mix');
     if (this.campos) {
       this.campos = this.getParams('headers') || this.campos
       this.campos.map((e) => {

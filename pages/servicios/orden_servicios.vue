@@ -164,7 +164,7 @@ export default {
       nAceptadas: 0,
       imgPrefix: 'solicitud_servicios',
       bTitulo:'',
-      grabarDebug:true,
+      //grabarDebug:true,
       }
   },
   methods: {
@@ -174,6 +174,7 @@ export default {
     },
      async beforeOpen(accion, data = {}) {
       data._noData = 1
+      data.noImage = !!!data.foto
 
       if (accion=='show'){
         data.accion=accion
@@ -186,10 +187,10 @@ export default {
           'SolicitudServicios',
           this.getSolicitudServicios(data.id)
         )
-        data.lista=listas.Realizados
-        let lSol = Object.keys(data.lista)
+        //data.lista=listas.Realizados
+        let lSol = Object.keys(listas.Realizados)
         lSol.forEach((el) => {
-          let e = data.lista[el]
+          let e = listas.Realizados[el]
           let serv = this.getDataLista(
             this.lServicios,
             e.servicios_id,
@@ -206,9 +207,9 @@ export default {
                 materiales: [],
               }
             }
-
+            let qa={}
             if (e.estado == 3 || e.estado == 9) {
-              let qa={}
+              
               this.lControl_calidades.forEach(el => {
                 qa[el.id]={selected:false,puntos:''}
               });
@@ -223,7 +224,7 @@ export default {
               }
             }
             if (e.estado == 4 ) {
-              ser_.verificado= true
+              serv_.verificado= true
               qa= e.qa
             }
             this.lServices.push({
@@ -246,7 +247,7 @@ export default {
             //console.log('service', this.lServices)
           }
         })
-        data.noImage = !!!data.foto
+        
         //data.estado =(data.estado*1);
       
     },
@@ -264,7 +265,7 @@ export default {
       //console.log('services',me.lServices);
       for (const obj in me.lServices) {
         let serv=me.lServices[obj]
-        console.log('serv',serv);
+        //console.log('serv',serv);
         let qa=[]
         Object.keys(serv.qa).forEach((i) => {
           if (serv.qa[i].selected==true){
@@ -283,7 +284,8 @@ export default {
       }
       //console.log('serv',servicios);
       me.item.servicios = servicios
-      me.item.accion = me.item.accion+'.'
+//      me.item.accion = me.item.accion+'.'
+      me.item.act = me.item.accion
       //console.log('iteserv',me.item.servicios);
       //me.item.estado = (me.item.estado * 1) + 1
     },
@@ -295,7 +297,7 @@ export default {
           lista: 'Realizados',
           datos: {
             modulo: 'mkServicios',
-            relations: ['materiales'],
+            relations: ['materiales','qa'],
             filtros: [
               ['orden_servicios_id', '=', id],
             ],
@@ -305,6 +307,7 @@ export default {
     },
   },
   async mounted() {
+    console.log('mounted');
     this.setOptionTable('add').visible = false
     let rev = this.addOptionTable({
       id: 'rev',
