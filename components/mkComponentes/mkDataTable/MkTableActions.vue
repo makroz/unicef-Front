@@ -91,6 +91,7 @@ export default {
     if (!this.type) {
       this.type = this.$store.state.config.tbl_opts_type
     }
+   
     this.acciones.sort(function (a, b) {
             return a.orden - b.orden
           })

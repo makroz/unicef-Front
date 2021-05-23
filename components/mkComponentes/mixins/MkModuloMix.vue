@@ -537,11 +537,13 @@ export default {
       }
       this.formVerif.resetValidation()
 
+      
       this.item = Object.assign({}, data)
-
+      data=this.item
       if (this.beforeOpen(accion,this.item) === false) {
         return false
       }
+      
       
       //mkImg
       if (this.MkImgMix) {

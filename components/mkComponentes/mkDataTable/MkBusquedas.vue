@@ -193,12 +193,13 @@ export default {
       })
     },
     onBuscar(quitarbuscar = false) {
-      //console.log("Buscando....");
+      
       if (quitarbuscar) {
         this.curBusquedas = []
       }
       this.curBusquedas = this.curBusquedas.filter((e) => e.criterio != '')
       this.$emit('busqueda:avanzada', this.curBusquedas, quitarbuscar)
+      //console.log("Buscando....",this.curBuscar);
       this.modal = false
     },
     onChangeCampo(item) {

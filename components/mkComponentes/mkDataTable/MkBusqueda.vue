@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     onBuscar(buscar = true) {
-      console.log("Buscando basico....");
+      console.log("Buscando basico....",this.curBuscar);
       if (this.buscar == this.oldBuscar) {
         return false;
       }

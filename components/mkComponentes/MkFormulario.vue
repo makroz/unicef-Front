@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog v-model="modal" scrollable persistent max-width="70%">
+    <v-dialog v-model="modal" scrollable persistent  max-width="80%">
       <v-card>
         <v-card-title class="headline" v-html="titulo">
         </v-card-title>

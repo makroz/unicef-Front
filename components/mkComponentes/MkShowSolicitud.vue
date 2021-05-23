@@ -98,7 +98,7 @@
     <v-card>
       <v-toolbar color="primary" dark dense>
         <v-toolbar-title
-          >Servicios {{ lEstadosSol[item.estado] }}
+          >  Servicios {{ lEstadosSol[item.estado] }} 
         </v-toolbar-title>
       </v-toolbar>
 
@@ -162,7 +162,6 @@
                     {{ servicio.sol_id }}-{{ servicio.estado }}
                   </div>
                   <div style="width: 63px; display: inline-block">
-                    {{ servicio.estado }}
                     {{ formatDT(servicio.fecha, false) }}
                   </div>
                   <div
@@ -196,19 +195,19 @@
             style="border-bottom: 1px solid #f1f1f1"
             class="pa-2"
           >
+
             <v-layout
               wrap
               row
-              v-if="accion == 'verificar' || (servicio.estado > 3 && servicio.estado < 8)"
+              v-if="accion == 'verificar' || (servicio.estado > 3 && servicio.estado < 9)"
             >
               <v-flex shrink>
                 <v-select
                   style="width: 150px"
-                  shrink
                   dense
                   box
                   color="red accent-4"
-                  :items="servicio.verificado!=4?lOpciones['st' + servicio.estado]:lOpciones['st3']"
+                  :items="servicio.estado > 7?lOpciones['st9']:lOpciones['st3']"
                   item-text="name"
                   item-value="id"
                   label="Verificar"
@@ -216,7 +215,7 @@
                   :rules="[rules.required]"
                   validate-on-blur
                   :readonly="accion != 'verificar'"
-                  :hide-details="servicio.verificado == 4"
+                  hide-details
                 >
                 </v-select>
               </v-flex>
@@ -228,7 +227,7 @@
                   :rules="servicio.verificado == 4 ? [] : [rules.required]"
                   validate-on-blur
                   :readonly="accion != 'verificar'"
-                  :hide-details="servicio.verificado == 4"
+                  hide-details
                 ></v-text-field>
               </v-flex>
               <v-flex shrink>
@@ -461,17 +460,7 @@ export default {
   methods: {
     openQA(servicio){
       this.qaItem=servicio
-      console.log('qaitem',this.qaItem)
-      // if (!this.qaItem.qa){
-      //   this.qaItem.qa={}
-      // }
-      // this.lControl_calidades.forEach(e => {
-      //   if (!this.qaItem.qa[e.id]){
-      //     this.qaItem.qa[e.id]={selected:false,puntos:''}
-      //   }else{
-      //     this.qaItem.qa[e.id].selected=true
-      //   }
-      // });
+      //console.log('qaitem',this.qaItem)
       this.modal=true
     },
     saveQA(servicio){

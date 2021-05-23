@@ -287,9 +287,6 @@ export default {
           })
         })
       } else {
-        if (data.estado >= 5) {
-          return false
-        }
         data.id=1
 
         this.bTitulo = 'Revisados'

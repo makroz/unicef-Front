@@ -114,6 +114,8 @@ export default {
           headers: true,
           type: 'text',
           search: true,
+          lista: 'lEstadosSol',
+          lColor: 'lColorSol',
         },
         {
           text: 'Recolector',
@@ -172,10 +174,9 @@ export default {
       data.accion = 'verificar'
       this.openDialog('edit', data)
     },
-     async beforeOpen(accion, data = {}) {
-      data._noData = 1
+  async beforeOpen(accion, data = {}) {
+      //data._noData = 1
       data.noImage = !!!data.foto
-
       if (accion=='show'){
         data.accion=accion
       }
@@ -204,34 +205,37 @@ export default {
               serv_ = {
                 realizado: false,
                 obs_sol: '',
+                obs_verif: '',
                 materiales: [],
               }
             }
             let qa={}
-            if (e.estado == 3 || e.estado == 9) {
+            if (e.estado == 3 || e.estado == 9 || e.estado == 8|| e.estado == 4) {
               
               this.lControl_calidades.forEach(el => {
-                qa[el.id]={selected:false,puntos:''}
+                  qa[el.id]={selected:false,puntos:''}
               });
+              if (e.estado == 4 ) {
+                e.qa.forEach(el => {
+                  qa[el.id]={selected:true,puntos:el.puntos}
+              });
+               }
               sel = 1
+              e.estado=e.estado*1
               serv_ = {
-                realizado: e.estado == 3,
-                verificado: false,
+                realizado: e.estado != 9 && e.estado != 8,
+                verificado: e.estado>3 && e.estado !=9 ?e.estado:null,
                 obs_sol: e.obs,
-                obs_verif: '',
+                obs_verif: e.obs_verif,
                 materiales: e.materiales, //aqui
                 qa:qa,
               }
-            }
-            if (e.estado == 4 ) {
-              serv_.verificado= true
-              qa= e.qa
             }
             this.lServices.push({
               sol_id: e.id,
               cantidad: e.cant,
               fecha: e.created_at,
-              estado: 3,
+              estado: e.estado,
               evaluaciones_id: e.evaluaciones_id,
               monitor: this.getDataLista(
                 this.lUsuarios,
@@ -305,26 +309,69 @@ export default {
         },
       ]
     },
+    filtrar(accion){
+      let crit=3
+      if (accion=='autorizar'){
+          crit=4
+      }
+      let lista = []
+            this.lEstadosSol.map((e, index) =>
+              lista.push({ id: index, name: e })
+            )
+
+      let busqueda=[{
+      campo: 'estado',
+      cond:"20",
+      criterio:crit,
+      type: 'num',
+      union: 'and',
+      lista: lista
+      }]
+      //console.log('filtrar',crit,busqueda)
+      this.onBuscar(busqueda)
+    },
   },
   async mounted() {
-    console.log('mounted');
+    this.lColorSol[3]='red--text'
     this.setOptionTable('add').visible = false
     let rev = this.addOptionTable({
       id: 'rev',
       color: 'red',
-      icon: 'check',
+      icon: 'thumb_up',
       visible: this.can('edit'),
       action: 'revNota',
       grupos: ['action'],
       orden: 10,
       visibleRow: function (e) {
-        return e.estado == 0 ? true : false
+        return e.estado < 4 ? true : false
       },
     })
+    this.addOptionTable({
+        id: 'autorizar',
+        color: 'success',
+        icon: 'assignment_turned_in',
+        text: 'Autorizar',
+        visible: this.can('edit'),
+        action: 'filtrar',
+        grupos: ['filtros'],
+        orden: 2,
+      })
+    this.addOptionTable({
+        id: 'verificar',
+        color: 'red',
+        icon: 'thumb_up',
+        text: 'Verificar',
+        visible: this.can('edit'),
+        action: 'filtrar',
+        grupos: ['filtros'],
+        orden: 1,
+      })
+
     this.setOptionTable('del').visible = false
-    this.setOptionTable('edit').visibleRow = function (e) {
-      return e.estado == 0 ? true : false
-    }
+    this.setOptionTable('edit').visible = false
+    // this.setOptionTable('edit').visibleRow = function (e) {
+    //   return e.estado == 0 ? true : false
+    // }
 
 
     let listas = await this.getDatasBackend(this.urlModulo, [

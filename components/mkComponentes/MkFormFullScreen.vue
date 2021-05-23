@@ -13,7 +13,7 @@
           style="display: flex; flex-direction: column"
           pa-0 ma-0
         >
-          <v-toolbar dark color="primary" dense>
+          <v-toolbar dark color="primary" dense hidden-print-only>
             <v-btn icon dark @click.stop="$emit('closeDialog')">
               <v-icon>close</v-icon>
             </v-btn>
