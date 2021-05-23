@@ -36,7 +36,8 @@
         {{ showItem(header, datos,index) }}
       </td>
     </template>
-    <td class="text-xs-center" style="padding: 0 12px">
+    <td v-if='showStatus'
+    class="text-xs-center" style="padding: 0 12px">
       <mk-status
         :status="datos.item.status"
         :id="datos.item.id"
@@ -79,6 +80,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    showStatus: {
+      type: Boolean,
+      default: true,
+    },
+
   },
   inject: ['Auth', 'can'],
   methods: {

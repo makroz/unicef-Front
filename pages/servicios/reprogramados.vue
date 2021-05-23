@@ -91,44 +91,56 @@ export default {
           text: 'Obs',
           value: 'obs',
           align: 'left',
-          
           headers: true,
           type: 'text',
           search: true,
           
         },
         {
-          text: 'Solicitud de servicio',
+          text: '#Solicitud',
           value: 'solicitud_servicio_id',
           align: 'left',
-          
+          width: '100px',
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lSolicitud_servicios,
         },
+        {
+          text: '#Orden',
+          value: 'orden_servicio_id',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
+          search: true,
+        },        
         {
           text: 'Recolector',
           value: 'recolector_id',
           align: 'left',
-          
+          width: '200px',
           headers: true,
           type: 'num',
           search: true,
           lista: this.lUsuarios,
         },
       ],
-      lSolicitud_servicios: [],
-
       lUsuarios: [],
 
     };
   },
   methods: {},
   async mounted() {
-    this.lSolicitud_servicios = await this.getListaBackend('SolicitudServicios', 'id,obs', 'solicitud_servicio_id')
+    this.setOptionTable('del').visible = false
+    this.setOptionTable('edit').visible = false
+    this.setOptionTable('add').visible = false
 
-    this.lUsuarios = await this.getListaBackend('Usuarios', 'id,name', 'recolector_id')
+
+
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      { mod: 'Usuarios', campos: 'id,name', item: 'recolector_id' },
+    ])
+
 
   },
 };

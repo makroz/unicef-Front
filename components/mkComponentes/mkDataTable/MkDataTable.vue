@@ -57,6 +57,7 @@
 
             </template>
             <th
+                
                 key="__st__"
                 :class="['column', 'text-xs-center','pa-0','ma-0']"
                 style="width:50px;padding:0 12px"
