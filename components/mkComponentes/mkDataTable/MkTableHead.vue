@@ -46,8 +46,8 @@
     >
       <v-icon>{{ getAction('restore', 'topbar').icon }}</v-icon>
     </v-btn>
-
-    <template v-for="opt in acciones">
+    
+    <template v-for="opt in acciones.orden?acciones.orden.lista():{}">
       <v-btn
         :key="opt.id"
         v-if="opt.visible && opt.grupos.includes('filtros')"
@@ -62,7 +62,6 @@
         >{{ opt.text }}
       </v-btn>
     </template>
-
     <v-spacer></v-spacer>
     <div v-if="busquedas">
       <v-chip v-for="(busqueda, key) in busquedas" :key="key" outline small>
@@ -155,7 +154,7 @@ export default {
     },
     acciones: {
       type: [Array, Object],
-      default: null,
+      default: {},
     },
   },
   data() {
@@ -180,11 +179,12 @@ export default {
       this.$emit('column:change', headers, visible)
     },
     getAction(id, grupo = 'action') {
-      let v = this.acciones.find((e) => e.id == id && e.grupos.includes(grupo))
-      if (!v) {
-        v = { visible: false }
+      //let v = this.acciones.find((e) => e.id == id && e.grupos.includes(grupo))
+      let v = this.acciones[id]
+      if (v && v.grupos.includes(grupo)) {
+        return v
       }
-      return v
+      return { visible: false }
     },
   },
   mounted() {

@@ -26,8 +26,8 @@
         :pagination.sync="paginator.options"
       >
         <template slot="headers" slot-scope="props">
-          <tr>
-            <th 
+          <tr :style="acciones.sel?acciones.sel.visible?'':'padding-left:10px':''">
+            <th v-if="acciones.sel?acciones.sel.visible:true"
                 style="width:10px;padding:0 0 0 12px">
               <v-checkbox
                 ma-0 pa-0
@@ -56,8 +56,7 @@
                 {{ header.text }} <v-icon  v-if="header.sortable!==false" small>arrow_upward</v-icon></th>
 
             </template>
-            <th
-                
+            <th v-if="acciones.status?acciones.status.visible:true" 
                 key="__st__"
                 :class="['column', 'text-xs-center','pa-0','ma-0']"
                 style="width:50px;padding:0 12px"
@@ -170,7 +169,6 @@ export default {
   },
   mounted() {
     // this.expand=true
-    // console.log(this);
   },
 }
 </script>

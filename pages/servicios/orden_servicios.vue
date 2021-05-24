@@ -334,7 +334,9 @@ export default {
   async mounted() {
     this.lColorSol[3]='red--text'
     this.setOptionTable('add').visible = false
-    let rev = this.addOptionTable({
+    this.setOptionTable('status').visible = false
+
+    this.addOptionTable({
       id: 'rev',
       color: 'red',
       icon: 'thumb_up',
@@ -344,6 +346,18 @@ export default {
       orden: 10,
       visibleRow: function (e) {
         return e.estado < 4 ? true : false
+      },
+    })
+    this.addOptionTable({
+      id: 'aut',
+      color: 'green',
+      icon: 'assignment_turned_in',
+      visible: this.can('edit'),
+      action: 'revNota',
+      grupos: ['action'],
+      orden: 10,
+      visibleRow: function (e) {
+        return e.estado == 4 ? true : false
       },
     })
     this.addOptionTable({

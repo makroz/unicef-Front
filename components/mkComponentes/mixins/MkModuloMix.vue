@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       dataTable: {
-        acciones: [],
+        acciones: {},
         lista: {
           items: [],
           selected: [],
@@ -84,7 +84,7 @@ export default {
         proteger: this.$options.middleware || '',
         _updateData: this._updateData,
       },
-      grabarDebug:false,
+      grabarDebug: false,
     }
   },
   methods: {
@@ -307,12 +307,11 @@ export default {
         return false
       }
       let isError = 0
-      if (this.grabarDebug){
+      if (this.grabarDebug) {
         console.log('item antes de Grabar:', me.item)
       }
-      
-      me.beforeSave(me)
 
+      me.beforeSave(me)
 
       if (me.MkImgMix && typeof me.mkImgData.myImg.hasImage === 'function') {
         // // me.item.imgDel=me.mkImgData.imgDel;
@@ -354,7 +353,13 @@ export default {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
             ) {
-              console.log('dirty enttro:',el,JSON.stringify(me.dirty.item[el]),JSON.stringify(me.item[el]),JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el]))
+              console.log(
+                'dirty enttro:',
+                el,
+                JSON.stringify(me.dirty.item[el]),
+                JSON.stringify(me.item[el]),
+                JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
+              )
               if (me.item[el] !== undefined && el.indexOf('_temp_') == -1) {
                 itemData[el] = me.item[el]
               }
@@ -363,9 +368,9 @@ export default {
           if (Object.keys(itemData).length === 0) {
             me.closeDialog()
             me.afterSave(me, 1)
-          if (this.grabarDebug) {    
-            alert('esta vacio',me.item)
-          }
+            if (this.grabarDebug) {
+              alert('esta vacio', me.item)
+            }
             return false
           }
         } else {
@@ -374,7 +379,7 @@ export default {
         if (me.item._noData) {
           itemData._noData = me.item._noData
         }
-        if (this.grabarDebug===true) {
+        if (this.grabarDebug === true) {
           console.log('url:', url + this.getCt(url))
           console.log('datos', itemData)
           me.dataTable.loading = false
@@ -411,7 +416,7 @@ export default {
 
         me.dataTable.loading = true
         let url = me.urlModulo
-        if (this.grabarDebug===true) {
+        if (this.grabarDebug === true) {
           console.log('url:', url + this.getCt(url))
           console.log('datos', itemData)
           me.dataTable.loading = false
@@ -537,14 +542,12 @@ export default {
       }
       this.formVerif.resetValidation()
 
-      
       this.item = Object.assign({}, data)
-      data=this.item
-      if (this.beforeOpen(accion,this.item) === false) {
+      data = this.item
+      if (this.beforeOpen(accion, this.item) === false) {
         return false
       }
-      
-      
+
       //mkImg
       if (this.MkImgMix) {
         this.mkImgData.remove = true
@@ -567,22 +570,21 @@ export default {
         this.tituloModal = 'Registrar ' + this.titModulo
       }
 
-      this.dirty.item={}
+      this.dirty.item = {}
       if (accion != 'add') {
         if (_dirty) {
           this.dirty.item = JSON.parse(JSON.stringify(this.item))
           //console.log('before dirty ditty',this.dirty.item);
         }
         if (accion == 'edit') {
-        this.tituloModal =
-          '(' + this.item.id + ') ' + 'Editar ' + this.titModulo
+          this.tituloModal =
+            '(' + this.item.id + ') ' + 'Editar ' + this.titModulo
         }
       }
 
-        if (this.$refs.focus) {
-          this.$nextTick(this.$refs.focus.focus())
-        }
-
+      if (this.$refs.focus) {
+        this.$nextTick(this.$refs.focus.focus())
+      }
 
       if (accion == 'show') {
         //this.item.id = this.item.id * -1
@@ -813,22 +815,34 @@ export default {
       })
       return temp
     },
+    OpTable(id) {
+      return this.dataTable.acciones[id]
+    },
     getOptionTable(id) {
-      return this.dataTable.acciones.find((e) => e.id == id)
+      return this.dataTable.acciones[id]
     },
     setOptionTable(id, option) {
-      return this.dataTable.acciones.find((e) => e.id == id)
+      return this.dataTable.acciones[id]
     },
     addOptionTable(option) {
-      this.dataTable.acciones.push(option)
+      this.dataTable.acciones[option.id] = option
       return true
     },
-    // getCt(url){
-    //   return this.$store.getters['products/getCtOnly'](url)
-    // },
-    // getCache(url,data){
-    //   return this.$store.getters['products/getDataCache'](data,url)
-    // }
+    opTableOrdenar(){
+      let me = this
+       let ordenado = Object.keys(me.dataTable.acciones).sort(function (
+            a,
+            b
+          ) {
+            return (
+              me.dataTable.acciones[a].orden - me.dataTable.acciones[b].orden
+            )
+          })
+
+          return ordenado.map((e) => {
+            return me.dataTable.acciones[e]
+          })
+    }
   },
   watch: {
     Auth: {
@@ -859,7 +873,7 @@ export default {
     this.created = 2
   },
   mounted() {
-    console.log('mounted mix');
+    console.log('mounted mix')
     if (this.campos) {
       this.campos = this.getParams('headers') || this.campos
       this.campos.map((e) => {
@@ -872,21 +886,35 @@ export default {
       })
     }
     //console.log('campos',this.campos)
+    let me = this
+    this.dataTable.acciones = {
+      orden: {
+        id: 'orden',
+        lista: this.opTableOrdenar,
+        visible: false,
+        grupos: [''],
+        orden: 1000,
+      },
+      status: {
+        id: 'status',
+        visible: true,
+        grupos: [''],
+        orden: -1,
+      },
 
-    this.dataTable.acciones = [
-      {
+      class: {
         id: 'class',
         visible: false,
         grupos: [''],
         orden: 50,
       },
-      {
+      sel: {
         id: 'sel',
         visible: true,
         grupos: [''],
         orden: 0,
       },
-      {
+      add: {
         id: 'add',
         color: 'primary',
         icon: 'add',
@@ -896,7 +924,7 @@ export default {
         grupos: ['topbar'],
         orden: 1,
       },
-      {
+      edit: {
         id: 'edit',
         color: 'primary',
         icon: 'edit',
@@ -906,7 +934,7 @@ export default {
         orden: 2,
         dblClic: true,
       },
-      {
+      del: {
         id: 'del',
         color: 'pink',
         icon: 'delete',
@@ -915,7 +943,7 @@ export default {
         grupos: ['action', 'topbar', 'recycled'],
         orden: 3,
       },
-      {
+      restore: {
         id: 'restore',
         color: 'green',
         icon: 'restore',
@@ -924,7 +952,7 @@ export default {
         grupos: ['topbar', 'recycled'],
         orden: 4,
       },
-      {
+      show: {
         id: 'show',
         color: 'green',
         icon: 'visibility',
@@ -933,7 +961,7 @@ export default {
         grupos: ['action', 'topbar'],
         orden: 5,
       },
-    ]
+    }
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
     //TODO: adicioonar a todas las tablas el creado por y modificado por igual que el borrado por

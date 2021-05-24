@@ -13,7 +13,7 @@
           <v-icon>close</v-icon>
         </v-btn>
       </template>
-      <template v-for="opt in acciones">
+      <template v-for="opt in acciones.orden?acciones.orden.lista():{}">
         <v-btn
           :key="opt.value"
           v-if="rowVisible(opt, item)"
@@ -28,7 +28,7 @@
       </template>
     </v-speed-dial>
     <v-layout v-else>
-      <template v-for="opt in acciones">
+      <template v-for="opt in acciones.orden?acciones.orden.lista():{}">
         <v-flex :key="opt.value" v-if="rowVisible(opt, item)" pa-0 ma-0 shrink >
           <v-btn
             class="pa-0 ma-0"
@@ -92,9 +92,9 @@ export default {
       this.type = this.$store.state.config.tbl_opts_type
     }
    
-    this.acciones.sort(function (a, b) {
-            return a.orden - b.orden
-          })
+    // this.acciones.sort(function (a, b) {
+    //         return a.orden - b.orden
+    //       })
 
     //this.direction=this.$store.state.config.tbl_opts_p?'left':'right'
     //this.direction='left'

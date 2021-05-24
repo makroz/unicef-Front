@@ -1,8 +1,10 @@
 <template>
-  <tr @click="isExpanded?datos.expanded = !datos.expanded:null" @dblclick="onEdit(datos.item)">
-    <td  style="padding: 0 0 0 12px">
+  <tr 
+  :style="acciones.sel?acciones.sel.visible?'':'padding-left:10px':''"
+  @click="isExpanded?datos.expanded = !datos.expanded:null" @dblclick="onEdit(datos.item)">
+    <td  style="padding: 0 0 0 12px" v-if="acciones['sel'].visible">
       <v-checkbox
-        v-if="rowVisible(acciones.find((e) => e.id == 'sel'),datos.item)"
+        v-if="rowVisible(acciones['sel'],datos.item)"
         pa-0 ma-0
         primary
         hide-details
@@ -36,7 +38,7 @@
         {{ showItem(header, datos,index) }}
       </td>
     </template>
-    <td v-if='showStatus'
+    <td v-if="acciones.status.visible" 
     class="text-xs-center" style="padding: 0 12px">
       <mk-status
         :status="datos.item.status"
@@ -105,7 +107,7 @@ export default {
     },
 
     getClass(item,datos) {
-      const opt=this.acciones.find((e) => e.id == 'class')
+      const opt=this.acciones['class']
       let r = ''
       if (typeof opt.setClass === 'function') {
         r = opt.setClass(item,datos)
@@ -121,7 +123,7 @@ export default {
       return r
     },
     onEdit(item) {
-      let opt=this.acciones.find((e) => e.id == 'edit')
+      let opt=this.acciones['edit']
      
       if (!opt.dblClic){
         return false

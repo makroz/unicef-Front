@@ -35,17 +35,14 @@
           </v-text-field>
         </v-flex>
         <v-flex>
-          <v-select
-            :items='lSolicitud_servicios'
-            item-text='obs'
-            item-value='id'
-            label='Solicitud de servicio'
+         <v-text-field
+            label='Nro. Solicitud de Servicio'
             v-model='item.solicitud_servicio_id'
-            :rules='[rules.num,rules.required]'
+            :rules='[rules.required]'
             validate-on-blur
             :readonly="accion == 'show'"
           >
-          </v-select>
+          </v-text-field>
         </v-flex>
         <v-flex>
           <v-select

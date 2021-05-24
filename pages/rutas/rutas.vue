@@ -262,7 +262,7 @@ export default {
       {
         mod: 'Usuarios',
         campos: 'id,name',
-        datos: { filtros: ['roles_slug', '=', 'monitor'] },
+        datos: { filtros: [['roles_slug', '=', 'monitor']] },
         item: 'usuarios_id',
       }
     ])
