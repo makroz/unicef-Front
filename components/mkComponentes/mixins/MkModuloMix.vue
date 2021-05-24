@@ -531,7 +531,7 @@ export default {
       this.tituloModal = ''
       this.modal = false
     },
-    openDialog(accion, data = {}, open = true) {
+    async openDialog(accion, data = {}, open = true) {
       if (!this.can(accion, true)) {
         return false
       }
@@ -544,7 +544,7 @@ export default {
 
       this.item = Object.assign({}, data)
       data = this.item
-      if (this.beforeOpen(accion, this.item) === false) {
+      if (await this.beforeOpen(accion, this.item) == false) {
         return false
       }
 
@@ -595,14 +595,6 @@ export default {
           'Ver ' +
           this.titModulo
       }
-
-      // let f=document.getElementById('form').getElementsByTagName('input');
-      // for (let i = 0; i < f.length; i++) {
-      //   console.log(f[i]);
-      //   f[i].setAttribute('readonly','readonly')
-
-      // }
-
       this.afterOpen(accion, data)
       if (open) {
         this.modal = true
@@ -615,29 +607,9 @@ export default {
         value = this.dataTable.paginator
       }
       setCache(this.$options.name + '.Params.' + name, value, encrypt)
-      //console.log('Guardando:',this.$options.name+".Params."+name, value);
-      // try {
-      //   value = JSON.stringify(value)
-      //   localStorage.setItem(this.$options.name + '.Params.' + name, value)
-      // } catch (error) {
-      //   console.error(error)
-      // }
     },
     getParams(name = '', def = false, encrypt = false) {
       return getCache(this.$options.name + '.Params.' + name, def, encrypt)
-      // let params = def
-      // try {
-      //   params = JSON.parse(
-      //     localStorage.getItem(this.$options.name + '.Params.' + name)
-      //   )
-      //   if (!params) {
-      //     params = def
-      //   }
-      // } catch (error) {
-      //   params = def
-      // }
-      // //console.error('Params ',name,':',params);
-      // return params
     },
     can(val, alertar = false, modulo = '') {
       //console.info('entro a can!!! :'+val);

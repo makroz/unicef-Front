@@ -38,7 +38,6 @@
           :mkImgData="mkImgData"
         >
         </mk-show-solicitud>
-        
       </mk-form>
     </v-container>
   </div>
@@ -50,10 +49,9 @@ import MkEstadosMix from '@/components/mkComponentes/mixins/MkEstadosMix'
 import MkImgMix from '@/components/mkComponentes/mixins/MkImgMix'
 import MkShowSolicitud from '@/components/mkComponentes/MkShowSolicitud'
 
-
 export default {
   middleware: ['authAccess'],
-  mixins: [MkModuloMix,MkEstadosMix, MkImgMix],
+  mixins: [MkModuloMix, MkEstadosMix, MkImgMix],
   components: { MkShowSolicitud },
   name: 'Orden_servicios',
   data() {
@@ -161,178 +159,196 @@ export default {
       lMateriales: [],
       lMedidas: [],
       lForma_pagos: [],
-      lControl_calidades:[],
+      lControl_calidades: [],
       lOrdenes: {},
       nAceptadas: 0,
       imgPrefix: 'solicitud_servicios',
-      bTitulo:'',
-      //grabarDebug:true,
-      }
+      bTitulo: '',
+      //grabarDebug: true,
+    }
   },
   methods: {
     revNota(accion, data) {
       data.accion = 'verificar'
       this.openDialog('edit', data)
     },
-  async beforeOpen(accion, data = {}) {
+    autNota(accion, data) {
+      data.accion = 'autorizar'
+      this.openDialog('edit', data)
+    },
+    async beforeOpen(accion, data = {}) {
       //data._noData = 1
       data.noImage = !!!data.foto
-      if (accion=='show'){
-        data.accion=accion
+      if (accion == 'show') {
+        data.accion = accion
       }
 
       this.lServices = []
-        let sel = null
+      let sel = null
 
-        let listas = await this.getDatasBackend(
-          'SolicitudServicios',
-          this.getSolicitudServicios(data.id)
-        )
-        //data.lista=listas.Realizados
-        let lSol = Object.keys(listas.Realizados)
-        lSol.forEach((el) => {
-          let e = listas.Realizados[el]
-          let serv = this.getDataLista(
-            this.lServicios,
-            e.servicios_id,
-            'id',
-            '*'
-          )
+      let listas = await this.getDatasBackend(
+        'SolicitudServicios',
+        this.getSolicitudServicios(data.id, data.accion)
+      )
+      let lSol = Object.keys(listas.Realizados)
+      if (lSol.length == 0) {
+        return false
+      }
 
-          if (serv) {
-            let serv_ = {}
-            if (e.estado == 2) {
-              serv_ = {
-                realizado: false,
-                obs_sol: '',
-                obs_verif: '',
-                materiales: [],
-              }
+      lSol.forEach((el) => {
+        let e = listas.Realizados[el]
+        let serv = this.getDataLista(this.lServicios, e.servicios_id, 'id', '*')
+
+        if (serv) {
+          let serv_ = {}
+          if (e.estado == 2) {
+            serv_ = {
+              realizado: false,
+              obs_sol: e.obs || '',
+              obs_verif: e.obs_verif || '',
+              materiales: [],
             }
-            let qa={}
-            if (e.estado == 3 || e.estado == 9 || e.estado == 8|| e.estado == 4) {
-              
-              this.lControl_calidades.forEach(el => {
-                  qa[el.id]={selected:false,puntos:''}
-              });
-              if (e.estado == 4 ) {
-                e.qa.forEach(el => {
-                  qa[el.id]={selected:true,puntos:el.puntos}
-              });
-               }
-              sel = 1
-              e.estado=e.estado*1
-              serv_ = {
-                realizado: e.estado != 9 && e.estado != 8,
-                verificado: e.estado>3 && e.estado !=9 ?e.estado:null,
-                obs_sol: e.obs,
-                obs_verif: e.obs_verif,
-                materiales: e.materiales, //aqui
-                qa:qa,
-              }
-            }
-            this.lServices.push({
-              sol_id: e.id,
-              cantidad: e.cant,
-              fecha: e.created_at,
-              estado: e.estado,
-              evaluaciones_id: e.evaluaciones_id,
-              monitor: this.getDataLista(
-                this.lUsuarios,
-                e.created_by,
-                'id',
-                'name',
-                ''
-              ),
-              ...serv,
-              ...serv_,
-              selected: sel,
-            })
-            //console.log('service', this.lServices)
           }
-        })
-        
-        //data.estado =(data.estado*1);
-      
+          let qa = {}
+          if (
+            e.estado == 3 ||
+            e.estado == 9 ||
+            e.estado == 8 ||
+            e.estado == 4 ||
+            data.estado > 3
+          ) {
+            this.lControl_calidades.forEach((el) => {
+              qa[el.id] = { selected: false, puntos: '' }
+            })
+            if (e.estado == 4) {
+              e.qa.forEach((el) => {
+                qa[el.id] = { selected: true, puntos: el.puntos }
+              })
+            }
+            sel = 1
+            e.estado = e.estado * 1
+            serv_ = {
+              realizado: e.estado != 9 && e.estado != 8 && e.estado != 1,
+              verificado:
+                (e.estado > 3 && e.estado != 9) || data.estado > 3
+                  ?data.estado==5?4:e.estado
+                  : null,
+              obs_sol: e.obs,
+              obs_verif: e.obs_verif,
+              materiales: e.materiales, //aqui
+              qa: qa,
+            }
+          }
+          this.lServices.push({
+            sol_id: e.id,
+            cantidad: e.cant,
+            fecha: e.created_at,
+            estado: e.estado,
+            evaluaciones_id: e.evaluaciones_id,
+            monitor: this.getDataLista(
+              this.lUsuarios,
+              e.created_by,
+              'id',
+              'name',
+              ''
+            ),
+            ...serv,
+            ...serv_,
+            selected: sel,
+          })
+          //console.log('service', this.lServices)
+        }
+      })
+
+      //data.estado =(data.estado*1);
     },
     afterOpen(accion, data) {
       if (data.accion == 'verificar') {
-        this.tituloModal = 'Verificar Nota '+data.id
+        this.tituloModal = 'Verificar Nota ' + data.id
         this.bTitulo = 'Verificar'
       }
+
+      if (data.accion == 'autorizar') {
+        this.tituloModal = 'Autorizar Nota ' + data.id
+        this.bTitulo = 'Autorizar'
+      }
+
       if (data.accion == 'show') {
-        this.tituloModal = 'Nota de Servicio ' + data.id
+        this.tituloModal = 'Ver Nota de Servicio ' + data.id
       }
     },
-      beforeSave(me) {
+    beforeSave(me) {
       let servicios = []
       //console.log('services',me.lServices);
       for (const obj in me.lServices) {
-        let serv=me.lServices[obj]
+        let serv = me.lServices[obj]
         //console.log('serv',serv);
-        let qa=[]
+        let qa = []
         Object.keys(serv.qa).forEach((i) => {
-          if (serv.qa[i].selected==true){
-            qa.push({id:i,puntos:serv.qa[i].puntos})
+          if (serv.qa[i].selected == true) {
+            qa.push({ id: i, puntos: serv.qa[i].puntos })
           }
-        });
+        })
         if (serv.selected == true) {
           servicios.push({
             id: serv.id,
             verificado: serv.verificado,
             sol_id: serv.sol_id,
-            obs_verif:serv.obs_verif,
-            qa:qa
+            obs_verif: serv.obs_verif,
+            qa: qa,
           })
         }
       }
       //console.log('serv',servicios);
+      me.paramsExtra = []
       me.item.servicios = servicios
-//      me.item.accion = me.item.accion+'.'
+      //      me.item.accion = me.item.accion+'.'
       me.item.act = me.item.accion
       //console.log('iteserv',me.item.servicios);
       //me.item.estado = (me.item.estado * 1) + 1
     },
-     getSolicitudServicios(id) {
+    getSolicitudServicios(id, act) {
       //fecha.setDate(fecha.getDate() - 7)
+      let filtros = [['orden_servicios_id', '=', id]]
+      if (act == 'autorizar') {
+        filtros.push(['estado', '=', 4])
+      }
       return [
         {
           mod: 'SolicitudServicios',
           lista: 'Realizados',
           datos: {
             modulo: 'mkServicios',
-            relations: ['materiales','qa'],
-            filtros: [
-              ['orden_servicios_id', '=', id],
-            ],
+            relations: ['materiales', 'qa'],
+            filtros: filtros,
           },
         },
       ]
     },
-    filtrar(accion){
-      let crit=3
-      if (accion=='autorizar'){
-          crit=4
+    filtrar(accion) {
+      let crit = 3
+      if (accion == 'autorizar') {
+        crit = 4
       }
       let lista = []
-            this.lEstadosSol.map((e, index) =>
-              lista.push({ id: index, name: e })
-            )
+      this.lEstadosSol.map((e, index) => lista.push({ id: index, name: e }))
 
-      let busqueda=[{
-      campo: 'estado',
-      cond:"20",
-      criterio:crit,
-      type: 'num',
-      union: 'and',
-      lista: lista
-      }]
+      let busqueda = [
+        {
+          campo: 'estado',
+          cond: '20',
+          criterio: crit,
+          type: 'num',
+          union: 'and',
+          lista: lista,
+        },
+      ]
       //console.log('filtrar',crit,busqueda)
       this.onBuscar(busqueda)
     },
   },
   async mounted() {
-    this.lColorSol[3]='red--text'
+    this.lColorSol[3] = 'red--text'
     this.setOptionTable('add').visible = false
     this.setOptionTable('status').visible = false
 
@@ -345,7 +361,7 @@ export default {
       grupos: ['action'],
       orden: 10,
       visibleRow: function (e) {
-        return e.estado < 4 ? true : false
+        return e.estado < 5 ? true : false
       },
     })
     this.addOptionTable({
@@ -353,7 +369,7 @@ export default {
       color: 'green',
       icon: 'assignment_turned_in',
       visible: this.can('edit'),
-      action: 'revNota',
+      action: 'autNota',
       grupos: ['action'],
       orden: 10,
       visibleRow: function (e) {
@@ -361,32 +377,31 @@ export default {
       },
     })
     this.addOptionTable({
-        id: 'autorizar',
-        color: 'success',
-        icon: 'assignment_turned_in',
-        text: 'Autorizar',
-        visible: this.can('edit'),
-        action: 'filtrar',
-        grupos: ['filtros'],
-        orden: 2,
-      })
+      id: 'autorizar',
+      color: 'success',
+      icon: 'assignment_turned_in',
+      text: 'Autorizar',
+      visible: this.can('edit'),
+      action: 'filtrar',
+      grupos: ['filtros'],
+      orden: 2,
+    })
     this.addOptionTable({
-        id: 'verificar',
-        color: 'red',
-        icon: 'thumb_up',
-        text: 'Verificar',
-        visible: this.can('edit'),
-        action: 'filtrar',
-        grupos: ['filtros'],
-        orden: 1,
-      })
+      id: 'verificar',
+      color: 'red',
+      icon: 'thumb_up',
+      text: 'Verificar',
+      visible: this.can('edit'),
+      action: 'filtrar',
+      grupos: ['filtros'],
+      orden: 1,
+    })
 
     this.setOptionTable('del').visible = false
     this.setOptionTable('edit').visible = false
     // this.setOptionTable('edit').visibleRow = function (e) {
     //   return e.estado == 0 ? true : false
     // }
-
 
     let listas = await this.getDatasBackend(this.urlModulo, [
       { mod: 'Usuarios', campos: 'id,name', item: 'recolector_id' },
@@ -423,7 +438,7 @@ export default {
         mod: 'Control_calidades',
         datos: { modulo: 'mkServicios' },
         campos: 'id,name,orden',
-        orden:'orden',
+        orden: 'orden',
       },
     ])
   },

@@ -107,7 +107,7 @@
           <v-list-tile-title>
             <span v-if="accion != 'add'" style="font-size: 10px">
               <div
-                v-if="accion != 'show' && accion != 'verificar'"
+                v-if="accion != 'show' && accion != 'verificar' && accion != 'autorizar'"
                 style="width: 48px; display: inline-block"
               ></div>
               <div v-else style="width: 14px; display: inline-block"></div>
@@ -144,7 +144,7 @@
             "
           >
             <v-list-tile-action
-              v-show="accion != 'show' && accion != 'verificar'"
+              v-show="accion != 'show' && accion != 'verificar' && accion != 'autorizar'"
               style="min-width: 34px"
             >
               <v-checkbox
@@ -189,24 +189,23 @@
               {{ servicio.cantidad }}
             </v-list-tile-avatar>
           </v-list-tile>
+          <!-- {{ servicio }} -->
           <div
             :key="index + '_'"
-            v-if="servicio.selected && accion != 'aceptar'"
+            v-if="(servicio.selected && accion != 'aceptar')||item.estado > 3"
             style="border-bottom: 1px solid #f1f1f1"
             class="pa-2"
           >
-
             <v-layout
               wrap
               row
-              v-if="accion == 'verificar' || (servicio.estado > 3 && servicio.estado < 9)"
+              v-if="accion == 'verificar' || (servicio.estado > 3 && servicio.estado < 9) || item.estado > 3"
             >
               <v-flex shrink>
                 <v-select
                   style="width: 150px"
                   dense
                   box
-                  color="red accent-4"
                   :items="servicio.estado > 7?lOpciones['st9']:lOpciones['st3']"
                   item-text="name"
                   item-value="id"
@@ -224,7 +223,7 @@
                   label="Obs. de Verificado"
                   box
                   v-model="servicio.obs_verif"
-                  :rules="servicio.verificado == 4 ? [] : [rules.required]"
+                  :rules="accion != 'verificar' || servicio.verificado == 4 ? [] : [rules.required]"
                   validate-on-blur
                   :readonly="accion != 'verificar'"
                   hide-details
@@ -367,7 +366,7 @@
           <v-checkbox
             v-model="qaItem.qa[qa.id].selected"
             color="blue accent-4"
-            :readonly="accion == 'show'"
+            :readonly="accion != 'verificar'"
             hide-details
           ></v-checkbox>
         </v-list-tile-action>
