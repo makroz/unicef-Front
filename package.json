@@ -2,7 +2,7 @@
     "name": "saneamiento-unicef",
     "version": "1.0.0",
     "description": "Sistema de Monitoreo Saneamietno Unicef",
-    "author": "mario Alberto Guzman Mendoza - makroz@hotmail.com",
+    "author": "Mario Alberto Guzman Mendoza - makroz@hotmail.com",
     "private": true,
     "scripts": {
         "dev": "nuxt",

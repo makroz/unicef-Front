@@ -7,7 +7,7 @@
           :value="
             getDataLista(
               lBeneficiarios,
-              accion == 'show' ? item.beneficiario_id : item.id,
+              accion == 'show' || item.estado>2 ? item.beneficiario_id : item.id,
               'id',
               'name',
               'Desconocido'
@@ -263,6 +263,7 @@
               </v-flex>
             </v-layout>
             <v-card v-if="servicio.realizado">
+              <!-- {{ servicio }} -->
               <div
                 class="green white--text elevation-3 pa-1"
                 style="font-size: 14px"
@@ -458,8 +459,9 @@ export default {
   },
   methods: {
     openQA(servicio){
+      console.log('qaservicoi',servicio)
       this.qaItem=servicio
-      //console.log('qaitem',this.qaItem)
+      console.log('qaitem',this.qaItem)
       this.modal=true
     },
     saveQA(servicio){

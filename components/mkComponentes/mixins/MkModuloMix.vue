@@ -303,9 +303,11 @@ export default {
       if (!me.formVerif) {
         me.formVerif = me.$refs.mkForm.$refs.form
       }
+      console.log('entro');
       if (!me.formVerif.validate()) {
         return false
       }
+      console.log('siguio');
       let isError = 0
       if (this.grabarDebug) {
         console.log('item antes de Grabar:', me.item)
@@ -353,13 +355,13 @@ export default {
             if (
               JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
             ) {
-              console.log(
-                'dirty enttro:',
-                el,
-                JSON.stringify(me.dirty.item[el]),
-                JSON.stringify(me.item[el]),
-                JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
-              )
+              // console.log(
+              //   'dirty enttro:',
+              //   el,
+              //   JSON.stringify(me.dirty.item[el]),
+              //   JSON.stringify(me.item[el]),
+              //   JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
+              // )
               if (me.item[el] !== undefined && el.indexOf('_temp_') == -1) {
                 itemData[el] = me.item[el]
               }

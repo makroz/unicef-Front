@@ -38,6 +38,24 @@ const Menu = [
         ]
     },
     {
+        title: 'Modulo Preguntas',
+        group: 'preguntas',
+        component: 'preguntas',
+        icon: 'face',
+        items: [{
+                name: 'categ',
+                title: 'Categorias',
+                href: '/preguntas/categ/'
+            },
+            {
+                name: 'preguntas',
+                title: 'Preguntas',
+                badge: 'new',
+                href: '/preguntas/preguntas/'
+            }
+        ]
+    },
+    {
         name: 'servicios',
         title: 'Modulo Servicios',
         icon: 'face',
@@ -60,6 +78,11 @@ const Menu = [
                 name: 'reprogramados',
                 title: 'Reprogramados',
                 href: '/servicios/reprogramados/'
+            },
+            {
+                name: 'comercial',
+                title: 'Comercial Exportados',
+                href: '/servicios/comercial/'
             },
             {
                 name: 'auxiliaresServ',

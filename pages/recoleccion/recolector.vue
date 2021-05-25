@@ -59,7 +59,9 @@
                   color="green darken-4 grey--text"
                 ></mk-simple-card>
 
-                <v-icon :color="location ? 'green' : 'grey'" @click="getPosition()"
+                <v-icon
+                  :color="location ? 'green' : 'grey'"
+                  @click="getPosition()"
                   >my_location</v-icon
                 >
               </v-layout>
@@ -170,8 +172,9 @@
           <v-toolbar-title>Ordenes de Servicios 7 dias</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-        <v-list two-line >
-          <v-list-tile class="elevation-1"
+        <v-list two-line>
+          <v-list-tile
+            class="elevation-1"
             v-for="(ordenes, index) in lOrdenes"
             :key="index"
             href="#"
@@ -205,11 +208,18 @@
                 </v-layout>
               </v-list-tile-title>
               <v-list-tile-sub-title class="caption">
-                Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} <br> Fecha {{ formatDT(ordenes.created_at) }} Estado: {{ lEstadosSol[ordenes.estado] }}
+                Orden No. {{ ordenes.id }} - Ref: {{ ordenes.ref }} <br />
+                Fecha {{ formatDT(ordenes.created_at) }} Estado:
+                {{ lEstadosSol[ordenes.estado] }}
               </v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon dark :color="ordenes.estado==4?'green':'blue'" @click="verRealizadas(ordenes)">
+              <v-btn
+                icon
+                dark
+                :color="lColorSol[ordenes.estado]"
+                @click="verRealizadas(ordenes)"
+              >
                 <v-icon>visibility</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -354,7 +364,7 @@ export default {
       lMateriales: [],
       lMedidas: [],
       lForma_pagos: [],
-      lControl_calidades:[],
+      lControl_calidades: [],
       lOrdenes: {},
       nAceptadas: 0,
       imgPrefix: 'solicitud_servicios',
@@ -376,8 +386,8 @@ export default {
       this.openDialog('edit', data)
     },
     verRealizadas(data) {
-      if (data.estado==0){
-      data.estado = 3
+      if (data.estado == 0) {
+        data.estado = 3
       }
 
       data.accion = 'show'
@@ -488,7 +498,7 @@ export default {
           lista: 'Realizados',
           datos: {
             modulo: 'mkServicios',
-            relations: ['materiales','qa'],
+            relations: ['materiales', 'qa'],
             filtros: [
               ['usuarios_id_3', '=', user],
               ['fecha_3', '>', fecha],
@@ -543,7 +553,7 @@ export default {
           this.getSolicitudServicios()
         )
         this.nAceptadas = listas.Asignado.length
-        this.coordenadas={}
+        this.coordenadas = {}
         this.getPosition()
       } else {
         me.item.estado--
@@ -554,8 +564,8 @@ export default {
       data._noData = 1
       data.lat = this.coordenadas.latitude
       data.lng = this.coordenadas.longitude
-      if (accion=='show'){
-          data.accion=accion
+      if (accion == 'show') {
+        data.accion = accion
       }
       this.lServices = []
       if (accion == 'add') {
@@ -574,11 +584,6 @@ export default {
           })
         })
       } else {
-        // if (data.estado >= 5) {
-        //   return false
-        // }
-        //data.id=1
-
         let sel = null
         let lSol = Object.keys(data.lista)
         lSol.forEach((el) => {
@@ -589,36 +594,41 @@ export default {
             'id',
             '*'
           )
-   if (serv) {
+          //aqui empeiza lo mismo que recolector
+          if (serv) {
             let serv_ = {}
             if (e.estado == 2) {
               serv_ = {
                 realizado: false,
-                obs_sol: '',
-                obs_verif: '',
+                obs_sol: e.obs || '',
+                obs_verif: e.obs_verif || '',
                 materiales: [],
               }
             }
-            let qa={}
-            if (e.estado == 3 || e.estado == 9 || e.estado == 8|| e.estado == 4) {
-              
-              this.lControl_calidades.forEach(el => {
-                  qa[el.id]={selected:false,puntos:''}
-              });
-              if (e.estado == 4 ) {
-                e.qa.forEach(el => {
-                  qa[el.id]={selected:true,puntos:el.puntos}
-              });
-               }
+            let qa = {}
+            if (e.estado > 2 || data.estado > 3) {
+              this.lControl_calidades.forEach((el) => {
+                qa[el.id] = { selected: false, puntos: '' }
+              })
+              if (e.estado >= 4 && e.estado <= 7) {
+                e.qa.forEach((el) => {
+                  qa[el.id] = { selected: true, puntos: el.puntos }
+                })
+              }
               sel = 1
-              e.estado=e.estado*1
+              e.estado = e.estado * 1
               serv_ = {
-                realizado: e.estado != 9 && e.estado != 8,
-                verificado: e.estado>3 && e.estado !=9 ?e.estado:null,
+                realizado: e.estado != 9 && e.estado != 8 && e.estado != 1,
+                verificado:
+                  (e.estado > 3 && e.estado != 9) || data.estado > 3
+                    ? data.estado >= 5 && e.estado < 8 && e.estado > 3
+                      ? 4
+                      : e.estado
+                    : null,
                 obs_sol: e.obs,
                 obs_verif: e.obs_verif,
                 materiales: e.materiales, //aqui
-                qa:qa,
+                qa: qa,
               }
             }
             this.lServices.push({
@@ -640,43 +650,58 @@ export default {
             })
             //console.log('service', this.lServices)
           }
-          // if (serv) {
-          //   let serv_ = {}
-          //   if (e.estado == 2) {
-          //     serv_ = {
-          //       realizado: false,
-          //       obs_sol: '',
-          //       materiales: [],
-          //     }
-          //   }
+          //hasta aqui
+          //  if (serv) {
+          //           let serv_ = {}
+          //           if (e.estado == 2) {
+          //             serv_ = {
+          //               realizado: false,
+          //               obs_sol: '',
+          //               obs_verif: '',
+          //               materiales: [],
+          //             }
+          //           }
+          //           let qa={}
+          //           if (e.estado == 3 || e.estado == 9 || e.estado == 8|| e.estado == 4) {
 
-          //   if (e.estado == 3 || e.estado == 9) {
-          //     sel = 1
-          //     serv_ = {
-          //       realizado: e.estado == 3,
-          //       obs_sol: e.obs,
-          //       materiales: e.materiales, //aqui
-          //     }
-          //   }
-          //   this.lServices.push({
-          //     sol_id: e.id,
-          //     cantidad: e.cant,
-          //     fecha: e.created_at,
-          //     estado: e.estado,
-          //     evaluaciones_id: e.evaluaciones_id,
-          //     monitor: this.getDataLista(
-          //       this.lUsuarios,
-          //       e.created_by,
-          //       'id',
-          //       'name',
-          //       ''
-          //     ),
-          //     ...serv,
-          //     ...serv_,
-          //     selected: sel,
-          //   })
-          //   //console.log('service', this.lServices)
-          // }
+          //             this.lControl_calidades.forEach(el => {
+          //                 qa[el.id]={selected:false,puntos:''}
+          //             });
+          //             if (e.estado == 4 ) {
+          //               e.qa.forEach(el => {
+          //                 qa[el.id]={selected:true,puntos:el.puntos}
+          //             });
+          //              }
+          //             sel = 1
+          //             e.estado=e.estado*1
+          //             serv_ = {
+          //               realizado: e.estado != 9 && e.estado != 8,
+          //               verificado: e.estado>3 && e.estado !=9 ?e.estado:null,
+          //               obs_sol: e.obs,
+          //               obs_verif: e.obs_verif,
+          //               materiales: e.materiales, //aqui
+          //               qa:qa,
+          //             }
+          //           }
+          //           this.lServices.push({
+          //             sol_id: e.id,
+          //             cantidad: e.cant,
+          //             fecha: e.created_at,
+          //             estado: e.estado,
+          //             evaluaciones_id: e.evaluaciones_id,
+          //             monitor: this.getDataLista(
+          //               this.lUsuarios,
+          //               e.created_by,
+          //               'id',
+          //               'name',
+          //               ''
+          //             ),
+          //             ...serv,
+          //             ...serv_,
+          //             selected: sel,
+          //           })
+          //           //console.log('service', this.lServices)
+          //         }
         })
         data.noImage = !!!data.foto
         //data.estado =(data.estado*1);
@@ -886,7 +911,7 @@ export default {
         mod: 'Control_calidades',
         datos: { modulo: 'mkServicios' },
         campos: 'id,name,orden',
-        orden:'orden',
+        orden: 'orden',
       },
       ...this.getSolicitudServicios(),
     ])

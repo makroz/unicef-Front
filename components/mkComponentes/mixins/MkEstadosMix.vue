@@ -19,13 +19,13 @@ export default {
         'red--text',
         'gray--text ',
         'green--text text--lighten-1',
-        'green--text',
-        'green--text text--darken-2',
         'green--text text--darken-4',
-        'green--text text--darken-4',
-        'green--text text--darken-4',
-        'gray--text text--lighten-3',
         'red--text',
+        'orange--text text--darken-2',
+        'primary',
+        'green--text text--darken-4',
+        'red--text text--lighten-3',
+        'blue--text',
       ],
 
     };

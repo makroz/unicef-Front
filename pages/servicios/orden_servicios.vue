@@ -40,31 +40,80 @@
         </mk-show-solicitud>
       </mk-form>
 
-       <mk-form
+      <mk-form
         ref="mkFormExport"
         :modal="modalExport"
-        tit="Exportacion a Comercial"
+        :tit="titModulo"
         :accion="accion"
         @closeDialog="modalExport = false"
         @grabarItem="expCsv"
-        bTitulo="Exportar"
+        :bTitulo="bTitulo"
       >
-      <table>
-        <template v-for="(fila,i) in item.exportar" >
-        <tr v-if="i==0" :key="i"  >
-          <th v-for="(col,index) in fila" :key="index" style="" nowrap="nowrap" class="primary white--text pa-2">
-            {{ col }}
-          </th>
-        </tr>
-        <tr v-else :key="i" :class="i % 2==1?'grey lighten-2':''">
-          <td v-for="(col,index) in fila" :key="index">
-            {{ col }}
-          </td>
-        </tr>
-        </template>
-      </table>
-      </mk-form>
+        <table v-if="item.accion == 'comercial'">
+          <template v-for="(fila, i) in item.exportar">
+            <tr v-if="i == 0" :key="i">
+              <th
+                v-for="(col, index) in fila"
+                :key="index"
+                style=""
+                nowrap="nowrap"
+                class="primary white--text pa-2"
+              >
+                {{ col }}
+              </th>
+            </tr>
+            <tr v-else :key="i" :class="i % 2 == 1 ? 'grey lighten-2' : ''">
+              <td v-for="(col, index) in fila" :key="index">
+                {{ col }}
+              </td>
+            </tr>
+          </template>
+        </table>
 
+        <v-list dense v-if="item.act == 'finalizar'">
+          <v-list-tile class="primary white--text elevation-5">
+            <v-list-tile-action style="min-width: 54px"> </v-list-tile-action>
+
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <div style="width: 50px; display: inline-block">ID</div>
+                <div style="width: 140px; display: inline-block">FECHA</div>
+                QUIEN EXPORTO
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile
+            v-for="servicio in item.comercial"
+            :key="servicio.id"
+            :class="
+              servicio.selected
+                ? 'deep-purple lighten-5 deep-purple--text text--accent-4 elevation-3'
+                : 'elevation-3'
+            "
+          >
+            <v-list-tile-action style="min-width: 54px">
+              <v-checkbox
+                v-model="servicio.selected"
+                color="deep-purple accent-4"
+                :readonly="accion == 'show'"
+                hide-details
+              ></v-checkbox>
+            </v-list-tile-action>
+
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <div style="width: 50px; display: inline-block">
+                  {{ servicio.id }}
+                </div>
+                <div style="width: 140px; display: inline-block">
+                  {{ formatDT(servicio.created_at, true) }}
+                </div>
+                {{ getDataLista(lUsuarios, servicio.created_by) }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </mk-form>
     </v-container>
   </div>
 </template>
@@ -186,34 +235,117 @@ export default {
       lMedidas: [],
       lForma_pagos: [],
       lControl_calidades: [],
+      lComercial: [],
       lOrdenes: {},
       nAceptadas: 0,
       imgPrefix: 'solicitud_servicios',
       bTitulo: '',
-      modalExport:false,
+      modalExport: false,
       //grabarDebug: true,
     }
   },
   methods: {
-    expCsv(){
-      let csv=''
-      this.item.exportar.forEach(fila => {
-        csv=csv+fila.join(';')+'\n';  
-      });
-      var element = document.createElement('a');
-      let filename=new Date().toISOString()+'-comercial'+'.csv'
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
-  element.setAttribute('download', filename);
+    expCsv() {
+      //console.log(this.item);
+      if ((this.item.act == 'finalizar')) {
+        let servicios = []
+        this.item.comercial.forEach((e) => {
+          if (e.selected) {
+            servicios.push(e.id)
+          }
+        })
+        if (servicios.length==0){
+           this.modalExport = false
+          return true
+        }
 
-  element.style.display = 'none';
-  document.body.appendChild(element);
+        this.item = {}
+        this.item.id = 1
+        this.item.act = 'finalizar'
+        this.accion = 'finalizar'
+        this.item.servicios = servicios
 
-  element.click();
+        this.formVerif = this.$refs.mkFormExport.$refs.form
+        this.grabarItem(this.item.act, this.item)
+         this.modalExport = false
+      }
 
-  document.body.removeChild(element);
+      if ((this.item.act == 'comercial')) {
+        let csv = ''
+        this.item.exportar.forEach((fila) => {
+          csv = csv + fila.join(';') + '\n'
+        })
+        var element = document.createElement('a')
+        let filename = new Date().toISOString() + '-comercial' + '.csv'
+        element.setAttribute(
+          'href',
+          'data:text/plain;charset=utf-8,' + encodeURIComponent(csv)
+        )
+        element.setAttribute('download', filename)
 
+        element.style.display = 'none'
+        document.body.appendChild(element)
+
+        element.click()
+
+        document.body.removeChild(element)
+
+        this.item = {}
+        this.item.id = 1
+        this.item.act = 'comercial'
+        this.accion = 'comercial'
+
+        this.formVerif = this.$refs.mkFormExport.$refs.form
+        this.grabarItem(this.item.act, this.item)
+         this.modalExport = false
+      }
+     
     },
-    expNota() {
+    async finNota() {
+      let listas = await this.getDatasBackend(this.urlModulo, [
+        {
+          mod: 'Comercial',
+          datos: {
+            modulo: 'mkServicios',
+            filtros: [['estado', '=', 6]],
+            orden: 'created_at',
+          },
+          campos: '*',
+          each: (e) => {
+            e.selected = false
+          },
+        },
+      ])
+      if (this.lComercial.length == 0) {
+        alert('No hay por Finalizar !!!')
+        return false
+      }
+
+      this.item.comercial = this.lComercial
+      //this.item.comercial = JSON.parse(JSON.stringify(listas.comercial))
+      this.item.act = 'finalizar'
+      this.titModulo = 'Finalizar Solicitudes Exportadas '
+
+      this.bTitulo = 'Finalizar'
+      this.accion = 'finalizar'
+      this.modalExport = true
+    },
+    async expNota() {
+      let listas = await this.getDatasBackend(this.urlModulo, [
+        {
+          mod: 'SolicitudServicios',
+          datos: {
+            modulo: 'mkServicios',
+            filtros: [['estado', '=', 5]],
+            relations: ['materiales', 'qa', 'servicios', 'nota'],
+          },
+          campos: '*',
+        },
+      ])
+      if (listas.SolicitudServicios.length == 0) {
+        alert('No hay solicitudes por Autorizadas por Exportar!!!')
+        return false
+      }
       let campos = [
         {
           id: 'id-nota',
@@ -256,7 +388,7 @@ export default {
           campo: 'nota.estado',
           name: 'Estado Nota',
           type: 'lista',
-          lista:'lEstadosSol',
+          lista: 'lEstadosSol',
           width: '',
           oblig: false,
           selected: true,
@@ -281,7 +413,7 @@ export default {
           campo: 'nota.forma_pago_id',
           name: 'Forma de Pago',
           type: 'lista',
-          lista:'lForma_pagos',
+          lista: 'lForma_pagos',
           width: '',
           oblig: false,
           selected: true,
@@ -294,7 +426,7 @@ export default {
           campo: 'beneficiarios_id',
           name: 'Beneficiario',
           type: 'lista',
-          lista:'lBeneficiarios',
+          lista: 'lBeneficiarios',
           width: '',
           oblig: false,
           selected: true,
@@ -307,7 +439,7 @@ export default {
           campo: 'beneficiarios_id',
           name: 'Codigo EPSA',
           type: 'lista',
-          lista:'lBeneficiarios:epsa',
+          lista: 'lBeneficiarios:epsa',
           width: '',
           oblig: false,
           selected: true,
@@ -344,14 +476,15 @@ export default {
           campo: 'created_by',
           name: 'Quien lo Creo',
           type: 'lista',
-          lista:'lUsuarios',
+          lista: 'lUsuarios',
           width: '',
           oblig: false,
           selected: true,
           depende: '',
           ligado: '',
           orden: 1,
-        },{
+        },
+        {
           id: 'fecha-reviso',
           campo: 'fecha_1',
           name: 'Fecha Revisado',
@@ -368,14 +501,15 @@ export default {
           campo: 'usuarios_id_1',
           name: 'Quien lo Reviso',
           type: 'lista',
-          lista:'lUsuarios',
+          lista: 'lUsuarios',
           width: '',
           oblig: false,
           selected: true,
           depende: '',
           ligado: '',
           orden: 1,
-        },{
+        },
+        {
           id: 'fecha-asigno',
           campo: 'fecha_2',
           name: 'Fecha Asignado',
@@ -392,14 +526,15 @@ export default {
           campo: 'usuarios_id_2',
           name: 'Quien lo Asigno',
           type: 'lista',
-          lista:'lUsuarios',
+          lista: 'lUsuarios',
           width: '',
           oblig: false,
           selected: true,
           depende: '',
           ligado: '',
           orden: 1,
-        },{
+        },
+        {
           id: 'fecha-realizo',
           campo: 'fecha_3',
           name: 'Fecha Realizado',
@@ -416,14 +551,15 @@ export default {
           campo: 'usuarios_id_3',
           name: 'Quien lo Realizo',
           type: 'lista',
-          lista:'lUsuarios',
+          lista: 'lUsuarios',
           width: '',
           oblig: false,
           selected: true,
           depende: '',
           ligado: '',
           orden: 1,
-        },{
+        },
+        {
           id: 'fecha-verificado',
           campo: 'fecha_4',
           name: 'Fecha Verificado',
@@ -440,14 +576,15 @@ export default {
           campo: 'usuarios_id_4',
           name: 'Quien lo Verifico',
           type: 'lista',
-          lista:'lUsuarios',
+          lista: 'lUsuarios',
           width: '',
           oblig: false,
           selected: true,
           depende: '',
           ligado: '',
           orden: 1,
-        },{
+        },
+        {
           id: 'fecha-autorizado',
           campo: 'fecha_5',
           name: 'Fecha Autorizado',
@@ -464,7 +601,7 @@ export default {
           campo: 'usuarios_id_5',
           name: 'Quien lo Autorizo',
           type: 'lista',
-          lista:'lUsuarios',
+          lista: 'lUsuarios',
           width: '',
           oblig: false,
           selected: true,
@@ -477,7 +614,7 @@ export default {
           campo: 'servicios_id',
           name: 'Servicio',
           type: 'lista',
-          lista:'lServicios',
+          lista: 'lServicios',
           width: '',
           oblig: false,
           selected: true,
@@ -490,7 +627,7 @@ export default {
           campo: 'sercicios_id',
           name: 'Obs. Servicio',
           type: 'lista',
-          lista:'lServicios:obs',
+          lista: 'lServicios:obs',
           width: '',
           oblig: false,
           selected: true,
@@ -515,7 +652,7 @@ export default {
           campo: 'estado',
           name: 'Estado Solicitud',
           type: 'lista',
-          lista:'lEstadosSol',
+          lista: 'lEstadosSol',
           width: '',
           oblig: false,
           selected: true,
@@ -561,67 +698,76 @@ export default {
         },
       ]
       campos.sort(function (a, b) {
-            return a.orden - b.orden
+        return a.orden - b.orden
       })
 
-      let datos=[]
+      let datos = []
 
-        let dato=[]
-        campos.forEach(campo => {
-          if (campo.selected){
-            let field=(campo.campo+'.').split('.')
-            let i=0;
-            let valor=campo.name
-            if (campo.type=='lista'){
-              field=(campo.lista+':').split(':')
-              let lista=field[0]
-              if(field[1]==''){
-                field='name'
-              }else{
-                field==field[1]
-              }
-              if (campo.ligado!==0){
-                dato.push('id '+valor)    
-              }
-              valor=valor
+      let dato = []
+      campos.forEach((campo) => {
+        if (campo.selected) {
+          let field = (campo.campo + '.').split('.')
+          let i = 0
+          let valor = campo.name
+          if (campo.type == 'lista') {
+            field = (campo.lista + ':').split(':')
+            let lista = field[0]
+            if (field[1] == '') {
+              field = 'name'
+            } else {
+              field == field[1]
             }
-            dato.push(valor)
+            if (campo.ligado !== 0) {
+              dato.push('id ' + valor)
+            }
+            valor = valor
           }
-          
-        });
+          dato.push(valor)
+        }
+      })
       datos.push(dato)
-      this.lSolicitudServicios.forEach(sol => {
-        let dato=[]
-        campos.forEach(campo => {
-          if (campo.selected){
-            let field=(campo.campo+'.').split('.')
-            let i=0;
-            let valor=sol[field[0]]
-            if (field[1]!=''){
-              valor=valor[field[1]]
+      listas.SolicitudServicios.forEach((sol) => {
+        let dato = []
+        campos.forEach((campo) => {
+          if (campo.selected) {
+            let field = (campo.campo + '.').split('.')
+            let i = 0
+            let valor = sol[field[0]]
+            if (field[1] != '') {
+              valor = valor[field[1]]
             }
-            if (campo.type=='lista'){
-              field=(campo.lista+':').split(':')
-              let lista=field[0]
-              if(field[1]==''){
-                field='name'
-              }else{
-                field==field[1]
+            if (campo.type == 'lista') {
+              field = (campo.lista + ':').split(':')
+              let lista = field[0]
+              if (field[1] == '') {
+                field = 'name'
+              } else {
+                field == field[1]
               }
-              if (campo.ligado!==0){
-                dato.push(valor)    
+              if (campo.ligado !== 0) {
+                dato.push(valor)
                 //console.log('lista campos',lista,valor,'id',field,this.getDataLista(this[lista],valor,'id',field,this[lista][valor]));
               }
-                valor=this.getDataLista(this[lista],valor,'id',field,this[lista][valor])
+              valor = this.getDataLista(
+                this[lista],
+                valor,
+                'id',
+                field,
+                this[lista][valor]
+              )
             }
             dato.push(valor)
           }
-        });
+        })
         datos.push(dato)
-      });
+      })
 
-      this.item.exportar=datos;
-      this.modalExport=true
+      this.item.exportar = datos
+      this.item.act = 'comercial'
+      this.accion = 'comercial'
+      this.bTitulo = 'Exportar'
+      this.titModulo = 'Exportar Solicitudes Autorizadas '
+      this.modalExport = true
     },
     revNota(accion, data) {
       data.accion = 'verificar'
@@ -652,8 +798,9 @@ export default {
 
       lSol.forEach((el) => {
         let e = listas.Realizados[el]
+        
         let serv = this.getDataLista(this.lServicios, e.servicios_id, 'id', '*')
-
+        //aqui empeiza lo mismo que recolector
         if (serv) {
           let serv_ = {}
           if (e.estado == 2) {
@@ -666,16 +813,13 @@ export default {
           }
           let qa = {}
           if (
-            e.estado == 3 ||
-            e.estado == 9 ||
-            e.estado == 8 ||
-            e.estado == 4 ||
+            e.estado > 2 || 
             data.estado > 3
           ) {
             this.lControl_calidades.forEach((el) => {
               qa[el.id] = { selected: false, puntos: '' }
             })
-            if (e.estado == 4) {
+            if (e.estado >= 4 && e.estado <= 7 ) {
               e.qa.forEach((el) => {
                 qa[el.id] = { selected: true, puntos: el.puntos }
               })
@@ -686,7 +830,7 @@ export default {
               realizado: e.estado != 9 && e.estado != 8 && e.estado != 1,
               verificado:
                 (e.estado > 3 && e.estado != 9) || data.estado > 3
-                  ? data.estado == 5
+                  ? data.estado >= 5 && e.estado < 8 && e.estado > 3
                     ? 4
                     : e.estado
                   : null,
@@ -715,6 +859,7 @@ export default {
           })
           //console.log('service', this.lServices)
         }
+        //hasta aqui
       })
 
       //data.estado =(data.estado*1);
@@ -735,34 +880,38 @@ export default {
       }
     },
     beforeSave(me) {
-      let servicios = []
-      //console.log('services',me.lServices);
-      for (const obj in me.lServices) {
-        let serv = me.lServices[obj]
-        //console.log('serv',serv);
-        let qa = []
-        Object.keys(serv.qa).forEach((i) => {
-          if (serv.qa[i].selected == true) {
-            qa.push({ id: i, puntos: serv.qa[i].puntos })
-          }
-        })
-        if (serv.selected == true) {
-          servicios.push({
-            id: serv.id,
-            verificado: serv.verificado,
-            sol_id: serv.sol_id,
-            obs_verif: serv.obs_verif,
-            qa: qa,
+      if (me.item.act == 'comercial' || me.item.act == 'finalizar') {
+        return true
+      } else {
+        let servicios = []
+        //console.log('services',me.lServices);
+        for (const obj in me.lServices) {
+          let serv = me.lServices[obj]
+          //console.log('serv',serv);
+          let qa = []
+          Object.keys(serv.qa).forEach((i) => {
+            if (serv.qa[i].selected == true) {
+              qa.push({ id: i, puntos: serv.qa[i].puntos })
+            }
           })
+          if (serv.selected == true) {
+            servicios.push({
+              id: serv.id,
+              verificado: serv.verificado,
+              sol_id: serv.sol_id,
+              obs_verif: serv.obs_verif,
+              qa: qa,
+            })
+          }
         }
+        //console.log('serv',servicios);
+        me.paramsExtra = []
+        me.item.servicios = servicios
+        //      me.item.accion = me.item.accion+'.'
+        me.item.act = me.item.accion
+        //console.log('iteserv',me.item.servicios);
+        //me.item.estado = (me.item.estado * 1) + 1
       }
-      //console.log('serv',servicios);
-      me.paramsExtra = []
-      me.item.servicios = servicios
-      //      me.item.accion = me.item.accion+'.'
-      me.item.act = me.item.accion
-      //console.log('iteserv',me.item.servicios);
-      //me.item.estado = (me.item.estado * 1) + 1
     },
     getSolicitudServicios(id, act) {
       //fecha.setDate(fecha.getDate() - 7)
@@ -815,7 +964,7 @@ export default {
     this.addOptionTable({
       id: 'verif',
       color: 'red',
-      icon: 'thumb_up',
+      icon: 'done_all',
       visible: this.can('edit', 'estado-verificar'),
       action: 'revNota',
       grupos: ['action'],
@@ -826,7 +975,7 @@ export default {
     })
     this.addOptionTable({
       id: 'aut',
-      color: 'green',
+      color: 'orange',
       icon: 'assignment_turned_in',
       visible: this.can('edit', 'estado-autorizar'),
       action: 'autNota',
@@ -836,32 +985,42 @@ export default {
         return e.estado == 4 ? true : false
       },
     })
-    this.addOptionTable({
-      id: 'com',
-      color: 'primary',
-      icon: 'download_for_offline',
-      visible: this.can('edit', 'estado-comercial'),
-      action: 'expNota',
-      grupos: ['action'],
-      orden: 12,
-      visibleRow: function (e) {
-        return e.estado > 4 ? true : false
-      },
-    })
+    // this.addOptionTable({
+    //   id: 'com',
+    //   color: 'primary',
+    //   icon: 'download_for_offline',
+    //   visible: this.can('edit', 'estado-comercial'),
+    //   action: 'expNota',
+    //   grupos: ['action'],
+    //   orden: 12,
+    //   visibleRow: function (e) {
+    //     return e.estado > 4 ? true : false
+    //   },
+    // })
 
+    this.addOptionTable({
+      id: 'finalizar',
+      color: 'green',
+      icon: 'thumb_up',
+      text: 'Finalizar',
+      visible: this.can('edit', 'estado-terminado'),
+      action: 'finNota',
+      grupos: ['filtros'],
+      orden: 4,
+    })
     this.addOptionTable({
       id: 'exportar',
       color: 'primary',
       icon: 'download_for_offline',
       text: 'Comercial',
-      visible: this.can('show'),
-      action: 'filtrar',
+      visible: this.can('edit', 'estado-comercial'),
+      action: 'expNota',
       grupos: ['filtros'],
       orden: 3,
     })
     this.addOptionTable({
       id: 'autorizar',
-      color: 'success',
+      color: 'orange',
       icon: 'assignment_turned_in',
       text: 'Autorizar',
       visible: this.can('show'),
@@ -872,7 +1031,7 @@ export default {
     this.addOptionTable({
       id: 'verificar',
       color: 'red',
-      icon: 'thumb_up',
+      icon: 'done_all',
       text: 'Verificar',
       visible: this.can('show'),
       action: 'filtrar',
@@ -922,11 +1081,6 @@ export default {
         datos: { modulo: 'mkServicios' },
         campos: 'id,name,orden',
         orden: 'orden',
-      },
-      {
-        mod: 'SolicitudServicios',
-        datos: { modulo: 'mkServicios',filtros:[['estado','=',5]], relations:['materiales','qa','servicios','nota']},
-        campos: '*',
       },
     ])
   },

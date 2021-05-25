@@ -134,27 +134,13 @@ export default {
     }
   },
   methods: {
-    getNameEmpresa(item) {
-      // return this.lEmpresas.find((e) => (e.id = item.empresas_id)).name
-    },
-    beforeOpen(accion, data = {}) {
-      // const me = this
-      // if (accion != 'add') {
-      //   me.item.empresas_id = me.lSucursales.find(
-      //     (e) => e.id == me.item.sucursales_id
-      //   ).empresas_id
-      // }
-    },
   },
 
   async mounted() {
-    let me = this
-    me.lCateg = await me.$store.dispatch('auth/loadData', {
-      url: 'Categ',
-      campos: 'id,name',
-    })
-    me.updateListCol('categ_id', me.lCateg)
-    me.updateListCol('tipo', me.lTipos)
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      { mod: 'Categ',datos:{modulo:'mkPreguntas'}, campos: 'id,name', item: 'categ_id' },
+    ])
+    this.updateListCol('tipo', this.lTipos)
   },
 }
 </script>

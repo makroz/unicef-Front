@@ -26,11 +26,10 @@
         :pagination.sync="paginator.options"
       >
         <template slot="headers" slot-scope="props">
-          <tr :style="acciones.sel?acciones.sel.visible?'':'padding-left:10px':''">
+          <tr :style="acciones.sel?acciones.sel.visible?'':'padding-left:10px':''" >
             <th v-if="acciones.sel?acciones.sel.visible:true"
                 style="width:10px;padding:0 0 0 12px">
-              <v-checkbox
-                ma-0 pa-0
+              <v-checkbox 
                 style="ma-0 pa-0"
                 :input-value="props.all"
                 :indeterminate="props.indeterminate"
