@@ -1,5 +1,6 @@
 <template>
   <v-container grid-list-md fluid v-if="item">
+    accion: {{ item.accion }} {{ accion }}
     <v-layout row wrap>
       <v-flex xs10 sm8 md10>
         <v-text-field
@@ -7,7 +8,11 @@
           :value="
             getDataLista(
               lBeneficiarios,
-              accion == 'show' || item.estado>2 ? item.beneficiario_id : item.id,
+              item.beneficiarios_id
+                ? item.beneficiarios_id
+                : accion == 'show' || item.estado > 2
+                ? item.beneficiario_id
+                : item.id,
               'id',
               'name',
               'Desconocido'
@@ -24,7 +29,11 @@
           :value="
             getDataLista(
               lBeneficiarios,
-              accion == 'show' ? item.beneficiario_id : item.id,
+              item.beneficiarios_id
+                ? item.beneficiarios_id
+                : accion == 'show' || item.estado > 2
+                ? item.beneficiario_id
+                : item.id,
               'id',
               'epsa',
               '---'
@@ -36,7 +45,11 @@
         ></v-text-field>
       </v-flex>
     </v-layout>
-    <v-layout row wrap v-if="accion != 'aceptar'">
+    <v-layout
+      row
+      wrap
+      v-if="accion != 'aceptar' && item.estado > 2 && item.beneficiario_id"
+    >
       <v-flex xs4 v-if="accion != 'realizar'">
         <v-text-field
           label="Fecha"
@@ -97,8 +110,8 @@
     </v-layout>
     <v-card>
       <v-toolbar color="primary" dark dense>
-        <v-toolbar-title
-          >  Servicios {{ lEstadosSol[item.estado] }} 
+        <v-toolbar-title>
+          Servicios {{ lEstadosSol[item.estado] }}
         </v-toolbar-title>
       </v-toolbar>
 
@@ -107,7 +120,11 @@
           <v-list-tile-title>
             <span v-if="accion != 'add'" style="font-size: 10px">
               <div
-                v-if="accion != 'show' && accion != 'verificar' && accion != 'autorizar'"
+                v-if="
+                  accion != 'show' &&
+                  accion != 'verificar' &&
+                  accion != 'autorizar'
+                "
                 style="width: 48px; display: inline-block"
               ></div>
               <div v-else style="width: 14px; display: inline-block"></div>
@@ -144,7 +161,11 @@
             "
           >
             <v-list-tile-action
-              v-show="accion != 'show' && accion != 'verificar' && accion != 'autorizar'"
+              v-show="
+                accion != 'show' &&
+                accion != 'verificar' &&
+                accion != 'autorizar'
+              "
               style="min-width: 34px"
             >
               <v-checkbox
@@ -179,6 +200,10 @@
                     {{ servicio.monitor.split(' ')[0] }}
                   </div>
                 </span>
+                <span v-if="item.orden_servicios_id">
+                  NOTA # {{ item.orden_servicios_id }}
+                </span>
+
                 {{ servicio.name }}
                 <span style="font-size: 10px; width: 130px">
                   {{ servicio.obs }}
@@ -192,21 +217,30 @@
           <!-- {{ servicio }} -->
           <div
             :key="index + '_'"
-            v-if="(servicio.selected && accion != 'aceptar')||item.estado > 3"
+            v-if="
+              (servicio.selected && accion != 'aceptar' && accion != 'edit') ||
+              item.estado > 3
+            "
             style="border-bottom: 1px solid #f1f1f1"
             class="pa-2"
           >
             <v-layout
               wrap
               row
-              v-if="accion == 'verificar' || (servicio.estado > 3 && servicio.estado < 9) || item.estado > 3"
+              v-if="
+                accion == 'verificar' ||
+                (servicio.estado > 3 && servicio.estado < 9) ||
+                item.estado > 3
+              "
             >
               <v-flex shrink>
                 <v-select
                   style="width: 150px"
                   dense
                   box
-                  :items="servicio.estado > 7?lOpciones['st9']:lOpciones['st3']"
+                  :items="
+                    servicio.estado > 7 ? lOpciones['st9'] : lOpciones['st3']
+                  "
                   item-text="name"
                   item-value="id"
                   label="Verificar"
@@ -223,7 +257,11 @@
                   label="Obs. de Verificado"
                   box
                   v-model="servicio.obs_verif"
-                  :rules="accion != 'verificar' || servicio.verificado == 4 ? [] : [rules.required]"
+                  :rules="
+                    accion != 'verificar' || servicio.verificado == 4
+                      ? []
+                      : [rules.required]
+                  "
                   validate-on-blur
                   :readonly="accion != 'verificar'"
                   hide-details
@@ -251,7 +289,7 @@
               </v-flex>
               <v-flex grow>
                 <v-text-field
-                  v-if="(accion=='realizar' || servicio.obs_sol )"
+                  v-if="accion == 'realizar' || servicio.obs_sol"
                   label="Obs. de Realizado"
                   v-model="servicio.obs_sol"
                   :rules="servicio.realizado ? [] : [rules.required]"
@@ -354,42 +392,44 @@
       @grabarItem="saveQA"
     >
       <template v-for="qa in lControl_calidades">
-      <v-list-tile
-        v-if="qaItem.qa"
-        :key="qa.id"
-        :class="
-            qaItem.qa[qa.id]?qaItem.qa[qa.id].selected
-            ? 'blue lighten-5 blue--text text--accent-4 elevation-3'
-            : '':''
-        "
-      >
-        <v-list-tile-action style="min-width: 34px">
-          <v-checkbox
-            v-model="qaItem.qa[qa.id].selected"
-            color="blue accent-4"
-            :readonly="accion != 'verificar'"
-            hide-details
-          ></v-checkbox>
-        </v-list-tile-action>
+        <v-list-tile
+          v-if="qaItem.qa"
+          :key="qa.id"
+          :class="
+            qaItem.qa[qa.id]
+              ? qaItem.qa[qa.id].selected
+                ? 'blue lighten-5 blue--text text--accent-4 elevation-3'
+                : ''
+              : ''
+          "
+        >
+          <v-list-tile-action style="min-width: 34px">
+            <v-checkbox
+              v-model="qaItem.qa[qa.id].selected"
+              color="blue accent-4"
+              :readonly="accion != 'verificar'"
+              hide-details
+            ></v-checkbox>
+          </v-list-tile-action>
 
-        <v-list-tile-content>
-          <v-list-tile-title>
-            {{ qa.name }}
-          </v-list-tile-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-text-field
-            label="Puntos"
-            style="width: 80px"
-            v-model="qaItem.qa[qa.id].puntos"
-            type="number"
-            :rules="[]"
-            validate-on-blur
-            :readonly="accion != 'verificar'"
-          >
-          </v-text-field>
-        </v-list-tile-action>
-      </v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              {{ qa.name }}
+            </v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-text-field
+              label="Puntos"
+              style="width: 80px"
+              v-model="qaItem.qa[qa.id].puntos"
+              type="number"
+              :rules="[]"
+              validate-on-blur
+              :readonly="accion != 'verificar'"
+            >
+            </v-text-field>
+          </v-list-tile-action>
+        </v-list-tile>
       </template>
     </mk-formulario>
   </v-container>
@@ -424,7 +464,7 @@ export default {
   data() {
     return {
       modal: false,
-      qaItem:{},
+      qaItem: {},
       lOpciones: {
         st9: [
           {
@@ -458,15 +498,15 @@ export default {
     }
   },
   methods: {
-    openQA(servicio){
-      console.log('qaservicoi',servicio)
-      this.qaItem=servicio
-      console.log('qaitem',this.qaItem)
-      this.modal=true
+    openQA(servicio) {
+      console.log('qaservicoi', servicio)
+      this.qaItem = servicio
+      console.log('qaitem', this.qaItem)
+      this.modal = true
     },
-    saveQA(servicio){
+    saveQA(servicio) {
       //this.qaItem=servicio.qaItem
-      this.modal=false
+      this.modal = false
     },
     addMaterial(item) {
       item.materiales.push({})
@@ -482,7 +522,6 @@ export default {
       return getDataLista(lista, valor, busco, devuelvo, defa)
     },
   },
-  mounted() {
-  }
+  mounted() {},
 }
 </script>

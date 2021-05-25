@@ -24,133 +24,21 @@
         :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
+        @imprimirElemento="imprimirElemento"
         :bTitulo="bTitulo"
       >
-        <v-container grid-list-md fluid>
-          <v-layout row wrap>
-            <v-flex xs12 sm8 md10>
-              <v-autocomplete
-                v-model="item.beneficiarios_id"
-                :items="lBeneficiarios"
-                :filter="customFilter"
-                @change="change"
-                color="primary"
-                item-text="name"
-                label="Beneficiario"
-                item-value="id"
-                :rules="[rules.required]"
-                ref="focus"
-                :readonly="accion != 'add'"
-              >
-              </v-autocomplete>
-            </v-flex>
-            <v-flex xs12 sm-4 md2>
-              <v-text-field
-                label="Cod.EPSA"
-                v-model="itemData.epsa"
-                disabled
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-card>
-            <v-toolbar color="primary" dark dense>
-              <v-toolbar-title
-                >Servicios {{ lEstadosSol[item.estado] }}
-              </v-toolbar-title>
-            </v-toolbar>
-
-            <div dark v-if="item.estado > -1" class="grey" style="height: 20px">
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  <span v-if="item.estado > -1" style="font-size: 10px">
-                    <div style="width: 48px; display: inline-block"></div>
-
-                    <div style="width: 25px; display: inline-block">Id</div>
-                    <div style="width: 60px; display: inline-block">Fecha</div>
-                    <div style="width: 30px; display: inline-block">Eval</div>
-                    <div style="width: 85px; display: inline-block">
-                      Creado X
-                    </div>
-                  </span>
-                  Servicio
-                  <span style="font-size: 10px; width: 130px">
-                    Observaciones
-                  </span>
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </div>
-            <v-list style="max-height: 300px; overflow-y: scroll" dense>
-              <template v-for="(servicio, index) in lServices">
-                <v-list-tile
-                  :key="index"
-                  :class="
-                    servicio.selected
-                      ? 'deep-purple lighten-5 deep-purple--text text--accent-4'
-                      : ''
-                  "
-                >
-                  <v-list-tile-action pa-0 ma-0 style="min-width: 34px">
-                    <v-checkbox
-                      v-model="servicio.selected"
-                      color="deep-purple accent-4"
-                      :readonly="accion == 'show'"
-                      hide-details
-                    ></v-checkbox>
-                  </v-list-tile-action>
-
-                  <v-list-tile-content>
-                    <v-list-tile-title>
-                      <span v-if="servicio.estado > -1" style="font-size: 10px">
-                        <div style="width: 25px; display: inline-block">
-                          {{ servicio.sol_id }}
-                        </div>
-                        <div style="width: 60px; display: inline-block">
-                          {{ formatDT(servicio.fecha, false) }}
-                        </div>
-                        <div style="width: 30px; display: inline-block">
-                          {{ servicio.evaluaciones_id?servicio.evaluaciones_id:'--' }}
-                        </div>
-                        <div style="width: 85px; display: inline-block">
-                          {{ servicio.monitor?(servicio.monitor+' ').split(" ")[0]:'--' }}
-                        </div>
-                      </span>
-                      {{ servicio.name }}
-                      <span style="font-size: 10px; width: 130px">
-                        {{ servicio.obs }}
-                      </span>
-                    </v-list-tile-title>
-                  </v-list-tile-content>
-                  <v-list-tile-avatar
-                    v-if="servicio.selected || servicio.estado > -1"
-                  >
-                    <v-text-field
-                      v-model="servicio.cantidad"
-                      :disabled="
-                        servicio.selected && accion == 'add'
-                          ? servicio.cant
-                            ? false
-                            : true
-                          : true
-                      "
-                      :rules="[rules.required, rules.num, rules.minVal(1)]"
-                      validate-on-blur
-                      color="primary"
-                      :class="servicio.selectded ? 'secondary' : ''"
-                      type="number"
-                      min="1"
-                      style="
-                        font-size: 12px;
-                        padding-bottom: 0;
-                        padding-top: 12px;
-                      "
-                      :readonly="accion == 'show'"
-                    ></v-text-field>
-                  </v-list-tile-avatar>
-                </v-list-tile>
-              </template>
-            </v-list>
-          </v-card>
-        </v-container>
+        <mk-show-solicitud
+          :item="item"
+          :accion="accion"
+          :lBeneficiarios="lBeneficiarios"
+          :lForma_pagos="lForma_pagos"
+          :lEstadosSol="lEstadosSol"
+          :lMateriales="lMateriales"
+          :lServices="lServices"
+          :lMedidas="lMedidas"
+          :lControl_calidades="lControl_calidades"
+        >
+        </mk-show-solicitud>
       </mk-form>
     </v-container>
   </div>
@@ -159,11 +47,13 @@
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkEstadosMix from '@/components/mkComponentes/mixins/MkEstadosMix'
+//import MkImgMix from '@/components/mkComponentes/mixins/MkImgMix'
+import MkShowSolicitud from '@/components/mkComponentes/MkShowSolicitud'
 
 export default {
   middleware: ['authAccess'],
-  mixins: [MkModuloMix,MkEstadosMix],
-  components: {},
+  mixins: [MkModuloMix, MkEstadosMix],
+  components: { MkShowSolicitud },
   name: 'SolicitudServicios',
   data() {
     return {
@@ -246,15 +136,36 @@ export default {
           lista: 'lEstadosSol',
           lColor: 'lColorSol',
         },
+        {
+          text: 'Nota#',
+          value: 'orden_servicios_id',
+          align: 'left',
+          width: '100px',
+          headers: true,
+          type: 'num',
+          search: true,
+        },
       ],
-      lUsuarios: [],
+      // lUsuarios: [],
+      // lBeneficiarios: [],
+      // lServicios: [],
+      // itemData: {
+      //   epsa: '',
+      // },
+      bTitulo: '',
+      //lServices: [],
+
+      lForma_pagos: [],
       lBeneficiarios: [],
       lServicios: [],
-      itemData: {
-        epsa: '',
-      },
-      bTitulo: '',
+      lSolicitudServicios: [],
       lServices: [],
+      lUsuarios: [],
+      lMateriales: [],
+      lMedidas: [],
+      lForma_pagos: [],
+      lControl_calidades: [],
+      //imgPrefix: 'solicitud_servicios',
     }
   },
   methods: {
@@ -275,7 +186,7 @@ export default {
       this.lServices = []
       if (accion == 'add') {
         this.bTitulo = ''
-        this.itemData.epsa = ''
+        //this.itemData.epsa = ''
         data.estado = -1
 
         this.lServicios.forEach((e) => {
@@ -287,9 +198,9 @@ export default {
           })
         })
       } else {
-        data.id=1
+        data.id = 1
 
-        this.bTitulo = 'Revisados'
+        this.bTitulo = 'Revisar'
         let filtros = [
           ['beneficiarios_id', '=', data.beneficiarios_id],
           ['estado', '=', data.estado],
@@ -297,11 +208,14 @@ export default {
         let lSol = await this.getDatasBackend(this.urlModulo, [
           {
             mod: this.urlModulo,
-            datos: { filtros: filtros, modulo: 'mkServicios' },
+            datos: {
+              filtros: filtros,
+              modulo: 'mkServicios',
+              relations: ['materiales', 'qa'],
+            },
           },
         ])
         lSol.SolicitudServicios.forEach((e) => {
-          
           let serv = this.getDataLista(
             this.lServicios,
             e.servicios_id,
@@ -309,33 +223,76 @@ export default {
             '*'
           )
 
+          let sel = null
+          //aqui empeiza lo mismo que recolector
           if (serv) {
+            let serv_ = {}
+            if (e.estado == 2) {
+              serv_ = {
+                realizado: false,
+                obs_sol: e.obs || '',
+                obs_verif: e.obs_verif || '',
+                materiales: [],
+              }
+            }
+            let qa = {}
+            if (e.estado > 2 || data.estado > 3) {
+              this.lControl_calidades.forEach((el) => {
+                qa[el.id] = { selected: false, puntos: '' }
+              })
+              if (e.estado >= 4 && e.estado <= 7) {
+                if (e.qa) {
+                  e.qa.forEach((el) => {
+                    qa[el.id] = { selected: true, puntos: el.puntos }
+                  })
+                }
+              }
+              sel = 1
+              e.estado = e.estado * 1
+              serv_ = {
+                realizado: e.estado != 9 && e.estado != 8 && e.estado != 1,
+                verificado:
+                  (e.estado > 3 && e.estado != 9) || data.estado > 3
+                    ? data.estado >= 5 && e.estado < 8 && e.estado > 3
+                      ? 4
+                      : e.estado
+                    : null,
+                obs_sol: e.obs,
+                obs_verif: e.obs_verif,
+                materiales: e.materiales, //aqui
+                qa: qa,
+              }
+            }
             this.lServices.push({
               sol_id: e.id,
               cantidad: e.cant,
               fecha: e.created_at,
               estado: e.estado,
               evaluaciones_id: e.evaluaciones_id,
-              selected: null,
               monitor: this.getDataLista(
                 this.lUsuarios,
                 e.created_by,
                 'id',
-                'name'
+                'name',
+                ''
               ),
               ...serv,
+              ...serv_,
+              selected: sel,
             })
+            //console.log('service', this.lServices)
           }
+          //hasta aqui
         })
 
         this.change(data.beneficiarios_id)
         //data.estado =(data.estado*1);
       }
     },
-        async afterSave(me, isError = 0) {
+    async afterSave(me, isError = 0) {
       //console.log('aftersve', isError)
       if (isError > -1) {
-      }else{
+      } else {
         me.item.estado--
       }
       return true
@@ -365,7 +322,7 @@ export default {
         }
       }
       me.item.servicios = servicios
-      me.item.estado = (me.item.estado * 1) + 1
+      me.item.estado = me.item.estado * 1 + 1
       // if (!me.item.id) {
 
       // } else {
@@ -395,23 +352,59 @@ export default {
       return e.estado == 0 ? true : false
     }
 
-    // let filtros = [
-    //   ['status', '<>', 0],
-    // ]
     let listas = await this.getDatasBackend(this.urlModulo, [
-      {
-        mod: 'Usuarios',
-        campos: 'id,name',
-        //        datos: { filtros: filtros },
-        item: 'created_by',
-      },
+      { mod: 'Usuarios', campos: 'id,name', item: 'created_by' },
       {
         mod: 'Beneficiarios',
         campos: 'id,name,epsa',
+        datos: { _customFields: 1 },
         item: 'beneficiarios_id',
       },
-      { mod: 'Servicios', item: 'servicios_id' },
+      {
+        mod: 'Forma_pagos',
+        campos: 'id,name',
+        datos: { modulo: 'mkServicios' },
+      },
+      {
+        mod: 'Materiales',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,name,medida_id',
+      },
+      {
+        mod: 'Medidas',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,simbolo',
+      },
+      {
+        mod: 'Servicios',
+        item: 'servicios_id',
+        each: (e) => {
+          e.cantidad = 1
+          e.selected = false
+        },
+      },
+      {
+        mod: 'Control_calidades',
+        datos: { modulo: 'mkServicios' },
+        campos: 'id,name,orden',
+        orden: 'orden',
+      },
     ])
+
+    // let listas = await this.getDatasBackend(this.urlModulo, [
+    //       {
+    //         mod: 'Usuarios',
+    //         campos: 'id,name',
+    //         //        datos: { filtros: filtros },
+    //         item: 'created_by',
+    //       },
+    //       {
+    //         mod: 'Beneficiarios',
+    //         campos: 'id,name,epsa',
+    //         item: 'beneficiarios_id',
+    //       },
+    //       { mod: 'Servicios', item: 'servicios_id' },
+    //     ])
   },
 }
 </script>

@@ -1,27 +1,34 @@
-<template>
-  <div>
-    <v-dialog v-model="modal" scrollable persistent  max-width="80%">
+<template >
+  <div >
+    
+    <v-dialog v-model="modal" scrollable persistent max-width="80%">
       <v-card>
-        <v-card-title class="headline" v-html="titulo">
+        <v-card-title class="headline" >
+          {{ titulo }}
+          <v-spacer></v-spacer><v-btn v-if="accion == 'show'" small color="blue darken-1" flat @click.stop="$emit('imprimirElemento')"
+            >Imprimir</v-btn>
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text :class="classContent">
           <v-form
+          id="printPage"
             ref="form"
             v-on:submit.prevent
             v-model="formValid"
             lazy-validation
           >
+          <div class="headline hidden-screen-only">
+          {{ titulo }}
+          </div>
             <slot>Contenido</slot>
             <!-- <div style="position: absolute;background-color:red; width: 100%;height:100%;top:0;left:0;opacity: 0;"></div> -->
           </v-form>
         </v-card-text>
         <v-divider></v-divider>
-        <v-card-actions>
+        <v-card-actions class="hidden-print-only">
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.stop="$emit('closeDialog')"
-            >Close</v-btn
-          >
+            >Close</v-btn>
           <v-btn
             v-if="accion != 'show'"
             :disabled="!formValid"
@@ -74,10 +81,8 @@ export default {
         grabar(){
       this.timeOnces=5000
       if (this.initOnce('GrabarForm')){
-  //      console.log('initOnce GrabarForm');
         return false
       }
-//      console.log('emitt grabaritem');
       this.$emit('grabarItem')
     },
 

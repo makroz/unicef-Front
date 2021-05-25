@@ -91,10 +91,35 @@ export function getDistancia(lat1, lon1, lat2, lon2) {
     return R * 2 * Math.asin(Math.sqrt(a))
 }
 
-export function imprimirElemento(nombre, title = 'Impresion') {
+export function imprimirElemento(nombre = 'printPage', title = 'Impresion') {
+    // const prtHtml = document.getElementById('printPage').innerHTML;
+
+    // let stylesHtml = '';
+    // for (const node of[...document.querySelectorAll('link[rel="stylesheet"], style')]) {
+    //     stylesHtml += node.outerHTML;
+    // }
+
+    // const WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+
+    // WinPrint.document.write(`<!DOCTYPE html>
+    // <html>
+    //   <head>
+    //     ${stylesHtml}
+    //   </head>
+    //   <body>
+    //     ${prtHtml}
+    //   </body>
+    // </html>`);
+
+    // WinPrint.document.close();
+    // WinPrint.focus();
+    // WinPrint.print();
+    // WinPrint.close();
+
     let elemento = document.getElementById(nombre)
-    let ventana = window.open('', 'PRINT', 'height=400,width=1800')
+    let ventana = window.open('', 'PRINT', 'height=400,width=750')
     ventana.document.write('<html><head><title>' + title + '</title>')
+        //alert(elemento.innerHTML)
         //ventana.document.write('<link rel="stylesheet" href="style.css">');
     ventana.document.write(
         '<script src="/_nuxt/runtime.js"></script><script src="/_nuxt/commons/app.js"></script><script src="/_nuxt/vendors/app.js"></script><script src="/_nuxt/app.js"></script><link data-n-head="1" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">'
@@ -107,8 +132,8 @@ export function imprimirElemento(nombre, title = 'Impresion') {
     ventana.onload = function() {
         ventana.print()
         ventana.close()
+        return true
     }
-    return true
 }
 
 export function formatDT(d = '', time = true) {
