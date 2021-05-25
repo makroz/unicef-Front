@@ -39,6 +39,32 @@
         >
         </mk-show-solicitud>
       </mk-form>
+
+       <mk-form
+        ref="mkFormExport"
+        :modal="modalExport"
+        tit="Exportacion a Comercial"
+        :accion="accion"
+        @closeDialog="modalExport = false"
+        @grabarItem="expCsv"
+        bTitulo="Exportar"
+      >
+      <table>
+        <template v-for="(fila,i) in item.exportar" >
+        <tr v-if="i==0" :key="i"  >
+          <th v-for="(col,index) in fila" :key="index" style="" nowrap="nowrap" class="primary white--text pa-2">
+            {{ col }}
+          </th>
+        </tr>
+        <tr v-else :key="i" :class="i % 2==1?'grey lighten-2':''">
+          <td v-for="(col,index) in fila" :key="index">
+            {{ col }}
+          </td>
+        </tr>
+        </template>
+      </table>
+      </mk-form>
+
     </v-container>
   </div>
 </template>
@@ -164,10 +190,439 @@ export default {
       nAceptadas: 0,
       imgPrefix: 'solicitud_servicios',
       bTitulo: '',
+      modalExport:false,
       //grabarDebug: true,
     }
   },
   methods: {
+    expCsv(){
+      let csv=''
+      this.item.exportar.forEach(fila => {
+        csv=csv+fila.join(';')+'\n';  
+      });
+      var element = document.createElement('a');
+      let filename=new Date().toISOString()+'-comercial'+'.csv'
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+
+    },
+    expNota() {
+      let campos = [
+        {
+          id: 'id-nota',
+          campo: 'nota.id',
+          name: 'id Nota',
+          type: 'num',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'ref-nota',
+          campo: 'nota.ref',
+          name: 'Referencia Nota',
+          type: 'text',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'fecha-nota',
+          campo: 'nota.created_at',
+          name: 'Fecha de la Nota',
+          type: 'datetime',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'estado-nota',
+          campo: 'nota.estado',
+          name: 'Estado Nota',
+          type: 'lista',
+          lista:'lEstadosSol',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'obs-nota',
+          campo: 'nota.obs',
+          name: 'Observacion Nota',
+          type: 'text',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'metodo-nota',
+          campo: 'nota.forma_pago_id',
+          name: 'Forma de Pago',
+          type: 'lista',
+          lista:'lForma_pagos',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'beneficiario',
+          campo: 'beneficiarios_id',
+          name: 'Beneficiario',
+          type: 'lista',
+          lista:'lBeneficiarios',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'epsa-beneficiario',
+          campo: 'beneficiarios_id',
+          name: 'Codigo EPSA',
+          type: 'lista',
+          lista:'lBeneficiarios:epsa',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: 0,
+          orden: 1,
+        },
+        {
+          id: 'id',
+          campo: 'id',
+          name: 'id Solicitud',
+          type: 'num',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'fecha-creacion',
+          campo: 'created_at',
+          name: 'Fecha Creacion',
+          type: 'datetime',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'user-creacion',
+          campo: 'created_by',
+          name: 'Quien lo Creo',
+          type: 'lista',
+          lista:'lUsuarios',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },{
+          id: 'fecha-reviso',
+          campo: 'fecha_1',
+          name: 'Fecha Revisado',
+          type: 'datetime',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'user-revisado',
+          campo: 'usuarios_id_1',
+          name: 'Quien lo Reviso',
+          type: 'lista',
+          lista:'lUsuarios',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },{
+          id: 'fecha-asigno',
+          campo: 'fecha_2',
+          name: 'Fecha Asignado',
+          type: 'datetime',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'user-asignado',
+          campo: 'usuarios_id_2',
+          name: 'Quien lo Asigno',
+          type: 'lista',
+          lista:'lUsuarios',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },{
+          id: 'fecha-realizo',
+          campo: 'fecha_3',
+          name: 'Fecha Realizado',
+          type: 'datetime',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'user-realizado',
+          campo: 'usuarios_id_3',
+          name: 'Quien lo Realizo',
+          type: 'lista',
+          lista:'lUsuarios',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },{
+          id: 'fecha-verificado',
+          campo: 'fecha_4',
+          name: 'Fecha Verificado',
+          type: 'datetime',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'user-verificado',
+          campo: 'usuarios_id_4',
+          name: 'Quien lo Verifico',
+          type: 'lista',
+          lista:'lUsuarios',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },{
+          id: 'fecha-autorizado',
+          campo: 'fecha_5',
+          name: 'Fecha Autorizado',
+          type: 'datetime',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'user-autorizado',
+          campo: 'usuarios_id_5',
+          name: 'Quien lo Autorizo',
+          type: 'lista',
+          lista:'lUsuarios',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'id-servicio',
+          campo: 'servicios_id',
+          name: 'Servicio',
+          type: 'lista',
+          lista:'lServicios',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'obs-servicio',
+          campo: 'sercicios_id',
+          name: 'Obs. Servicio',
+          type: 'lista',
+          lista:'lServicios:obs',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: 0,
+          orden: 1,
+        },
+        {
+          id: 'cant',
+          campo: 'cant',
+          name: 'Cantidad',
+          type: 'num',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: 0,
+          orden: 1,
+        },
+        {
+          id: 'estado-solicitud',
+          campo: 'estado',
+          name: 'Estado Solicitud',
+          type: 'lista',
+          lista:'lEstadosSol',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'obs-realizado',
+          campo: 'obs',
+          name: 'Obs. Realizado',
+          type: 'text',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'obs-verificado',
+          campo: 'obs_verif',
+          name: 'Obs. Verificado',
+          type: 'text',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+        {
+          id: 'id-eval',
+          campo: 'evaluaciones_id',
+          name: 'id Evaluacion',
+          type: 'num',
+          width: '',
+          oblig: false,
+          selected: true,
+          depende: '',
+          ligado: '',
+          orden: 1,
+        },
+      ]
+      campos.sort(function (a, b) {
+            return a.orden - b.orden
+      })
+
+      let datos=[]
+
+        let dato=[]
+        campos.forEach(campo => {
+          if (campo.selected){
+            let field=(campo.campo+'.').split('.')
+            let i=0;
+            let valor=campo.name
+            if (campo.type=='lista'){
+              field=(campo.lista+':').split(':')
+              let lista=field[0]
+              if(field[1]==''){
+                field='name'
+              }else{
+                field==field[1]
+              }
+              if (campo.ligado!==0){
+                dato.push('id '+valor)    
+              }
+              valor=valor
+            }
+            dato.push(valor)
+          }
+          
+        });
+      datos.push(dato)
+      this.lSolicitudServicios.forEach(sol => {
+        let dato=[]
+        campos.forEach(campo => {
+          if (campo.selected){
+            let field=(campo.campo+'.').split('.')
+            let i=0;
+            let valor=sol[field[0]]
+            if (field[1]!=''){
+              valor=valor[field[1]]
+            }
+            if (campo.type=='lista'){
+              field=(campo.lista+':').split(':')
+              let lista=field[0]
+              if(field[1]==''){
+                field='name'
+              }else{
+                field==field[1]
+              }
+              if (campo.ligado!==0){
+                dato.push(valor)    
+                //console.log('lista campos',lista,valor,'id',field,this.getDataLista(this[lista],valor,'id',field,this[lista][valor]));
+              }
+                valor=this.getDataLista(this[lista],valor,'id',field,this[lista][valor])
+            }
+            dato.push(valor)
+          }
+        });
+        datos.push(dato)
+      });
+
+      this.item.exportar=datos;
+      this.modalExport=true
+    },
     revNota(accion, data) {
       data.accion = 'verificar'
       this.openDialog('edit', data)
@@ -231,7 +686,9 @@ export default {
               realizado: e.estado != 9 && e.estado != 8 && e.estado != 1,
               verificado:
                 (e.estado > 3 && e.estado != 9) || data.estado > 3
-                  ?data.estado==5?4:e.estado
+                  ? data.estado == 5
+                    ? 4
+                    : e.estado
                   : null,
               obs_sol: e.obs,
               obs_verif: e.obs_verif,
@@ -330,6 +787,9 @@ export default {
       if (accion == 'autorizar') {
         crit = 4
       }
+      if (accion == 'exportar') {
+        crit = 5
+      }
       let lista = []
       this.lEstadosSol.map((e, index) => lista.push({ id: index, name: e }))
 
@@ -353,10 +813,10 @@ export default {
     this.setOptionTable('status').visible = false
 
     this.addOptionTable({
-      id: 'rev',
+      id: 'verif',
       color: 'red',
       icon: 'thumb_up',
-      visible: this.can('edit'),
+      visible: this.can('edit', 'estado-verificar'),
       action: 'revNota',
       grupos: ['action'],
       orden: 10,
@@ -368,20 +828,43 @@ export default {
       id: 'aut',
       color: 'green',
       icon: 'assignment_turned_in',
-      visible: this.can('edit'),
+      visible: this.can('edit', 'estado-autorizar'),
       action: 'autNota',
       grupos: ['action'],
-      orden: 10,
+      orden: 11,
       visibleRow: function (e) {
         return e.estado == 4 ? true : false
       },
+    })
+    this.addOptionTable({
+      id: 'com',
+      color: 'primary',
+      icon: 'download_for_offline',
+      visible: this.can('edit', 'estado-comercial'),
+      action: 'expNota',
+      grupos: ['action'],
+      orden: 12,
+      visibleRow: function (e) {
+        return e.estado > 4 ? true : false
+      },
+    })
+
+    this.addOptionTable({
+      id: 'exportar',
+      color: 'primary',
+      icon: 'download_for_offline',
+      text: 'Comercial',
+      visible: this.can('show'),
+      action: 'filtrar',
+      grupos: ['filtros'],
+      orden: 3,
     })
     this.addOptionTable({
       id: 'autorizar',
       color: 'success',
       icon: 'assignment_turned_in',
       text: 'Autorizar',
-      visible: this.can('edit'),
+      visible: this.can('show'),
       action: 'filtrar',
       grupos: ['filtros'],
       orden: 2,
@@ -391,7 +874,7 @@ export default {
       color: 'red',
       icon: 'thumb_up',
       text: 'Verificar',
-      visible: this.can('edit'),
+      visible: this.can('show'),
       action: 'filtrar',
       grupos: ['filtros'],
       orden: 1,
@@ -439,6 +922,11 @@ export default {
         datos: { modulo: 'mkServicios' },
         campos: 'id,name,orden',
         orden: 'orden',
+      },
+      {
+        mod: 'SolicitudServicios',
+        datos: { modulo: 'mkServicios',filtros:[['estado','=',5]], relations:['materiales','qa','servicios','nota']},
+        campos: '*',
       },
     ])
   },
