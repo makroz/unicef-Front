@@ -10,7 +10,7 @@ import {
   c,
   getDataLista,
   getTitFromName,
-  imprimirElemento,
+//  imprimirElemento,
   formatDT,
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
@@ -91,9 +91,9 @@ export default {
     formatDT(d = '', time = true) {
       return formatDT(d, time)
     },
-    imprimirElemento(nombre) {
-      imprimirElemento(nombre)
-    },
+    // imprimirElemento(html) {
+    //   imprimirElemento(html)
+    // },
     getDataLista(lista, valor, busco = 'id', devuelvo = 'name', defa = false) {
       //console.log('Datalist def',defa);
       return getDataLista(lista, valor, busco, devuelvo, defa)

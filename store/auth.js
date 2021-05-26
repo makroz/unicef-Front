@@ -1,7 +1,7 @@
 import AES from 'crypto-js/aes'
 import Utf8 from 'crypto-js/enc-utf8'
 import MD5 from 'crypto-js/md5'
-import { c } from '@/components/mkComponentes/lib/MkUtils.js'
+import { c, imprimirElemento } from '@/components/mkComponentes/lib/MkUtils.js'
 const _lap = process.env.mkConfig.authKey
 
 export const state = () => ({
@@ -443,6 +443,9 @@ export const actions = {
             return await dispatch('reloadUser', false)
         }
         return getters.getUser
+    },
+    imprimirElemento({ state }, html) {
+        imprimirElemento(html)
     },
     logout({ commit }) {
         //await this.$axios.post("logout");

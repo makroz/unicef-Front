@@ -1,6 +1,5 @@
 <template>
   <v-container grid-list-md fluid v-if="item">
-    accion: {{ item.accion }} {{ accion }}
     <v-layout row wrap>
       <v-flex xs10 sm8 md10>
         <v-text-field

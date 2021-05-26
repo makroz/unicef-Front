@@ -91,7 +91,8 @@ export function getDistancia(lat1, lon1, lat2, lon2) {
     return R * 2 * Math.asin(Math.sqrt(a))
 }
 
-export function imprimirElemento(nombre = 'printPage', title = 'Impresion') {
+export function imprimirElemento(html = 'En Blanco', title = 'Impresion') {
+
     // const prtHtml = document.getElementById('printPage').innerHTML;
 
     // let stylesHtml = '';
@@ -116,22 +117,28 @@ export function imprimirElemento(nombre = 'printPage', title = 'Impresion') {
     // WinPrint.print();
     // WinPrint.close();
 
-    let elemento = document.getElementById(nombre)
+    //let elemento = document.getElementById(html)
     let ventana = window.open('', 'PRINT', 'height=400,width=750')
     ventana.document.write('<html><head><title>' + title + '</title>')
-        //alert(elemento.innerHTML)
-        //ventana.document.write('<link rel="stylesheet" href="style.css">');
     ventana.document.write(
         '<script src="/_nuxt/runtime.js"></script><script src="/_nuxt/commons/app.js"></script><script src="/_nuxt/vendors/app.js"></script><script src="/_nuxt/app.js"></script><link data-n-head="1" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">'
     )
     ventana.document.write('</head><body >')
-    ventana.document.write(elemento.innerHTML)
+        //ventana.document.write(elemento.innerHTML)
+    ventana.document.write(html)
     ventana.document.write('</body></html>')
     ventana.document.close()
-    ventana.focus()
-    ventana.onload = function() {
+    setTimeout(() => {
+        ventana.focus()
         ventana.print()
         ventana.close()
+    }, 1000)
+
+    ventana.onload = function() {
+        ventana.focus()
+        ventana.print()
+        ventana.close()
+        console.log('Impresion');
         return true
     }
 }

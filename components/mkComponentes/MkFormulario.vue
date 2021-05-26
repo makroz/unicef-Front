@@ -1,25 +1,30 @@
 <template >
-  <div >
-    
+  <div>
     <v-dialog v-model="modal" scrollable persistent max-width="80%">
       <v-card>
-        <v-card-title class="headline" >
+        <v-card-title class="headline">
           {{ titulo }}
-          <v-spacer></v-spacer><v-btn v-if="accion == 'show'" small color="blue darken-1" flat @click.stop="$emit('imprimirElemento')"
-            >Imprimir</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            v-if="accion == 'show'"
+            small
+            color="blue darken-1"
+            flat
+            @click.stop="print()"
+            >Imprimir</v-btn
+          >
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text :class="classContent">
           <v-form
-          id="printPage"
             ref="form"
             v-on:submit.prevent
             v-model="formValid"
             lazy-validation
           >
-          <div class="headline hidden-screen-only">
-          {{ titulo }}
-          </div>
+            <div class="headline hidden-screen-only">
+              {{ titulo }}
+            </div>
             <slot>Contenido</slot>
             <!-- <div style="position: absolute;background-color:red; width: 100%;height:100%;top:0;left:0;opacity: 0;"></div> -->
           </v-form>
@@ -28,14 +33,21 @@
         <v-card-actions class="hidden-print-only">
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.stop="$emit('closeDialog')"
-            >Close</v-btn>
+            >Close</v-btn
+          >
           <v-btn
             v-if="accion != 'show'"
             :disabled="!formValid"
             color="green darken-1"
             flat
             @click.stop="grabar"
-            v-text="bTitulo!=''?bTitulo:accion == 'edit' ? 'Actualizar' : 'Grabar'"
+            v-text="
+              bTitulo != ''
+                ? bTitulo
+                : accion == 'edit'
+                ? 'Actualizar'
+                : 'Grabar'
+            "
             >Actualizar</v-btn
           >
         </v-card-actions>
@@ -51,56 +63,57 @@ export default {
   props: {
     modal: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    tit:{
+    tit: {
       type: String,
-      default: ''
+      default: '',
     },
     accion: {
       type: String,
-      default: 'show'
+      default: 'show',
     },
-    classContent:{
+    classContent: {
       type: String,
-      default: ''
+      default: '',
     },
-    bTitulo:{
+    bTitulo: {
       type: String,
-      default: ''
+      default: '',
     },
-
-
   },
   data() {
     return {
-      formValid: true
+      formValid: true,
     }
   },
   methods: {
-        grabar(){
-      this.timeOnces=5000
-      if (this.initOnce('GrabarForm')){
+    print() {
+      this.$store.dispatch('auth/imprimirElemento',this.$refs.form.$el.innerHTML)
+      //this.$emit('imprimirElemento', this.$refs.form.$el.innerHTML)
+    },
+    grabar() {
+      this.timeOnces = 5000
+      if (this.initOnce('GrabarForm')) {
         return false
       }
       this.$emit('grabarItem')
     },
-
   },
   computed: {
     titulo() {
-      let tit=(this.tit+'|').split('|');
-      let caption=tit[1]
-      tit=tit[0]
+      let tit = (this.tit + '|').split('|')
+      let caption = tit[1]
+      tit = tit[0]
       if (caption) {
-        tit=tit+'<span class="caption">&nbsp;&nbsp;'+caption+'</span>'
+        tit = tit + '<span class="caption">&nbsp;&nbsp;' + caption + '</span>'
       }
       return tit
     },
   },
   mounted() {
     //console.log(this.$ref);
-  }
+  },
 }
 </script>
 

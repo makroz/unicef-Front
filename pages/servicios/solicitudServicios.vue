@@ -24,7 +24,6 @@
         :accion="accion"
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
-        @imprimirElemento="imprimirElemento"
         :bTitulo="bTitulo"
       >
         <mk-show-solicitud
