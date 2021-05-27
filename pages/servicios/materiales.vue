@@ -47,6 +47,85 @@
           >
           </v-select>
         </v-flex>
+        <v-flex>
+          <v-text-field
+            type='number'
+            label='Stock'
+            v-model='item.stock'
+            :rules='[rules.num,rules.required]'
+            validate-on-blur
+            :readonly="accion == 'show'"
+          >
+          </v-text-field>
+        </v-flex>
+        <v-flex>
+          <v-text-field
+            type='number'
+            label='Stock Mínimo'
+            v-model='item.min_stock'
+            :rules='[rules.num,rules.required]'
+            validate-on-blur
+            :readonly="accion == 'show'"
+          >
+          </v-text-field>
+        </v-flex>
+        <v-flex>
+          <v-text-field
+            type='number'
+            label='Costo'
+            v-model='item.costo'
+            :rules='[rules.num,rules.required]'
+            validate-on-blur
+            :readonly="accion == 'show'"
+          >
+          </v-text-field>
+        </v-flex>
+        <v-flex>
+          <v-text-field
+            type='number'
+            label='Precio'
+            v-model='item.precio'
+            :rules='[rules.num,rules.required]'
+            validate-on-blur
+            :readonly="accion == 'show'"
+          >
+          </v-text-field>
+        </v-flex>
+        <v-flex>
+      <v-checkbox
+        v-model='item.lnota'
+        value='1'
+        label='Listado en Orden de Solicitud'
+        :readonly="accion == 'show'"
+      >
+      </v-checkbox>
+        </v-flex>
+        <v-flex>
+          <v-select
+            :items='lMat_categ'
+            item-text='name'
+            item-value='id'
+            label='Categoría'
+            v-model='item.mat_categ_id'
+            :rules='[rules.num]'
+            validate-on-blur
+            :readonly="accion == 'show'"
+          >
+          </v-select>
+        </v-flex>
+        <v-flex>
+          <v-select
+            :items='lUbicaciones'
+            item-text='name'
+            item-value='id'
+            label='Ubicación en Almacén'
+            v-model='item.ubicacion_id'
+            :rules='[rules.num]'
+            validate-on-blur
+            :readonly="accion == 'show'"
+          >
+          </v-select>
+        </v-flex>
       </mk-form>
     </v-container>
   </div>
@@ -94,15 +173,91 @@ export default {
           search: true,
           lista: this.lMedidas,
         },
+        {
+          text: 'Stock',
+          value: 'stock',
+          align: 'right',
+          
+          headers: true,
+          type: 'num',
+          search: true,
+          
+        },
+        {
+          text: 'Stock Mínimo',
+          value: 'min_stock',
+          align: 'right',
+          
+          headers: true,
+          type: 'num',
+          search: true,
+          
+        },
+        {
+          text: 'Costo',
+          value: 'costo',
+          align: 'right',
+          
+          headers: true,
+          type: 'num',
+          search: true,
+          
+        },
+        {
+          text: 'Precio',
+          value: 'precio',
+          align: 'right',
+          
+          headers: true,
+          type: 'num',
+          search: true,
+          
+        },
+        {
+          text: 'List.Ord.Sol.',
+          value: 'lnota',
+          align: 'left',
+          
+          headers: true,
+          type: 'check',
+          search: true,
+          options: [1, 'Si', 'No'],
+          
+        },
+        {
+          text: 'Categoría',
+          value: 'mat_categ_id',
+          align: 'left',
+          
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lMat_categ,
+        },
+        {
+          text: 'Ubicación',
+          value: 'ubicacion_id',
+          align: 'left',
+          
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: this.lUbicaciones,
+        },
       ],
       lMedidas: [],
-
+      lMat_categ: [],
+      lUbicaciones: [],
+      lSiNo: [{id:'0',value:'No'},{id:'1',value:'Si'}],
     };
   },
   methods: {},
   async mounted() {
-    this.lMedidas = await this.getListaBackend('Medidas', 'id,name', 'medida_id')
-
+          let listas = await this.getDatasBackend(this.urlModulo, [
+                {mod: 'Medidas',campos: 'id,name',datos: { modulo: 'mkServicios' },item: 'medida_id'},
+                {mod: 'Mat_categ',campos: 'id,name',datos: { modulo: 'mkAlmacenes' },item: 'mat_categ_id'},
+                {mod: 'Ubicaciones',campos: 'id,name',datos: { modulo: 'mkAlmacenes' },item: 'ubicacion_id'},
+          ])
   },
 };
 </script>

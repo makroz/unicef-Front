@@ -219,6 +219,42 @@ const Menu = [
         ]
     },
     {
+        title: 'Modulo Almacenes',
+        name: 'almacenes',
+        icon: 'face',
+        items: [{
+                name: 'movimientos',
+                title: 'Mov. Almacen',
+                href: '/almacenes/movimientos/'
+            },
+            {
+                name: 'Materiales',
+                title: 'Materiales',
+                href: '/servicios/materiales/'
+            },
+            {
+                name: 'auxiliares',
+                title: 'Auxiliares',
+                items: [{
+                        name: 'mat_categ',
+                        title: 'Categorias de Materiales',
+                        href: '/almacenes/mat_categ/'
+                    },
+                    {
+                        name: 'ubicaciones',
+                        title: 'Ubicaciones en Almacen',
+                        href: '/almacenes/ubicaciones/'
+                    },
+                    {
+                        name: 'subtipos',
+                        title: 'Subtipos de Mov.',
+                        href: '/almacenes/subtipos/'
+                    }
+                ]
+            }
+        ]
+    },
+    {
         title: 'Modulo Usuarios',
         name: 'usuarios',
         icon: 'face',

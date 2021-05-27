@@ -16,14 +16,14 @@ module.exports = {
      ** Headers of the page
      */
     head: {
-        title: "Unicef v.1.2.4",
+        title: "Unicef v.1.3.0",
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             {
                 hid: 'description',
                 name: 'description',
-                content: 'unicef v1.2 \n' +
+                content: 'unicef v1.3 \n' +
                     '    Makroz@hotmail.com. +591 72170900'
             }
         ],
