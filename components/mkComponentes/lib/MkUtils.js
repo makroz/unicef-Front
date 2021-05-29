@@ -93,6 +93,12 @@ export function getDistancia(lat1, lon1, lat2, lon2) {
 
 export function imprimirElemento(html = 'En Blanco', title = 'Impresion') {
 
+    let elemento = document.getElementById('printArea')
+    elemento.innerHTML = html
+    window.print()
+        //elemento.innerHTML = ''
+    return true
+
     // const prtHtml = document.getElementById('printPage').innerHTML;
 
     // let stylesHtml = '';

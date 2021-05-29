@@ -303,17 +303,20 @@ export default {
       if (!me.formVerif) {
         me.formVerif = me.$refs.mkForm.$refs.form
       }
-      console.log('entro');
+      //console.log('entro');
       if (!me.formVerif.validate()) {
         return false
       }
-      console.log('siguio');
+      //console.log('siguio');
       let isError = 0
       if (this.grabarDebug) {
         console.log('item antes de Grabar:', me.item)
       }
 
-      me.beforeSave(me)
+      if (await me.beforeSave(me)===false){
+        console.log('no grabo x beforeSave');
+        return false
+      }
 
       if (me.MkImgMix && typeof me.mkImgData.myImg.hasImage === 'function') {
         // // me.item.imgDel=me.mkImgData.imgDel;
@@ -341,6 +344,7 @@ export default {
         me.item.paramsExtra = me.paramsExtra
       }
 
+      let itemData = {}
       if (me.item.id !== null && me.item.id > 0) {
         if (!this.can('edit', true)) {
           return false
@@ -348,7 +352,6 @@ export default {
         me.dataTable.loading = true
         let url = me.urlModulo + '/' + me.item.id
 
-        let itemData = {}
 
         if (_dirty) {
           for (const el in me.item) {
@@ -420,7 +423,7 @@ export default {
         let url = me.urlModulo
         if (this.grabarDebug === true) {
           console.log('url:', url + this.getCt(url))
-          console.log('datos', itemData)
+          console.log('datos', me.item)
           me.dataTable.loading = false
           me.afterSave(me, isError)
           me.formVerif = false
@@ -725,6 +728,14 @@ export default {
             return a[sort] - b[sort]
           })
         }
+
+        let sortAsc = el.sortAsc || false
+        if (sortAsc && Array.isArray(datos)) {
+          datos.sort(function (a, b) {
+            return b[sortAsc] - a[sortAsc]
+          })
+        }
+
         if (el.lista != '') {
           if (this[el.lista]) {
             this[el.lista] = datos
@@ -847,7 +858,7 @@ export default {
     this.created = 2
   },
   mounted() {
-    console.log('mounted mix')
+    //console.log('mounted mix')
     if (this.campos) {
       this.campos = this.getParams('headers') || this.campos
       this.campos.map((e) => {

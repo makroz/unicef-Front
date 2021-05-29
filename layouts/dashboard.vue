@@ -1,10 +1,12 @@
 <template>
   <div id="appRoot">
     <template>
-
       <v-app id="inspire" class="app" data-app=''>
-        <app-drawer class="app--drawer"></app-drawer>
-        <app-toolbar class="app--toolbar"></app-toolbar>
+          <div id="printArea" class="">
+          </div>
+
+        <app-drawer class="app--drawer hidden-print-only" ></app-drawer>
+        <app-toolbar class="app--toolbar hidden-print-only"></app-toolbar>
         <v-content >
           <!-- Page Header -->
           <!-- <page-header></page-header> -->
@@ -12,7 +14,7 @@
             <nuxt/>
           </div>
           <!-- App Footer -->
-          <v-footer height="auto" class="white pa-3 app--footer">
+          <v-footer height="auto" class="white pa-3 app--footer hidden-print-only">
             <span class="caption">&copy; {{ new Date().getFullYear() }}</span>
             <v-spacer></v-spacer>
             <span class="caption mr-1"> Made with love </span>

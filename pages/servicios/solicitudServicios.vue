@@ -322,11 +322,6 @@ export default {
       }
       me.item.servicios = servicios
       me.item.estado = me.item.estado * 1 + 1
-      // if (!me.item.id) {
-
-      // } else {
-      //   me.item.estado = me.item.estado * 1 + 1
-      // }
     },
     customFilter(item, queryText, itemText) {
       const textOne = ('' + item.name).toLowerCase()

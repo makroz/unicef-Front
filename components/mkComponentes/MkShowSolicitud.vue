@@ -295,7 +295,7 @@
                   validate-on-blur
                   :readonly="accion != 'realizar'"
                   dense
-                  :hide-details="servicio.realizado"
+                  :hide-details="servicio.realizado || accion == 'show'"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -335,6 +335,7 @@
                       :rules="[rules.required]"
                       validate-on-blur
                       :readonly="accion != 'realizar'"
+                      :hide-details="accion == 'show'"
                     >
                     </v-select>
                   </v-flex>
@@ -347,6 +348,7 @@
                       :rules="[rules.num, rules.required]"
                       validate-on-blur
                       :readonly="accion != 'realizar'"
+                      :hide-details="accion == 'show'"
                       :suffix="
                         getDataLista(
                           lMedidas,

@@ -1,7 +1,11 @@
 <template>
   <tr 
   :style="acciones.sel?acciones.sel.visible?'':'padding-left:10px':''"
-  @click="isExpanded?datos.expanded = !datos.expanded:null" @dblclick="onEdit(datos.item)">
+  @click="isExpanded?datos.expanded = !datos.expanded:null" @dblclick="onEdit(datos.item)"
+  :class="[
+          getClass(datos.item),
+        ]"
+  >
     <td  style="padding: 0 0 0 12px" v-if="acciones['sel'].visible">
       <v-checkbox
         v-if="rowVisible(acciones['sel'],datos.item)"
@@ -28,7 +32,6 @@
         :class="[
           header.align ? 'text-xs-' + header.align : 'text-xs-left ',
           header.lColor ? header.lColor[datos.item[header.value]?datos.item[header.value]:0] : '',
-          getClass(header,datos.item),
           getClassItem(header,datos.item),
         ]"
         :key="header.value"
@@ -97,6 +100,7 @@ export default {
       this.$emit('callAction', opt, item)
     },
     getClassItem(item,datos) {
+      //console.log('getclassitem',item,datos)
       if (typeof item.class === 'function') {
         return  item.class(item,datos)
       }
@@ -106,11 +110,14 @@ export default {
       return ''
     },
 
-    getClass(item,datos) {
+    getClass(item) {
       const opt=this.acciones['class']
       let r = ''
       if (typeof opt.setClass === 'function') {
-        r = opt.setClass(item,datos)
+        r = opt.setClass(item)
+      }
+      if (typeof opt.setClass === 'string') {
+        r = opt.setClass
       }
       return r
     },

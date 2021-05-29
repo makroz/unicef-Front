@@ -26,23 +26,26 @@
       >
         <v-flex>
           <v-text-field
-            label='Nombre'
-            v-model='item.name'
-            :rules='[rules.required]'
+            label="Nombre"
+            v-model="item.name"
+            :rules="[rules.required]"
             validate-on-blur
             :readonly="accion == 'show'"
           >
           </v-text-field>
         </v-flex>
         <v-flex>
-          <v-text-field
-            label='Tipo de Movimiento'
-            v-model='item.tipo'
-            :rules='[rules.num,rules.required]'
+          <v-select
+            :items="lTipos"
+            item-text="name"
+            item-value="id"
+            label="Tipo de Movimiento"
+            v-model="item.tipo"
+            :rules="[rules.num, rules.required]"
             validate-on-blur
             :readonly="accion == 'show'"
           >
-          </v-text-field>
+          </v-select>
         </v-flex>
       </mk-form>
     </v-container>
@@ -50,54 +53,58 @@
 </template>
 
 <script>
-import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 
 export default {
-  middleware: ["authAccess"],
+  middleware: ['authAccess'],
   mixins: [MkModuloMix],
-  name: "Subtipos",
+  name: 'Subtipos',
   data() {
     return {
       //urlModulo: '',
-      titModulo: "Subtipos de Movimientos",
+      titModulo: 'Subtipos de Movimientos',
       campos: [
         {
           text: 'Id',
           value: 'id',
           align: 'right',
+          width: '50px',
+          headers: true,
+          type: 'num',
+          search: true,
+        },
+        {
+          text: 'Tipo',
+          value: 'tipo',
+          align: 'left',
           width: '100px',
           headers: true,
           type: 'num',
           search: true,
-          
+          lista: 'lTipos',
+          lColor: 'lColor',
         },
         {
           text: 'Nombre',
           value: 'name',
           align: 'left',
-          
+
           headers: true,
           type: 'text',
           search: true,
-          
-        },
-        {
-          text: 'Tipo de Movimiento',
-          value: 'tipo',
-          align: 'right',
-          
-          headers: true,
-          type: 'text',
-          search: true,
-          
         },
       ],
-    };
+      lTipos: [
+        { id: 1, name: 'Ingresos' },
+        { id: 2, name: 'Egresos' },
+        { id: 3, name: 'Ajustes' },
+      ],
+      lColor: ['grey--text', 'green--text', 'red--text', 'orange--text'],
+    }
   },
   methods: {},
-  async mounted() {
-  },
-};
+  async mounted() {},
+}
 </script>
 
 <style lang="stylus"></style>

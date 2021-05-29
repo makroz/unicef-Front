@@ -887,7 +887,7 @@ export default {
       },
       {
         mod: 'Materiales',
-        datos: { modulo: 'mkServicios' },
+        datos: { modulo: 'mkServicios', filtros:[['lnota','=','1']] },
         campos: 'id,name,medida_id',
       },
       {
