@@ -28,6 +28,7 @@
         <template slot="headers" slot-scope="props">
           <tr :style="acciones.sel?acciones.sel.visible?'':'padding-left:10px':''" >
             <th v-if="acciones.sel?acciones.sel.visible:true"
+                class="hidden-print-only"
                 style="width:10px;padding:0 0 0 12px">
               <v-checkbox 
                 style="ma-0 pa-0"
@@ -40,7 +41,7 @@
             </th>
             <th  v-if="(!$store.state.config.tbl_opts_p)"
                 key="__act__"
-                :class="['column', 'text-xs-center','pa-0','ma-0']"
+                :class="['column', 'text-xs-center','pa-0','ma-0','hidden-print-only']"
                 style="width:52px;padding:0 12px"
              >
                 Acc</th>
@@ -63,7 +64,7 @@
                 Status</th>
             <th  v-if="($store.state.config.tbl_opts_p)"
                 key="__act__"
-                :class="['column', 'text-xs-center','pa-0','ma-0']"
+                :class="['column', 'text-xs-center','pa-0','ma-0','hidden-print-only']"
                 style="width:52px;padding:0 12px"
              >
                 Acc</th>

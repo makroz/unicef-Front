@@ -1,5 +1,6 @@
 <template>
-  <v-toolbar card color="white">
+<div>
+  <v-toolbar card color="white" class="hidden-print-only">
     <v-btn
       round
       color="primary"
@@ -126,6 +127,44 @@
       @column:change="onColChange"
     ></mk-menu-columns>
   </v-toolbar>
+   <div v-if="busquedas" class="hidden-screen-only">
+      <v-chip v-for="(busqueda, key) in busquedas" :key="key" outline small>
+        {{
+          typeof headers.find((ele) => ele.value == busqueda.campo) !==
+          'undefined'
+            ? headers.find((ele) => ele.value == busqueda.campo).text
+            : ''
+        }}
+        (
+        {{
+          typeof lCond.find((el) => el.value == busqueda.cond) !== 'undefined'
+            ? lCond.find((el) => el.value == busqueda.cond).text
+            : ''
+        }}
+        )
+        {{
+          busqueda && busqueda.lista && busqueda.lista.length > 0
+            ? busqueda.lista.find((campo) => campo.id == busqueda.criterio)
+              ? busqueda.lista.find((campo) => campo.id == busqueda.criterio)
+                  .name
+              : busqueda.criterio
+            : busqueda.criterio
+        }}
+        <v-icon
+          v-if="key < busquedas.length - 1 && busqueda.union == 'and'"
+          right
+          color="red"
+          >linear_scale</v-icon
+        >
+        <v-icon
+          v-if="key < busquedas.length - 1 && busqueda.union == 'or'"
+          right
+          color="blue"
+          >merge_type</v-icon
+        >
+      </v-chip>
+    </div>
+</div>
 </template>
 
 <script>

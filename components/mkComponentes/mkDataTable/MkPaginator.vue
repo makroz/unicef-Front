@@ -1,5 +1,5 @@
 <template>
-  <v-card class="d-flex justify-space-between">
+  <v-card class="d-flex justify-space-between hidden-print-only ">
     <v-card flat center>
       <v-pagination
         class="ma-3"

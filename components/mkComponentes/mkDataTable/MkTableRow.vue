@@ -6,7 +6,7 @@
           getClass(datos.item),
         ]"
   >
-    <td  style="padding: 0 0 0 12px" v-if="acciones['sel'].visible">
+    <td  style="padding: 0 0 0 12px" v-if="acciones['sel'].visible" class="hidden-print-only">
       <v-checkbox
         v-if="rowVisible(acciones['sel'],datos.item)"
         pa-0 ma-0
@@ -18,9 +18,10 @@
 
     <td
       v-if="!$store.state.config.tbl_opts_p "
-      class="text-xs-center pa-0 ma-0" 
+      class="text-xs-center pa-0 ma-0 hidden-print-only" 
     >
       <mk-table-actions
+      
         :acciones="acciones"
         :item="datos.item"
         @callAction="callAction"
@@ -51,7 +52,7 @@
     </td>
     <td
       v-if="$store.state.config.tbl_opts_p && (can('edit') || can('del'))"
-      class="text-xs-center pa-0 ma-0"
+      class="text-xs-center pa-0 ma-0 hidden-print-only"
     >
       <mk-table-actions
         :acciones="acciones"

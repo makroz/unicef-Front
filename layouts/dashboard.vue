@@ -2,9 +2,6 @@
   <div id="appRoot">
     <template>
       <v-app id="inspire" class="app" data-app=''>
-          <div id="printArea" class="">
-          </div>
-
         <app-drawer class="app--drawer hidden-print-only" ></app-drawer>
         <app-toolbar class="app--toolbar hidden-print-only"></app-toolbar>
         <v-content >
@@ -114,5 +111,9 @@
     position absolute;
     bottom 0;
     width 100%;
-
+  
+  @media print 
+    .v-content
+      padding 0 !important
 </style>
+        
