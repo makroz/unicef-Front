@@ -1,5 +1,5 @@
 export default async function(ctx) {
-    return false
+    //return false
     ctx.store.commit("auth/setRutaBack", ctx.route.fullPath);
     if (!(await ctx.store.dispatch('auth/getUser')).id) {
         ctx.redirect("/login/")

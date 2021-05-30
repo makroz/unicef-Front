@@ -1,6 +1,6 @@
 export default async function(ctx) {
     //console.log('authAcces:',ctx)
-    return false
+    //return false
     ctx.store.commit("auth/setRutaBack", ctx.route.fullPath);
     let access = ctx.route.matched.find(
         v => v.path == ctx.route.fullPath

@@ -5,6 +5,8 @@ import { c, imprimirElemento } from '@/components/mkComponentes/lib/MkUtils.js'
 const _lap = process.env.mkConfig.authKey
 
 export const state = () => ({
+    timer: false,
+    timerExpire: false,
     pwa: false,
     authToken: null,
     authUser: null,
@@ -42,6 +44,9 @@ export const state = () => ({
 })
 
 export const getters = {
+    getTimer: (state) => {
+        return state.timer
+    },
     getCtOnly: (state) => (url, paginate = false, lista = 1) => {
         if (!state.cacheActive) {
             return ''
@@ -139,8 +144,8 @@ export const getters = {
             return []
         }
         let resp = {}
-        listas.forEach(lista => {
-            let mod = lista.mod;
+        listas.forEach((lista) => {
+            let mod = lista.mod
             if (lista.lista && lista.lista != '') {
                 mod = lista.lista
             }
@@ -244,6 +249,46 @@ export const mutations = {
     setPwa(state, valor) {
         state.pwa = valor
     },
+    setTimer(state, valor = false) {
+        let token = valor
+        let revExpired = function(me, state, expire = false) {
+            //console.log(expire, new Date((expire + '000') * 1))
+            if (Date.now() > new Date((expire + '000') * 1)) {
+                console.log('Sesion Expirada!!!')
+                clearInterval(state.timer)
+                    // state.setAuthToken = null
+                    // state.timer = false
+                me.$router.push('/login/')
+                return false
+            }
+        }
+        if (state.timer === false) {
+            if (token == false) {
+                token = state.authToken + ''
+            }
+            //console.log('Token es:', token)
+            if (token != 'null') {
+                var base64Url = token.split('.')[1]
+                var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+                var jsonPayload = decodeURIComponent(
+                    atob(base64)
+                    .split('')
+                    .map(function(c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+                    })
+                    .join('')
+                )
+                state.timerExpire = JSON.parse(jsonPayload).exp
+                revExpired(this, state, state.timerExpire)
+                state.timer = setInterval(revExpired,
+                    1000 * 60 * 5,
+                    this,
+                    state,
+                    state.timerExpire
+                )
+            }
+        }
+    },
     toggle_tbl_opts_p(state) {
         state.tbl_opts_p = !state.tbl_opts_p
     },
@@ -285,6 +330,7 @@ export const mutations = {
                 AES.encrypt(JSON.stringify(val), _lap).toString()
             )
         } else {
+            //state.timer = false
             localStorage.removeItem('AuthToken')
         }
         state.authToken = val
@@ -401,6 +447,7 @@ export const actions = {
             if (data.ok > 0) {
                 commit('SET_USER', data.data)
                 commit('setAuthToken', data._sid_)
+                commit('setTimer', data._sid_)
                 this.$axios.defaults.headers.common['Authorization'] = data._sid_
                     // if (this.state.auth.rutaBack == null) {
                     //     commit("setRutaBack", "/");
@@ -424,20 +471,26 @@ export const actions = {
         return false
     },
     async getUser({ getters, commit, dispatch }) {
-        const token = getters.getToken + ''
-        if (token != 'null') {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            let d = JSON.parse(jsonPayload)
-                //console.log(d, new Date((d.exp + '000') * 1))
-            if (Date.now() > new Date((d.exp + '000') * 1)) {
-                console.log('Sesion Expirada!!!')
-                return false
-            }
-        }
+        // const token = getters.getToken + ''
+        // if (token != 'null') {
+        //     var base64Url = token.split('.')[1]
+        //     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+        //     var jsonPayload = decodeURIComponent(
+        //         atob(base64)
+        //         .split('')
+        //         .map(function(c) {
+        //             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        //         })
+        //         .join('')
+        //     )
+        //     let d = JSON.parse(jsonPayload)
+        //         //console.log(d, new Date((d.exp + '000') * 1))
+        //     if (Date.now() > new Date((d.exp + '000') * 1)) {
+        //         console.log('Sesion Expirada!!!')
+        //         me.$router.push('/login/')
+        //         return false
+        //     }
+        // }
 
         if (!getters.getUser) {
             return await dispatch('reloadUser', false)
@@ -452,6 +505,7 @@ export const actions = {
         let me = this
         me.$axios.defaults.headers.common['Authorization'] = ''
         commit('SET_USER', null)
+        commit('setAuthToken', null)
         commit('setAcceso', false)
             //commit("setRutaBack", this.$router.history._startLocation);
             //console.log('logout:',this.$router.history._startLocation);

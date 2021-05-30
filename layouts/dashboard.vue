@@ -93,6 +93,9 @@
           this.rightDrawer=false;
         }
       }
+    },
+    mounted() {
+      this.$store.commit('auth/setTimer')
     }
   }
 </script>

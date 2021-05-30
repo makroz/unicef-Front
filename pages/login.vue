@@ -74,7 +74,8 @@ export default {
     }
   },
   mounted() {
-     console.log('mounted login:',this.$route);
+     //console.log('mounted login:',this.$route);
+     //this.$store.commit('auth/setAuthToken', null)
     // console.log('mounted 2 login:',window.history.length);
   }
 };

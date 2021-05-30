@@ -41,6 +41,7 @@
                       {{ evalua.beneficiario_coord.name }}
                     </v-flex>
                     <v-flex shrink>
+                      {{ evalua.estado==1?'No Realizado':'Realizado' }} --  
                       {{ formatDT(evalua.created_at) }}
                     </v-flex>
                   </v-layout>
@@ -552,7 +553,7 @@ export default {
           lColor: 'lColor',
         },
       ],
-      lUsuarios: [],
+      
       lEstados: ['Abierto', 'En progreso', 'Cerrado', 'Verificado'],
       lColor: [
         'red--text',
@@ -560,8 +561,11 @@ export default {
         'green--text text--lighten-1',
         'green--text',
       ],
+      lUsuarios: [],
+      lCateg: [],
       lRutas: [],
       lPreguntas: [],
+      lServicios: [],
       item: {
         nEval: [],
         respuesta: 0,

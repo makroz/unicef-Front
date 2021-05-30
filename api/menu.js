@@ -5,12 +5,12 @@ const Menu = [
         name: 'dashboard',
         href: '/dashboard/'
     },
-    {
-        title: 'Recolectores',
-        icon: 'face',
-        name: 'recolector',
-        href: '/recoleccion/recolector/'
-    },
+    // {
+    //     title: 'Recolectores',
+    //     icon: 'face',
+    //     name: 'recolector',
+    //     href: '/recoleccion/recolector/'
+    // },
     {
         name: 'evaluaciones',
         title: 'Modulo Evaluaciones',
