@@ -1,6 +1,6 @@
 <template >
   <div>
-    <v-dialog v-model="modal" :fullscreen="printing" :scrollable="printing" :persistent="printing" :max-width="printing?'100%':'80%'" style="border:0" >
+    <v-dialog v-model="modal" :fullscreen="printing" :scrollable="!printing" persistent :max-width="printing?'100%':'80%'" style="border:0" >
       <v-card :class="[printing?'hidden-screen-only':'']" >
         <v-card-title class="headline py-1 hidden-print-only" >
           <span v-html="titulo">

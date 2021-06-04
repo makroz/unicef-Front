@@ -301,7 +301,6 @@ export default {
       }
     },
     colorStock(item, e) {
-      console.log('clorstock', item, e)
       return e.stock <= e.min_stock ? 'red--text text--darken-4' : ''
     },
     getSaldo(i,e){

@@ -394,7 +394,6 @@ export default {
             }
             this.lServices.push({
               sol_id: e.id,
-              cantidad: e.cant,
               fecha: e.created_at,
               estado: e.estado,
               evaluaciones_id: e.evaluaciones_id,
@@ -408,6 +407,8 @@ export default {
               ...serv,
               ...serv_,
               selected: sel,
+              cantidad: e.cant,
+              cant: e.cant,
             })
             //console.log('service', this.lServices)
           }

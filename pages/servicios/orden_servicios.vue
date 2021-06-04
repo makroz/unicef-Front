@@ -504,6 +504,8 @@ export default {
             ...serv,
             ...serv_,
             selected: sel,
+            cantidad: e.cant,
+            cant: e.cant,
           })
           //console.log('service', this.lServices)
         }
