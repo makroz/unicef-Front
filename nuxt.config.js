@@ -16,7 +16,7 @@ module.exports = {
      ** Headers of the page
      */
     head: {
-        title: "Unicef v.1.3.1",
+        title: "Unicef v.1.3.5",
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
