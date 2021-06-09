@@ -43,26 +43,45 @@
         v-model="formValid"
         lazy-validation
       >
+      {{ lTabla.moduloB }}
         <v-layout align-center justify-center row fill-height wrap>
-          <v-flex>
+          <v-flex :class="lTabla.moduloB=='Nuevo Modulo'?'md1':'md3'">
             <v-select
               v-model="lTabla.moduloB"
               :items="lDatos.modulos.data"
-              label="Modulo BackEnd"
+              label="Grupo Modulo BackEnd"
               :rules="[rules.required]"
               validate-on-blur
             ></v-select>
           </v-flex>
-          <v-flex>
+          <v-flex md-2 v-if="lTabla.moduloB=='Nuevo Modulo'" >
+            <v-text-field
+              label="Nombre Grupo Backend"
+              v-model="lTabla.idModB"
+              :rules="lTabla.moduloB=='Nuevo Modulo'?[rules.required]:[]"
+              validate-on-blur
+            >
+            </v-text-field>
+          </v-flex>
+          <v-flex :class="lTabla.moduloF=='Nuevo Modulo'?'md1':'md3'">
             <v-select
               v-model="lTabla.moduloF"
               :items="lDatos.modulosFront.data"
-              label="Modulo FrontEnd"
+              label="Grupo Modulo FrontEnd"
               :rules="[rules.required]"
               validate-on-blur
             ></v-select>
           </v-flex>
-          <v-flex md-4>
+          <v-flex md-2 v-if="lTabla.moduloF=='Nuevo Modulo'" >
+            <v-text-field
+              label="Nombre Grupo Front"
+              v-model="lTabla.idModF"
+              :rules="lTabla.moduloF=='Nuevo Modulo'?[rules.required]:[]"
+              validate-on-blur
+            >
+            </v-text-field>
+          </v-flex>
+          <v-flex md-3>
             <v-text-field
               label="Id Modulo"
               v-model="lTabla.nameMod"
@@ -71,7 +90,7 @@
             >
             </v-text-field>
           </v-flex>
-          <v-flex md-4>
+          <v-flex md-3>
             <v-text-field
               v-model="lTabla.titMod"
               label="Titulo del Modulo"
