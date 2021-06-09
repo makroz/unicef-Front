@@ -1,10 +1,6 @@
 const Menu = [
     { header: 'menu Principal' },
-    {
-        title: 'Dashboard',
-        name: 'dashboard',
-        href: '/dashboard/'
-    },
+    { title: 'Dashboard', name: 'dashboard', href: '/dashboard/' },
     {
         name: 'evaluaciones',
         title: 'Modulo Evaluaciones',
@@ -19,16 +15,9 @@ const Menu = [
         title: 'Modulo Rutas',
         name: 'rutas',
         icon: 'face',
-        items: [{
-                name: 'ruteos',
-                title: 'Ruteos',
-                href: '/rutas/ruteos/'
-            },
-            {
-                name: 'rutas',
-                title: 'Rutas',
-                href: '/rutas/rutas/'
-            }
+        items: [
+            { name: 'ruteos', title: 'Ruteos', href: '/rutas/ruteos/' },
+            { name: 'rutas', title: 'Rutas', href: '/rutas/rutas/' }
         ]
     },
     {
@@ -36,11 +25,8 @@ const Menu = [
         group: 'preguntas',
         component: 'preguntas',
         icon: 'face',
-        items: [{
-                name: 'categ',
-                title: 'Categorias',
-                href: '/preguntas/categ/'
-            },
+        items: [
+            { name: 'categ', title: 'Categorias', href: '/preguntas/categ/' },
             {
                 name: 'preguntas',
                 title: 'Preguntas',
@@ -58,11 +44,7 @@ const Menu = [
                 title: 'Solicitud de Servicios',
                 href: '/servicios/solicitudServicios/'
             },
-            {
-                name: 'servicios',
-                title: 'Servicios',
-                href: '/servicios/servicios/'
-            },
+            { name: 'servicios', title: 'Servicios', href: '/servicios/servicios/' },
             {
                 name: 'orden_servicios',
                 title: 'Ordenes de Servicios',
@@ -81,11 +63,8 @@ const Menu = [
             {
                 name: 'auxiliaresServ',
                 title: 'Auxiliares',
-                items: [{
-                        name: 'medidas',
-                        title: 'Medidas',
-                        href: '/servicios/medidas/'
-                    },
+                items: [
+                    { name: 'medidas', title: 'Medidas', href: '/servicios/medidas/' },
                     {
                         name: 'forma_pagos',
                         title: 'Formas de Pago',
@@ -122,11 +101,7 @@ const Menu = [
                         title: 'Entidades',
                         href: '/beneficiarios/entidades/'
                     },
-                    {
-                        name: 'dptos',
-                        title: 'Dptos',
-                        href: '/beneficiarios/dptos/'
-                    },
+                    { name: 'dptos', title: 'Dptos', href: '/beneficiarios/dptos/' },
                     {
                         name: 'municipios',
                         title: 'Municipios',
@@ -137,16 +112,8 @@ const Menu = [
                         title: 'Distritos',
                         href: '/beneficiarios/distritos/'
                     },
-                    {
-                        name: 'zonas',
-                        title: 'Zonas',
-                        href: '/beneficiarios/zonas/'
-                    },
-                    {
-                        name: 'epsas',
-                        title: 'Epsas',
-                        href: '/beneficiarios/epsas/'
-                    },
+                    { name: 'zonas', title: 'Zonas', href: '/beneficiarios/zonas/' },
+                    { name: 'epsas', title: 'Epsas', href: '/beneficiarios/epsas/' },
                     {
                         name: 'descoms',
                         title: 'Descoms',
@@ -174,7 +141,7 @@ const Menu = [
                     },
                     {
                         name: 'tipo_banos',
-                        title: 'Tipos de baños',
+                        title: 'Tipos de ba\u00f1os',
                         href: '/beneficiarios/tipo_banos/'
                     },
                     {
@@ -184,7 +151,7 @@ const Menu = [
                     },
                     {
                         name: 'info_metodos',
-                        title: 'Métodos de Información',
+                        title: 'M\u00e9todos de Informaci\u00f3n',
                         href: '/beneficiarios/info_metodos/'
                     }
                 ]
@@ -252,22 +219,15 @@ const Menu = [
         title: 'Modulo Usuarios',
         name: 'usuarios',
         icon: 'face',
-        items: [{
-                name: 'roles',
-                title: 'Roles',
-                href: '/usuarios/roles/'
-            },
+        items: [
+            { name: 'roles', title: 'Roles', href: '/usuarios/roles/' },
             {
                 name: 'permisos',
                 title: 'Permisos',
                 badge: 'new',
                 href: '/usuarios/permisos/'
             },
-            {
-                name: 'grupos',
-                title: 'Grupos',
-                href: '/usuarios/grupos/'
-            },
+            { name: 'grupos', title: 'Grupos', href: '/usuarios/grupos/' },
             {
                 name: 'usuarios',
                 title: 'Usuarios',
@@ -276,9 +236,16 @@ const Menu = [
             }
         ]
     },
+    { name: 'divider1', divider: true },
     {
-        name: 'divider1',
-        divider: true
+        name: 'recolector',
+        title: 'Recolector',
+        icon: 'face',
+        items: [{
+            name: 'vehiculos_marcas',
+            title: 'Marcas de Vehiculos',
+            href: '/recolector/vehiculos_marcas/'
+        }]
     }
 ]
 export default Menu
