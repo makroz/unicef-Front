@@ -26,15 +26,19 @@
           <v-icon>keyboard_return</v-icon>
         </v-btn>
         Trabajando con {{ lTabla.name.toUpperCase() }}
-              <v-btn dark
-              large
-              absolute
-              top
-              right
-              fab color="red" @click="procesar()" title="Procesar">
-        <v-icon>settings</v-icon>
-      </v-btn>
-
+        <v-btn
+          dark
+          large
+          absolute
+          top
+          right
+          fab
+          color="red"
+          @click="procesar()"
+          title="Procesar"
+        >
+          <v-icon>settings</v-icon>
+        </v-btn>
       </h4>
       <v-form
         ref="form1"
@@ -43,9 +47,9 @@
         v-model="formValid"
         lazy-validation
       >
-      {{ lTabla.moduloB }}
+        {{ lTabla.moduloB }}
         <v-layout align-center justify-center row fill-height wrap>
-          <v-flex :class="lTabla.moduloB=='Nuevo Modulo'?'md1':'md3'">
+          <v-flex :class="lTabla.moduloB == 'Nuevo Modulo' ? 'md1' : 'md3'">
             <v-select
               v-model="lTabla.moduloB"
               :items="lDatos.modulos.data"
@@ -54,16 +58,16 @@
               validate-on-blur
             ></v-select>
           </v-flex>
-          <v-flex md-2 v-if="lTabla.moduloB=='Nuevo Modulo'" >
+          <v-flex md-2 v-if="lTabla.moduloB == 'Nuevo Modulo'">
             <v-text-field
               label="Nombre Grupo Backend"
               v-model="lTabla.idModB"
-              :rules="lTabla.moduloB=='Nuevo Modulo'?[rules.required]:[]"
+              :rules="lTabla.moduloB == 'Nuevo Modulo' ? [rules.required] : []"
               validate-on-blur
             >
             </v-text-field>
           </v-flex>
-          <v-flex :class="lTabla.moduloF=='Nuevo Modulo'?'md1':'md3'">
+          <v-flex :class="lTabla.moduloF == 'Nuevo Modulo' ? 'md1' : 'md3'">
             <v-select
               v-model="lTabla.moduloF"
               :items="lDatos.modulosFront.data"
@@ -72,11 +76,11 @@
               validate-on-blur
             ></v-select>
           </v-flex>
-          <v-flex md-2 v-if="lTabla.moduloF=='Nuevo Modulo'" >
+          <v-flex md-2 v-if="lTabla.moduloF == 'Nuevo Modulo'">
             <v-text-field
               label="Nombre Grupo Front"
               v-model="lTabla.idModF"
-              :rules="lTabla.moduloF=='Nuevo Modulo'?[rules.required]:[]"
+              :rules="lTabla.moduloF == 'Nuevo Modulo' ? [rules.required] : []"
               validate-on-blur
             >
             </v-text-field>
@@ -219,6 +223,15 @@
               label="Tipo de Campo en Formulario"
             ></v-select>
           </v-flex>
+          <v-btn
+            v-if="item.typeF == 'sel'"
+            icon
+            color="green"
+            @click="modalSel = true"
+            small
+          >
+            <v-icon>ballot</v-icon>
+          </v-btn>
         </v-layout>
         <v-layout row wrap v-if="item.typeF == 'selDB'">
           <v-flex md-6>
@@ -242,6 +255,46 @@
         </v-layout>
       </v-container>
     </mk-form>
+
+    <mk-form
+      ref="mkFormSel"
+      :modal="modalSel"
+      tit="Lista de Seleccion"
+      accion="edit"
+      @closeDialog="modalSel = false"
+      @grabarItem="modalSel = false"
+      width="50%"
+    >
+      <v-container grid-list-md fluid class="white">
+        <v-btn
+          icon
+          color="green"
+          @click="item.selList.push({ value: '', text: '' })"
+          small
+        >
+          <v-icon>add</v-icon>
+        </v-btn>
+
+        <v-layout v-for="(lista, index) in item.selList" :key="index" row wrap>
+          <v-flex md5>
+            <v-text-field label="Value" v-model="lista.value"> </v-text-field>
+          </v-flex>
+          <v-flex md5>
+            <v-text-field label="Texto" v-model="lista.text"> </v-text-field>
+          </v-flex>
+          <v-flex md1>
+            <v-btn
+              icon
+              color="red"
+              @click="item.selList.splice(index, 1)"
+              small
+            >
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </mk-form>
   </div>
 </template>
 
@@ -252,7 +305,7 @@ import Swal from 'sweetalert2'
 import {
   c,
   getTitFromName,
-  getFirstUpperCase,
+  getFirstUpperCase
 } from '@/components/mkComponentes/lib/MkUtils.js'
 
 export default {
@@ -262,6 +315,7 @@ export default {
   name: 'IA',
   data() {
     return {
+      modalSel: false,
       formValid: true,
       tabs: 0,
       lDatos: [],
@@ -270,26 +324,26 @@ export default {
       lRulesFront: {
         global: [
           { text: 'Ninguna', value: '-1' },
-          { text: 'Requerido', value: 'required' },
+          { text: 'Requerido', value: 'required' }
         ],
         int: [
           { text: 'Numerico', value: 'num' },
           { text: 'Maximo', value: 'max' },
-          { text: 'Minimo', value: 'min' },
-        ],
+          { text: 'Minimo', value: 'min' }
+        ]
       },
       lRulesBack: {
         global: [
           { text: 'Ninguna', value: '-1' },
-          { text: 'Requerido', value: 'required' },
+          { text: 'Requerido', value: 'required' }
         ],
         int: [
           { text: 'Numerico', value: 'num' },
           { text: 'Maximo', value: 'max' },
-          { text: 'Minimo', value: 'min' },
+          { text: 'Minimo', value: 'min' }
         ],
 
-        status: [{ text: 'Status', value: 'status' }],
+        status: [{ text: 'Status', value: 'status' }]
       },
       lRulesF: [],
       lRulesB: [],
@@ -297,7 +351,7 @@ export default {
         { text: 'ninguna', value: '-1' },
         { text: 'Derecha', value: 'r' },
         { text: 'Izquierda', value: 'l' },
-        { text: 'Centro', value: 'c' },
+        { text: 'Centro', value: 'c' }
       ],
       lTypeF: [
         { text: 'Texto', value: 'text' },
@@ -312,8 +366,8 @@ export default {
         { text: 'Seleccion DB', value: 'selDB' },
         { text: 'Seleccion DB Multiple', value: 'selDBMul' },
         { text: 'Check', value: 'check' },
-        { text: 'Radio', value: 'radio' },
-      ],
+        { text: 'Radio', value: 'radio' }
+      ]
     }
   },
   methods: {
@@ -338,6 +392,7 @@ export default {
       this.lTabla.nameMod = this.lTabla.name
       this.lTabla.titMod = getFirstUpperCase(getTitFromName(this.lTabla.name))
       this.lTabla.cols.forEach((c) => {
+        c.selList = []
         if (!c.lList || c.lList == '') {
           c.lList = getFirstUpperCase(c.COLUMN_NAME)
         }
@@ -353,7 +408,14 @@ export default {
         c.rulesB = []
         c.typeF = 'text'
         if (
-          ['created_at', 'updated_at', 'deleted_at','created_by', 'updated_by', 'deleted_by'].indexOf(c.COLUMN_NAME) > -1
+          [
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'created_by',
+            'updated_by',
+            'deleted_by'
+          ].indexOf(c.COLUMN_NAME) > -1
         ) {
           c.form = false
           c.list = false
@@ -372,25 +434,24 @@ export default {
           }
         }
         //c.lList=c.DATA_TYPE
-        if (['int', 'tinyint','decimal'].indexOf(c.DATA_TYPE) > -1) {
-          if (c.DATA_TYPE=='decimal'){
-          this.addRules('num', c.rulesF)
-          this.addRules('num', c.rulesB)
-          c.typeF = 'num'
-          //c.typeB = 'num'
-
-          }else{
-          this.addRules('num', c.rulesF)
-          this.addRules('num', c.rulesB)
-          c.typeF = 'num'
-          //c.typeB = 'num'
+        if (['int', 'tinyint', 'decimal'].indexOf(c.DATA_TYPE) > -1) {
+          if (c.DATA_TYPE == 'decimal') {
+            this.addRules('num', c.rulesF)
+            this.addRules('num', c.rulesB)
+            c.typeF = 'num'
+            //c.typeB = 'num'
+          } else {
+            this.addRules('num', c.rulesF)
+            this.addRules('num', c.rulesB)
+            c.typeF = 'num'
+            //c.typeB = 'num'
           }
           c.align = 'r'
         }
         if (['char', 'varchar'].indexOf(c.DATA_TYPE) > -1) {
           c.typeF = 'text'
           c.align = 'l'
-          if (c.CHARACTER_MAXIMUM_LENGTH==1){
+          if (c.CHARACTER_MAXIMUM_LENGTH == 1) {
             c.typeF = 'check'
           }
         }
@@ -401,7 +462,7 @@ export default {
           c.list = false
         }
 
-        if (['date','time','datetime'].indexOf(c.DATA_TYPE) > -1) {
+        if (['date', 'time', 'datetime'].indexOf(c.DATA_TYPE) > -1) {
           c.typeF = c.DATA_TYPE
           c.align = 'c'
         }
@@ -492,12 +553,12 @@ export default {
         'post'
       )
       console.log('Respuesta:', respuesta)
-    },
+    }
   },
 
   async mounted() {
     this.lDatos = await this.getDataBackend('IA', '*')
-  },
+  }
 }
 </script>
 <style scoped></style>

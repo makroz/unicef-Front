@@ -254,7 +254,7 @@ export const mutations = {
         let revExpired = function(me, state, expire = false) {
             //console.log(expire, new Date((expire + '000') * 1))
             if (Date.now() > new Date((expire + '000') * 1)) {
-                console.log('Sesion Expirada!!!')
+                console.log('Sesion Expirada!!!', Date.now(), new Date((expire + '000') * 1))
                 clearInterval(state.timer)
                     // state.setAuthToken = null
                     // state.timer = false

@@ -635,18 +635,6 @@ export default {
         return e.estado == 4 ? true : false
       },
     })
-    // this.addOptionTable({
-    //   id: 'com',
-    //   color: 'primary',
-    //   icon: 'download_for_offline',
-    //   visible: this.can('edit', 'estado-comercial'),
-    //   action: 'expNota',
-    //   grupos: ['action'],
-    //   orden: 12,
-    //   visibleRow: function (e) {
-    //     return e.estado > 4 ? true : false
-    //   },
-    // })
 
     this.addOptionTable({
       id: 'finalizar',
@@ -673,7 +661,7 @@ export default {
       color: 'orange',
       icon: 'assignment_turned_in',
       text: 'Autorizar',
-      visible: this.can('show'),
+      visible: this.can('edit', 'estado-autorizar'),
       action: 'filtrar',
       grupos: ['filtros'],
       orden: 2,
@@ -683,7 +671,7 @@ export default {
       color: 'red',
       icon: 'done_all',
       text: 'Verificar',
-      visible: this.can('show'),
+      visible: this.can('edit', 'estado-verificar'),
       action: 'filtrar',
       grupos: ['filtros'],
       orden: 1,
