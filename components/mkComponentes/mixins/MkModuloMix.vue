@@ -547,12 +547,13 @@ export default {
       }
       this.formVerif.resetValidation()
 
-      this.item = Object.assign({}, data)
-      data = this.item
+      this.item = JSON.parse(JSON.stringify(data))
+      //this.item = Object.assign({}, data)
+      //data = this.item
       if (await this.beforeOpen(accion, this.item) == false) {
         return false
       }
-
+      this.item = JSON.parse(JSON.stringify(this.item))
       //mkImg
       if (this.MkImgMix) {
         this.mkImgData.remove = true
@@ -600,7 +601,7 @@ export default {
           'Ver ' +
           this.titModulo
       }
-      this.afterOpen(accion, data)
+      this.afterOpen(accion, this.item)
       if (open) {
         this.modal = true
       }

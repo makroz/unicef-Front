@@ -51,34 +51,77 @@
             label="Monitor Asignado"
             :readonly="accion == 'show'"
           ></v-select>
-          <v-layout wrap>
-            <v-flex sx12 sm12 md6>
-              <v-autocomplete
-                v-model="item.beneficiarios"
-                :items="lBeneficiarios"
-                :filter="customFilter"
-                color="primary"
-                item-text="name"
-                label="Beneficiarios"
-                item-value="id"
-                item-avatar="id"
-                multiple
-                :clearable="item.id >= 0"
-                chips
-                deletable-chips
-                solo-inverted
-                counter
-                :readonly="accion == 'show'"
-              >
-              </v-autocomplete>
+          <v-layout row wrap>
+            <v-flex sm6 v-if="accion!='show'" >
+              <v-card class="pa-2" >
+                <v-toolbar color="indigo" dark dense>
+                  <v-toolbar-title class="body-1"
+                    >Beneficiarios Disponibles</v-toolbar-title
+                  >
+                </v-toolbar>
+                <v-list style="height: 300px;overflow-y: scroll">
+                  <v-list-tile v-for="benef in lDisponibles" :key="benef.id">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ benef.name }}</v-list-tile-title>
+                    </v-list-tile-content>
+
+                    <v-list-tile-action>
+                      <v-icon color="green" @click="addBenef(item, benef.id)"
+                        >add_circle</v-icon
+                      >
+                    </v-list-tile-action>
+                  </v-list-tile>
+                </v-list>
+              </v-card>
             </v-flex>
-            <v-flex md6>
-              <div id="map-wrap" style="height: 200px; width: 100%">
+            <v-flex :class="accion!='show'?'sm6':'sm12'" >
+              <v-card class="pa-2" >
+                <v-toolbar color="indigo" dark dense>
+                  <v-toolbar-title class="body-1"
+                    >Beneficiarios de la Ruta</v-toolbar-title
+                  >
+                </v-toolbar>
+                <v-list style="height: 300px;overflow-y: scroll">
+                  <draggable
+                    v-model="item.beneficiarios"
+                    @change="onChangeSort"
+                    :disabled="accion=='show'"
+                  >
+                    <v-list-tile
+                      v-for="(benefSel, index) in item.beneficiarios"
+                      :key="index"
+                    >
+                      <v-list-tile-action>
+                        <v-icon color="blue">more_vert</v-icon>
+                      </v-list-tile-action>
+
+                      <v-list-tile-content>
+                        <v-list-tile-title>{{
+                          getDataLista(lBeneficiarios, benefSel)
+                        }}</v-list-tile-title>
+                      </v-list-tile-content>
+
+                      <v-list-tile-action v-if="accion!='show'">
+                        <v-icon
+                          color="red"
+                          @click="item.beneficiarios.splice(index, 1)"
+                          >backspace</v-icon
+                        >
+                      </v-list-tile-action>
+                    </v-list-tile>
+                  </draggable>
+                </v-list>
+              </v-card>
+            </v-flex>
+          </v-layout>
+          <v-layout wrap>
+            <v-flex md12>
+              <div id="map-wrap" style="height: 350px; width: 100%">
                 <client-only>
                   <l-map
                     :zoom="zoom"
                     :center="center"
-                    style="height: 200px; width: 100%"
+                    style="height: 350px; width: 100%"
                     ref="mymap"
                   >
                     <l-tile-layer
@@ -94,9 +137,9 @@
                         :draggable="false"
                         :visible="true"
                       >
-                      <l-tooltip>
-                            {{ getNameBene(marker) }}
-                          </l-tooltip>
+                        <l-tooltip>
+                          {{ getNameBene(marker) }}
+                        </l-tooltip>
                       </l-marker>
                     </div>
                   </l-map>
@@ -112,11 +155,12 @@
 
 <script>
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
+import draggable from 'vuedraggable'
 
 export default {
   middleware: ['authAccess'],
   mixins: [MkModuloMix],
-  components: {},
+  components: {draggable},
   name: 'Rutas',
   data() {
     return {
@@ -131,7 +175,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Nombre',
@@ -139,14 +183,14 @@ export default {
           width: '250px',
           headers: true,
           type: 'text',
-          search: true,
+          search: true
         },
         {
           text: 'Descripcion',
           value: 'descrip',
           headers: true,
           type: 'text',
-          search: true,
+          search: true
         },
         {
           text: 'Monitor',
@@ -156,7 +200,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lUsuarios,
+          lista: this.lUsuarios
         },
         {
           text: 'Beneficiarios',
@@ -165,30 +209,58 @@ export default {
           width: '50px',
           headers: true,
           type: 'count',
-          search: false,
-
-        },
+          search: false
+        }
       ],
       lUsuarios: [],
       lBeneficiarios: [],
       center: [-17.783373986957255, -63.18209478792436],
       zoom: 13,
+      item: {
+        beneficiarios: []
+      }
+    }
+  },
+  computed: {
+    lDisponibles() {
+      if (!this.item.beneficiarios) {
+        return this.lBeneficiarios
+      }
+      return this.lBeneficiarios.filter(
+        (e) => this.item.beneficiarios.indexOf(e.id) == -1
+      )
     }
   },
   methods: {
-    getNameBene(marker){
-    let name=(this.lBeneficiarios.filter((e) => e.id == marker)) 
-    if (name && name.length>0){
-      return name[0].name
-    }
-    return ''
+    onChangeSort(a, b, c) {
+      console.log('change', a, b, c)
+    },
+    addBenef(item, benef) {
+      if (item.beneficiarios) {
+        item.beneficiarios.push(benef)
+      } else {
+        item.beneficiarios = [benef]
+      }
+    },
+    getNameBene(marker) {
+      let name = this.lBeneficiarios.filter((e) => e.id == marker)
+      if (name && name.length > 0) {
+        return name[0].name
+      }
+      return ''
     },
     getMarker(id, item, index) {
       //let marker={ lng: lat, lat: lng };
       let lmarker = this.lBeneficiarios.filter((e) => e.id == id)
       let marker = this.center
       //console.log('lmarker',lmarker,id,this.lBeneficiarios)
-      if (lmarker.length > 0 && lmarker[0].lat!='' && lmarker[0].lat!=null && lmarker[0].lng!='' && lmarker[0].lng!=null ) {
+      if (
+        lmarker.length > 0 &&
+        lmarker[0].lat != '' &&
+        lmarker[0].lat != null &&
+        lmarker[0].lng != '' &&
+        lmarker[0].lng != null
+      ) {
         marker = [lmarker[0].lat, lmarker[0].lng]
       }
 
@@ -210,7 +282,7 @@ export default {
       // Get all visible Markers
       let map = this.$refs.mymap.mapObject
       const visibleMarkers = []
-      map.eachLayer(function (layer) {
+      map.eachLayer(function(layer) {
         if (layer instanceof L.Marker) {
           visibleMarkers.push(layer)
         }
@@ -228,16 +300,19 @@ export default {
         // Fit the map with the visible markers bounds
         map.flyToBounds(markersBounds, {
           padding: L.point(36, 36),
-          animate: true,
+          animate: true
         })
       }
     },
 
     async beforeOpen(accion, data = {}) {
+      if (accion == 'add') {
+        data.beneficiarios = []
+      }
       this.lBeneficiarios = await this.getListaBackend(
         'Rutas/beneficiarios/' + data.id
       )
-//      console.log(this.lBeneficiarios);
+      //      console.log(this.lBeneficiarios);
       setTimeout(() => {
         this.initMap()
       }, 300)
@@ -254,7 +329,7 @@ export default {
     remove(item) {
       const index = this.item.beneficiarios.indexOf(item.name)
       if (index >= 0) this.item.beneficiarios.splice(index, 1)
-    },
+    }
   },
 
   async mounted() {
@@ -263,10 +338,10 @@ export default {
         mod: 'Usuarios',
         campos: 'id,name',
         datos: { filtros: [['roles_slug', '=', 'monitor']] },
-        item: 'usuarios_id',
+        item: 'usuarios_id'
       }
     ])
-  },
+  }
 }
 </script>
 <style scoped>
