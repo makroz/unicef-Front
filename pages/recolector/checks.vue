@@ -34,7 +34,8 @@
           >
           </v-text-field>
         </v-flex>
-        <v-flex>
+        <v-layout row wrap>
+        <v-flex xs6>
           <v-text-field
             type='number'
             label='Orden'
@@ -45,7 +46,7 @@
           >
           </v-text-field>
         </v-flex>
-        <v-flex>
+        <v-flex xs6>
         <v-select
           :items='lTipo'
           item-text='name'
@@ -58,6 +59,7 @@
         >
         </v-select>
         </v-flex>
+        </v-layout>
       </mk-form>
     </v-container>
   </div>

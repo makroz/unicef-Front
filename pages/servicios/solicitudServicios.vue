@@ -27,7 +27,7 @@
         :bTitulo="bTitulo"
       >
         <mk-show-solicitud
-          v-if="accion!='add'"
+          v-if="accion != 'add'"
           :item="item"
           :accion="accion"
           :lBeneficiarios="lBeneficiarios"
@@ -40,8 +40,7 @@
         >
         </mk-show-solicitud>
 
-
-<v-container v-else grid-list-md fluid>
+        <template v-else>
           <v-layout row wrap>
             <v-flex xs12 sm8 md10>
               <v-autocomplete
@@ -123,10 +122,18 @@
                           {{ formatDT(servicio.fecha, false) }}
                         </div>
                         <div style="width: 30px; display: inline-block">
-                          {{ servicio.evaluaciones_id?servicio.evaluaciones_id:'--' }}
+                          {{
+                            servicio.evaluaciones_id
+                              ? servicio.evaluaciones_id
+                              : '--'
+                          }}
                         </div>
                         <div style="width: 85px; display: inline-block">
-                          {{ servicio.monitor?(servicio.monitor+' ').split(" ")[0]:'--' }}
+                          {{
+                            servicio.monitor
+                              ? (servicio.monitor + ' ').split(' ')[0]
+                              : '--'
+                          }}
                         </div>
                       </span>
                       {{ servicio.name }}
@@ -165,9 +172,7 @@
               </template>
             </v-list>
           </v-card>
-        </v-container>
-
-
+        </template>
       </mk-form>
     </v-container>
   </div>
@@ -197,7 +202,7 @@ export default {
           width: '50px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Fecha',
@@ -205,7 +210,7 @@ export default {
           width: '80px',
           headers: true,
           type: 'date',
-          search: true,
+          search: true
         },
         {
           text: 'Eval',
@@ -213,7 +218,7 @@ export default {
           width: '30px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Servicio',
@@ -222,7 +227,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: 'lServicios',
+          lista: 'lServicios'
         },
         {
           text: 'Beneficiario',
@@ -232,7 +237,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: 'lBeneficiarios',
+          lista: 'lBeneficiarios'
         },
 
         {
@@ -243,7 +248,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: 'lUsuarios',
+          lista: 'lUsuarios'
         },
         {
           text: 'Cant',
@@ -252,7 +257,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          align: 'right',
+          align: 'right'
         },
         {
           text: 'Estado',
@@ -263,7 +268,7 @@ export default {
           type: 'num',
           search: true,
           lista: 'lEstadosSol',
-          lColor: 'lColorSol',
+          lColor: 'lColorSol'
         },
         {
           text: 'Nota#',
@@ -272,14 +277,14 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
-        },
+          search: true
+        }
       ],
       // lUsuarios: [],
       // lBeneficiarios: [],
       // lServicios: [],
       itemData: {
-        epsa: '',
+        epsa: ''
       },
       bTitulo: '',
       //lServices: [],
@@ -293,7 +298,7 @@ export default {
       lMateriales: [],
       lMedidas: [],
       lForma_pagos: [],
-      lControl_calidades: [],
+      lControl_calidades: []
       //imgPrefix: 'solicitud_servicios',
     }
   },
@@ -303,7 +308,7 @@ export default {
       //console.log('cange',e,this.itemData,this.lBeneficiarios);
       if (!this.itemData) {
         this.itemData = {
-          epsa: '',
+          epsa: ''
         }
       }
     },
@@ -323,7 +328,7 @@ export default {
             cantidad: 1,
             estado: -1,
             selected: null,
-            ...e,
+            ...e
           })
         })
       } else {
@@ -332,7 +337,7 @@ export default {
         this.bTitulo = 'Revisar'
         let filtros = [
           ['beneficiarios_id', '=', data.beneficiarios_id],
-          ['estado', '=', data.estado],
+          ['estado', '=', data.estado]
         ]
         let lSol = await this.getDatasBackend(this.urlModulo, [
           {
@@ -340,9 +345,9 @@ export default {
             datos: {
               filtros: filtros,
               modulo: 'mkServicios',
-              relations: ['materiales', 'qa'],
-            },
-          },
+              relations: ['materiales', 'qa']
+            }
+          }
         ])
         lSol.SolicitudServicios.forEach((e) => {
           let serv = this.getDataLista(
@@ -361,7 +366,7 @@ export default {
                 realizado: false,
                 obs_sol: e.obs || '',
                 obs_verif: e.obs_verif || '',
-                materiales: [],
+                materiales: []
               }
             }
             let qa = {}
@@ -389,7 +394,7 @@ export default {
                 obs_sol: e.obs,
                 obs_verif: e.obs_verif,
                 materiales: e.materiales, //aqui
-                qa: qa,
+                qa: qa
               }
             }
             this.lServices.push({
@@ -408,7 +413,7 @@ export default {
               ...serv_,
               selected: sel,
               cantidad: e.cant,
-              cant: e.cant,
+              cant: e.cant
             })
             //console.log('service', this.lServices)
           }
@@ -447,7 +452,7 @@ export default {
           servicios.push({
             id: me.lServices[obj].id,
             cant: me.lServices[obj].cantidad,
-            sol_id: me.lServices[obj].sol_id,
+            sol_id: me.lServices[obj].sol_id
           })
         }
       }
@@ -462,7 +467,7 @@ export default {
       return (
         textOne.indexOf(searchText) > -1 || textTwo.indexOf(searchText) > -1
       )
-    },
+    }
   },
 
   async mounted() {
@@ -470,10 +475,10 @@ export default {
     edit.dblClic = false
     edit.icon = 'fact_check'
     edit.orden = 10
-    edit.visibleRow = function (e) {
+    edit.visibleRow = function(e) {
       return e.estado == 0 ? true : false
     }
-    this.setOptionTable('del').visibleRow = function (e) {
+    this.setOptionTable('del').visibleRow = function(e) {
       return e.estado == 0 ? true : false
     }
 
@@ -483,22 +488,22 @@ export default {
         mod: 'Beneficiarios',
         campos: 'id,name,epsa',
         datos: { _customFields: 1 },
-        item: 'beneficiarios_id',
+        item: 'beneficiarios_id'
       },
       {
         mod: 'Forma_pagos',
         campos: 'id,name',
-        datos: { modulo: 'mkServicios' },
+        datos: { modulo: 'mkServicios' }
       },
       {
         mod: 'Materiales',
         datos: { modulo: 'mkServicios' },
-        campos: 'id,name,medida_id',
+        campos: 'id,name,medida_id'
       },
       {
         mod: 'Medidas',
         datos: { modulo: 'mkServicios' },
-        campos: 'id,simbolo',
+        campos: 'id,simbolo'
       },
       {
         mod: 'Servicios',
@@ -506,14 +511,14 @@ export default {
         each: (e) => {
           e.cantidad = 1
           e.selected = false
-        },
+        }
       },
       {
         mod: 'Control_calidades',
         datos: { modulo: 'mkServicios' },
         campos: 'id,name,orden',
-        orden: 'orden',
-      },
+        orden: 'orden'
+      }
     ])
 
     // let listas = await this.getDatasBackend(this.urlModulo, [
@@ -530,7 +535,7 @@ export default {
     //       },
     //       { mod: 'Servicios', item: 'servicios_id' },
     //     ])
-  },
+  }
 }
 </script>
 <style scope >

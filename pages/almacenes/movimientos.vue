@@ -24,153 +24,155 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-        <v-container grid-list-md fluid pa-0>
-          <v-layout row wrap>
-            <v-flex sm6>
-              <v-text-field
-                type="text"
-                label="Fecha"
-                :value="item.created_at || formatDT(new Date(), false)"
-                disabled
-                hideDetails
-              >
-              </v-text-field>
-            </v-flex>
-            <v-flex sm6>
-              <v-text-field
-                label="Ref"
-                v-model="item.ref"
-                validate-on-blur
-                :readonly="accion == 'show'"
-                hideDetails
-              >
-              </v-text-field>
-            </v-flex>
+        <v-layout row wrap>
+          <v-flex sm6>
+            <v-text-field
+              type="text"
+              label="Fecha"
+              :value="item.created_at || formatDT(new Date(), false)"
+              disabled
+              hideDetails
+            >
+            </v-text-field>
+          </v-flex>
+          <v-flex sm6>
+            <v-text-field
+              label="Ref"
+              v-model="item.ref"
+              validate-on-blur
+              :readonly="accion == 'show'"
+              hideDetails
+            >
+            </v-text-field>
+          </v-flex>
+          <v-flex sm6>
+            <v-select
+              :items="lTipos"
+              item-text="name"
+              item-value="id"
+              label="Tipo Movimiento"
+              v-model="item.tipo"
+              :readonly="true"
+              :hideDetails="accion == 'show'"
+            >
+            </v-select>
+          </v-flex>
+          <v-flex sm6>
+            <v-select
+              :items="lSub"
+              item-text="name"
+              item-value="id"
+              label="Subtipo"
+              v-model="item.subtipo_id"
+              :rules="[rules.num, rules.required]"
+              validate-on-blur
+              :readonly="accion == 'show'"
+              :hideDetails="accion == 'show'"
+            >
+            </v-select>
+          </v-flex>
 
-            <v-flex sm6>
+          <v-flex sm12>
+            <v-text-field
+              label="Observaciones"
+              v-model="item.obs"
+              :readonly="accion == 'show'"
+              hideDetails
+            >
+            </v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-card class="pa-2">
+          <v-toolbar color="indigo" dark dense>
+            <v-toolbar-title class="body-1"
+              >Productos detallados</v-toolbar-title
+            >
+            <v-spacer></v-spacer>
+            <v-btn
+              v-if="accion != 'show'"
+              icon
+              color="green"
+              @click="addProd()"
+              small
+            >
+              <v-icon>add</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-layout
+            row
+            fill-height
+            v-for="(prod, index) in item.productos"
+            :key="index"
+            style="border-bottom: 1px dotted gray"
+          >
+            <v-flex grow>
               <v-select
-                :items="lTipos"
+                :items="lMateriales"
                 item-text="name"
                 item-value="id"
-                label="Tipo Movimiento"
-                v-model="item.tipo"
-                :readonly="true"
+                label="Producto"
+                v-model="prod.material_id"
+                :rules="[rules.num, rules.required]"
+                validate-on-blur
+                :readonly="accion == 'show'"
                 :hideDetails="accion == 'show'"
               >
               </v-select>
             </v-flex>
-            <v-flex sm6>
-              <v-select
-                :items="lSub"
-                item-text="name"
-                item-value="id"
-                label="Subtipo"
-                v-model="item.subtipo_id"
-                :rules="[rules.num,rules.required]"
+            <v-flex shrink>
+              <v-text-field
+                style="width: 70px"
+                v-if="item.tipo != 2"
+                type="number"
+                label="Ingreso"
+                v-model="prod.ingreso"
+                :rules="
+                  item.tipo == 1
+                    ? [rules.num, rules.minVal(1), rules.required]
+                    : item.tipo == 2
+                    ? []
+                    : [rules.num, rules.minVal(0)]
+                "
+                min="0"
                 validate-on-blur
                 :readonly="accion == 'show'"
                 :hideDetails="accion == 'show'"
-              >
-              </v-select>
-            </v-flex>
-
-            <v-flex sm12>
-              <v-text-field
-                label="Observaciones"
-                v-model="item.obs"
-                :readonly="accion == 'show'"
-                hideDetails
+                :suffix="getSuffix(prod.material_id)"
+                placeholder=" "
               >
               </v-text-field>
+            </v-flex>
+            <v-flex shrink>
+              <v-text-field
+                style="width: 70px"
+                v-if="item.tipo != 1"
+                type="number"
+                label="Egreso"
+                v-model="prod.egreso"
+                :rules="
+                  item.tipo == 2
+                    ? [rules.num, rules.minVal(1), rules.required]
+                    : item.tipo == 1
+                    ? []
+                    : [rules.num, rules.minVal(0)]
+                "
+                min="0"
+                validate-on-blur
+                :readonly="accion == 'show'"
+                :hideDetails="accion == 'show'"
+                :suffix="getSuffix(prod.material_id)"
+                placeholder=" "
+              >
+              </v-text-field>
+            </v-flex>
+
+            <v-flex shrink v-if="accion != 'show'">
+              <v-btn icon color="red" @click="delProd(index)" small dark>
+                <v-icon>remove</v-icon>
+              </v-btn>
             </v-flex>
           </v-layout>
-          <v-card class="pa-2">
-            <v-toolbar color="indigo" dark dense>
-              <v-toolbar-title class="body-1"
-                >Productos detallados</v-toolbar-title
-              >
-              <v-spacer></v-spacer>
-              <v-btn  v-if="accion!='show'"
-              icon color="green" @click="addProd()" small>
-                <v-icon>add</v-icon>
-              </v-btn>
-            </v-toolbar>
-            <v-layout
-              row
-              fill-height
-              v-for="(prod, index) in item.productos"
-              :key="index"
-              style="border-bottom: 1px dotted gray"
-            >
-              <v-flex grow>
-                <v-select
-                  :items="lMateriales"
-                  item-text="name"
-                  item-value="id"
-                  label="Producto"
-                  v-model="prod.material_id"
-                  :rules="[rules.num, rules.required]"
-                  validate-on-blur
-                  :readonly="accion == 'show'"
-                  :hideDetails="accion == 'show'"
-                >
-                </v-select>
-              </v-flex>
-              <v-flex shrink>
-                <v-text-field
-                  style="width: 70px"
-                  v-if="item.tipo != 2"
-                  type="number"
-                  label="Ingreso"
-                  v-model="prod.ingreso"
-                  :rules="
-                    item.tipo == 1
-                      ? [rules.num, rules.minVal(1), rules.required]
-                      : item.tipo == 2
-                      ? []
-                      : [rules.num, rules.minVal(0)]
-                  "
-                  min="0"
-                  validate-on-blur
-                  :readonly="accion == 'show'"
-                  :hideDetails="accion == 'show'"
-                  :suffix="getSuffix(prod.material_id)"
-                  placeholder=' '
-                >
-                </v-text-field>
-              </v-flex>
-              <v-flex shrink>
-                <v-text-field
-                  style="width: 70px"
-                  v-if="item.tipo != 1"
-                  type="number"
-                  label="Egreso"
-                  v-model="prod.egreso"
-                  :rules="
-                    item.tipo == 2
-                      ? [rules.num, rules.minVal(1), rules.required]
-                      : item.tipo == 1
-                      ? []
-                      : [rules.num, rules.minVal(0)]
-                  "
-                  min="0"
-                  validate-on-blur
-                  :readonly="accion == 'show'"
-                  :hideDetails="accion == 'show'"
-                  :suffix="getSuffix(prod.material_id)"
-                  placeholder=' '
-                >
-                </v-text-field>
-              </v-flex>
-
-              <v-flex shrink v-if="accion!='show'">
-                <v-btn icon color="red" @click="delProd(index)" small dark>
-                  <v-icon>remove</v-icon>
-                </v-btn>
-              </v-flex>
-            </v-layout>
-          </v-card>
-        </v-container>
+        </v-card>
       </mk-form>
     </v-container>
   </div>
@@ -195,7 +197,7 @@ export default {
           width: '70px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Tipo',
@@ -205,8 +207,8 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista:'lTipos',
-          lColor: 'lColor',
+          lista: 'lTipos',
+          lColor: 'lColor'
         },
         {
           text: 'Subtipo',
@@ -217,7 +219,7 @@ export default {
           type: 'num',
           search: true,
           lista: this.lSubtipos,
-          class:"small-text"
+          class: 'small-text'
         },
         {
           text: 'Ref',
@@ -226,7 +228,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'text',
-          search: true,
+          search: true
         },
         {
           text: 'Observaciones',
@@ -235,9 +237,8 @@ export default {
 
           headers: true,
           type: 'text',
-          search: true,
-        },
-        
+          search: true
+        }
       ],
       lSubtipos: [],
       lMateriales: [],
@@ -245,9 +246,9 @@ export default {
       lTipos: [
         { id: 1, name: 'Ingresos' },
         { id: 2, name: 'Egresos' },
-        { id: 3, name: 'Ajustes' },
+        { id: 3, name: 'Ajustes' }
       ],
-      lColor: ['grey--text', 'green--text', 'red--text', 'orange--text'],
+      lColor: ['grey--text', 'green--text', 'red--text', 'orange--text']
       //grabarDebug: true,
     }
   },
@@ -299,7 +300,7 @@ export default {
     },
     beforeSave(me) {
       //console.log('id',me.item)
-      if (me.item.productos.length==0){
+      if (me.item.productos.length == 0) {
         alert('No hay Productos')
         return false
       }
@@ -315,16 +316,16 @@ export default {
           criterio: this.item.tipo,
           type: 'num',
           union: 'and',
-          lista: this.lTipos,
-        },
+          lista: this.lTipos
+        }
       ]
       this.onBuscar(busqueda)
-    },
+    }
   },
   computed: {
-    lSub: function () {
+    lSub: function() {
       return this.lSubtipos.filter((e) => e.tipo == this.item.tipo)
-    },
+    }
   },
   async mounted() {
     this.setOptionTable('del').visible = false
@@ -338,7 +339,7 @@ export default {
       visible: this.can('edit', 'almacen-ingresos'),
       action: 'ingresos',
       grupos: ['filtros'],
-      orden: 4,
+      orden: 4
     })
     this.addOptionTable({
       id: 'egresos',
@@ -348,7 +349,7 @@ export default {
       visible: this.can('edit', 'almacen-egresos'),
       action: 'egresos',
       grupos: ['filtros'],
-      orden: 5,
+      orden: 5
     })
     this.addOptionTable({
       id: 'ajustes',
@@ -358,7 +359,7 @@ export default {
       visible: this.can('edit', 'almacen-ajustes'),
       action: 'ajustes',
       grupos: ['filtros'],
-      orden: 6,
+      orden: 6
     })
 
     let listas = await this.getDatasBackend(this.urlModulo, [
@@ -366,25 +367,25 @@ export default {
         mod: 'Subtipos',
         campos: 'id,name,tipo',
         datos: { modulo: 'mkAlmacenes' },
-        item: 'subtipo_id',
+        item: 'subtipo_id'
       },
       {
         mod: 'Materiales',
         campos: 'id,name,medida_id',
-        datos: { modulo: 'mkServicios' },
+        datos: { modulo: 'mkServicios' }
       },
       {
         mod: 'Medidas',
         datos: { modulo: 'mkServicios' },
-        campos: 'id,simbolo',
-      },
+        campos: 'id,simbolo'
+      }
     ])
-  },
+  }
 }
 </script>
 
 <style scope>
 .small-text {
-  font-size:9px !important;
+  font-size: 9px !important;
 }
 </style>

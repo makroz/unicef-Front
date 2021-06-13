@@ -26,7 +26,9 @@
             <div class="headline hidden-screen-only" v-html="titulo">
             </div>
             <v-divider class="hidden-screen-only"></v-divider>
+            <v-container grid-list-md fluid pa-0 class="white">
             <slot>Contenido</slot>
+             </v-container>
             <!-- <div style="position: absolute;background-color:red; width: 100%;height:100%;top:0;left:0;opacity: 0;"></div> -->
           </v-form>
         </v-card-text>

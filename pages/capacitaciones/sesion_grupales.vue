@@ -24,7 +24,6 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-        <v-container grid-list-md fluid>
           <v-flex>
             <mk-date
               v-model="item.fecha"
@@ -97,7 +96,6 @@
               </v-flex>
             </v-layout>
           </v-card>
-        </v-container>
       </mk-form>
     </v-container>
   </div>

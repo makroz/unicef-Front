@@ -237,31 +237,30 @@ const Menu = [
         ]
     },
     { name: 'divider1', divider: true },
-    // {
-    //   name: 'recolector',
-    //   title: 'Recolector',
-    //   icon: 'face',
-    //   items: [
-    //     {
-    //       name: 'vehiculos_marcas',
-    //       title: 'Marcas de Vehiculos',
-    //       href: '/recolector/vehiculos_marcas/'
-    //     },
-    //     {
-    //       name: 'check_categ',
-    //       title: 'Categor\u00edas Check List',
-    //       href: '/recolector/check_categ/'
-    //     },
-    //     { name: 'eventos', title: 'Eventos', href: '/recolector/eventos/' },
-    //     { name: 'checks', title: 'Checks', href: '/recolector/checks/' },
-    //     { name: 'choferes', title: 'Choferes', href: '/recolector/choferes/' },
-    //     { name: 'vehiculos', title: 'Vehiculos', href: '/recolector/vehiculos/' },
-    //     {
-    //       name: 'check_diarios',
-    //       title: 'Checks Diarios',
-    //       href: '/recolector/check_diarios/'
-    //     }
-    //   ]
-    // }
+    {
+        name: 'recolector',
+        title: 'Recolector',
+        icon: 'face',
+        items: [{
+                name: 'vehiculos_marcas',
+                title: 'Marcas de Vehiculos',
+                href: '/recolector/vehiculos_marcas/'
+            },
+            {
+                name: 'check_categ',
+                title: 'Categor\u00edas Check List',
+                href: '/recolector/check_categ/'
+            },
+            { name: 'eventos', title: 'Eventos', href: '/recolector/eventos/' },
+            { name: 'checks', title: 'Checks', href: '/recolector/checks/' },
+            { name: 'choferes', title: 'Choferes', href: '/recolector/choferes/' },
+            { name: 'vehiculos', title: 'Vehiculos', href: '/recolector/vehiculos/' },
+            {
+                name: 'check_diarios',
+                title: 'Checks Diarios',
+                href: '/recolector/check_diarios/'
+            }
+        ]
+    }
 ]
 export default Menu

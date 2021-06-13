@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-md fluid v-if="item">
+  <div v-if="item">
     <v-layout row wrap>
       <v-flex xs10 sm8 md10>
         <v-text-field
@@ -121,8 +121,8 @@
               <div
                 v-if="
                   accion != 'show' &&
-                  accion != 'verificar' &&
-                  accion != 'autorizar'
+                    accion != 'verificar' &&
+                    accion != 'autorizar'
                 "
                 style="width: 48px; display: inline-block"
               ></div>
@@ -162,8 +162,8 @@
             <v-list-tile-action
               v-show="
                 accion != 'show' &&
-                accion != 'verificar' &&
-                accion != 'autorizar'
+                  accion != 'verificar' &&
+                  accion != 'autorizar'
               "
               style="min-width: 34px"
             >
@@ -218,7 +218,7 @@
             :key="index + '_'"
             v-if="
               (servicio.selected && accion != 'aceptar' && accion != 'edit') ||
-              item.estado > 3
+                item.estado > 3
             "
             style="border-bottom: 1px solid #f1f1f1"
             class="pa-2"
@@ -228,8 +228,8 @@
               row
               v-if="
                 accion == 'verificar' ||
-                (servicio.estado > 3 && servicio.estado < 9) ||
-                item.estado > 3
+                  (servicio.estado > 3 && servicio.estado < 9) ||
+                  item.estado > 3
               "
             >
               <v-flex shrink>
@@ -433,14 +433,14 @@
         </v-list-tile>
       </template>
     </mk-formulario>
-  </v-container>
+  </div>
 </template>
 
 <script>
 import {
   getDataLista,
   imprimirElemento,
-  formatDT,
+  formatDT
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import MkImg from '@/components/mkComponentes/mkImg/MkImg'
@@ -458,7 +458,7 @@ export default {
     'lMateriales',
     'lServices',
     'lMedidas',
-    'mkImgData',
+    'mkImgData'
   ],
   mixins: [MkRulesMix],
   components: { MkImg, MkFormulario },
@@ -470,32 +470,32 @@ export default {
         st9: [
           {
             id: 8,
-            name: 'Anulado',
+            name: 'Anulado'
           },
           {
             id: 1,
-            name: 'Reprogramado',
-          },
+            name: 'Reprogramado'
+          }
         ],
         st3: [
           {
             id: 1,
-            name: 'Reprogramado',
+            name: 'Reprogramado'
           },
           {
             id: 2,
-            name: 'Regresado',
+            name: 'Regresado'
           },
           {
             id: 4,
-            name: 'Verificado',
+            name: 'Verificado'
           },
           {
             id: 8,
-            name: 'Anulado',
-          },
-        ],
-      },
+            name: 'Anulado'
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -521,8 +521,8 @@ export default {
     },
     getDataLista(lista, valor, busco = 'id', devuelvo = 'name', defa = false) {
       return getDataLista(lista, valor, busco, devuelvo, defa)
-    },
+    }
   },
-  mounted() {},
+  mounted() {}
 }
 </script>

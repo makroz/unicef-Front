@@ -41,7 +41,9 @@
   <div class="headline hidden-screen-only">
               {{ titulo }}
             </div>
+            <v-container grid-list-md fluid class="white">
             <slot>Contenido</slot>
+             </v-container>
   </v-form>
 <v-toolbar v-if="menuBottom" dark color="primary" dense>
             <v-spacer></v-spacer>

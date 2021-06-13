@@ -41,7 +41,7 @@
                       {{ evalua.beneficiario_coord.name }}
                     </v-flex>
                     <v-flex shrink>
-                      {{ evalua.estado==1?'No Realizado':'Realizado' }} --  
+                      {{ evalua.estado == 1 ? 'No Realizado' : 'Realizado' }} --
                       {{ formatDT(evalua.created_at) }}
                     </v-flex>
                   </v-layout>
@@ -60,33 +60,31 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-        <v-container grid-list-md fluid>
-          <v-text-field
-            label="Descripcion"
-            v-model="item.obs"
-            :readonly="accion == 'show'"
-            ref="focus"
-          ></v-text-field>
-          <v-select
-            v-model="item.rutas_id"
-            :items="lRutas"
-            :rules="[rules.required]"
-            item-text="name"
-            item-value="id"
-            label="Ruta Asignada"
-            @change="change"
-            :readonly="accion == 'show'"
-          ></v-select>
-          <v-select
-            v-model="item.usuarios_id"
-            :items="lUsuarios"
-            :rules="[rules.required]"
-            item-text="name"
-            item-value="id"
-            label="Monitor Asignado"
-            :readonly="accion == 'show'"
-          ></v-select>
-        </v-container>
+        <v-text-field
+          label="Descripcion"
+          v-model="item.obs"
+          :readonly="accion == 'show'"
+          ref="focus"
+        ></v-text-field>
+        <v-select
+          v-model="item.rutas_id"
+          :items="lRutas"
+          :rules="[rules.required]"
+          item-text="name"
+          item-value="id"
+          label="Ruta Asignada"
+          @change="change"
+          :readonly="accion == 'show'"
+        ></v-select>
+        <v-select
+          v-model="item.usuarios_id"
+          :items="lUsuarios"
+          :rules="[rules.required]"
+          item-text="name"
+          item-value="id"
+          label="Monitor Asignado"
+          :readonly="accion == 'show'"
+        ></v-select>
       </mk-form>
 
       <!-- formulario verRuteo FullScreen -->
@@ -98,7 +96,7 @@
         @closeDialog="modalShow = false"
         @grabarItem="modalShow = false"
       >
-        <v-container grid-list-md fluid v-if="modalShow && accion == 'show'" pb-0 white>
+        <template v-if="modalShow && accion == 'show'">
           <!-- Datos Basicos -->
           <v-layout row wrap>
             <v-flex xs6
@@ -276,7 +274,7 @@
               </v-card>
             </v-flex>
           </v-layout>
-        </v-container>
+        </template>
       </mk-form-full-screen>
 
       <!-- formulario Evaluaciones FullScreen -->
@@ -288,153 +286,151 @@
         @closeDialog="modalEval = false"
         @grabarItem="modalEval = false"
       >
-        <v-container grid-list-md fluid class="white">
-          <span v-if="!item.estado" class="danger title"
-            >No se realizó la Evaluación</span
-          >
-          <v-text-field
-            v-if="item.obs"
-            label="Notas de la Evaluacion"
-            :value="item.obs"
-            readonly
-          ></v-text-field>
+        <span v-if="!item.estado" class="danger title"
+          >No se realizó la Evaluación</span
+        >
+        <v-text-field
+          v-if="item.obs"
+          label="Notas de la Evaluacion"
+          :value="item.obs"
+          readonly
+        ></v-text-field>
 
-          <template v-if="item.estado && modalEval">
-            <v-tabs centered color="indigo" dark icons-and-text>
-              <v-tabs-slider color="yellow"></v-tabs-slider>
+        <template v-if="item.estado && modalEval">
+          <v-tabs centered color="indigo" dark icons-and-text>
+            <v-tabs-slider color="yellow"></v-tabs-slider>
 
-              <v-tab href="#tab-1" elevation-10>
-                Encuesta
-                <v-icon>content_paste</v-icon>
-              </v-tab>
+            <v-tab href="#tab-1" elevation-10>
+              Encuesta
+              <v-icon>content_paste</v-icon>
+            </v-tab>
 
-              <v-tab href="#tab-2" elevation-10>
-                Servicios
-                <v-icon>plumbing</v-icon>
-              </v-tab>
+            <v-tab href="#tab-2" elevation-10>
+              Servicios
+              <v-icon>plumbing</v-icon>
+            </v-tab>
 
-              <v-tab-item value="tab-1">
-                <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
-                  <v-toolbar color="secondary" dark dense>
-                    <v-toolbar-side-icon></v-toolbar-side-icon>
-                    <v-toolbar-title> {{ categ.name }}</v-toolbar-title>
-                  </v-toolbar>
+            <v-tab-item value="tab-1">
+              <v-card v-for="categ in lCateg" :key="categ.id" elevation-5>
+                <v-toolbar color="secondary" dark dense>
+                  <v-toolbar-side-icon></v-toolbar-side-icon>
+                  <v-toolbar-title> {{ categ.name }}</v-toolbar-title>
+                </v-toolbar>
 
-                  <div
-                    v-for="pregunta in lPregCateg(categ.id)"
-                    :key="pregunta.id"
-                  >
-                    <v-layout row wrap pa-1 ma-0 align-center>
-                      <v-flex grow pa-0 ma-0>
-                        <span class="text-capitalize">
-                          {{ pregunta.pregunta }}
-                        </span>
-                      </v-flex>
-                      <v-flex shrink pa-0 ma-0>
-                        <v-text-field
-                         v-if="pregunta.tipo == 2"
-                          pa-0
-                          ma-0
-                          label="Valor"
-                          :value="
+                <div
+                  v-for="pregunta in lPregCateg(categ.id)"
+                  :key="pregunta.id"
+                >
+                  <v-layout row wrap pa-1 ma-0 align-center>
+                    <v-flex grow pa-0 ma-0>
+                      <span class="text-capitalize">
+                        {{ pregunta.pregunta }}
+                      </span>
+                    </v-flex>
+                    <v-flex shrink pa-0 ma-0>
+                      <v-text-field
+                        v-if="pregunta.tipo == 2"
+                        pa-0
+                        ma-0
+                        label="Valor"
+                        :value="
+                          getDataLista(
+                            item.respuestas,
+                            pregunta.id,
+                            'preguntas_id',
+                            'r_s'
+                          )
+                        "
+                        type="number"
+                        style="width: 50px"
+                        readonly
+                      ></v-text-field>
+
+                      <v-radio-group
+                        pa-0
+                        ma-0
+                        v-if="pregunta.tipo == 1"
+                        :value="
+                          getDataLista(
+                            item.respuestas,
+                            pregunta.id,
+                            'preguntas_id',
+                            'r_s'
+                          )
+                        "
+                        row
+                        readonly
+                      >
+                        <v-radio
+                          v-if="
                             getDataLista(
                               item.respuestas,
                               pregunta.id,
                               'preguntas_id',
                               'r_s'
-                            )
+                            ) == 1
                           "
-                          type="number"
-                          style="width: 50px"
-                          readonly
-                        ></v-text-field>
-
-                        <v-radio-group
-                          pa-0
-                          ma-0
-                          v-if="pregunta.tipo == 1"
-                          :value="
-                            getDataLista(
-                              item.respuestas,
-                              pregunta.id,
-                              'preguntas_id',
-                              'r_s'
-                            )
-                          "
-                          row
-                          readonly
-                        >
-                          <v-radio
-                            v-if="
-                              getDataLista(
-                                item.respuestas,
-                                pregunta.id,
-                                'preguntas_id',
-                                'r_s'
-                              ) == 1
-                            "
-                            color="green"
-                            label="Si"
-                            value="1"
-                          ></v-radio>
-                          <v-radio
-                            v-else
-                            color="red"
-                            label="No"
-                            value="0"
-                          ></v-radio>
-                        </v-radio-group>
-                      </v-flex>
-                    </v-layout>
-                    <v-divider></v-divider>
-                  </div>
-                </v-card>
-              </v-tab-item>
-              <v-tab-item value="tab-2">
-                <v-card>
-                  <div v-for="servicio in item.servicios" :key="servicio.id">
-                    <v-layout row wrap pa-1 ma-0 align-center>
-                      <v-flex grow pa-0 ma-0>
-                        <span class="text-capitalize">
+                          color="green"
+                          label="Si"
+                          value="1"
+                        ></v-radio>
+                        <v-radio
+                          v-else
+                          color="red"
+                          label="No"
+                          value="0"
+                        ></v-radio>
+                      </v-radio-group>
+                    </v-flex>
+                  </v-layout>
+                  <v-divider></v-divider>
+                </div>
+              </v-card>
+            </v-tab-item>
+            <v-tab-item value="tab-2">
+              <v-card>
+                <div v-for="servicio in item.servicios" :key="servicio.id">
+                  <v-layout row wrap pa-1 ma-0 align-center>
+                    <v-flex grow pa-0 ma-0>
+                      <span class="text-capitalize">
+                        {{
+                          getDataLista(
+                            lServicios,
+                            servicio.servicios_id,
+                            'id',
+                            'name'
+                          )
+                        }}
+                        <span style="font-size: 10px">
                           {{
                             getDataLista(
                               lServicios,
                               servicio.servicios_id,
                               'id',
-                              'name'
+                              'obs'
                             )
                           }}
-                          <span style="font-size: 10px">
-                            {{
-                              getDataLista(
-                                lServicios,
-                                servicio.servicios_id,
-                                'id',
-                                'obs'
-                              )
-                            }}
-                          </span>
                         </span>
-                      </v-flex>
-                      <v-flex shrink pa-0 ma-0>
-                        <v-text-field
-                          pa-0
-                          ma-0
-                          label="Cant"
-                          :value="servicio.cant"
-                          type="number"
-                          style="width: 50px"
-                          readonly
-                        ></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                    <v-divider></v-divider>
-                  </div>
-                </v-card>
-              </v-tab-item>
-            </v-tabs>
-          </template>
-        </v-container>
+                      </span>
+                    </v-flex>
+                    <v-flex shrink pa-0 ma-0>
+                      <v-text-field
+                        pa-0
+                        ma-0
+                        label="Cant"
+                        :value="servicio.cant"
+                        type="number"
+                        style="width: 50px"
+                        readonly
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-divider></v-divider>
+                </div>
+              </v-card>
+            </v-tab-item>
+          </v-tabs>
+        </template>
       </mk-form-full-screen>
     </v-container>
   </div>
@@ -444,9 +440,7 @@
 import EChart from '@/components/chart/echart'
 import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 import MkFormFullScreen from '@/components/mkComponentes/MkFormFullScreen.vue'
-import {
-  formatDT,
-} from '@/components/mkComponentes/lib/MkUtils.js'
+import { formatDT } from '@/components/mkComponentes/lib/MkUtils.js'
 import Material from 'vuetify/es5/util/colors'
 import { icon } from 'leaflet'
 
@@ -470,7 +464,7 @@ export default {
           width: '50px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Fecha',
@@ -479,7 +473,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'date',
-          search: true,
+          search: true
         },
         {
           text: 'Ruta',
@@ -489,7 +483,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: 'lRutas',
+          lista: 'lRutas'
         },
         {
           text: 'Monitor',
@@ -499,14 +493,14 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: 'lUsuarios',
+          lista: 'lUsuarios'
         },
         {
           text: 'Descripcion',
           value: 'obs',
           headers: false,
           type: 'text',
-          search: true,
+          search: true
         },
 
         {
@@ -519,8 +513,8 @@ export default {
           fromLista: {
             lista: 'rutas_id',
             field: 'beneficiarios',
-            join: 'rutas_id',
-          },
+            join: 'rutas_id'
+          }
         },
         {
           text: 'Evaluaciones',
@@ -528,7 +522,7 @@ export default {
           width: '10px',
           headers: false,
           type: 'count',
-          search: false,
+          search: false
         },
         {
           text: 'Benef./Eval.',
@@ -539,7 +533,7 @@ export default {
           concat: ['beneficiarios', 'evaluaciones'],
           separator: '/',
           search: false,
-          sortable:false,
+          sortable: false
         },
 
         {
@@ -550,16 +544,16 @@ export default {
           type: 'num',
           search: true,
           lista: 'lEstados',
-          lColor: 'lColor',
-        },
+          lColor: 'lColor'
+        }
       ],
-      
+
       lEstados: ['Abierto', 'En progreso', 'Cerrado', 'Verificado'],
       lColor: [
         'red--text',
         'green--text text--lighten-3',
         'green--text text--lighten-1',
-        'green--text',
+        'green--text'
       ],
       lUsuarios: [],
       lCateg: [],
@@ -568,7 +562,7 @@ export default {
       lServicios: [],
       item: {
         nEval: [],
-        respuesta: 0,
+        respuesta: 0
       },
       showRespuesta: false,
       //
@@ -580,23 +574,23 @@ export default {
         iconUrl: require('~/static/img/icon1.png'),
         iconSize: [32, 32],
         iconAnchor: [16, 30],
-        tooltipAnchor: [16, -22],
+        tooltipAnchor: [16, -22]
       }),
       icon2: icon({
         iconUrl: require('~/static/img/icon2.png'),
         iconSize: [16, 16],
         iconAnchor: [8, 14],
-        tooltipAnchor: [16, -12],
+        tooltipAnchor: [16, -12]
       }),
       icon0: icon({
         iconUrl: require('~/static/img/icon0.png'),
         iconSize: [32, 32],
         iconAnchor: [16, 30],
-        tooltipAnchor: [16, -22],
+        tooltipAnchor: [16, -22]
       }),
 
       jsonData: [],
-      jsonLine: [],
+      jsonLine: []
     }
   },
   methods: {
@@ -611,8 +605,8 @@ export default {
             this.color.pink.base,
             this.color.indigo.base,
             this.color.teal.base,
-            this.color.purple.base,
-          ],
+            this.color.purple.base
+          ]
         ],
         ['legend.orient', 'vertical'],
         ['legend.left', 'left'],
@@ -629,7 +623,7 @@ export default {
         ['series[0].center', ['70%', '50%']],
         ['series[0].label.position', 'inside'],
         ['series[0].label.formatter', '{@[1]}'],
-        ['series[0].label.fontSize.', '10px'],
+        ['series[0].label.fontSize.', '10px']
       ]
     },
     getOptionsEvaluaciones() {
@@ -643,8 +637,8 @@ export default {
             this.color.green.base,
             this.color.indigo.base,
             this.color.teal.base,
-            this.color.purple.base,
-          ],
+            this.color.purple.base
+          ]
         ],
         ['legend.orient', 'vertical'],
         ['legend.left', 'left'],
@@ -661,11 +655,16 @@ export default {
         ['series[0].center', ['70%', '50%']],
         ['series[0].label.position', 'inside'],
         ['series[0].label.formatter', '{d}%'],
-        ['series[0].label.fontSize.', '10px'],
+        ['series[0].label.fontSize.', '10px']
       ]
     },
     getOptionPregunta() {
-      let preg = this.getDataLista(this.lPreguntas, this.item.pregunta, 'id', '*')
+      let preg = this.getDataLista(
+        this.lPreguntas,
+        this.item.pregunta,
+        'id',
+        '*'
+      )
       let r = [
         ['dataset.source', preg.nResp],
         [
@@ -676,8 +675,8 @@ export default {
             this.color.green.base,
             this.color.teal.base,
             this.color.purple.base,
-            this.color.amber.base,
-          ],
+            this.color.amber.base
+          ]
         ],
         ['legend.orient', 'horizontal'],
         ['legend.show', false],
@@ -688,7 +687,7 @@ export default {
         ['series[0].label.show', true],
         ['series[0].label.formatter', '{b}: \n {d} %'],
         ['series[0].label.position', 'inside'],
-        ['series[0].label.fontSize.', '10px'],
+        ['series[0].label.fontSize.', '10px']
       ]
       if (preg.tipo == 2) {
         r = [
@@ -701,8 +700,8 @@ export default {
               this.color.green.base,
               this.color.teal.base,
               this.color.purple.base,
-              this.color.amber.base,
-            ],
+              this.color.amber.base
+            ]
           ],
           ['legend.orient', 'horizontal'],
           ['legend.show', true],
@@ -714,7 +713,7 @@ export default {
           ['series[1].type', 'bar'],
           ['series[1].label.show', true],
           ['series[2].type', 'bar'],
-          ['series[2].label.show', true],
+          ['series[2].label.show', true]
         ]
       }
       return r
@@ -753,7 +752,12 @@ export default {
         if (e.servicios.length > 0) {
           this.item.nServicios++
           e.servicios.forEach((s) => {
-            let ser = this.getDataLista(this.item.nServ, s.servicios_id, 'id', '*')
+            let ser = this.getDataLista(
+              this.item.nServ,
+              s.servicios_id,
+              'id',
+              '*'
+            )
             ser.value = ser.value + s.cant * 1
           })
         }
@@ -770,17 +774,16 @@ export default {
       this.item.nEval = [
         {
           Evaluaciones: 'No Realizadas',
-          value: this.item.nEvalVal[0],
+          value: this.item.nEvalVal[0]
         },
         {
           Evaluaciones: 'No Respondidas',
-          value: this.item.nEvalVal[1],
+          value: this.item.nEvalVal[1]
         },
         {
           Evaluaciones: 'Respondidas',
-          value: this.item.nEvalVal[2],
-        },
-
+          value: this.item.nEvalVal[2]
+        }
       ]
 
       this.lPreguntas.forEach((e) => {
@@ -788,24 +791,29 @@ export default {
           e.nResp = [
             {
               Respuesta: 'No',
-              value: 0,
+              value: 0
             },
             {
               Respuesta: 'Si',
-              value: 0,
-            },
+              value: 0
+            }
           ]
         }
         if (e.tipo == '2') {
           e.nResp = [
-            { product: 'Cant.', '=1': 0, '>1': 0, Total: 0 },
+            { product: 'Cant.', '=1': 0, '>1': 0, Total: 0 }
             //            ['Cantidad',0,5,10]
           ]
         }
       })
       this.item.evaluaciones.forEach((e) => {
         e.respuestas.forEach((e1) => {
-          let preg = this.getDataLista(this.lPreguntas, e1.preguntas_id, 'id', '*')
+          let preg = this.getDataLista(
+            this.lPreguntas,
+            e1.preguntas_id,
+            'id',
+            '*'
+          )
           if (preg.tipo == '1') {
             preg.nResp[e1.r_s * 1].value++
           }
@@ -854,21 +862,21 @@ export default {
           lat: gps[0],
           lng: gps[1],
           icon: 1,
-          posi: posi,
+          posi: posi
         })
         this.jsonData.push({
           type: 'LineString',
           coordinates: [
             [e.beneficiario_coord.lng, e.beneficiario_coord.lat],
-            [gps[1], gps[0]],
+            [gps[1], gps[0]]
           ],
-          color: 0,
+          color: 0
         })
 
         this.jsonData.push({
           type: 'LineString',
           coordinates: [orig, [gps[1], gps[0]]],
-          color: 1,
+          color: 1
         })
         posi++
         orig = [gps[1], gps[0]]
@@ -881,7 +889,7 @@ export default {
           name: 'Inicio',
           lat: gps[0],
           lng: gps[1],
-          icon: 2,
+          icon: 2
         })
         //this.markers.push([gps[0], gps[1]])
       }
@@ -893,13 +901,13 @@ export default {
           name: 'Fin',
           lat: gps[0],
           lng: gps[1],
-          icon: 2,
+          icon: 2
         })
 
         this.jsonData.push({
           type: 'LineString',
           coordinates: [orig, [gps[1], gps[0]]],
-          color: 1,
+          color: 1
         })
       }
 
@@ -912,7 +920,7 @@ export default {
       this.modalShow = true
     },
     openEval(data) {
-      this.accion='show'
+      this.accion = 'show'
       this.item = Object.assign({}, data)
       this.item.estado = this.item.estado <= 1 ? false : true
       this.tituloModal = 'Evaluacion de ' + data.beneficiario_coord.name
@@ -928,7 +936,7 @@ export default {
       let options = {
         enableHighAccuracy: true,
         timeout: 6000,
-        maximumAge: 0,
+        maximumAge: 0
       }
 
       navigator.geolocation.getCurrentPosition(
@@ -946,22 +954,26 @@ export default {
     },
 
     errorGps(error) {
-      switch(error.code) {
+      switch (error.code) {
         case error.PERMISSION_DENIED:
-            // El usuario denegó el permiso para la Geolocalización.
-            alert('El Usuario denego el permiso de obtener la UBICACION, este Paso necesita que habilite el permiso por Favor')
-            break;
+          // El usuario denegó el permiso para la Geolocalización.
+          alert(
+            'El Usuario denego el permiso de obtener la UBICACION, este Paso necesita que habilite el permiso por Favor'
+          )
+          break
         case error.POSITION_UNAVAILABLE:
-            // La ubicación no está disponible.
-            break;
+          // La ubicación no está disponible.
+          break
         case error.TIMEOUT:
-            // Se ha excedido el tiempo para obtener la ubicación.
-            alert('El Usuario puede que no otorgo poermisos de UBICACION, este Paso necesita que habilite el permiso por Favor')
-            break;
+          // Se ha excedido el tiempo para obtener la ubicación.
+          alert(
+            'El Usuario puede que no otorgo poermisos de UBICACION, este Paso necesita que habilite el permiso por Favor'
+          )
+          break
         case error.UNKNOWN_ERROR:
-            // Un error desconocido.
-            break;
-    }
+          // Un error desconocido.
+          break
+      }
       console.warn('ERROR(' + error.code + '): ' + error.message)
     },
     beforeOpen(accion, data = {}) {
@@ -1008,7 +1020,7 @@ export default {
     fitMapBounds() {
       let map = this.$refs.mymap.mapObject
       const visibleMarkers = []
-      map.eachLayer(function (layer) {
+      map.eachLayer(function(layer) {
         if (layer instanceof L.Marker) {
           visibleMarkers.push(layer)
         }
@@ -1022,21 +1034,21 @@ export default {
 
         map.flyToBounds(markersBounds, {
           padding: L.point(36, 36),
-          animate: true,
+          animate: true
         })
       }
-    },
+    }
   },
   computed: {
     lPregCateg: (app) => (categ) => {
       let l = app.lPreguntas.filter((e) => e.categ_id == categ)
       return l
-    },
+    }
   },
   async mounted() {
     let edit = this.getOptionTable('edit')
     edit.color = 'black'
-    edit.visibleRow = function (e) {
+    edit.visibleRow = function(e) {
       return e.estado > 1 || e.evaluaciones.length > 0 ? false : true
     }
 
@@ -1047,20 +1059,29 @@ export default {
     let show = this.getOptionTable('show')
     show.action = 'openShow'
 
-
     // let filtros=[
     //         ['roles_slug','=','monitor',],
     //         ['status','<>',0]
     //     ];
-    let listas= await this.getDatasBackend(this.urlModulo,[
+    let listas = await this.getDatasBackend(this.urlModulo, [
       //{mod:'Usuarios',campos:'id,name',datos:{filtros:filtros},item:'usuarios_id'},
-      {mod:'Usuarios',campos:'id,name',item:'usuarios_id'},
-      {mod:'Rutas',campos:'id,name,usuarios_id',item:'rutas_id',datos:{rel:1}},
-      {mod:'Preguntas',sort:'orden'},
-      {mod:'Categ',campos:'id,name,orden',datos:{modulo:'mkPreguntas'},sort:'orden'},
-      {mod:'Servicios'},
+      { mod: 'Usuarios', campos: 'id,name', item: 'usuarios_id' },
+      {
+        mod: 'Rutas',
+        campos: 'id,name,usuarios_id',
+        item: 'rutas_id',
+        datos: { rel: 1 }
+      },
+      { mod: 'Preguntas', sort: 'orden' },
+      {
+        mod: 'Categ',
+        campos: 'id,name,orden',
+        datos: { modulo: 'mkPreguntas' },
+        sort: 'orden'
+      },
+      { mod: 'Servicios' }
     ])
-  },
+  }
 }
 </script>
 <style scoped>

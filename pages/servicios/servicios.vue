@@ -6,7 +6,7 @@
         <v-flex lg12>
           <mk-data-table
             v-bind="dataTable"
-:campos="campos"
+            :campos="campos"
             @callAction="callAction"
             @setStatus="setStatus"
             @listar="listar"
@@ -24,29 +24,32 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-        <v-container grid-list-md fluid>
-          <v-layout row wrap>
-            <v-flex grow>
-              <v-text-field
-                label="Nombre"
-                v-model="item.name"
-                :rules="[rules.required]"
-                ref="focus"
-                validate-on-blur
-                autofocus
-              :readonly="accion=='show'" ></v-text-field>
-            </v-flex>
-            <v-flex shrink>
-              <v-switch v-model="item.cant" label="Admite Cantidades" value="1" color="success"></v-switch>
-            </v-flex>
-          </v-layout>
-
-          <v-text-field
-            label="Observacion"
-            v-model="item.obs"
-            
-          :readonly="accion=='show'" ></v-text-field>
-        </v-container>
+        <v-layout row wrap>
+          <v-flex grow>
+            <v-text-field
+              label="Nombre"
+              v-model="item.name"
+              :rules="[rules.required]"
+              ref="focus"
+              validate-on-blur
+              autofocus
+              :readonly="accion == 'show'"
+            ></v-text-field>
+          </v-flex>
+          <v-flex shrink>
+            <v-switch
+              v-model="item.cant"
+              label="Admite Cantidades"
+              value="1"
+              color="success"
+            ></v-switch>
+          </v-flex>
+        </v-layout>
+        <v-text-field
+          label="Observacion"
+          v-model="item.obs"
+          :readonly="accion == 'show'"
+        ></v-text-field>
       </mk-form>
     </v-container>
   </div>
@@ -72,7 +75,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Nombre',
@@ -80,7 +83,7 @@ export default {
           width: '150px',
           headers: true,
           type: 'text',
-          search: true,
+          search: true
         },
         {
           text: 'Cant',
@@ -90,7 +93,7 @@ export default {
           headers: true,
           type: 'check',
           options: [1, 'Si', 'No'],
-          search: true,
+          search: true
         },
         {
           text: 'Observacion',
@@ -98,12 +101,12 @@ export default {
           align: 'left',
           headers: true,
           type: 'text',
-          search: true,
-        },
-      ],
+          search: true
+        }
+      ]
     }
   },
-  methods: {},
+  methods: {}
 }
 </script>
 

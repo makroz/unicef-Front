@@ -24,125 +24,123 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-        <v-container grid-list-md fluid class="white">
+        <v-layout row wrap>
+          <v-flex xs8 md6 lg3>
+            <mk-date
+              v-model="item.fecha"
+              label="Fecha"
+              :rules="[rules.required]"
+              :accion="accion"
+            >
+            </mk-date>
+          </v-flex>
+          <v-flex xs4 md6 lg2>
+            <v-text-field
+              type="number"
+              label="No.Personas"
+              v-model="item.nparticipantes"
+              :rules="[rules.num, rules.required]"
+              validate-on-blur
+              :readonly="accion == 'show'"
+            >
+            </v-text-field>
+          </v-flex>
+          <v-flex xs12 lg7>
+            <v-select
+              :items="lBeneficiarios"
+              item-text="name"
+              item-value="id"
+              label="Beneficiario"
+              v-model="item.beneficiario_id"
+              :rules="[rules.num, rules.required]"
+              validate-on-blur
+              :readonly="accion != 'add'"
+            >
+            </v-select>
+          </v-flex>
+          <v-flex xs12>
+            <v-card class="pa-2">
+              <v-toolbar color="indigo" dark dense>
+                <v-toolbar-title class="body-1"
+                  >Desarrollo de habilidades en SSD
+                </v-toolbar-title>
+              </v-toolbar>
+
+              <v-layout row wrap>
+                <v-flex xs12 md6>
+                  <v-textarea
+                    label="Contenido"
+                    v-model="item.contenido"
+                    :rules="[rules.required]"
+                    validate-on-blur
+                    rows="4"
+                    :readonly="accion == 'show'"
+                  >
+                  </v-textarea>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <v-textarea
+                    label="Hallazgos importantes (dudas y/o debilidades)"
+                    v-model="item.hallazgos"
+                    :rules="[rules.required]"
+                    validate-on-blur
+                    rows="4"
+                    :readonly="accion == 'show'"
+                  >
+                  </v-textarea>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <v-textarea
+                    label="Alertas identificadas"
+                    v-model="item.alertas"
+                    :rules="[rules.required]"
+                    validate-on-blur
+                    rows="4"
+                    :readonly="accion == 'show'"
+                  >
+                  </v-textarea>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <v-textarea
+                    label="Acciones tomadas"
+                    v-model="item.acciones"
+                    :rules="[rules.required]"
+                    validate-on-blur
+                    rows="4"
+                    :readonly="accion == 'show'"
+                  >
+                  </v-textarea>
+                </v-flex>
+              </v-layout>
+            </v-card>
+          </v-flex>
+        </v-layout>
+
+        <br />
+        <v-card class="pa-2">
+          <v-toolbar color="indigo" dark dense>
+            <v-toolbar-title class="body-1">
+              La familia requiere apoyo en:
+            </v-toolbar-title>
+          </v-toolbar>
+
           <v-layout row wrap>
-            <v-flex xs8 md6 lg3>
-              <mk-date
-                v-model="item.fecha"
-                label="Fecha"
-                :rules="[rules.required]"
-                :accion="accion"
-              >
-              </mk-date>
-            </v-flex>
-            <v-flex xs4 md6 lg2>
-              <v-text-field
-                type="number"
-                label="No.Personas"
-                v-model="item.nparticipantes"
-                :rules="[rules.num, rules.required]"
-                validate-on-blur
-                :readonly="accion == 'show'"
-              >
-              </v-text-field>
-            </v-flex>
-            <v-flex xs12 lg7>
+            <v-flex xs12>
               <v-select
-                :items="lBeneficiarios"
+                v-if="item.apoyos"
+                :items="lApoyos"
                 item-text="name"
                 item-value="id"
-                label="Beneficiario"
-                v-model="item.beneficiario_id"
-                :rules="[rules.num, rules.required]"
-                validate-on-blur
-                :readonly="accion != 'add'"
+                label="Apoyos Disponibles"
+                v-model="item.apoyos.apoyos"
+                multiple
+                chips
+                :readonly="accion == 'show'"
               >
               </v-select>
             </v-flex>
-            <v-flex xs12>
-              <v-card class="pa-2">
-                <v-toolbar color="indigo" dark dense>
-                  <v-toolbar-title class="body-1"
-                    >Desarrollo de habilidades en SSD
-                  </v-toolbar-title>
-                </v-toolbar>
-
-                <v-layout row wrap>
-                  <v-flex xs12 md6>
-                    <v-textarea
-                      label="Contenido"
-                      v-model="item.contenido"
-                      :rules="[rules.required]"
-                      validate-on-blur
-                      rows="4"
-                      :readonly="accion == 'show'"
-                    >
-                    </v-textarea>
-                  </v-flex>
-                  <v-flex xs12 md6>
-                    <v-textarea
-                      label="Hallazgos importantes (dudas y/o debilidades)"
-                      v-model="item.hallazgos"
-                      :rules="[rules.required]"
-                      validate-on-blur
-                      rows="4"
-                      :readonly="accion == 'show'"
-                    >
-                    </v-textarea>
-                  </v-flex>
-                  <v-flex xs12 md6>
-                    <v-textarea
-                      label="Alertas identificadas"
-                      v-model="item.alertas"
-                      :rules="[rules.required]"
-                      validate-on-blur
-                      rows="4"
-                      :readonly="accion == 'show'"
-                    >
-                    </v-textarea>
-                  </v-flex>
-                  <v-flex xs12 md6>
-                    <v-textarea
-                      label="Acciones tomadas"
-                      v-model="item.acciones"
-                      :rules="[rules.required]"
-                      validate-on-blur
-                      rows="4"
-                      :readonly="accion == 'show'"
-                    >
-                    </v-textarea>
-                  </v-flex>
-                </v-layout>
-              </v-card>
-            </v-flex>
           </v-layout>
-
-          <br />
-          <v-card class="pa-2">
-            <v-toolbar color="indigo" dark dense>
-              <v-toolbar-title class="body-1">
-                La familia requiere apoyo en:
-              </v-toolbar-title>
-            </v-toolbar>
-
-            <v-layout row wrap>
-              <v-flex xs12>
-                <v-select
-                v-if="item.apoyos"
-                  :items="lApoyos"
-                  item-text="name"
-                  item-value="id"
-                  label="Apoyos Disponibles"
-                  v-model="item.apoyos.apoyos"
-                  multiple
-                  chips
-                  :readonly="accion == 'show'"
-                >
-                </v-select>
-              </v-flex>
-            </v-layout>
-          </v-card>
-        </v-container>
+        </v-card>
       </mk-form>
     </v-container>
   </div>
@@ -167,7 +165,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Fecha',
@@ -176,7 +174,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'date',
-          search: true,
+          search: true
         },
         {
           text: 'Beneficiario',
@@ -186,7 +184,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lBeneficiarios,
+          lista: this.lBeneficiarios
         },
         {
           text: 'No.Part.',
@@ -195,7 +193,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Contenido',
@@ -203,7 +201,7 @@ export default {
           align: 'left',
           headers: true,
           type: 'textarea',
-          search: true,
+          search: true
         },
         {
           text: 'Hallazgos',
@@ -212,7 +210,7 @@ export default {
 
           headers: false,
           type: 'textarea',
-          search: true,
+          search: true
         },
         {
           text: 'Alertas',
@@ -221,7 +219,7 @@ export default {
 
           headers: false,
           type: 'textarea',
-          search: true,
+          search: true
         },
         {
           text: 'Acciones',
@@ -230,21 +228,21 @@ export default {
 
           headers: false,
           type: 'textarea',
-          search: true,
-        },
+          search: true
+        }
       ],
       fecha_modal: false,
       lBeneficiarios: [],
-      lApoyos: [],
+      lApoyos: []
     }
   },
   methods: {
     beforeOpen(accion, data = {}) {
       if (accion != 'add') {
         //data.apoyos = Object.assign([],data.apoyos.apoyos)
-      }else{
-//        data.apoyos=[]
-        data.apoyos={apoyos:[]}
+      } else {
+        //        data.apoyos=[]
+        data.apoyos = { apoyos: [] }
       }
     },
 
@@ -255,14 +253,19 @@ export default {
       ) {
         me.item.beneficiario_id_ = me.item.beneficiario_id
       }
-    },
+    }
   },
   async mounted() {
-    let listas= await this.getDatasBackend(this.urlModulo,[
-      {mod:'Beneficiarios',campos:'id,name',item:'beneficiario_id'},
-      {mod:'Lista_apoyos',campos:'id,name',datos:{modulo:'mkCapacitaciones'},lista:'lApoyos'},
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      { mod: 'Beneficiarios', campos: 'id,name', item: 'beneficiario_id' },
+      {
+        mod: 'Lista_apoyos',
+        campos: 'id,name',
+        datos: { modulo: 'mkCapacitaciones' },
+        lista: 'lApoyos'
+      }
     ])
-  },
+  }
 }
 </script>
 

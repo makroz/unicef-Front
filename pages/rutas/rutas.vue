@@ -25,129 +25,127 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-        <v-container grid-list-md fluid>
-          <v-text-field
-            label="Nombre"
-            name="name"
-            id="name"
-            v-model="item.name"
-            :rules="[rules.required]"
-            validate-on-blur
-            ref="focus"
-            :readonly="accion == 'show'"
-          ></v-text-field>
+        <v-text-field
+          label="Nombre"
+          name="name"
+          id="name"
+          v-model="item.name"
+          :rules="[rules.required]"
+          validate-on-blur
+          ref="focus"
+          :readonly="accion == 'show'"
+        ></v-text-field>
 
-          <v-text-field
-            label="Descripcion"
-            v-model="item.descrip"
-            :readonly="accion == 'show'"
-          ></v-text-field>
-          <v-select
-            v-model="item.usuarios_id"
-            :items="lUsuarios"
-            :rules="[rules.required]"
-            item-text="name"
-            item-value="id"
-            label="Monitor Asignado"
-            :readonly="accion == 'show'"
-          ></v-select>
-          <v-layout row wrap>
-            <v-flex sm6 v-if="accion!='show'" >
-              <v-card class="pa-2" >
-                <v-toolbar color="indigo" dark dense>
-                  <v-toolbar-title class="body-1"
-                    >Beneficiarios Disponibles</v-toolbar-title
+        <v-text-field
+          label="Descripcion"
+          v-model="item.descrip"
+          :readonly="accion == 'show'"
+        ></v-text-field>
+        <v-select
+          v-model="item.usuarios_id"
+          :items="lUsuarios"
+          :rules="[rules.required]"
+          item-text="name"
+          item-value="id"
+          label="Monitor Asignado"
+          :readonly="accion == 'show'"
+        ></v-select>
+        <v-layout row wrap>
+          <v-flex sm6 v-if="accion != 'show'">
+            <v-card class="pa-2">
+              <v-toolbar color="indigo" dark dense>
+                <v-toolbar-title class="body-1"
+                  >Beneficiarios Disponibles</v-toolbar-title
+                >
+              </v-toolbar>
+              <v-list style="height: 300px;overflow-y: scroll">
+                <v-list-tile v-for="benef in lDisponibles" :key="benef.id">
+                  <v-list-tile-content>
+                    <v-list-tile-title>{{ benef.name }}</v-list-tile-title>
+                  </v-list-tile-content>
+
+                  <v-list-tile-action>
+                    <v-icon color="green" @click="addBenef(item, benef.id)"
+                      >add_circle</v-icon
+                    >
+                  </v-list-tile-action>
+                </v-list-tile>
+              </v-list>
+            </v-card>
+          </v-flex>
+          <v-flex :class="accion != 'show' ? 'sm6' : 'sm12'">
+            <v-card class="pa-2">
+              <v-toolbar color="indigo" dark dense>
+                <v-toolbar-title class="body-1"
+                  >Beneficiarios de la Ruta</v-toolbar-title
+                >
+              </v-toolbar>
+              <v-list style="height: 300px;overflow-y: scroll">
+                <draggable
+                  v-model="item.beneficiarios"
+                  @change="onChangeSort"
+                  :disabled="accion == 'show'"
+                >
+                  <v-list-tile
+                    v-for="(benefSel, index) in item.beneficiarios"
+                    :key="index"
                   >
-                </v-toolbar>
-                <v-list style="height: 300px;overflow-y: scroll">
-                  <v-list-tile v-for="benef in lDisponibles" :key="benef.id">
+                    <v-list-tile-action>
+                      <v-icon color="blue">more_vert</v-icon>
+                    </v-list-tile-action>
+
                     <v-list-tile-content>
-                      <v-list-tile-title>{{ benef.name }}</v-list-tile-title>
+                      <v-list-tile-title>{{
+                        getDataLista(lBeneficiarios, benefSel)
+                      }}</v-list-tile-title>
                     </v-list-tile-content>
 
-                    <v-list-tile-action>
-                      <v-icon color="green" @click="addBenef(item, benef.id)"
-                        >add_circle</v-icon
+                    <v-list-tile-action v-if="accion != 'show'">
+                      <v-icon
+                        color="red"
+                        @click="item.beneficiarios.splice(index, 1)"
+                        >backspace</v-icon
                       >
                     </v-list-tile-action>
                   </v-list-tile>
-                </v-list>
-              </v-card>
-            </v-flex>
-            <v-flex :class="accion!='show'?'sm6':'sm12'" >
-              <v-card class="pa-2" >
-                <v-toolbar color="indigo" dark dense>
-                  <v-toolbar-title class="body-1"
-                    >Beneficiarios de la Ruta</v-toolbar-title
-                  >
-                </v-toolbar>
-                <v-list style="height: 300px;overflow-y: scroll">
-                  <draggable
-                    v-model="item.beneficiarios"
-                    @change="onChangeSort"
-                    :disabled="accion=='show'"
-                  >
-                    <v-list-tile
-                      v-for="(benefSel, index) in item.beneficiarios"
+                </draggable>
+              </v-list>
+            </v-card>
+          </v-flex>
+        </v-layout>
+        <v-layout wrap>
+          <v-flex md12>
+            <div id="map-wrap" style="height: 350px; width: 100%">
+              <client-only>
+                <l-map
+                  :zoom="zoom"
+                  :center="center"
+                  style="height: 350px; width: 100%"
+                  ref="mymap"
+                >
+                  <l-tile-layer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+                    :useCors="false"
+                  ></l-tile-layer>
+                  <div v-if="this.lBeneficiarios.length > 0">
+                    <l-marker
+                      v-for="(marker, index) in item.beneficiarios"
                       :key="index"
+                      :lat-lng="getMarker(marker, item, index)"
+                      :draggable="false"
+                      :visible="true"
                     >
-                      <v-list-tile-action>
-                        <v-icon color="blue">more_vert</v-icon>
-                      </v-list-tile-action>
-
-                      <v-list-tile-content>
-                        <v-list-tile-title>{{
-                          getDataLista(lBeneficiarios, benefSel)
-                        }}</v-list-tile-title>
-                      </v-list-tile-content>
-
-                      <v-list-tile-action v-if="accion!='show'">
-                        <v-icon
-                          color="red"
-                          @click="item.beneficiarios.splice(index, 1)"
-                          >backspace</v-icon
-                        >
-                      </v-list-tile-action>
-                    </v-list-tile>
-                  </draggable>
-                </v-list>
-              </v-card>
-            </v-flex>
-          </v-layout>
-          <v-layout wrap>
-            <v-flex md12>
-              <div id="map-wrap" style="height: 350px; width: 100%">
-                <client-only>
-                  <l-map
-                    :zoom="zoom"
-                    :center="center"
-                    style="height: 350px; width: 100%"
-                    ref="mymap"
-                  >
-                    <l-tile-layer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution="<a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
-                      :useCors="false"
-                    ></l-tile-layer>
-                    <div v-if="this.lBeneficiarios.length > 0">
-                      <l-marker
-                        v-for="(marker, index) in item.beneficiarios"
-                        :key="index"
-                        :lat-lng="getMarker(marker, item, index)"
-                        :draggable="false"
-                        :visible="true"
-                      >
-                        <l-tooltip>
-                          {{ getNameBene(marker) }}
-                        </l-tooltip>
-                      </l-marker>
-                    </div>
-                  </l-map>
-                </client-only>
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-container>
+                      <l-tooltip>
+                        {{ getNameBene(marker) }}
+                      </l-tooltip>
+                    </l-marker>
+                  </div>
+                </l-map>
+              </client-only>
+            </div>
+          </v-flex>
+        </v-layout>
       </mk-form>
     </v-container>
   </div>
@@ -160,7 +158,7 @@ import draggable from 'vuedraggable'
 export default {
   middleware: ['authAccess'],
   mixins: [MkModuloMix],
-  components: {draggable},
+  components: { draggable },
   name: 'Rutas',
   data() {
     return {
