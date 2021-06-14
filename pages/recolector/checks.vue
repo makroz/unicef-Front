@@ -24,7 +24,8 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-        <v-flex>
+      <v-layout row wrap>
+        <v-flex sm10>
           <v-text-field
             label='Nombre'
             v-model='item.name'
@@ -34,8 +35,7 @@
           >
           </v-text-field>
         </v-flex>
-        <v-layout row wrap>
-        <v-flex xs6>
+        <v-flex sm2>
           <v-text-field
             type='number'
             label='Orden'
@@ -46,6 +46,8 @@
           >
           </v-text-field>
         </v-flex>
+      </v-layout>
+        <v-layout row wrap>
         <v-flex xs6>
         <v-select
           :items='lTipo'
@@ -58,6 +60,19 @@
           :readonly="accion == 'show'"
         >
         </v-select>
+        </v-flex>
+        <v-flex sm6>
+          <v-select
+            :items='lCheck_categ'
+            item-text='name'
+            item-value='id'
+            label='Categoría'
+            v-model='item.categ_id'
+            :rules='[rules.num,rules.required]'
+            validate-on-blur
+            :readonly="accion == 'show'"
+          >
+          </v-select>
         </v-flex>
         </v-layout>
       </mk-form>
@@ -85,44 +100,47 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          
-          
         },
         {
           text: 'Nombre',
           value: 'name',
           align: 'left',
-          
           headers: true,
           type: 'text',
           search: true,
-          
-          
-        },
-        {
-          text: 'Orden',
-          value: 'orden',
-          align: 'right',
-          
-          headers: true,
-          type: 'num',
-          search: true,
-          
-          
         },
         {
           text: 'Tipo',
           value: 'tipo',
           align: 'left',
-          
+          width: '150px',
           headers: true,
           type: 'num',
           search: true,
-          
           lista: 'lTipo',
         },
+        {
+          text: 'Categoría',
+          value: 'categ_id',
+          align: 'left',
+          width: '200px',
+          headers: true,
+          type: 'num',
+          search: true,
+          lista: 'lCheck_categ',
+        },
+        {
+          text: 'Orden',
+          value: 'orden',
+          align: 'right',
+          width: '40px',
+          headers: true,
+          type: 'num',
+          search: true,
+        },
       ],
-        lTipo: [
+      lCheck_categ: [],
+      lTipo: [
           { id: 'c', name: 'Check' },
           { id: 'n', name: 'Numero' },
           { id: 't', name: 'Texto' },
@@ -130,8 +148,13 @@ export default {
         ],
     };
   },
-  methods: {},
+  methods: {
+    
+  },
   async mounted() {
+          let listas = await this.getDatasBackend(this.urlModulo, [
+                {mod: 'Check_categ',campos: 'id,name,orden',datos: { modulo: 'mkRecolector' },item: 'categ_id', sort: 'orden'},
+          ])
   },
 };
 </script>

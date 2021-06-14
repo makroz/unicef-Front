@@ -220,7 +220,8 @@ export default {
         valor = lista.lista.find((el, index) =>
           typeof el === 'string' ? index == valor : el.id == valor
         )
-        return valor ? (valor.name ? valor.name : valor) : ''
+        let campo = lista.field || 'name'
+        return valor ? (valor[campo] ? valor[campo] : valor) : ''
       }
       return valor
     },

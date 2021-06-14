@@ -249,15 +249,19 @@ export const mutations = {
     setPwa(state, valor) {
         state.pwa = valor
     },
-    setTimer(state, valor = false) {
+    setTimer(state, valor = false, init = '') {
+        //console.log('entrosettimdr', valor, init, state.timer);
         let token = valor
+        if (init == 'init' && state.timer != false) {
+            clearInterval(state.timer)
+            state.timer = false
+        }
         let revExpired = function(me, state, expire = false) {
-            //console.log(expire, new Date((expire + '000') * 1))
+            console.log('rev', expire, new Date((expire + '000') * 1))
             if (Date.now() > new Date((expire + '000') * 1)) {
                 console.log('Sesion Expirada!!!', Date.now(), new Date((expire + '000') * 1))
                 clearInterval(state.timer)
-                    // state.setAuthToken = null
-                    // state.timer = false
+                state.timer = false
                 me.$router.push('/login/')
                 return false
             }
@@ -279,6 +283,7 @@ export const mutations = {
                     .join('')
                 )
                 state.timerExpire = JSON.parse(jsonPayload).exp
+                console.log('set', state.timerExpire, new Date((state.timerExpire + '000') * 1))
                 revExpired(this, state, state.timerExpire)
                 state.timer = setInterval(revExpired,
                     1000 * 60 * 5,
@@ -286,6 +291,11 @@ export const mutations = {
                     state,
                     state.timerExpire
                 )
+            } else {
+                if (state.timer != false) {
+                    clearInterval(state.timer)
+                    state.timer = false
+                }
             }
         }
     },
@@ -447,7 +457,7 @@ export const actions = {
             if (data.ok > 0) {
                 commit('SET_USER', data.data)
                 commit('setAuthToken', data._sid_)
-                commit('setTimer', data._sid_)
+                commit('setTimer', data._sid_, 'init')
                 this.$axios.defaults.headers.common['Authorization'] = data._sid_
                     // if (this.state.auth.rutaBack == null) {
                     //     commit("setRutaBack", "/");
@@ -471,27 +481,6 @@ export const actions = {
         return false
     },
     async getUser({ getters, commit, dispatch }) {
-        // const token = getters.getToken + ''
-        // if (token != 'null') {
-        //     var base64Url = token.split('.')[1]
-        //     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-        //     var jsonPayload = decodeURIComponent(
-        //         atob(base64)
-        //         .split('')
-        //         .map(function(c) {
-        //             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        //         })
-        //         .join('')
-        //     )
-        //     let d = JSON.parse(jsonPayload)
-        //         //console.log(d, new Date((d.exp + '000') * 1))
-        //     if (Date.now() > new Date((d.exp + '000') * 1)) {
-        //         console.log('Sesion Expirada!!!')
-        //         me.$router.push('/login/')
-        //         return false
-        //     }
-        // }
-
         if (!getters.getUser) {
             return await dispatch('reloadUser', false)
         }
@@ -507,6 +496,7 @@ export const actions = {
         commit('SET_USER', null)
         commit('setAuthToken', null)
         commit('setAcceso', false)
+        commit('setTimer', false)
             //commit("setRutaBack", this.$router.history._startLocation);
             //console.log('logout:',this.$router.history._startLocation);
         setTimeout(() => {

@@ -2,7 +2,8 @@
 import MkHead from '@/components/mkComponentes/MkHead'
 import MkForm from '@/components/mkComponentes/MkFormulario'
 import MkDataTable from '@/components/mkComponentes/MkDataTable/MkDataTable'
-import MkDate from '@/components/mkComponentes/mkDate'
+import MkDate from '@/components/mkComponentes/MkDate'
+import MkTime from '@/components/mkComponentes/MkTime'
 import MkRulesMix from '@/components/mkComponentes/mixins/MkRulesMix'
 import MkOncesMix from '@/components/mkComponentes/mixins/MkOncesMix'
 import Swal from 'sweetalert2'
@@ -27,6 +28,7 @@ export default {
     MkForm,
     MkDataTable,
     MkDate,
+    MkTime,
   },
   mixins: [MkRulesMix, MkOncesMix],
   data() {
@@ -69,6 +71,7 @@ export default {
       dirty: {
         item: {},
       },
+      saveDirty:[],
       formVerif: false,
 
       oldRecycled: false,
@@ -319,12 +322,9 @@ export default {
       }
 
       if (me.MkImgMix && typeof me.mkImgData.myImg.hasImage === 'function') {
-        // // me.item.imgDel=me.mkImgData.imgDel;
-        // me.item.imgFile='';
         me.mkImgData.refresh = true
         if (!me.mkImgData.imgDel) {
           if (me.mkImgData.myImg.hasImage()) {
-            //    me.mkImgData.refresh = true
             me.item.imgFile = this.mkImgData.myImg.generateDataUrl(
               'image/png',
               0.7
@@ -355,21 +355,15 @@ export default {
 
         if (_dirty) {
           for (const el in me.item) {
-            if (
-              JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
+            if (this.saveDirty.indexOf(el)>-1||(
+              JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el]))
             ) {
-              // console.log(
-              //   'dirty enttro:',
-              //   el,
-              //   JSON.stringify(me.dirty.item[el]),
-              //   JSON.stringify(me.item[el]),
-              //   JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
-              // )
-              if (me.item[el] !== undefined && el.indexOf('_temp_') == -1) {
+              if (this.saveDirty.indexOf(el)>-1||(me.item[el] !== undefined && el.indexOf('_temp_') == -1)) {
                 itemData[el] = me.item[el]
               }
             }
           }
+          this.saveDirty=[]
           if (Object.keys(itemData).length === 0) {
             me.closeDialog()
             me.afterSave(me, 1)
@@ -712,7 +706,8 @@ export default {
         }
 
         if (el.item) {
-          if (el.item.isArray) {
+          //console.log('el item is array',el.item);
+          if (Array.isArray(el.item)) {
             el.item.forEach((e) => this.updateListCol(e, datos))
           } else {
             this.updateListCol(el.item, datos)

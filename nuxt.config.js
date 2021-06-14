@@ -16,7 +16,7 @@ module.exports = {
      ** Headers of the page
      */
     head: {
-        title: "Unicef v.1.3.6",
+        title: "Unicef v.1.4.0",
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -50,6 +50,7 @@ module.exports = {
     css: [
         '~/assets/style/theme.styl',
         '~/assets/style/app.styl',
+        '~/assets/style/app.css',
         'font-awesome/css/font-awesome.css',
         'roboto-fontface/css/roboto/roboto-fontface.css'
     ],

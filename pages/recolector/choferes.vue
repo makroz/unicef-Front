@@ -26,9 +26,9 @@
       >
         <v-flex>
           <v-text-field
-            label='Nombre'
-            v-model='item.name'
-            :rules='[rules.required]'
+            label="Nombre"
+            v-model="item.name"
+            :rules="[rules.required]"
             validate-on-blur
             :readonly="accion == 'show'"
           >
@@ -36,72 +36,73 @@
         </v-flex>
         <v-flex>
           <v-text-field
-            label='Documento de Identidad'
-            v-model='item.ci'
-            :rules='[rules.required]'
+            label="Dirección"
+            v-model="item.dir"
             validate-on-blur
             :readonly="accion == 'show'"
           >
           </v-text-field>
         </v-flex>
-        <v-flex>
+        <v-layout row wrap>
+          <v-flex sm6>
+            <v-text-field
+              label="Documento de Identidad"
+              v-model="item.ci"
+              :rules="[rules.required]"
+              validate-on-blur
+              :readonly="accion == 'show'"
+            >
+            </v-text-field>
+          </v-flex>
+          <v-flex sm6>
+            <mk-date
+              v-model="item.fec_nac"
+              label="Fecha Nacimiento"
+              :readonly="accion == 'show'"
+            >
+            </mk-date>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+        <v-flex sm6>
           <v-text-field
-            label='Dirección'
-            v-model='item.dir'
-            
+            label="Teléfono"
+            v-model="item.tel"
             validate-on-blur
             :readonly="accion == 'show'"
           >
           </v-text-field>
         </v-flex>
-        <v-flex>
-          <v-text-field
-            label='Teléfono'
-            v-model='item.tel'
-            
+        <v-flex sm6>
+          <v-select
+            :items="lLic"
+            item-text="name"
+            item-value="id"
+            label="Licencia"
+            v-model="item.lic"
+            :rules="[rules.required]"
             validate-on-blur
             :readonly="accion == 'show'"
           >
-          </v-text-field>
+          </v-select>
         </v-flex>
-        <v-flex>
-        <v-select
-          :items='lLic'
-          item-text='name'
-          item-value='id'
-          label='Licencia'
-          v-model='item.lic'
-          :rules='[rules.required]'
-          validate-on-blur
-          :readonly="accion == 'show'"
-        >
-        </v-select>
-        </v-flex>
-        <v-flex>
-      <mk-date
-      v-model='item.fec_nac'
-      label='Fecha Nacimiento'
-      
-      :accion='accion'
-      >
-      </mk-date>
-        </v-flex>
+        </v-layout>
       </mk-form>
     </v-container>
   </div>
 </template>
 
 <script>
-import MkModuloMix from "@/components/mkComponentes/mixins/MkModuloMix";
+import MkModuloMix from '@/components/mkComponentes/mixins/MkModuloMix'
 
 export default {
-  middleware: ["authAccess"],
+  middleware: ['authAccess'],
   mixins: [MkModuloMix],
-  name: "Choferes",
+  name: 'Choferes',
   data() {
     return {
       //urlModulo: '',
-      titModulo: "Choferes",
+      titModulo: 'Choferes',
       campos: [
         {
           text: 'Id',
@@ -110,89 +111,69 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
-          
-          
+          search: true
         },
         {
           text: 'Nombre',
           value: 'name',
           align: 'left',
-          
           headers: true,
           type: 'text',
-          search: true,
-          
-          
+          search: true
         },
         {
           text: 'Ci',
           value: 'ci',
           align: 'left',
-          
           headers: true,
           type: 'text',
-          search: true,
-          
-          
+          search: true
         },
         {
           text: 'Dirección',
           value: 'dir',
           align: 'left',
-          
           headers: true,
           type: 'text',
-          search: true,
-          
-          
+          search: true
         },
         {
           text: 'Teléfono',
           value: 'tel',
           align: 'left',
-          
           headers: true,
           type: 'text',
-          search: true,
-          
-          
+          search: true
         },
         {
           text: 'Licencia',
           value: 'lic',
           align: 'left',
-          
           headers: true,
           type: 'num',
           search: true,
-          
-          lista: 'lLic',
+          lista: 'lLic'
         },
         {
           text: 'Fecha Nac.',
           value: 'fec_nac',
           align: 'center',
-          
           headers: true,
           type: 'date',
-          search: true,
-          
-          
-        },
+          search: true
+        }
       ],
-        lLic: [
-          { id: 'P', name: 'Particular' },
-          { id: 'A', name: 'Categ. A' },
-          { id: 'B', name: 'Categ. B' },
-          { id: 'C', name: 'Categ. C' },
-        ],
-    };
+      lLic: [
+        { id: 'P', name: 'Particular' },
+        { id: 'A', name: 'Categ. A' },
+        { id: 'B', name: 'Categ. B' },
+        { id: 'C', name: 'Categ. C' }
+      ]
+    }
   },
   methods: {},
-  async mounted() {
-  },
-};
+  async mounted() {}
+}
 </script>
 
 <style lang="stylus"></style>

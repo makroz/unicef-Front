@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog
-      v-if="accion != 'show'"
+      v-if="!readonly"
       ref="fecha_dialog"
       v-model="modalDate"
       :return-value.sync="date"
@@ -49,7 +49,7 @@
 
 <script>
 export default {
-  name: 'mkDate',
+  name: 'MkDate',
   props: {
     label: {
       type: String,
@@ -59,9 +59,9 @@ export default {
       type: String,
       default: '',
     },
-    accion: {
-      type: String,
-      default: 'add',
+    readonly: {
+      type: Boolean,
+      default: false,
     },
     rules: {
       type: Array,

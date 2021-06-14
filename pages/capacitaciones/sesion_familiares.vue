@@ -30,7 +30,7 @@
               v-model="item.fecha"
               label="Fecha"
               :rules="[rules.required]"
-              :accion="accion"
+              :readonly="accion == 'show'"
             >
             </mk-date>
           </v-flex>
