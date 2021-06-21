@@ -6,13 +6,16 @@
     :dark="$vuetify.dark"
     app
     v-model="drawer"
-    width="260"
+    width="300"
   >
     <v-toolbar color="primary darken-1" dark>
       <!-- colocar estos titulos en store o config -->
       <v-toolbar-side-icon @click.stop="toggleDrawer()"></v-toolbar-side-icon>
-      <img src="../static/m.png" height="36" alt="Sistema Unicef" />
-      <v-toolbar-title class="ml-0 pl-3"> Unicef </v-toolbar-title>
+      <img src="../static/logo.png" height="36" alt="Cosmol" />
+      <v-toolbar-title class="ml-0 pl-3">Cosmol</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <img src="../static/m.png" height="36" alt="Sistema Unicef/Cosmol" class="ml-1"/>
+      
     </v-toolbar>
     <vue-perfect-scrollbar
       class="drawer-menu--scroll"

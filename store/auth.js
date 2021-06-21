@@ -5,6 +5,7 @@ import { c, imprimirElemento } from '@/components/mkComponentes/lib/MkUtils.js'
 const _lap = process.env.mkConfig.authKey
 
 export const state = () => ({
+    online: false,
     timer: false,
     timerExpire: false,
     pwa: false,
@@ -246,6 +247,9 @@ export const getters = {
     }
 }
 export const mutations = {
+    setOnline(state, valor) {
+        state.online = valor
+    },
     setPwa(state, valor) {
         state.pwa = valor
     },
@@ -259,7 +263,11 @@ export const mutations = {
         let revExpired = function(me, state, expire = false) {
             console.log('rev', expire, new Date((expire + '000') * 1))
             if (Date.now() > new Date((expire + '000') * 1)) {
-                console.log('Sesion Expirada!!!', Date.now(), new Date((expire + '000') * 1))
+                console.log(
+                    'Sesion Expirada!!!',
+                    Date.now(),
+                    new Date((expire + '000') * 1)
+                )
                 clearInterval(state.timer)
                 state.timer = false
                 me.$router.push('/login/')
@@ -283,9 +291,14 @@ export const mutations = {
                     .join('')
                 )
                 state.timerExpire = JSON.parse(jsonPayload).exp
-                console.log('set', state.timerExpire, new Date((state.timerExpire + '000') * 1))
+                console.log(
+                    'set',
+                    state.timerExpire,
+                    new Date((state.timerExpire + '000') * 1)
+                )
                 revExpired(this, state, state.timerExpire)
-                state.timer = setInterval(revExpired,
+                state.timer = setInterval(
+                    revExpired,
                     1000 * 60 * 5,
                     this,
                     state,

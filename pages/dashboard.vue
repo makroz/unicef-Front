@@ -67,7 +67,8 @@
         </svg>
         </v-flex>
         <v-flex xs8 >
-          <h1 class="font-weight-bold" >Bienvenido al Sistema</h1>
+          <h2 class="font-weight-bold" >Bienvenido al Sistema</h2>
+          <img src="../static/logo.gif"  alt="Cosmol" center/>
           <br />
         </v-flex>
 

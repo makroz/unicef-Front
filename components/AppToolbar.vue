@@ -2,7 +2,7 @@
   <v-toolbar color="primary" fixed dark app >
     <v-toolbar-title class="ml-0 pl-3">
       <v-toolbar-side-icon @click.stop="toggleDrawer()"></v-toolbar-side-icon
-      >Sistema de Saneamiento
+      >Sistema de Saneamiento Cosmol
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu

@@ -194,9 +194,17 @@ export default {
           text: 'Id',
           value: 'id',
           align: 'left',
-          width: '100px',
+          width: '80px',
           headers: true,
           type: 'num',
+          search: true
+        },
+        {
+          text: 'Fecha',
+          value: 'created_at',
+          width: '80px',
+          headers: true,
+          type: 'date',
           search: true
         },
         {

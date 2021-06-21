@@ -1,10 +1,10 @@
 const Menu = [
-    { header: 'menu Principal' },
-    { title: 'Dashboard', name: 'dashboard', href: '/dashboard/' },
+    { header: 'Principal v. 1.5.3' },
+    { title: 'Dashboard', name: 'dashboard', href: '/dashboard/', icon: 'home', },
     {
         name: 'evaluaciones',
-        title: 'Modulo Evaluaciones',
-        icon: 'face',
+        title: 'Evaluaciones',
+        icon: 'feed',
         items: [{
             name: 'evaluaciones',
             title: 'Evaluaciones',
@@ -12,19 +12,19 @@ const Menu = [
         }]
     },
     {
-        title: 'Modulo Rutas',
+        title: 'Rutas',
         name: 'rutas',
-        icon: 'face',
+        icon: 'map',
         items: [
             { name: 'ruteos', title: 'Ruteos', href: '/rutas/ruteos/' },
             { name: 'rutas', title: 'Rutas', href: '/rutas/rutas/' }
         ]
     },
     {
-        title: 'Modulo Preguntas',
+        title: 'Preguntas',
         group: 'preguntas',
         component: 'preguntas',
-        icon: 'face',
+        icon: 'quiz',
         items: [
             { name: 'categ', title: 'Categorias', href: '/preguntas/categ/' },
             {
@@ -37,8 +37,8 @@ const Menu = [
     },
     {
         name: 'servicios',
-        title: 'Modulo Servicios',
-        icon: 'face',
+        title: 'Servicios',
+        icon: 'engineering',
         items: [{
                 name: 'solicitudServicios',
                 title: 'Solicitud de Servicios',
@@ -85,9 +85,9 @@ const Menu = [
         ]
     },
     {
-        title: 'Modulo Beneficiarios',
+        title: 'Beneficiarios',
         name: 'beneficiarios',
-        icon: 'face',
+        icon: 'assignment_ind',
         items: [{
                 name: 'beneficiarios',
                 title: 'Beneficiasrios',
@@ -159,9 +159,9 @@ const Menu = [
         ]
     },
     {
-        title: 'Modulo Capacitaciones',
+        title: 'Capacitaciones',
         name: 'capacitaciones',
-        icon: 'face',
+        icon: 'school',
         items: [{
                 name: 'lista_apoyos',
                 title: 'Lista de Apoyos',
@@ -180,9 +180,9 @@ const Menu = [
         ]
     },
     {
-        title: 'Modulo Almacenes',
+        title: 'Almacenes',
         name: 'almacenes',
-        icon: 'face',
+        icon: 'layers',
         items: [{
                 name: 'movimientos',
                 title: 'Mov. Almacen',
@@ -216,9 +216,9 @@ const Menu = [
         ]
     },
     {
-        title: 'Modulo Usuarios',
+        title: 'Usuarios',
         name: 'usuarios',
-        icon: 'face',
+        icon: 'manage_accounts',
         items: [
             { name: 'roles', title: 'Roles', href: '/usuarios/roles/' },
             {
@@ -239,7 +239,7 @@ const Menu = [
     {
         name: 'recolector',
         title: 'Recolector',
-        icon: 'face',
+        icon: 'local_shipping',
         items: [{
                 name: 'check_diarios',
                 title: 'Checks Diarios',
@@ -265,6 +265,12 @@ const Menu = [
                 ]
             }
         ]
+    },
+    {
+        name: 'rastreo',
+        title: 'Rastreo',
+        icon: 'wifi',
+        href: '/rastreo/rastreo/',
     },
     { name: 'divider1', divider: true }
 ]
