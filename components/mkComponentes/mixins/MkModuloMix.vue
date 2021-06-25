@@ -11,8 +11,8 @@ import {
   c,
   getDataLista,
   getTitFromName,
-//  imprimirElemento,
-  formatDT,
+  //  imprimirElemento,
+  formatDT
 } from '@/components/mkComponentes/lib/MkUtils.js'
 import { getCache, setCache } from '@/components/mkComponentes/lib/MkCache.js'
 
@@ -28,17 +28,102 @@ export default {
     MkForm,
     MkDataTable,
     MkDate,
-    MkTime,
+    MkTime
   },
   mixins: [MkRulesMix, MkOncesMix],
   data() {
     return {
       dataTable: {
-        acciones: {},
+        acciones: {
+          orden: {
+            id: 'orden',
+            visible: false,
+            lista: function(l) {
+              let ordenado = Object.keys(l).sort(function(a, b) {
+                return l[a].orden - l[b].orden
+              })
+              return ordenado
+            },
+            grupos: [''],
+            orden: 1000
+          },
+          search: {
+            id: 'search',
+            visible: true,
+            grupos: [''],
+            orden: -1
+          },
+          status: {
+            id: 'status',
+            visible: true,
+            grupos: [''],
+            orden: -1
+          },
+
+          class: {
+            id: 'class',
+            visible: false,
+            grupos: [''],
+            orden: 50
+          },
+          sel: {
+            id: 'sel',
+            visible: true,
+            grupos: [''],
+            orden: 0
+          },
+          add: {
+            id: 'add',
+            color: 'primary',
+            icon: 'add',
+            text: 'Adicionar',
+            visible: true,
+            action: 'openDialog',
+            grupos: ['topbar'],
+            orden: 1
+          },
+          edit: {
+            id: 'edit',
+            color: 'primary',
+            icon: 'edit',
+            visible: true,
+            action: 'openDialog',
+            grupos: ['action', 'topbar'],
+            orden: 2,
+            dblClic: true
+          },
+          del: {
+            id: 'del',
+            color: 'pink',
+            icon: 'delete',
+            visible: true,
+            action: 'deleteItem',
+            grupos: ['action', 'topbar', 'recycled'],
+            orden: 3
+          },
+          restore: {
+            id: 'restore',
+            color: 'green',
+            icon: 'restore',
+            visible: true,
+            action: 'restoreItem',
+            grupos: ['topbar', 'recycled'],
+            orden: 4
+          },
+          show: {
+            id: 'show',
+            color: 'green',
+            icon: 'visibility',
+            visible: true,
+            action: 'openDialog',
+            grupos: ['action', 'topbar'],
+            orden: 5
+          }
+        },
         lista: {
           items: [],
           selected: [],
-          checksum: '',
+          checksum: ''
         },
         busquedas: this.getParams('buscar', []),
         loading: false,
@@ -49,8 +134,8 @@ export default {
           page: 1,
           offset: 5,
           total: 0,
-          options: { rowsPerPage: -1, sortBy: 'id', descending: true },
-        },
+          options: { rowsPerPage: -1, sortBy: 'id', descending: true }
+        }
       },
       created: true,
       urlModulo: this.$options.name,
@@ -66,12 +151,12 @@ export default {
       paramsExtra: {},
       item: {
         id: 0,
-        name: '',
+        name: ''
       },
       dirty: {
-        item: {},
+        item: {}
       },
-      saveDirty:[],
+      saveDirty: [],
       formVerif: false,
 
       oldRecycled: false,
@@ -79,15 +164,15 @@ export default {
         1: false,
         2: false,
         4: false,
-        8: false,
+        8: false
       },
       Auth: {
         recycled: false,
         authAccess: this.$options.authAccess || this.$options.name,
         proteger: this.$options.middleware || '',
-        _updateData: this._updateData,
+        _updateData: this._updateData
       },
-      grabarDebug: false,
+      grabarDebug: false
     }
   },
   methods: {
@@ -169,13 +254,13 @@ export default {
       if (typeof d !== 'object' || d === null) {
         d = { sortBy: null, descending: null }
       } else {
-        me.dataTable.busquedas.forEach(function (item) {
+        me.dataTable.busquedas.forEach(function(item) {
           if (item.criterio != '') {
             bus.push({
               campo: item.campo,
               cond: item.cond,
               criterio: item.criterio,
-              union: item.union,
+              union: item.union
             })
           }
         })
@@ -234,17 +319,17 @@ export default {
       me.dataTable.loading = true
       me.$axios
         .get(url + this.getCt(url))
-        .then(function (response) {
+        .then(function(response) {
           if (me.isOk(response.data, url)) {
             me.setParams()
             me.setParams('buscar', me.dataTable.busquedas)
             me.fillTable(response.data, url)
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error(error)
         })
-        .finally(function () {
+        .finally(function() {
           me.dataTable.loading = false
           me.created == true
         })
@@ -263,7 +348,7 @@ export default {
           title: data.msg,
           icon: 'warning',
           showConfirmButton: false,
-          timer: 1500,
+          timer: 1500
         })
         if (data.ok == -401 || data.ok == -1001) {
           this.$store.dispatch('auth/logout')
@@ -281,9 +366,9 @@ export default {
       me.dataTable.loading = true
       me.$axios
         .post(url + this.getCt(url), {
-          id: id,
+          id: id
         })
-        .then(function (response) {
+        .then(function(response) {
           if (me.isOk(response.data)) {
             me.fillTable(response.data.data, url)
             me.paramsExtra = {}
@@ -291,10 +376,10 @@ export default {
             //con error
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error(error)
         })
-        .finally(function () {
+        .finally(function() {
           me.dataTable.loading = false
         })
     },
@@ -316,8 +401,8 @@ export default {
         console.log('item antes de Grabar:', me.item)
       }
 
-      if (await me.beforeSave(me)===false){
-        console.log('no grabo x beforeSave');
+      if ((await me.beforeSave(me)) === false) {
+        console.log('no grabo x beforeSave')
         return false
       }
 
@@ -352,18 +437,21 @@ export default {
         me.dataTable.loading = true
         let url = me.urlModulo + '/' + me.item.id
 
-
         if (_dirty) {
           for (const el in me.item) {
-            if (this.saveDirty.indexOf(el)>-1||(
-              JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el]))
+            if (
+              this.saveDirty.indexOf(el) > -1 ||
+              JSON.stringify(me.dirty.item[el]) != JSON.stringify(me.item[el])
             ) {
-              if (this.saveDirty.indexOf(el)>-1||(me.item[el] !== undefined && el.indexOf('_temp_') == -1)) {
+              if (
+                this.saveDirty.indexOf(el) > -1 ||
+                (me.item[el] !== undefined && el.indexOf('_temp_') == -1)
+              ) {
                 itemData[el] = me.item[el]
               }
             }
           }
-          this.saveDirty=[]
+          this.saveDirty = []
           if (Object.keys(itemData).length === 0) {
             me.closeDialog()
             me.afterSave(me, 1)
@@ -388,7 +476,7 @@ export default {
         }
         me.$axios
           .put(url + this.getCt(url), itemData)
-          .then(function (response) {
+          .then(function(response) {
             if (me.isOk(response.data)) {
               me.fillTable(response.data.data, url)
               me.closeDialog()
@@ -397,11 +485,11 @@ export default {
               isError = -1
             }
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error(error)
             isError = -2
           })
-          .finally(function () {
+          .finally(function() {
             me.dataTable.loading = false
             me.afterSave(me, isError)
           })
@@ -426,7 +514,7 @@ export default {
 
         me.$axios
           .post(url + this.getCt(url), me.item)
-          .then(function (response) {
+          .then(function(response) {
             if (me.isOk(response.data)) {
               me.dataTable.paginator.page = 1
               me.fillTable(response.data.data, url)
@@ -436,11 +524,11 @@ export default {
               isError = -1
             }
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error(error)
             isError = -2
           })
-          .finally(function () {
+          .finally(function() {
             me.dataTable.loading = false
             me.afterSave(me, isError)
             me.formVerif = false
@@ -493,7 +581,7 @@ export default {
         showCancelButton: true,
         confirmButtonColor: color,
         reverseButtons: true,
-        confirmButtonText: boton,
+        confirmButtonText: boton
       }).then((willDelete) => {
         if (willDelete.value === true) {
           if (this.Auth.recycled) {
@@ -502,22 +590,22 @@ export default {
           me.dataTable.loading = true
           me.$axios
             .post(url, {
-              id: id,
+              id: id
             })
             .then(({ data }) => {
               if (me.isOk(data)) {
                 me.fillTable(data.data)
                 Swal.fire({
                   title: titleOk,
-                  icon: 'success',
+                  icon: 'success'
                 })
                 me.paramsExtra = {}
               }
             })
-            .catch(function (error) {
+            .catch(function(error) {
               console.error(error)
             })
-            .finally(function () {
+            .finally(function() {
               me.dataTable.loading = false
             })
         }
@@ -544,7 +632,7 @@ export default {
       this.item = JSON.parse(JSON.stringify(data))
       //this.item = Object.assign({}, data)
       //data = this.item
-      if (await this.beforeOpen(accion, this.item) == false) {
+      if ((await this.beforeOpen(accion, this.item)) == false) {
         return false
       }
       this.item = JSON.parse(JSON.stringify(this.item))
@@ -659,7 +747,7 @@ export default {
             title: alertar,
             icon: 'warning',
             showConfirmButton: false,
-            timer: 1500,
+            timer: 1500
           })
         }
       }
@@ -689,12 +777,19 @@ export default {
           el[lLista] = lista
         }
       })
+      for (let el in me.dataTable.acciones) {
+        if (el == campo) {
+          console.log('colista', me.dataTable.acciones[el], campo)
+          me.dataTable.acciones[el][lLista] = lista
+        }
+      }
+
       //console.error('updatelist',me.campos)
     },
     async getDatasBackend(mod, listas) {
       let data = await this.$store.dispatch('auth/loadDatas', {
         mod: mod,
-        listas: listas,
+        listas: listas
       })
       listas.forEach((el) => {
         let datos = {}
@@ -720,14 +815,14 @@ export default {
 
         let sort = el.sort || false
         if (sort && Array.isArray(datos)) {
-          datos.sort(function (a, b) {
+          datos.sort(function(a, b) {
             return a[sort] - b[sort]
           })
         }
 
         let sortAsc = el.sortAsc || false
         if (sortAsc && Array.isArray(datos)) {
-          datos.sort(function (a, b) {
+          datos.sort(function(a, b) {
             return b[sortAsc] - a[sortAsc]
           })
         }
@@ -743,7 +838,7 @@ export default {
     async getListaBackend(url, campos = '', item = null) {
       let lista = await this.$store.dispatch('auth/loadData', {
         url: url,
-        campos: campos,
+        campos: campos
       })
       //console.log('listaMix',lista);
       if (item) {
@@ -758,7 +853,7 @@ export default {
         url: url,
         campos: campos,
         datos: datos,
-        method: method,
+        method: method
       })
       return data
     },
@@ -788,7 +883,7 @@ export default {
       hijo.forEach((e) => {
         if (oGrupo != e[campoUnion]) {
           temp.push({
-            header: padre.filter((el) => el[id] == e[campoUnion])[0][name],
+            header: padre.filter((el) => el[id] == e[campoUnion])[0][name]
           })
           oGrupo = e[campoUnion]
         }
@@ -802,51 +897,47 @@ export default {
     getOptionTable(id) {
       return this.dataTable.acciones[id]
     },
-    setOptionTable(id, option) {
+    setOptionTable(id) {
       return this.dataTable.acciones[id]
     },
     addOptionTable(option) {
-      this.dataTable.acciones[option.id] = option
+      if (this.dataTable.acciones[option.id]){
+        this.dataTable.acciones[option.id] = option
+      }else{
+        this.$set(this.dataTable.acciones,option.id,option)
+      }
       return true
     },
-    opTableOrdenar(){
-      let me = this
-       let ordenado = Object.keys(me.dataTable.acciones).sort(function (
-            a,
-            b
-          ) {
-            return (
-              me.dataTable.acciones[a].orden - me.dataTable.acciones[b].orden
-            )
-          })
-
-          return ordenado.map((e) => {
-            return me.dataTable.acciones[e]
-          })
-    }
+    // opTableOrdenar() {
+    //   let me = this
+    //   let ordenado = Object.keys(me.dataTable.acciones).sort(function(a, b) {
+    //     return me.dataTable.acciones[a].orden - me.dataTable.acciones[b].orden
+    //   })
+    //   return ordenado
+    // }
   },
   watch: {
     Auth: {
       deep: true,
-      handler: function (v, old) {
+      handler: function(v, old) {
         //  console.log('wath',this.oldRecycled,v.recycled)
         if (this.oldRecycled != v.recycled) {
           this.listar()
           this.oldRecycled = v.recycled
         }
-      },
-    },
+      }
+    }
   },
   computed: {},
-  provide: function () {
+  provide: function() {
     return {
       can: this.can,
       Auth: this.Auth,
       setParams: this.setParams,
-      getParams: this.getParams,
+      getParams: this.getParams
     }
   },
-  created: function () {
+  created: function() {
     // this.$axios.setHeader('Content-Type', 'application/x-www-form-urlencoded', [
     //'post','get','put'
     //])
@@ -866,83 +957,95 @@ export default {
         }
       })
     }
-    //console.log('campos',this.campos)
-    let me = this
-    this.dataTable.acciones = {
-      orden: {
-        id: 'orden',
-        lista: this.opTableOrdenar,
-        visible: false,
-        grupos: [''],
-        orden: 1000,
-      },
-      status: {
-        id: 'status',
-        visible: true,
-        grupos: [''],
-        orden: -1,
-      },
 
-      class: {
-        id: 'class',
-        visible: false,
-        grupos: [''],
-        orden: 50,
-      },
-      sel: {
-        id: 'sel',
-        visible: true,
-        grupos: [''],
-        orden: 0,
-      },
-      add: {
-        id: 'add',
-        color: 'primary',
-        icon: 'add',
-        text: 'Adicionar',
-        visible: this.can('add'),
-        action: 'openDialog',
-        grupos: ['topbar'],
-        orden: 1,
-      },
-      edit: {
-        id: 'edit',
-        color: 'primary',
-        icon: 'edit',
-        visible: this.can('edit'),
-        action: 'openDialog',
-        grupos: ['action', 'topbar'],
-        orden: 2,
-        dblClic: true,
-      },
-      del: {
-        id: 'del',
-        color: 'pink',
-        icon: 'delete',
-        visible: this.can('del'),
-        action: 'deleteItem',
-        grupos: ['action', 'topbar', 'recycled'],
-        orden: 3,
-      },
-      restore: {
-        id: 'restore',
-        color: 'green',
-        icon: 'restore',
-        visible: this.can('del'),
-        action: 'restoreItem',
-        grupos: ['topbar', 'recycled'],
-        orden: 4,
-      },
-      show: {
-        id: 'show',
-        color: 'green',
-        icon: 'visibility',
-        visible: this.can('show'),
-        action: 'openDialog',
-        grupos: ['action', 'topbar'],
-        orden: 5,
-      },
-    }
+    //console.log('campos',this.campos)
+    //let me = this
+    //this.OpTable('orden').lista = this.opTableOrdenar
+    this.OpTable('add').visible = this.can('add')
+    this.OpTable('edit').visible = this.can('edit')
+    this.OpTable('del').visible = this.can('del')
+    this.OpTable('restore').visible = this.can('del')
+    // this.dataTable.acciones = {
+    //   orden: {
+    //     id: 'orden',
+    //     lista: this.opTableOrdenar,
+    //     visible: false,
+    //     grupos: [''],
+    //     orden: 1000
+    //   },
+    //   search: {
+    //     id: 'search',
+    //     visible: true,
+    //     grupos: [''],
+    //     orden: -1
+    //   },
+    //   status: {
+    //     id: 'status',
+    //     visible: true,
+    //     grupos: [''],
+    //     orden: -1
+    //   },
+
+    //   class: {
+    //     id: 'class',
+    //     visible: false,
+    //     grupos: [''],
+    //     orden: 50
+    //   },
+    //   sel: {
+    //     id: 'sel',
+    //     visible: true,
+    //     grupos: [''],
+    //     orden: 0
+    //   },
+    //   add: {
+    //     id: 'add',
+    //     color: 'primary',
+    //     icon: 'add',
+    //     text: 'Adicionar',
+    //     visible: this.can('add'),
+    //     action: 'openDialog',
+    //     grupos: ['topbar'],
+    //     orden: 1
+    //   },
+    //   edit: {
+    //     id: 'edit',
+    //     color: 'primary',
+    //     icon: 'edit',
+    //     visible: this.can('edit'),
+    //     action: 'openDialog',
+    //     grupos: ['action', 'topbar'],
+    //     orden: 2,
+    //     dblClic: true
+    //   },
+    //   del: {
+    //     id: 'del',
+    //     color: 'pink',
+    //     icon: 'delete',
+    //     visible: this.can('del'),
+    //     action: 'deleteItem',
+    //     grupos: ['action', 'topbar', 'recycled'],
+    //     orden: 3
+    //   },
+    //   restore: {
+    //     id: 'restore',
+    //     color: 'green',
+    //     icon: 'restore',
+    //     visible: this.can('del'),
+    //     action: 'restoreItem',
+    //     grupos: ['topbar', 'recycled'],
+    //     orden: 4
+    //   },
+    //   show: {
+    //     id: 'show',
+    //     color: 'green',
+    //     icon: 'visibility',
+    //     visible: this.can('show'),
+    //     action: 'openDialog',
+    //     grupos: ['action', 'topbar'],
+    //     orden: 5
+    //   }
+    // }
     //TODO: añadir un historico de cada registro en alguna tabla que muestre que cosas cambniaron, se puede poner mas opciones
     //al gravar como grabar y quedarse guaravar y añadir otro, grabar vopia, el edit solo grabar copia, el edit bath o en lote
     //TODO: adicioonar a todas las tablas el creado por y modificado por igual que el borrado por
@@ -964,6 +1067,6 @@ export default {
     //TODO: en permisos ver que el scrool siempre aparezca
     //TODO: hacer que el enter en elformulario sea un grabar o cancelar depende de lo que se quiera
     //TODO> revisar el modeulo de usuarios y otros mas para ver lasmejoras del loaddb y oras mejroas
-  },
+  }
 }
 </script>

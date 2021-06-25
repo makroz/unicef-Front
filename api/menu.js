@@ -1,5 +1,4 @@
 const Menu = [
-    { header: 'Principal v. 1.5.3' },
     { title: 'Dashboard', name: 'dashboard', href: '/dashboard/', icon: 'home', },
     {
         name: 'evaluaciones',
@@ -90,7 +89,7 @@ const Menu = [
         icon: 'assignment_ind',
         items: [{
                 name: 'beneficiarios',
-                title: 'Beneficiasrios',
+                title: 'Beneficiarios',
                 href: '/beneficiarios/beneficiarios/'
             },
             {

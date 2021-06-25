@@ -9,6 +9,7 @@
       lazy
       full-width
       width="290px"
+      @change="$emit('change', date)"
     >
       <template v-slot:activator="{ on }">
         <v-text-field
@@ -20,6 +21,7 @@
           validate-on-blur
           readonly
           v-on="on"
+          :hideDetails="hideDetails"
         ></v-text-field>
       </template>
       <v-date-picker v-model="date" scrollable>
@@ -31,6 +33,7 @@
           @click="
             $refs.fecha_dialog.save(date)
             $emit('input', date)
+            $emit('change', date)
             $nextTick($refs.date.validate)
           "
           >OK</v-btn
@@ -53,28 +56,33 @@ export default {
   props: {
     label: {
       type: String,
-      default: '',
+      default: ''
     },
     value: {
       type: String,
-      default: '',
+      default: ''
     },
     readonly: {
       type: Boolean,
-      default: false,
+      default: false
+    },
+    hideDetails: {
+      type: Boolean,
+      default: false
     },
     rules: {
       type: Array,
-      default: function () {
+      default: function() {
         return []
-      },
-    },
+      }
+    }
   },
   data() {
     return {
       modalDate: false,
       // date_temp: this.formatDate(this.value)||'',
       date: this.value,
+      cont: 0
     }
   },
   methods: {
@@ -83,12 +91,12 @@ export default {
       let fecha = (date + ' ').split(' ')[0]
       const [year, month, day] = fecha.split('-')
       return `${year}/${month}/${day}`
-    },
+    }
   },
   computed: {
     date_temp() {
       return this.formatDate(this.value) || ''
-    },
-  },
+    }
+  }
 }
 </script>

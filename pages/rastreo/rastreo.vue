@@ -5,6 +5,7 @@
         <mk-head :titulo="titModulo"></mk-head>
         <v-flex lg12>
           <mk-data-table
+            :key="lUsuarios.length"
             v-bind="dataTable"
             :campos="campos"
             @callAction="callAction"
@@ -100,7 +101,7 @@ export default {
           value: 'fecha',
           width: '250px',
           headers: true,
-          type: 'text',
+          type: 'datetime',
           search: true
         },
         {
@@ -131,13 +132,17 @@ export default {
       lUsuarios: [],
       center: [-17.783373986957255, -63.18209478792436],
       zoom: 13,
+      cont: 0
     }
   },
   computed: {
+    cUsuarios: function() {
+      return this.lUsuarios
+    }
   },
   methods: {
     getNameUsuario(marker) {
-      return this.getDataLista(this.lUsuarios,marker,id,name,'')
+      return this.getDataLista(this.lUsuarios, marker, id, name, '')
     },
     getMarker(id, item, index) {
       let lmarker = this.lUsuarios.filter((e) => e.id == id)
@@ -207,20 +212,89 @@ export default {
       }, 300)
       return true
     },
+    fUsuario(accion) {
+      if (accion == 'desde') {
+        
+      }
+      if (accion == 'usuarios') {
+        let busqueda = [
+          {
+            campo: 'usuarios_id',
+            cond: '20',
+            criterio: this.dataTable.acciones[accion].value,
+            type: 'num',
+            union: 'and',
+            lista: this.lUsuarios
+          }
+        ]
+//        console.log('filtrar', crit, busqueda)
+        this.onBuscar(busqueda)
+      }
+    }
   },
 
   async mounted() {
-        this.setOptionTable('show').visible = false
+    //console.log('mounted ')
+    this.setOptionTable('show').visible = false
     this.setOptionTable('add').visible = false
     this.setOptionTable('edit').visible = false
     this.setOptionTable('del').visible = false
+    this.setOptionTable('sel').visible = false
     this.setOptionTable('status').visible = false
     this.setOptionTable('restore').visible = false
+
+    const fecha = new Date();
+    let primerDia = new Date(fecha.getFullYear(), fecha.getMonth()+1, 1);
+    let ultimoDia = new Date(fecha.getFullYear(), fecha.getMonth() + 2, 0);
+    primerDia=primerDia.getFullYear()+'-'+primerDia.getMonth()+'-'+primerDia.getDate()
+    ultimoDia=ultimoDia.getFullYear()+'-'+ultimoDia.getMonth()+'-'+ultimoDia.getDate()
+
+    this.addOptionTable({
+      id: 'usuarios',
+      color: 'red',
+      icon: 'group',
+      text: 'Usuario',
+      visible: this.can('show'),
+      type: 'select',
+      lista: this.lUsuarios,
+      action: 'fUsuario',
+      grupos: ['filtros'],
+      orden: 1,
+      width: '250px'
+    })
+
+    this.addOptionTable({
+      id: 'desde',
+      color: 'red',
+      icon: 'group',
+      text: 'Desde',
+      visible: true,
+      type: 'date',
+      action: 'fUsuario',
+      grupos: ['filtros'],
+      orden: 2,
+      width: '150px',
+      value: primerDia
+    })
+
+    this.addOptionTable({
+      id: 'hasta',
+      color: 'red',
+      icon: 'group',
+      text: 'Hasta',
+      visible: true,
+      type: 'date',
+      action: 'fUsuario',
+      grupos: ['filtros'],
+      orden: 3,
+      width: '150px',
+      value: ultimoDia
+    })
     let listas = await this.getDatasBackend(this.urlModulo, [
       {
         mod: 'Usuarios',
         campos: 'id,name',
-        item: 'usuarios_id'
+        item: ['usuarios_id', 'usuarios']
       }
     ])
   }

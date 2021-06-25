@@ -14,8 +14,12 @@
       <img src="../static/logo.png" height="36" alt="Cosmol" />
       <v-toolbar-title class="ml-0 pl-3">Cosmol</v-toolbar-title>
       <v-spacer></v-spacer>
-      <img src="../static/m.png" height="36" alt="Sistema Unicef/Cosmol" class="ml-1"/>
-      
+      <img
+        src="../static/m.png"
+        height="36"
+        alt="Sistema Unicef/Cosmol"
+        class="ml-1"
+      />
     </v-toolbar>
     <vue-perfect-scrollbar
       class="drawer-menu--scroll"
@@ -23,6 +27,7 @@
     >
       <v-list dense>
         <!-- level 1 begin-->
+        <v-subheader> Principal v.{{ version }}</v-subheader>
         <template v-for="(item, i) in menus">
           <v-subheader v-if="item.header" :key="i">{{
             item.header
@@ -73,7 +78,6 @@
                 </template>
                 <!-- level 3 bengin -->
                 <v-list-tile
-                
                   v-for="(item3, i3) in item2.items"
                   :key="i3"
                   :to="item3.href ? item3.href : null"
@@ -104,24 +108,25 @@
 <script>
 import menu from '@/api/menu'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-
+const version = process.env.mkConfig.version
 export default {
   name: 'app-drawer',
   components: {
-    VuePerfectScrollbar,
+    VuePerfectScrollbar
   },
   props: {
     expanded: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   data: () => ({
+    version: version,
     mini: false,
     menus: menu,
     scrollSettings: {
-      maxScrollbarLength: 160,
-    },
+      maxScrollbarLength: 160
+    }
   }),
   computed: {
     drawer: {
@@ -130,20 +135,20 @@ export default {
       },
       set(val) {
         this.$store.commit('drawer', val)
-      },
+      }
     },
     // computeGroupActive() {
     //   return true
     // },
     sideToolbarColor() {
       return this.$vuetify.options.extra.sideNav
-    },
+    }
   },
   methods: {
     toggleDrawer() {
       this.$store.commit('toggleDrawer')
-    },
-  },
+    }
+  }
 }
 </script>
 

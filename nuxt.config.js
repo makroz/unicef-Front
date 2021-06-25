@@ -6,6 +6,7 @@ module.exports = {
     ssr: false,
     env: {
         mkConfig: {
+            version: process.env.VERSION,
             authKey: process.env.AUTH_KEY,
             dirty: process.env.DIRTY,
             storageUrl: process.env.STORAGE_URL
@@ -16,14 +17,14 @@ module.exports = {
      ** Headers of the page
      */
     head: {
-        title: "Unicef/Cosmol v.1.5.3",
+        title: "Unicef/Cosmol v" + process.env.VERSION,
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             {
                 hid: 'description',
                 name: 'description',
-                content: 'unicef v1.3 \n' +
+                content: 'unicef/Cosmol v' + process.env.VERSION + '\n' +
                     '    Makroz@hotmail.com. +591 72170900'
             }
         ],

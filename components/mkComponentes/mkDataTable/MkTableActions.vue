@@ -13,32 +13,32 @@
           <v-icon>close</v-icon>
         </v-btn>
       </template>
-      <template v-for="opt in acciones.orden?acciones.orden.lista():{}">
+      <template v-for="opt in acciones.orden?acciones.orden.lista(acciones):{}">
         <v-btn
-          :key="opt.value"
-          v-if="rowVisible(opt, item)"
+          :key="acciones[opt].value"
+          v-if="rowVisible(acciones[opt], item)"
           fab
           dark
           small
-          :color="opt.color"
-          @click.stop="callAction(opt, item)"
+          :color="acciones[opt].color"
+          @click.stop="callAction(acciones[opt], item)"
         >
-          <v-icon>{{ opt.icon }}</v-icon>
+          <v-icon>{{ acciones[opt].icon }}</v-icon>
         </v-btn>
       </template>
     </v-speed-dial>
     <v-layout v-else>
-      <template v-for="opt in acciones.orden?acciones.orden.lista():{}">
-        <v-flex :key="opt.value" v-if="rowVisible(opt, item)" pa-0 ma-0 shrink >
+      <template v-for="opt in acciones.orden?acciones.orden.lista(acciones):{}">
+        <v-flex :key="acciones[opt].value" v-if="rowVisible(acciones[opt], item)" pa-0 ma-0 shrink >
           <v-btn
             class="pa-0 ma-0"
             icon
             flat
-            :color="opt.color"
+            :color="acciones[opt].color"
             small
-            @click.stop="callAction(opt, item)"
+            @click.stop="callAction(acciones[opt], item)"
           >
-            <v-icon>{{ opt.icon }}</v-icon>
+            <v-icon>{{ acciones[opt].icon }}</v-icon>
           </v-btn>
         </v-flex>
       </template>
