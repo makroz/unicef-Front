@@ -16,7 +16,7 @@
           ></mk-data-table>
         </v-flex>
       </v-layout>
- <mk-form
+      <mk-form
         ref="mkForm"
         :modal="modal"
         :tit="tituloModal"
@@ -25,7 +25,7 @@
         @grabarItem="expCsv"
         :bTitulo="bTitulo"
       >
-        <table >
+        <table>
           <template v-for="(fila, i) in item.exportar">
             <tr v-if="i == 0" :key="i">
               <th
@@ -71,7 +71,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Fecha',
@@ -80,7 +80,7 @@ export default {
 
           headers: true,
           type: 'datetime',
-          search: true,
+          search: true
         },
         {
           text: 'Estado',
@@ -91,7 +91,7 @@ export default {
           type: 'num',
           search: true,
           lista: 'lEstadosSol',
-          lColor: 'lColorSol',
+          lColor: 'lColorSol'
         },
         {
           text: 'Exporto',
@@ -101,32 +101,31 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: 'lUsuarios',
-        },
+          lista: 'lUsuarios'
+        }
       ],
-      bTitulo:'',
+      bTitulo: '',
       lUsuarios: [],
       lForma_pagos: [],
       lBeneficiarios: [],
       lServicios: [],
-      lSolicitudServicios: [],
-
+      lSolicitudServicios: []
     }
   },
   methods: {
-    async expNota(accion,data) {
-      console.log('data',data);
-      this.item = Object.assign({},data)
+    async expNota(accion, data) {
+      console.log('data', data)
+      this.item = Object.assign({}, data)
       let listas = await this.getDatasBackend(this.urlModulo, [
         {
           mod: 'SolicitudServicios',
           datos: {
             modulo: 'mkServicios',
             filtros: [['comercial_id', '=', data.id]],
-            relations: ['materiales', 'qa', 'servicios', 'nota'],
+            relations: ['materiales', 'qa', 'servicios', 'nota']
           },
-          campos: '*',
-        },
+          campos: '*'
+        }
       ])
       if (listas.SolicitudServicios.length == 0) {
         alert('No hay solicitudes por Autorizadas por Exportar!!!')
@@ -134,7 +133,7 @@ export default {
       }
       let campos = camposExportComercial
 
-      campos.sort(function (a, b) {
+      campos.sort(function(a, b) {
         return a.orden - b.orden
       })
 
@@ -203,30 +202,30 @@ export default {
       this.item.act = 'comercial'
       this.accion = 'comercial'
       this.bTitulo = 'Exportar'
-      this.tituloModal = 'Exportar Solicitudes # '+data.id
+      this.tituloModal = 'Exportar Solicitudes # ' + data.id
       this.modal = true
     },
     expCsv() {
-        let csv = ''
-        this.item.exportar.forEach((fila) => {
-          csv = csv + fila.join(';') + '\n'
-        })
-        var element = document.createElement('a')
-        let filename = this.formatDT(this.item.created_at) + '-comercial' + '.csv'
-        element.setAttribute(
-          'href',
-          'data:text/plain;charset=utf-8,' + encodeURIComponent(csv)
-        )
-        element.setAttribute('download', filename)
+      let csv = ''
+      this.item.exportar.forEach((fila) => {
+        csv = csv + fila.join(';') + '\n'
+      })
+      var element = document.createElement('a')
+      let filename = this.formatDT(this.item.created_at) + '-comercial' + '.csv'
+      element.setAttribute(
+        'href',
+        'data:text/plain;charset=utf-8,' + encodeURIComponent(csv)
+      )
+      element.setAttribute('download', filename)
 
-        element.style.display = 'none'
-        document.body.appendChild(element)
+      element.style.display = 'none'
+      document.body.appendChild(element)
 
-        element.click()
+      element.click()
 
-        document.body.removeChild(element)
-        this.modalExport = false
-    },
+      document.body.removeChild(element)
+      this.modalExport = false
+    }
   },
   async mounted() {
     this.addOptionTable({
@@ -237,7 +236,7 @@ export default {
       visible: true,
       action: 'expNota',
       grupos: ['action'],
-      orden: 3,
+      orden: 3
     })
     this.setOptionTable('show').visible = false
     this.setOptionTable('add').visible = false
@@ -246,7 +245,6 @@ export default {
     this.setOptionTable('status').visible = false
     this.setOptionTable('restore').visible = false
 
-    
     let listas = await this.getDatasBackend(this.urlModulo, [
       { mod: 'Usuarios', campos: 'id,name', item: 'recolector_id' },
       {
@@ -254,38 +252,39 @@ export default {
         campos: 'id,name,epsa',
         datos: { _customFields: 1 },
         item: 'beneficiario_id',
+        sort: 'name'
       },
       {
         mod: 'Forma_pagos',
         campos: 'id,name',
         item: 'forma_pago_id',
-        datos: { modulo: 'mkServicios' },
+        datos: { modulo: 'mkServicios' }
       },
       {
         mod: 'Materiales',
         datos: { modulo: 'mkServicios' },
-        campos: 'id,name,medida_id',
+        campos: 'id,name,medida_id'
       },
       {
         mod: 'Medidas',
         datos: { modulo: 'mkServicios' },
-        campos: 'id,simbolo',
+        campos: 'id,simbolo'
       },
       {
         mod: 'Servicios',
         each: (e) => {
           e.cantidad = 1
           e.selected = false
-        },
+        }
       },
       {
         mod: 'Control_calidades',
         datos: { modulo: 'mkServicios' },
         campos: 'id,name,orden',
-        orden: 'orden',
-      },
+        sort: 'orden'
+      }
     ])
-  },
+  }
 }
 </script>
 

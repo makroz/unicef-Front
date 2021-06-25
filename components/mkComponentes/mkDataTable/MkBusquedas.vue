@@ -32,7 +32,21 @@
               :hideDetails="true"
               label="Condicion"
             ></v-select>
-            <v-select
+
+             <v-autocomplete
+                class="ma-2"
+               v-model="item.criterio"
+              :items="item.lista"
+              item-text="name"
+              item-value="id"
+              densed
+              hideDetails
+              label="Criterio"
+             v-if="item.lista && item.lista.length > 0"
+              >
+              </v-autocomplete>
+
+            <!-- <v-select
               v-if="item.lista && item.lista.length > 0"
               class="ma-2"
               v-model="item.criterio"
@@ -42,7 +56,7 @@
               densed
               :hideDetails="true"
               label="Criterio"
-            ></v-select>
+            ></v-select> -->
 
             <v-text-field
               v-else
@@ -69,12 +83,15 @@
             >
               <v-icon>add</v-icon>
             </v-btn>
+
+           
+
             <v-select
               class="ma-2 width-min"
               v-model="item.union"
               :items="uniones"
               densed
-              :hideDetails="true"
+              hideDetails
               label="Union"
               v-if="index != curBusquedas.length - 1"
             ></v-select>
@@ -245,6 +262,9 @@ export default {
         }
       }
     },
+    customFilter (item, queryText, itemText){
+        return itemText.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
+      },
     open(reload = true) {
       if (reload) {
         if (this.busquedas.length == 0) {

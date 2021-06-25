@@ -149,7 +149,6 @@
             <v-flex sm2> Egreso </v-flex>
             <v-flex sm2> Saldo </v-flex>
           </v-layout>
-
           <v-layout
             row
             fill-height
@@ -174,7 +173,7 @@
               {{ mov.egreso }}
             </v-flex>
             <v-flex sm2>
-              {{ getSaldo(mov.ingreso, mov.egreso) }}
+              {{ mov.saldo }}
             </v-flex>
           </v-layout>
         </v-card>
@@ -277,6 +276,7 @@ export default {
       lMat_categ: [],
       lUbicaciones: [],
       lMov_det: [],
+      saldo:0,
       lTipos: [
         { id: 1, name: 'Ingresos' },
         { id: 2, name: 'Egresos' },
@@ -290,37 +290,60 @@ export default {
     }
   },
   methods: {
-    beforeOpen(accion, data) {
+    async beforeOpen(accion, data) {
       this.lMov_det = []
-
       if (accion == 'show') {
-        data.saldo = 0
-        this.getHistorico(data.id)
+        let saldo = data.stock
+        let listas = await this.getDatasBackend(this.urlModulo, [
+        {
+          mod: 'Mov_det',
+          campos: '*',
+          datos: { modulo: 'mkAlmacenes', filtros: [['material_id', '=', data.id]] },
+          sortAsc: 'movimiento_id'
+        }
+      ])
+      this.lMov_det.map(e=>{
+        e.saldo=saldo
+        saldo=saldo+(e.egreso-e.ingreso)
+        })
+        //this.getHistorico(data.id)
       }
     },
     colorStock(item, e) {
       return e.stock <= e.min_stock ? 'red--text text--darken-4' : ''
     },
-    getSaldo(i, e) {
-      let r = this.item.saldo
-      this.item.saldo = this.item.saldo + (e - i)
-      return r
-    },
-    async getHistorico(id) {
-      let listas = await this.getDatasBackend(this.urlModulo, [
+    stock(accion) {
+      let crit = 3
+      if (accion == 'stock') {
+      let busqueda = [
         {
-          mod: 'Mov_det',
-          campos: '*',
-          datos: { modulo: 'mkAlmacenes', filtros: [['material_id', '=', id]] },
-          sortAsc: 'movimiento_id'
+          campo: 'stock',
+          cond: '25',
+          criterio: '0',
+          type: 'num',
+          union: 'and',
+          lista: false
         }
-      ])
+      ]
+      this.onBuscar(busqueda)
+
+      }
     }
   },
   async mounted() {
     this.setOptionTable('class').setClass = function(e) {
       return e.stock <= e.min_stock ? 'red lighten-5' : ''
     }
+     this.addOptionTable({
+      id: 'stock',
+      color: 'red',
+      icon: 'recycling',
+      text: 'Sin Stock',
+      visible: true,
+      action: 'stock',
+      grupos: ['filtros'],
+      orden: 4
+    })
     let listas = await this.getDatasBackend(this.urlModulo, [
       {
         mod: 'Medidas',

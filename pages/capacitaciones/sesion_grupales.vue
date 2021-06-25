@@ -24,78 +24,78 @@
         @closeDialog="closeDialog"
         @grabarItem="grabarItem"
       >
-          <v-flex>
-            <mk-date
-              v-model="item.fecha"
-              label="Fecha"
-              :rules="[rules.required]"
-              :readonly="accion == 'show'"
-            >
-            </mk-date>
-          </v-flex>
+        <v-flex>
+          <mk-date
+            v-model="item.fecha"
+            label="Fecha"
+            :rules="[rules.required]"
+            :readonly="accion == 'show'"
+          >
+          </mk-date>
+        </v-flex>
 
-          <v-card class="pa-2">
-            <v-toolbar color="indigo" dark dense>
-              <v-toolbar-title class="body-1"
-                >Desarrollo de habilidades en Saneamiento Sostenible
-              </v-toolbar-title>
-            </v-toolbar>
+        <v-card class="pa-2">
+          <v-toolbar color="indigo" dark dense>
+            <v-toolbar-title class="body-1"
+              >Desarrollo de habilidades en Saneamiento Sostenible
+            </v-toolbar-title>
+          </v-toolbar>
 
-            <v-layout row wrap>
-              <v-flex xs12 md6>
-                <v-textarea
-                  label="Contenido"
-                  v-model="item.contenido"
-                  :rules="[rules.required]"
-                  validate-on-blur
-                  rows="2"
-                  :readonly="accion == 'show'"
-                >
-                </v-textarea>
-              </v-flex>
-              <v-flex xs12 md6>
-                <v-textarea
-                  label="Hallazgos"
-                  v-model="item.hallazgos"
-                  :rules="[rules.required]"
-                  validate-on-blur
-                  rows="2"
-                  :readonly="accion == 'show'"
-                >
-                </v-textarea>
-              </v-flex>
-            </v-layout>
-          </v-card>
-          <br>
-          <v-card class="pa-2">
-            <v-toolbar color="indigo" dark dense>
-              <v-toolbar-title class="body-1">
-                Familias que Asistieron
-              </v-toolbar-title>
-            </v-toolbar>
+          <v-layout row wrap>
+            <v-flex xs12 md6>
+              <v-textarea
+                label="Contenido"
+                v-model="item.contenido"
+                :rules="[rules.required]"
+                validate-on-blur
+                rows="2"
+                :readonly="accion == 'show'"
+              >
+              </v-textarea>
+            </v-flex>
+            <v-flex xs12 md6>
+              <v-textarea
+                label="Hallazgos"
+                v-model="item.hallazgos"
+                :rules="[rules.required]"
+                validate-on-blur
+                rows="2"
+                :readonly="accion == 'show'"
+              >
+              </v-textarea>
+            </v-flex>
+          </v-layout>
+        </v-card>
+        <br />
+        <v-card class="pa-2">
+          <v-toolbar color="indigo" dark dense>
+            <v-toolbar-title class="body-1">
+              Familias que Asistieron
+            </v-toolbar-title>
+          </v-toolbar>
 
-            <v-layout row wrap>
-              <v-flex xs12>
-                <v-autocomplete
-                  v-model="item.beneficiarios"
-                  :items="lBeneficiarios"
-                  :filter="customFilter"
-                  color="primary"
-                  item-text="name"
-                  label="Beneficiarios de las Familias"
-                  item-value="id"
-                  item-avatar="id"
-                  multiple
-                  clearable
-                  chips
-                  deletable-chips
-                  solo-inverted
-                  counter
-                >
-                </v-autocomplete>
-              </v-flex>
-            </v-layout>
-          </v-card>
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-autocomplete
+                v-model="item.beneficiarios"
+                :items="lBeneficiarios"
+                :filter="customFilter"
+                color="primary"
+                item-text="name"
+                label="Beneficiarios de las Familias"
+                item-value="id"
+                item-avatar="id"
+                multiple
+                clearable
+                chips
+                deletable-chips
+                solo-inverted
+                counter
+              >
+              </v-autocomplete>
+            </v-flex>
+          </v-layout>
+        </v-card>
       </mk-form>
     </v-container>
   </div>
@@ -121,7 +121,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Fecha',
@@ -130,7 +130,7 @@ export default {
           width: '200px',
           headers: true,
           type: 'date',
-          search: true,
+          search: true
         },
         {
           text: 'Contenido',
@@ -139,14 +139,14 @@ export default {
 
           headers: true,
           type: 'textarea',
-          search: true,
-        },
+          search: true
+        }
       ],
-      lBeneficiarios: [],
+      lBeneficiarios: []
     }
   },
   methods: {
-        beforeOpen(accion, data = {}) {
+    beforeOpen(accion, data = {}) {
       if (accion == 'add') {
         this.$refs.mkForm.$refs.form.resetValidation()
       }
@@ -159,13 +159,18 @@ export default {
       return (
         textOne.indexOf(searchText) > -1 || textTwo.indexOf(searchText) > -1
       )
-    },
+    }
   },
   async mounted() {
-    let listas= await this.getDatasBackend(this.urlModulo,[
-      {mod:'Beneficiarios',campos:'id,name',item:'beneficiario_id'},
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      {
+        mod: 'Beneficiarios',
+        campos: 'id,name',
+        item: 'beneficiario_id',
+        sort: 'name'
+      }
     ])
-  },
+  }
 }
 </script>
 

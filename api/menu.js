@@ -115,7 +115,7 @@ const Menu = [
                     { name: 'epsas', title: 'Epsas', href: '/beneficiarios/epsas/' },
                     {
                         name: 'descoms',
-                        title: 'Descoms',
+                        title: 'Descom',
                         href: '/beneficiarios/descoms/'
                     },
                     {
@@ -195,7 +195,9 @@ const Menu = [
             {
                 name: 'auxiliares',
                 title: 'Auxiliares',
-                items: [{
+                items: [
+                    { name: 'medidas', title: 'Medidas', href: '/servicios/medidas/' },
+                    {
                         name: 'mat_categ',
                         title: 'Categorias de Materiales',
                         href: '/almacenes/mat_categ/'
@@ -263,6 +265,22 @@ const Menu = [
                     { name: 'vehiculos', title: 'Vehiculos', href: '/recolector/vehiculos/' }
                 ]
             }
+        ]
+    },
+    {
+        title: 'Reportes',
+        name: 'reportes',
+        icon: 'receipt_long',
+        items: [{
+                name: 'visitas',
+                title: 'Visitas y Evaluaciones',
+                href: '/reportes/visitas/'
+            },
+            {
+                name: 'recojos',
+                title: 'Recojos y Servicios',
+                href: '/reportes/recojos/'
+            },
         ]
     },
     {

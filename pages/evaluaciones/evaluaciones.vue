@@ -246,11 +246,11 @@ export default {
 
         {
           text: 'Beneficiario',
-          value: 'beneficiario.name',
+          value: 'beneficiarios_id',
           sortBy: 'beneficiarios.name',
           width: '100px',
           headers: true,
-          type: 'text',
+          type: 'num',
           search: true,
           lista: 'lBeneficiarios'
         },
@@ -266,6 +266,7 @@ export default {
         }
       ],
       lUsuarios: [],
+      lBeneficiarios: [],
       lEstados: ['Pendiente', 'No se Realizo', 'Terminado', 'Cerrado'],
       lColor: [
         'grey--text',
@@ -285,8 +286,11 @@ export default {
       this.accion = 'show'
       this.estado = data.estado <= 1 ? false : true
     },
-    alferOpen(accion, data = {}) {
-      this.tituloModal = this.tituloModal + ' de ' + data.beneficiario.name
+    afterOpen(accion, data) {
+      this.tituloModal =
+        this.tituloModal +
+        ' de ' +
+        this.getDataLista(this.lBeneficiarios, data.beneficiarios_id)
     }
   },
   computed: {
@@ -308,6 +312,12 @@ export default {
       ['status', '<>', 0]
     ]
     let listas = await this.getDatasBackend(this.urlModulo, [
+      {
+        mod: 'Beneficiarios',
+        campos: 'id,name',
+        item: 'beneficiarios_id',
+        sort: 'name'
+      },
       {
         mod: 'Usuarios',
         campos: 'id,name',

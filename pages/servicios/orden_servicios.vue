@@ -141,7 +141,7 @@ export default {
           width: '100px',
           headers: true,
           type: 'num',
-          search: true,
+          search: true
         },
         {
           text: 'Ref',
@@ -150,7 +150,7 @@ export default {
 
           headers: true,
           type: 'text',
-          search: true,
+          search: true
         },
         {
           text: 'Fecha',
@@ -159,7 +159,7 @@ export default {
 
           headers: true,
           type: 'date',
-          search: true,
+          search: true
         },
         {
           text: 'Foto',
@@ -168,7 +168,7 @@ export default {
 
           headers: true,
           type: 'text',
-          search: true,
+          search: true
         },
         {
           text: 'Observaciones',
@@ -177,7 +177,7 @@ export default {
 
           headers: true,
           type: 'text',
-          search: true,
+          search: true
         },
         {
           text: 'Estado',
@@ -188,7 +188,7 @@ export default {
           type: 'text',
           search: true,
           lista: 'lEstadosSol',
-          lColor: 'lColorSol',
+          lColor: 'lColorSol'
         },
         {
           text: 'Recolector',
@@ -198,7 +198,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lUsuarios,
+          lista: this.lUsuarios
         },
         {
           text: 'Forma de pago',
@@ -208,7 +208,7 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lForma_pagos,
+          lista: this.lForma_pagos
         },
         {
           text: 'Beneficiario',
@@ -218,8 +218,8 @@ export default {
           headers: true,
           type: 'num',
           search: true,
-          lista: this.lBeneficiarios,
-        },
+          lista: this.lBeneficiarios
+        }
       ],
       lUsuarios: [],
       lForma_pagos: [],
@@ -240,7 +240,7 @@ export default {
       nAceptadas: 0,
       imgPrefix: 'solicitud_servicios',
       bTitulo: '',
-      modalExport: false,
+      modalExport: false
       //grabarDebug: true,
     }
   },
@@ -306,14 +306,14 @@ export default {
           mod: 'Comercial',
           datos: {
             modulo: 'mkServicios',
-            filtros: [['estado', '=', 6]],
-            orden: 'created_at',
+            filtros: [['estado', '=', 6]]
           },
           campos: '*',
+          sort: 'created_at',
           each: (e) => {
             e.selected = false
-          },
-        },
+          }
+        }
       ])
       if (this.lComercial.length == 0) {
         alert('No hay por Finalizar !!!')
@@ -336,17 +336,17 @@ export default {
           datos: {
             modulo: 'mkServicios',
             filtros: [['estado', '=', 5]],
-            relations: ['materiales', 'qa', 'servicios', 'nota'],
+            relations: ['materiales', 'qa', 'servicios', 'nota']
           },
-          campos: '*',
-        },
+          campos: '*'
+        }
       ])
       if (listas.SolicitudServicios.length == 0) {
         alert('No hay solicitudes por Autorizadas por Exportar!!!')
         return false
       }
       let campos = camposExportComercial
-      campos.sort(function (a, b) {
+      campos.sort(function(a, b) {
         return a.orden - b.orden
       })
 
@@ -457,7 +457,7 @@ export default {
               realizado: false,
               obs_sol: e.obs || '',
               obs_verif: e.obs_verif || '',
-              materiales: [],
+              materiales: []
             }
           }
           let qa = {}
@@ -485,7 +485,7 @@ export default {
               obs_sol: e.obs,
               obs_verif: e.obs_verif,
               materiales: e.materiales, //aqui
-              qa: qa,
+              qa: qa
             }
           }
           this.lServices.push({
@@ -505,7 +505,7 @@ export default {
             ...serv_,
             selected: sel,
             cantidad: e.cant,
-            cant: e.cant,
+            cant: e.cant
           })
           //console.log('service', this.lServices)
         }
@@ -550,7 +550,7 @@ export default {
               verificado: serv.verificado,
               sol_id: serv.sol_id,
               obs_verif: serv.obs_verif,
-              qa: qa,
+              qa: qa
             })
           }
         }
@@ -576,9 +576,9 @@ export default {
           datos: {
             modulo: 'mkServicios',
             relations: ['materiales', 'qa'],
-            filtros: filtros,
-          },
-        },
+            filtros: filtros
+          }
+        }
       ]
     },
     filtrar(accion) {
@@ -599,12 +599,12 @@ export default {
           criterio: crit,
           type: 'num',
           union: 'and',
-          lista: lista,
-        },
+          lista: lista
+        }
       ]
       //console.log('filtrar',crit,busqueda)
       this.onBuscar(busqueda)
-    },
+    }
   },
   async mounted() {
     this.lColorSol[3] = 'red--text'
@@ -619,9 +619,9 @@ export default {
       action: 'revNota',
       grupos: ['action'],
       orden: 10,
-      visibleRow: function (e) {
+      visibleRow: function(e) {
         return e.estado < 5 ? true : false
-      },
+      }
     })
     this.addOptionTable({
       id: 'aut',
@@ -631,9 +631,9 @@ export default {
       action: 'autNota',
       grupos: ['action'],
       orden: 11,
-      visibleRow: function (e) {
+      visibleRow: function(e) {
         return e.estado == 4 ? true : false
-      },
+      }
     })
 
     this.addOptionTable({
@@ -644,7 +644,7 @@ export default {
       visible: this.can('edit', 'estado-terminado'),
       action: 'finNota',
       grupos: ['filtros'],
-      orden: 4,
+      orden: 4
     })
     this.addOptionTable({
       id: 'exportar',
@@ -654,7 +654,7 @@ export default {
       visible: this.can('edit', 'estado-comercial'),
       action: 'expNota',
       grupos: ['filtros'],
-      orden: 3,
+      orden: 3
     })
     this.addOptionTable({
       id: 'autorizar',
@@ -664,7 +664,7 @@ export default {
       visible: this.can('edit', 'estado-autorizar'),
       action: 'filtrar',
       grupos: ['filtros'],
-      orden: 2,
+      orden: 2
     })
     this.addOptionTable({
       id: 'verificar',
@@ -674,7 +674,7 @@ export default {
       visible: this.can('edit', 'estado-verificar'),
       action: 'filtrar',
       grupos: ['filtros'],
-      orden: 1,
+      orden: 1
     })
 
     this.setOptionTable('del').visible = false
@@ -690,38 +690,39 @@ export default {
         campos: 'id,name,epsa',
         datos: { _customFields: 1 },
         item: 'beneficiario_id',
+        sort: 'name'
       },
       {
         mod: 'Forma_pagos',
         campos: 'id,name',
         item: 'forma_pago_id',
-        datos: { modulo: 'mkServicios' },
+        datos: { modulo: 'mkServicios' }
       },
       {
         mod: 'Materiales',
         datos: { modulo: 'mkServicios' },
-        campos: 'id,name,medida_id',
+        campos: 'id,name,medida_id'
       },
       {
         mod: 'Medidas',
         datos: { modulo: 'mkServicios' },
-        campos: 'id,simbolo',
+        campos: 'id,simbolo'
       },
       {
         mod: 'Servicios',
         each: (e) => {
           e.cantidad = 1
           e.selected = false
-        },
+        }
       },
       {
         mod: 'Control_calidades',
         datos: { modulo: 'mkServicios' },
         campos: 'id,name,orden',
-        orden: 'orden',
-      },
+        sort: 'orden'
+      }
     ])
-  },
+  }
 }
 </script>
 

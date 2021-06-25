@@ -242,16 +242,38 @@ export default {
   },
   methods: {},
   async mounted() {
-    this.lBeneficiarios = await this.getListaBackend('Beneficiarios', 'id,name', 'beneficiario_id')
-
-    this.lParentescos = await this.getListaBackend('Parentescos', 'id,name', 'parentesco_id')
-
-    this.lEst_civiles = await this.getListaBackend('Est_civiles', 'id,name', 'est_civil_id')
-
-    this.lNiv_educativos = await this.getListaBackend('Niv_educativos', 'id,name', 'niv_educativo_id')
-
-    this.lOcupaciones = await this.getListaBackend('Ocupaciones', 'id,name', 'ocupacion_id')
-
+    let listas = await this.getDatasBackend(this.urlModulo, [
+      {
+        mod: 'Beneficiarios',
+        campos: 'id,name',
+        item: 'beneficiario_id',
+        sort:'name'
+      },
+      {
+        mod: 'Parentescos',
+        campos: 'id,name',
+        datos: { modulo: 'mkBeneficiarios' },
+        lista: 'parentesco_id'
+      },
+      {
+        mod: 'Niv_educativos',
+        campos: 'id,name',
+        datos: { modulo: 'mkBeneficiarios' },
+        lista: 'niv_educativo_id'
+      },
+      {
+        mod: 'Est_civiles',
+        campos: 'id,name',
+        datos: { modulo: 'mkBeneficiarios' },
+        lista: 'est_civil_id'
+      },
+      {
+        mod: 'Ocupaciones',
+        campos: 'id,name',
+        datos: { modulo: 'mkBeneficiarios' },
+        lista: 'ocupacion_id'
+      }
+    ])
   },
 };
 </script>

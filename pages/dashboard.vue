@@ -2,7 +2,7 @@
   <div id="pageDashboard">
     <v-container grid-list-xl text-xs-center>
       <v-layout row wrap>
-        <v-flex xs4 >
+        <v-flex xs3 >
 <svg _ngcontent-bjc-c218="" 
     version="1.1" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 1600 1600"><style _ngcontent-bjc-c218="" type="text/css"> .st0 { fill: #064D56; } .st1 { fill: #043843; } .st2 { fill: #3C9CA3; } .st3 { fill: #63C3D1; } .st4 { fill: #00232B; } .st5 { fill: #FFFFFF; } .st6 { fill: #F08125; } .st7 { fill: #1B9162; } .st8 { fill: #AB5099; } .st9 { fill: #375BA6; } .st10 { fill: #4EA1A8; } .st11 { fill: #99A6A9; } .st12 { fill: #667D81; } .st13 { fill: #4D666C; } .st14 { fill: #7F9095; } </style><g _ngcontent-bjc-c218="" class="screen"><g _ngcontent-bjc-c218=""><path _ngcontent-bjc-c218="" d="M32.7,673.4v675.1c0,28,29.3,46.3,54.5,34l834.9-408c33.4-16.3,54.6-50.3,54.6-87.5V211.9
 			c0-28-29.3-46.3-54.5-34l-834.9,408C53.9,602.2,32.7,636.2,32.7,673.4z" class="st0"></path></g><g _ngcontent-bjc-c218=""><path _ngcontent-bjc-c218="" d="M45.8,686.5v675.1c0,28,29.3,46.3,54.5,34l834.9-408c33.4-16.3,54.6-50.3,54.6-87.5V225
@@ -66,7 +66,7 @@
 				C1315.2,339,1329.6,321.3,1347.5,325.2z" class="st11"></path></g></g></g>
         </svg>
         </v-flex>
-        <v-flex xs8 >
+        <v-flex xs9 >
           <h2 class="font-weight-bold" >Bienvenido al Sistema</h2>
           <img src="../static/logo.gif"  alt="Cosmol" center/>
           <br />

@@ -488,7 +488,8 @@ export default {
         mod: 'Beneficiarios',
         campos: 'id,name,epsa',
         datos: { _customFields: 1 },
-        item: 'beneficiarios_id'
+        item: 'beneficiarios_id',
+        sort: 'name'
       },
       {
         mod: 'Forma_pagos',
@@ -517,24 +518,9 @@ export default {
         mod: 'Control_calidades',
         datos: { modulo: 'mkServicios' },
         campos: 'id,name,orden',
-        orden: 'orden'
+        sort: 'orden'
       }
     ])
-
-    // let listas = await this.getDatasBackend(this.urlModulo, [
-    //       {
-    //         mod: 'Usuarios',
-    //         campos: 'id,name',
-    //         //        datos: { filtros: filtros },
-    //         item: 'created_by',
-    //       },
-    //       {
-    //         mod: 'Beneficiarios',
-    //         campos: 'id,name,epsa',
-    //         item: 'beneficiarios_id',
-    //       },
-    //       { mod: 'Servicios', item: 'servicios_id' },
-    //     ])
   }
 }
 </script>

@@ -816,7 +816,18 @@ export default {
         let sort = el.sort || false
         if (sort && Array.isArray(datos)) {
           datos.sort(function(a, b) {
-            return a[sort] - b[sort]
+            if (typeof a[sort] === 'string'){
+                if (a[sort] > b[sort]) {
+                    return 1;
+                  }
+                  if (a[sort] < b[sort]) {
+                    return -1;
+                  }
+                  return 0;
+            }else{
+              return a[sort] - b[sort]
+            }
+            
           })
         }
 

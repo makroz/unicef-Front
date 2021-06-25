@@ -257,7 +257,12 @@ export default {
   },
   async mounted() {
     let listas = await this.getDatasBackend(this.urlModulo, [
-      { mod: 'Beneficiarios', campos: 'id,name', item: 'beneficiario_id' },
+      {
+        mod: 'Beneficiarios',
+        campos: 'id,name',
+        item: 'beneficiario_id',
+        sort:'name'
+      },
       {
         mod: 'Lista_apoyos',
         campos: 'id,name',
