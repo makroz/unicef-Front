@@ -319,7 +319,7 @@ export default {
         {
           campo: 'stock',
           cond: '25',
-          criterio: '0',
+          criterio: 'min_stock',
           type: 'num',
           union: 'and',
           lista: false

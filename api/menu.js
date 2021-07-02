@@ -267,22 +267,7 @@ const Menu = [
             }
         ]
     },
-    {
-        title: 'Reportes',
-        name: 'reportes',
-        icon: 'receipt_long',
-        items: [{
-                name: 'visitas',
-                title: 'Visitas y Evaluaciones',
-                href: '/reportes/visitas/'
-            },
-            {
-                name: 'recojos',
-                title: 'Recojos y Servicios',
-                href: '/reportes/recojos/'
-            },
-        ]
-    },
+    { title: 'Reportes', name: 'reportes', href: '/reportes/', icon: 'receipt_long', },
     {
         name: 'rastreo',
         title: 'Rastreo',

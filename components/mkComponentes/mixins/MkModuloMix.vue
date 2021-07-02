@@ -179,16 +179,11 @@ export default {
     formatDT(d = '', time = true) {
       return formatDT(d, time)
     },
-    // imprimirElemento(html) {
-    //   imprimirElemento(html)
-    // },
     getDataLista(lista, valor, busco = 'id', devuelvo = 'name', defa = false) {
-      //console.log('Datalist def',defa);
       return getDataLista(lista, valor, busco, devuelvo, defa)
     },
 
     onBuscar(datos, quitarbuscar = false) {
-      //console.log('OnBuscar Mix:', datos, this.busqueda)
       this.dataTable.paginator.page = 1
       this.dataTable.busquedas = datos
       this.listar(datos, quitarbuscar)

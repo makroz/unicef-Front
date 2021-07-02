@@ -65,7 +65,7 @@
           @click.stop="$emit('callAction', acciones[opt])"
         >
           <v-icon>{{ acciones[opt].icon }}</v-icon
-          >{{ acciones[opt].text }}
+          >&nbsp;{{ acciones[opt].text }}
         </v-btn>
         <div
           v-if="

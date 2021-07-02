@@ -65,6 +65,7 @@ export function getDataLista(
         return r
     }
     let o = lista.find((el) => el[busco] == valor)
+        //console.log('getdatalista r:', o, busco, valor);
     if (o) {
         if (devuelvo == '*') {
             r = o
@@ -72,7 +73,7 @@ export function getDataLista(
             r = o[devuelvo]
         }
     }
-    //console.log('getdatalista resulatdo:' + o);
+    //console.log('getdatalista lista:', lista);
     return r
 }
 export function getDistancia(lat1, lon1, lat2, lon2) {
@@ -167,4 +168,10 @@ export function formatDT(d = '', time = true) {
         r = r + ' ' + hour + ':' + minute + ':' + secons
     }
     return r
+}
+
+export function getDates(startDate, endDate, interval = 1000 * 60 * 60 * 24) {
+    const duration = endDate - startDate;
+    const steps = duration / interval;
+    return Array.from({ length: steps + 1 }, (v, i) => new Date(startDate.valueOf() + (interval * i)));
 }
