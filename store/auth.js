@@ -268,6 +268,7 @@ export const mutations = {
                     Date.now(),
                     new Date((expire + '000') * 1)
                 )
+
                 clearInterval(state.timer)
                 state.timer = false
                 me.$router.push('/login/')
@@ -361,6 +362,10 @@ export const mutations = {
 }
 
 export const actions = {
+    logger({ commit, getters, dispatch }, datos) {
+        datos = {...datos, app_id: 1, _noData: 1 }
+        this.$axios.post('Logger', datos)
+    },
     async loadDatas({ commit, getters, dispatch }, options) {
         let listado = []
         options.listas.forEach((datos) => {
@@ -461,11 +466,14 @@ export const actions = {
         commit('setAcceso', per)
         return per
     },
-    async login({ commit, getters }, auth) {
+    async login({ commit, getters, dispatch }, auth) {
         //console.log("this rutaBAck:", this.state.auth.rutaBack);
+        let user = getters.getUser
+        user = user ? user.id : 0
+
+        let a = '--User Anterior: ' + user + ' --Token Anterior: ' + getters.getToken
         try {
             getters.tienePermiso('view', 'usuarios', true)
-
             const { data } = await this.$axios.post('login', auth)
             if (data.ok > 0) {
                 commit('SET_USER', data.data)
@@ -476,7 +484,13 @@ export const actions = {
                     //     commit("setRutaBack", "/");
                     // }
                     // this.$router.push(this.state.auth.rutaBack);
+                dispatch('logger', {
+                    message: 'Login',
+                    token: data._sid_,
+                    attrib: a
+                })
                 this.$router.back()
+                    //this.$router.push('/');
                 return true
             } else {
                 commit('setAuthToken', null)
@@ -502,8 +516,18 @@ export const actions = {
     imprimirElemento({ state }, html) {
         imprimirElemento(html)
     },
-    logout({ commit }) {
+    logout({ getters, commit, dispatch }) {
         //await this.$axios.post("logout");
+        let user = getters.getUser
+        user = user ? user.id : 0
+
+        let a = '--User Anterior: ' + user + ' --Token Anterior: ' + getters.getToken
+
+        dispatch('logger', {
+            message: 'Logout',
+            attrib: a
+        })
+
         let me = this
         me.$axios.defaults.headers.common['Authorization'] = ''
         commit('SET_USER', null)

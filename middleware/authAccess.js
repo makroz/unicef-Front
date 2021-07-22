@@ -8,6 +8,11 @@ export default async function(ctx) {
     access = access.components.default.options.authAccess || access.components.default.options.name;
     const user = await ctx.store.dispatch('auth/getUser');
     if (!user || !user.id) {
+        ctx.store.dispatch('auth/logger', {
+            message: 'Logout x AuthAccess Middleware',
+            attrib: 'Access:' + access
+        })
+
         ctx.redirect("/login/");
         return false
     } else {

@@ -176,6 +176,14 @@ export default {
     }
   },
   methods: {
+    logger(message, action = '0') {
+      let m = {}
+      m.message = message
+      if (action > 0) {
+        m.action = action
+      }
+      this.$store.dispatch('auth/logger', m)
+    },
     formatDT(d = '', time = true) {
       return formatDT(d, time)
     },
@@ -811,18 +819,17 @@ export default {
         let sort = el.sort || false
         if (sort && Array.isArray(datos)) {
           datos.sort(function(a, b) {
-            if (typeof a[sort] === 'string'){
-                if (a[sort] > b[sort]) {
-                    return 1;
-                  }
-                  if (a[sort] < b[sort]) {
-                    return -1;
-                  }
-                  return 0;
-            }else{
+            if (typeof a[sort] === 'string') {
+              if (a[sort] > b[sort]) {
+                return 1
+              }
+              if (a[sort] < b[sort]) {
+                return -1
+              }
+              return 0
+            } else {
               return a[sort] - b[sort]
             }
-            
           })
         }
 
@@ -907,13 +914,13 @@ export default {
       return this.dataTable.acciones[id]
     },
     addOptionTable(option) {
-      if (this.dataTable.acciones[option.id]){
+      if (this.dataTable.acciones[option.id]) {
         this.dataTable.acciones[option.id] = option
-      }else{
-        this.$set(this.dataTable.acciones,option.id,option)
+      } else {
+        this.$set(this.dataTable.acciones, option.id, option)
       }
       return true
-    },
+    }
     // opTableOrdenar() {
     //   let me = this
     //   let ordenado = Object.keys(me.dataTable.acciones).sort(function(a, b) {

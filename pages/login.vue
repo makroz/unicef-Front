@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     async onLogin(v) {
+      console.log('aaaa');
       try {
         await this.$store.dispatch("auth/login", this.auth);
         this.auth.username = "";
